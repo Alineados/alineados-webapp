@@ -1,67 +1,46 @@
 <script lang="ts">
 	import Check from '$lib/icons/Check.svelte';
 	import { Button } from '$lib/shared/ui/button/index';
-
+	import LoginForm from './components/LoginForm.svelte';
+	// import Carousel from './components/Carousel.svelte';
 </script>
-
-<!-- <div
-	class="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0"
->
-	<Button href="alineados.com" variant="ghost" class="absolute left-4 top-4 md:left-8 md:top-8">
-		<Check styleTw="size-8" />
-		Alineados
-	</Button>
-</div> -->
 
 <div
 	class="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0"
 >
 	<Button
-		href="/examples/authentication"
+		href="alineados.com"
 		variant="ghost"
-		class="absolute right-4 top-4 md:right-8 md:top-8"
+		class="absolute left-4 top-4 flex flex-row gap-2  md:left-8 md:top-8"
 	>
-		Login
+		<Check styleTw="size-10" />
+		<p
+			class="text-4xl
+	font-bold text-alineados_gray-900"
+		>
+			Alineados
+		</p>
 	</Button>
-	<div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-		<div
-			class="absolute inset-0 bg-cover"
-			style="
-				background-image:
-					url(https://images.unsplash.com/photo-1590069261209-f8e9b8642343?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1376&q=80);"
-		></div>
-		<div class="relative z-20 flex items-center text-lg font-medium">
-			<!-- <Command class="mr-2 h-6 w-6" /> -->
-			Acme Inc
-		</div>
-		<div class="relative z-20 mt-auto">
-			<blockquote class="space-y-2">
-				<p class="text-lg">
-					&ldquo;This library has saved me countless hours of work and helped me deliver stunning
-					designs to my clients faster than ever before. Highly recommended!&rdquo;
+	<div class="flex flex-col justify-start lg:p-16">
+		<div class=" flex flex-col justify-start space-y-6 sm:w-[350px]">
+			<div class="flex flex-col gap-8">
+				<h1 class="text-4xl font-medium tracking-tight text-alineados_gray-900">
+					Bienvenido de nuevo a tu propia herramienta de vida
+				</h1>
+				<p class="text-base font-medium text-alineados_gray-900">
+					Hoy es un nuevo día. Es tu día Inicia sesión para comenzar a gestionar tu alineación
 				</p>
-				<footer class="text-sm">Sofia Davis</footer>
-			</blockquote>
+			</div>
+			<LoginForm />
 		</div>
 	</div>
-	<div class="lg:p-8">
-		<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-			<div class="flex flex-col space-y-2 text-center">
-				<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
-				<p class="text-sm text-muted-foreground">Enter your email below to create your account</p>
-			</div>
-			<!-- <UserAuthForm /> -->
-			<p class="px-8 text-center text-sm text-muted-foreground">
-				By clicking continue, you agree to our
-				<a href="/terms" class="underline underline-offset-4 hover:text-primary">
-					Terms of Service
-				</a>
-				and
-				<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-					Privacy Policy
-				</a>
-				.
-			</p>
+	<div class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
+		<div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] to-[#20325D]"></div>
+
+		<div class="relative z-20 mt-auto">
+			<!-- Image -->
+			<!-- <Carousel /> -->
+			<!-- Carousel -->
 		</div>
 	</div>
 </div>
