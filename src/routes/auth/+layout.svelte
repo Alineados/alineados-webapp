@@ -11,7 +11,7 @@
 		variant="ghost"
 		class="absolute left-4 top-4 flex flex-row gap-2 md:left-12 md:top-10  "
 	>
-		<Check styleTw="size-12" />
+		<Check styleTw="size-16" />
 		<p class="text-2xl font-bold text-black">Alineados</p>
 	</Button>
 
