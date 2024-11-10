@@ -52,7 +52,7 @@
 						/>
 					</div>
 					<Button
-						href="alineados.com"
+						href="./change-password"
 						variant="ghost"
 						class="self-end p-0 text-xs font-normal text-black hover:underline cursor-pointer ">¿Olvidaste tu contraseña?</Button
 					>

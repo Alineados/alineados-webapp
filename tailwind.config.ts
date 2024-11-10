@@ -17,6 +17,8 @@ const config: Config = {
 		extend: {
 			colors: {
 				alineados_green: '#00B85C',
+				alineados_blue_start: '#20325D',
+				alineados_blue_end: '#0F172A',
 				alineados_gray: {
 					50: '#F7F7F7',
 					100: '#E1E1E1',
