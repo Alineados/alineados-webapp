@@ -4,7 +4,7 @@
 </script>
 
 <div
-	class="container min-h-screen relative hidden flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-5 lg:px-0"
+	class="container relative hidden min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-5 lg:px-0"
 >
 	<Button
 		href="alineados.com"
