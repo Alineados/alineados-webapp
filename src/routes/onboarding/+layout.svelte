@@ -35,7 +35,7 @@
 					<span class="text-xs font-medium text-[#566994]">¡Bienvenido!</span>
 				</li>
 			</ul>
-			<div class="mt-[225px] flex flex-col gap-2">
+			<div class="mt-[240px] flex flex-col gap-2">
 				<p class="text-pretty text-lg font-medium">
 					Inicia tu experiencia proporcionándonos algunos detalles acerca de ti.
 				</p>
