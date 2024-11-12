@@ -35,6 +35,7 @@
 					<span class="text-xs font-medium text-[#566994]">¡Bienvenido!</span>
 				</li>
 			</ul>
+
 			<div class="mt-[240px] flex flex-col gap-2">
 				<p class="text-pretty text-lg font-medium">
 					Inicia tu experiencia proporcionándonos algunos detalles acerca de ti.
@@ -46,7 +47,21 @@
 		</div>
 	</aside>
 
-	<div class="col-span-5 flex h-full w-full">
-		<slot />
+	<div class="col-span-5 flex h-full w-full flex-col px-[152px]">
+		<div class="h-4/5">
+			<slot />
+		</div>
+		<div class="mt-3 flex justify-between">
+			<button
+				class="flex items-center rounded-2xl border border-alineados_gray-600 px-8 py-4 text-sm font-semibold text-alineados_gray-600"
+			>
+				<span class="mr-2">&larr;</span> Regresar
+			</button>
+			<button
+				class="flex items-center rounded-2xl bg-[#0FC917] px-8 py-4 text-sm font-semibold text-[#F7F7F7]"
+			>
+				Siguiente <span class="ml-2">&rarr;</span>
+			</button>
+		</div>
 	</div>
 </div>

@@ -4,7 +4,7 @@
 	import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'bits-ui';
 </script>
 
-<div class="flex h-full w-full flex-col items-center justify-center px-[152px]">
+<div class="flex h-full w-full flex-col items-center justify-center">
 	<div class="flex w-full flex-col items-center justify-center gap-4">
 		<h2 class="text-3xl font-semibold">
 			<span class="text-[#0FC917]">Verificación</span>
@@ -58,20 +58,8 @@
 
 	<div class="mt-5 flex w-full items-center justify-center gap-1">
 		<p class="text-sm font-normal text-[#000000]">¿No recibiste el correo?</p>
-		<a class="text-sm font-medium text-[#E67635] hover:text-[#e67635b4]" href="/">Enviar de nuevo</a
+		<a class="text-sm font-medium text-[#E67635] underline hover:text-[#e67635b4]" href="/"
+			>Enviar de nuevo</a
 		>
-	</div>
-
-	<div class="mt-16 flex w-full justify-between">
-		<button
-			class="flex items-center rounded-2xl border border-alineados_gray-600 px-11 py-4 text-sm font-semibold text-alineados_gray-600"
-		>
-			<span class="mr-2">&larr;</span> Regresar
-		</button>
-		<button
-			class="flex items-center rounded-2xl bg-[#0FC917] px-11 py-4 text-sm font-semibold text-[#F7F7F7]"
-		>
-			Siguiente <span class="ml-2">&rarr;</span>
-		</button>
 	</div>
 </div>

@@ -15,32 +15,34 @@
 	}
 </script>
 
-<div class="flex h-full w-full flex-col items-start justify-center px-[152px]">
+<div class="flex h-full w-full flex-col items-start justify-center">
 	<div class="flex w-full flex-col gap-3">
 		<h2 class="text-3xl font-semibold text-alineados_gray-900">Creación de Contraseña</h2>
 		<hr class="w-full border-spacing-1 border-alineados_gray-200" />
 	</div>
 
-	<div class="mt-9 flex w-full flex-col gap-12">
+	<div class="mt-9 flex w-full flex-col gap-11">
 		<div class="w-4/5 space-y-2">
-			<Label class="text-lg font-semibold text-black" for="first-name">Contraseña</Label>
+			<Label class="text-lg font-semibold text-black" for="password">Contraseña</Label>
 			<Input
-				class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 placeholder:text-alineados_gray-500"
-				id="first-name"
-				placeholder="Ej: José"
-				type="first-name"
+				class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 text-base font-normal placeholder:text-alineados_gray-500"
+				id="password"
+				placeholder="Ingrese su contraseña"
+				type="password"
 				autocapitalize="none"
 				autocorrect="off"
 				disabled={isLoading}
 			/>
 		</div>
 		<div class="w-4/5 space-y-2">
-			<Label class="text-lg font-semibold text-black" for="first-name">Confirmar Contraseña</Label>
+			<Label class="text-lg font-semibold text-black" for="confirm-password"
+				>Confirmar Contraseña</Label
+			>
 			<Input
-				class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 placeholder:text-alineados_gray-500"
-				id="first-name"
-				placeholder="Ej: José"
-				type="first-name"
+				class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 text-base font-normal placeholder:text-alineados_gray-500"
+				id="confirm-password"
+				placeholder="Confirme su contraseña"
+				type="password"
 				autocapitalize="none"
 				autocorrect="off"
 				disabled={isLoading}
@@ -79,18 +81,5 @@
 				</div>
 			</li>
 		</ul>
-	</div>
-
-	<div class="mt-16 flex w-full justify-between">
-		<button
-			class="flex items-center rounded-2xl border border-alineados_gray-600 px-11 py-4 text-sm font-semibold text-alineados_gray-600"
-		>
-			<span class="mr-2">&larr;</span> Regresar
-		</button>
-		<button
-			class="flex items-center rounded-2xl bg-[#0FC917] px-11 py-4 text-sm font-semibold text-[#F7F7F7]"
-		>
-			Siguiente <span class="ml-2">&rarr;</span>
-		</button>
 	</div>
 </div>
