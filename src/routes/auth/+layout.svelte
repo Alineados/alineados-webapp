@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Check from '$lib/icons/Check.svelte';
+	import Check from '$lib/icons/AlineadosCheck.svelte';
 	import { Button } from '$lib/shared/ui/button/index';
 </script>
 

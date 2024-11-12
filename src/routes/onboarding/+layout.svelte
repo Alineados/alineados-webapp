@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Check from '$lib/icons/Check.svelte';
+	import Check from '$lib/icons/AlineadosCheck.svelte';
 	import Step1 from '$lib/icons/steps/Step1.svelte';
 	import Step2 from '$lib/icons/steps/Step2.svelte';
 	import Step3 from '$lib/icons/steps/Step3.svelte';
