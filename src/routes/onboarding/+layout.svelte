@@ -7,38 +7,46 @@
 </script>
 
 <div
-	class="container relative hidden min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-5 lg:px-0"
+	class="container relative hidden min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-6 lg:px-0"
 >
 	<aside
 		class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:col-span-1 lg:flex"
 	>
-		<div class="absolute inset-0 flex flex-col bg-gradient-to-t from-[#0F172A] to-[#20325D] p-4">
-			<a href="https://alineados.com" class="flex flex-row gap-2">
+		<div class="absolute inset-0 flex flex-col bg-[#0F172A] px-6">
+			<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
 				<Check styleTw="size-6" />
-				<p class="text-xl font-bold text-alineados_gray-50">Alineados</p>
+				<p class="text-lg font-bold text-alineados_gray-50">Alineados</p>
 			</a>
-			<ul class="mt-8 flex flex-col space-y-2">
-				<li class="flex items-center space-x-2">
+			<ul class="mt-20 flex flex-col gap-6">
+				<li class="flex items-center gap-2">
 					<Step1 fill="#0F172A" stroke="white" width={24} height={24} backgroundColor="white" />
-					<span>Información básica</span>
+					<span class="text-xs font-medium">Información básica</span>
 				</li>
-				<li class="flex items-center space-x-2">
-					<Step2 fill="#0F172A" stroke="#B1B1B1" width={50} height={50} />
-					<span>Información básica</span>
+				<li class="flex items-center gap-2">
+					<Step2 fill="#566994" stroke="#566994" width={24} height={24} backgroundColor="#0F172A" />
+					<span class="text-xs font-medium text-[#566994]">Verificación de correo o celular</span>
 				</li>
-				<li class="flex items-center space-x-2">
-					<Step3 fill="#0F172A" stroke="#B1B1B1" width={50} height={50} />
-					<span>Información básica</span>
+				<li class="flex items-center gap-2">
+					<Step3 fill="#566994" stroke="#566994" width={24} height={24} backgroundColor="#0F172A" />
+					<span class="text-xs font-medium text-[#566994]">Creación de contraseña</span>
 				</li>
-				<li class="flex items-center space-x-2">
-					<Step4 fill="#0F172A" stroke="#B1B1B1" width={50} height={50} />
-					<span>Información básica</span>
+				<li class="flex items-center gap-2">
+					<Step4 fill="#566994" stroke="#566994" width={24} height={24} backgroundColor="#0F172A" />
+					<span class="text-xs font-medium text-[#566994]">¡Bienvenido!</span>
 				</li>
 			</ul>
+			<div class="mt-[225px] flex flex-col gap-2">
+				<p class="text-pretty text-lg font-medium">
+					Inicia tu experiencia proporcionándonos algunos detalles acerca de ti.
+				</p>
+				<p class="text-sm font-medium text-[#566994]">
+					Este procedimiento solo durará unos minutos.
+				</p>
+			</div>
 		</div>
 	</aside>
 
-	<div class="flex flex-col justify-start lg:col-span-4 lg:p-16">
+	<div class="col-span-5 flex h-full w-full">
 		<slot />
 	</div>
 </div>
