@@ -5,6 +5,51 @@
 	import Step3 from '$lib/icons/steps/Step3.svelte';
 	import Step4 from '$lib/icons/steps/Step4.svelte';
 	import Buttons from '$lib/modules/onboarding/components/Buttons.svelte';
+
+	import { page } from '$app/stores';
+	import { get } from 'svelte/store';
+	import { goto } from '$app/navigation';
+
+	// Función para determinar si la ruta actual es 'first' o 'last'
+	function getStepStatus() {
+		const path = get(page).url.pathname;
+		const isFirst = path.includes('onboarding/first');
+		const isLast = path.includes('onboarding/fourth');
+		return { isFirst, isLast };
+	}
+
+	// Obtener el estado inicial de las propiedades isFirst e isLast
+	const { isFirst, isLast } = getStepStatus();
+
+	function handleNext() {
+		if (isLast) {
+			goto('/onboarding/fourth'); // Ajusta la ruta final según sea necesario
+		} else {
+			const currentPath = window.location.pathname;
+			const nextPath = getNextPath(currentPath);
+			goto(nextPath);
+		}
+	}
+
+	function handlePrevious() {
+		const currentPath = window.location.pathname;
+		const previousPath = getPreviousPath(currentPath);
+		goto(previousPath);
+	}
+
+	function getNextPath(currentPath: string): string {
+		if (currentPath.includes('onboarding/first')) return '/onboarding/second';
+		if (currentPath.includes('onboarding/second')) return '/onboarding/third';
+		if (currentPath.includes('onboarding/third')) return '/onboarding/fourth';
+		return currentPath;
+	}
+
+	function getPreviousPath(currentPath: string): string {
+		if (currentPath.includes('onboarding/fourth')) return '/onboarding/third';
+		if (currentPath.includes('onboarding/third')) return '/onboarding/second';
+		if (currentPath.includes('onboarding/second')) return '/onboarding/first';
+		return currentPath;
+	}
 </script>
 
 <div
@@ -52,6 +97,6 @@
 		<div class="h-4/5">
 			<slot />
 		</div>
-		<Buttons />
+		<Buttons {isFirst} {isLast} on:next={handleNext} on:previous={handlePrevious} />
 	</div>
 </div>
