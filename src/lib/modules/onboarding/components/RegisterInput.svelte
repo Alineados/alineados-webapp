@@ -6,12 +6,9 @@
 	export let forId: string;
 	export let type: string = 'text';
 	export let placeholder: string;
-	export let mensaje: string;
+	export let errorMessage: string = 'Campo requerido';
 	export let isLoading: boolean = false;
 	export let isInvalid: boolean = false;
-
-	// Fix: Use proper event forwarding type
-	//export let onInput: (e: CustomEvent<any>) => void;
 </script>
 
 <div class="w-1/2 space-y-2">
@@ -26,6 +23,6 @@
 		disabled={isLoading}
 	/>
 	{#if isInvalid}
-		<span class="text-xs text-[#C90404]">{mensaje}</span>
+		<span class="text-xs text-[#C90404]">{errorMessage}</span>
 	{/if}
 </div>
