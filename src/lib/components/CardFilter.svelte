@@ -1,9 +1,17 @@
 <script lang="ts">
-	export let text: string;
-	export let selected: boolean = false;
+	let {
+		text,
+		selected = $bindable(),
+		triggerFunction
+	}: {
+		text: string;
+		selected?: boolean;
+		triggerFunction?: () => void;
+	} = $props();
 
 	function selectItem() {
 		selected = !selected;
+		triggerFunction && triggerFunction();
 	}
 </script>
 
@@ -13,7 +21,7 @@
 			? 'border-[#0FC917] bg-[#0FC917] text-[#F7F7F7]'
 			: 'border-[#E1E1E1] text-alineados-gray-800'
 	} transition-colors duration-300 ease-in-out`}
-	on:click={selectItem}
+	onclick={selectItem}
 >
 	<span class="text-base font-medium">{text}</span>
 </button>
