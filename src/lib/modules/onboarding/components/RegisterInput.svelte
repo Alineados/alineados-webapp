@@ -14,7 +14,7 @@
 <div class="w-1/2 space-y-2">
 	<Label class="text-lg font-semibold text-black" for={forId}>{label}</Label>
 	<Input
-		class="rounded-lg border-alineados_gray-100 bg-alineados_gray-50 text-sm font-normal placeholder:text-alineados_gray-500"
+		class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-sm font-normal placeholder:text-alineados-gray-500"
 		id={forId}
 		{type}
 		{placeholder}

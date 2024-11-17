@@ -16,7 +16,7 @@
 
 <div class="relative">
 	<Input
-		class="rounded-none border-0 border-b-2 border-alineados_gray-900 bg-transparent pr-10 font-medium outline-none"
+		class="rounded-none border-0 border-b-2 border-alineados-gray-900 bg-transparent pr-10 font-medium outline-none"
 		{id}
 		{placeholder}
 		type={showPassword ? 'text' : 'password'}
@@ -30,9 +30,9 @@
 		onclick={togglePasswordVisibility}
 	>
 		{#if showPassword}
-			<NoBlockEye class="size-5 rounded-lg text-alineados_gray-400 hover:bg-alineados_gray-50" />
+			<NoBlockEye class="size-5 rounded-lg text-alineados-gray-400 hover:bg-alineados-gray-50" />
 		{:else}
-			<BlockEye class="size-5 rounded-lg text-alineados_gray-400 hover:bg-alineados_gray-50" />
+			<BlockEye class="size-5 rounded-lg text-alineados-gray-400 hover:bg-alineados-gray-50" />
 		{/if}
 	</button>
 </div>

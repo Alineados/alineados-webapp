@@ -16,7 +16,7 @@
 		<Button
 			variant="outline"
 			type="button"
-			class="border-none bg-alineados_gray-100 text-xs font-normal text-black hover:bg-alineados_gray-200"
+			class="border-none bg-alineados-gray-100 text-xs font-normal text-black hover:bg-alineados-gray-200"
 			disabled={isLoading}
 		>
 			{#if isLoading}
@@ -30,7 +30,7 @@
 		<Button
 			variant="outline"
 			type="button"
-			class="border-none bg-alineados_gray-100 text-xs font-normal text-black hover:bg-alineados_gray-200"
+			class="border-none bg-alineados-gray-100 text-xs font-normal text-black hover:bg-alineados-gray-200"
 			disabled={isLoading}
 		>
 			{#if isLoading}
@@ -44,7 +44,7 @@
 		<Button
 			variant="outline"
 			type="button"
-			class="border-none bg-alineados_gray-100 text-xs font-normal text-black hover:bg-alineados_gray-200"
+			class="border-none bg-alineados-gray-100 text-xs font-normal text-black hover:bg-alineados-gray-200"
 			disabled={isLoading}
 		>
 			{#if isLoading}

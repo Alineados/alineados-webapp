@@ -11,7 +11,7 @@
 		{#snippet children({ cells })}
 			{#each cells as cell, index (index)}
 				<InputOTP.Slot
-					class="h-16 w-16 rounded-3xl border-alineados_gray-100 bg-alineados_gray-50 text-3xl font-semibold"
+					class="h-16 w-16 rounded-3xl border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-semibold"
 					{cell}
 				/>
 			{/each}

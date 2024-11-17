@@ -20,7 +20,7 @@
 	<Label class="text-lg font-semibold text-black" for={id}>{label}</Label>
 	<div class="relative w-full">
 		<Input
-			class="w-full rounded-lg border-alineados_gray-100 bg-alineados_gray-50 pr-10 text-base font-normal placeholder:text-alineados_gray-500"
+			class="w-full rounded-lg border-alineados-gray-100 bg-alineados-gray-50 pr-10 text-base font-normal placeholder:text-alineados-gray-500"
 			{id}
 			{placeholder}
 			type={isPasswordVisible ? 'text' : 'password'}
@@ -34,9 +34,9 @@
 			on:click={togglePasswordVisibility}
 		>
 			{#if isPasswordVisible}
-				<EyeOff class="h-5 w-5 text-alineados_gray-500" />
+				<EyeOff class="h-5 w-5 text-alineados-gray-500" />
 			{:else}
-				<Eye class="h-5 w-5 text-alineados_gray-500" />
+				<Eye class="h-5 w-5 text-alineados-gray-500" />
 			{/if}
 		</button>
 	</div>
