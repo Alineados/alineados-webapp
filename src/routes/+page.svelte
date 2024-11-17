@@ -4,6 +4,7 @@
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import HistoricalButton from '$lib/components/HistoricalButton.svelte';
 	import HistoryButton from '$lib/components/HistoryButton.svelte';
+	import Item from '$lib/components/Item.svelte';
 	import NewProblem from '$lib/components/NewProblemButton.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
 	import SelectablePills from '$lib/components/SelectablePills.svelte';
@@ -43,11 +44,14 @@
 		<CustomCard state="warning" />
 		<CustomCard state="danger" />
 	</div>
-
 	<div class="mt-4 flex gap-4">
 		<ProgressBar progress={42} state="stable" />
 		<ProgressBar progress={50} state="stable" />
 		<ProgressBar progress={60} state="warning" />
 		<ProgressBar progress={80} state="danger" />
+	</div>
+	<div class="mt-4 flex flex-col gap-1">
+		<Item />
+		<Item />
 	</div>
 </div>
