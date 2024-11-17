@@ -19,5 +19,5 @@
 </script>
 
 <div class={`inline-flex items-center rounded-full px-4 py-2 ${bgColor} ${textColor}`}>
-	<span class="text-sm font-semibold">{text}</span>
+	<span class="text-xs font-semibold">{text}</span>
 </div>
