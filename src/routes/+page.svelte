@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AccountabilityButton from '$lib/components/AccountabilityButton.svelte';
+	import CardFilter from '$lib/components/CardFilter.svelte';
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import HistoricalButton from '$lib/components/HistoricalButton.svelte';
 	import HistoryButton from '$lib/components/HistoryButton.svelte';
@@ -23,6 +24,11 @@
 	<div class="mt-4 flex gap-2">
 		<StatusPill status="active" />
 		<StatusPill status="inactive" />
+	</div>
+	<div class="mt-4 flex gap-2">
+		<CardFilter text="Todos" selected={true} />
+		<CardFilter text="Activos" />
+		<CardFilter text="No Activos" />
 	</div>
 	<div class="mt-4">
 		<SelectablePills {items} />
