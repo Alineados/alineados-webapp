@@ -32,7 +32,7 @@
 		<div class="absolute inset-0 flex flex-col bg-[#0F172A] px-6">
 			<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
 				<Check styleTw="size-6" />
-				<p class="text-lg font-bold text-alineados_gray-50">Alineados</p>
+				<p class="text-lg font-bold text-alineados-gray-50">Alineados</p>
 			</a>
 
 			<AsideSteps {stepId} />

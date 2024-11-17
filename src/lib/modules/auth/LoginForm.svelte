@@ -28,7 +28,7 @@
 						>Correo electrónico / Teléfono</Label
 					>
 					<Input
-						class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 "
+						class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 "
 						id="text"
 						placeholder=""
 						type="text"
@@ -41,7 +41,7 @@
 					<div class="flex flex-col gap-2">
 						<Label class="text-xs font-normal text-black" for="password">Contraseña</Label>
 						<Input
-							class="rounded-lg border-alineados_gray-100  bg-alineados_gray-50 "
+							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 "
 							id="password"
 							placeholder=""
 							type="password"
@@ -73,17 +73,17 @@
 	</form>
 	<div class="relative">
 		<div class="absolute inset-0 flex items-center">
-			<span class="w-full border-t border-alineados_gray-200"></span>
+			<span class="w-full border-t border-alineados-gray-200"></span>
 		</div>
-		<div class="relative flex justify-center text-sm uppercase text-alineados_gray-400">
-			<span class="bg-white px-2 text-alineados_gray-400"> O </span>
+		<div class="relative flex justify-center text-sm uppercase text-alineados-gray-400">
+			<span class="bg-white px-2 text-alineados-gray-400"> O </span>
 		</div>
 	</div>
 	<div class="flex flex-col gap-4">
 		<Button
 			variant="outline"
 			type="button"
-			class="border-none bg-alineados_gray-100 font-normal text-xs text-black hover:bg-alineados_gray-200"
+			class="border-none bg-alineados-gray-100 font-normal text-xs text-black hover:bg-alineados-gray-200"
 			disabled={isLoading}
 		>
 			{#if isLoading}
@@ -97,7 +97,7 @@
 		<Button
 			variant="outline"
 			type="button"
-			class="border-none bg-alineados_gray-100 font-normal text-xs text-black hover:bg-alineados_gray-200"
+			class="border-none bg-alineados-gray-100 font-normal text-xs text-black hover:bg-alineados-gray-200"
 			disabled={isLoading}
 		>
 			{#if isLoading}

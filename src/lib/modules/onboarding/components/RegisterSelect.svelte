@@ -17,16 +17,16 @@
 
 	<Select.Root type="single" {name} bind:value>
 		<Select.Trigger
-			class="w-full border-alineados_gray-100 bg-alineados_gray-50 text-alineados_gray-900 focus:outline-none focus:ring-2 focus:ring-alineados_gray-100 data-[placeholder]:text-alineados_gray-500"
+			class="w-full border-alineados-gray-100 bg-alineados-gray-50 text-alineados-gray-900 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 		>
 			{triggerContent}
 		</Select.Trigger>
 		<Select.Content>
-			<Select.Group class="bg-alineados_gray-100">
+			<Select.Group class="bg-alineados-gray-100">
 				<Select.GroupHeading>{label}</Select.GroupHeading>
 				{#each options as option}
 					<Select.Item
-						class="default-text bg-alineados_gray-50"
+						class="default-text bg-alineados-gray-50"
 						value={option.value}
 						label={option.label}
 					>

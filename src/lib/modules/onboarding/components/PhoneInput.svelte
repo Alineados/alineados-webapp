@@ -24,16 +24,16 @@
 	<div class="flex">
 		<Select.Root type="single" {name} bind:value>
 			<Select.Trigger
-				class="w-1/6 border-white bg-[#0F172A] text-alineados_gray-900 focus:outline-none focus:ring-2 focus:ring-alineados_gray-100 data-[placeholder]:text-white"
+				class="w-1/6 border-white bg-[#0F172A] text-alineados-gray-900 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-white"
 			>
 				{triggerContent}
 			</Select.Trigger>
 			<Select.Content>
-				<Select.Group class="bg-alineados_gray-100">
+				<Select.Group class="bg-alineados-gray-100">
 					<Select.GroupHeading>{label}</Select.GroupHeading>
 					{#each options as option}
 						<Select.Item
-							class="default-text bg-alineados_gray-50"
+							class="default-text bg-alineados-gray-50"
 							value={option.value}
 							label={option.label}
 						>
@@ -45,7 +45,7 @@
 		</Select.Root>
 
 		<Input
-			class="rounded-lg border-alineados_gray-100 bg-alineados_gray-50 placeholder:text-alineados_gray-500"
+			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-500"
 			id={name}
 			type="tel"
 			placeholder={inputPlaceholder}

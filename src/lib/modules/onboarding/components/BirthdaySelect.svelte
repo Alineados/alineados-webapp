@@ -61,17 +61,17 @@
 	<div class="flex">
 		<Select.Root type="single" name="day" bind:value={day}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados_gray-100 bg-alineados_gray-50 text-base text-alineados_gray-500 focus:outline-none focus:ring-2 focus:ring-alineados_gray-100 data-[placeholder]:text-alineados_gray-500"
+				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 				showIcon={false}
 			>
 				{day || 'DD'}
 			</Select.Trigger>
 			<Select.Content>
-				<Select.Group class="bg-alineados_gray-100">
+				<Select.Group class="bg-alineados-gray-100">
 					<Select.GroupHeading>Día</Select.GroupHeading>
 					{#each days as day}
 						<Select.Item
-							class="default-text bg-alineados_gray-50"
+							class="default-text bg-alineados-gray-50"
 							value={day.value}
 							label={day.label}
 						>
@@ -83,17 +83,17 @@
 		</Select.Root>
 		<Select.Root type="single" name="month" bind:value={month}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados_gray-100 bg-alineados_gray-50 text-base text-alineados_gray-500 focus:outline-none focus:ring-2 focus:ring-alineados_gray-100 data-[placeholder]:text-alineados_gray-500"
+				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 				showIcon={false}
 			>
 				{month || 'MM'}
 			</Select.Trigger>
 			<Select.Content>
-				<Select.Group class="bg-alineados_gray-100">
+				<Select.Group class="bg-alineados-gray-100">
 					<Select.GroupHeading>Mes</Select.GroupHeading>
 					{#each months as month}
 						<Select.Item
-							class="default-text bg-alineados_gray-50"
+							class="default-text bg-alineados-gray-50"
 							value={month.value}
 							label={month.label}
 						>
@@ -105,17 +105,17 @@
 		</Select.Root>
 		<Select.Root type="single" name="year" bind:value={year}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados_gray-100 bg-alineados_gray-50 text-base text-alineados_gray-500 focus:outline-none focus:ring-2 focus:ring-alineados_gray-100 data-[placeholder]:text-alineados_gray-500"
+				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 				showIcon={false}
 			>
 				{year || 'AAAA'}
 			</Select.Trigger>
 			<Select.Content>
-				<Select.Group class="bg-alineados_gray-100">
+				<Select.Group class="bg-alineados-gray-100">
 					<Select.GroupHeading>Año</Select.GroupHeading>
 					{#each years as year}
 						<Select.Item
-							class="default-text bg-alineados_gray-50"
+							class="default-text bg-alineados-gray-50"
 							value={year.value}
 							label={year.label}
 						>

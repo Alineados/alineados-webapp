@@ -20,13 +20,13 @@
 				<Card.Title class="text-center text-xl font-semibold text-black"
 					>Tu contraseña se ha cambiado</Card.Title
 				>
-				<Card.Description class="text-xs font-medium text-alineados_gray-500"
+				<Card.Description class="text-xs font-medium text-alineados-gray-500"
 					>Regresa al inicio de sesión</Card.Description
 				>
 			</div>
 			<Button
 				href="./login"
-				class="w-4/6 rounded-lg bg-black font-normal  text-white hover:bg-alineados_gray-800"
+				class="w-4/6 rounded-lg bg-black font-normal  text-white hover:bg-alineados-gray-800"
 				>Volver a inicio de sesión</Button
 			>
 		</Card.Content>
@@ -35,7 +35,7 @@
 			<Check styleTw="size-16" />
 			<div class="flex flex-col items-center justify-center gap-1">
 				<Card.Title class="text-2xl font-semibold text-black">Cambia tu contraseña</Card.Title>
-				<Card.Description class="text-xs font-medium text-alineados_gray-500"
+				<Card.Description class="text-xs font-medium text-alineados-gray-500"
 					>Por favor ingrese sus datos</Card.Description
 				>
 			</div>
