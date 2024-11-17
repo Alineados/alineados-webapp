@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Check from '$lib/icons/Checkk.svelte';
+	import Check from '$lib/icons/CircleCheckSolid.svelte';
 	import Cross from '$lib/icons/Cross.svelte';
 
 	export let icon: 'check' | 'cross';
