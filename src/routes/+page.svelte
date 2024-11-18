@@ -38,12 +38,14 @@
 		<HistoryButton />
 		<AccountabilityButton />
 	</div>
+	<!--
 	<div class="mt-4 flex gap-4">
 		<CustomCard />
 		<CustomCard state="stable" />
 		<CustomCard state="warning" />
 		<CustomCard state="danger" />
 	</div>
+	-->
 	<div class="mt-4 flex gap-4">
 		<ProgressBar progress={42} state="stable" />
 		<ProgressBar progress={50} state="stable" />

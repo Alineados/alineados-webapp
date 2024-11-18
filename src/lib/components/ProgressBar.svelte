@@ -12,7 +12,7 @@
 		class:danger={state === 'danger'}
 	></div>
 	<p
-		class="progress-text relative z-10 text-center text-4xl font-bold"
+		class="progress-text relative z-10 text-center text-sm font-semibold"
 		style="background: linear-gradient(to right, white 0%, white {progress -
 			1}%, #0f172a {progress -
 			1}%, #0f172a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
