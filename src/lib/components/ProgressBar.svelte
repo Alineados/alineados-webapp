@@ -5,7 +5,7 @@
 
 <div class="relative w-full rounded-xl bg-alineados-gray-50 py-4">
 	<div
-		class="absolute left-0 top-0 h-full rounded-xl"
+		class="absolute left-0 top-0 h-full rounded-lg"
 		style="width: {progress}%;"
 		class:stable={state === 'stable'}
 		class:warning={state === 'warning'}
@@ -14,8 +14,8 @@
 	<p
 		class="progress-text relative z-10 text-center text-sm font-semibold"
 		style="background: linear-gradient(to right, white 0%, white {progress -
-			1}%, #0f172a {progress -
-			1}%, #0f172a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
+			1}%, #222222 {progress -
+			1}%, #222222 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
 	>
 		{progress}%
 	</p>

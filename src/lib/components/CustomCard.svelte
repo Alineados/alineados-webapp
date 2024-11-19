@@ -23,7 +23,7 @@
 <Card.Root
 	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 ${isNew ? 'opacity-35' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:w-[227px] ${
 		state === 'stable'
-			? 'border-blue-500'
+			? 'border-alineados-blue-900'
 			: state === 'warning'
 				? 'border-yellow-500'
 				: state === 'danger'
