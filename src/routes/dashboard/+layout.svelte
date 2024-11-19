@@ -9,8 +9,8 @@
 	<AppSidebar />
 	<main class="w-full">
 		<Sidebar.Trigger />
-    <div class="px-16 py-4">
-      {@render children?.()}
-    </div>
+		<div class="px-4 py-2 md:px-8 md:py-3 lg:px-16 lg:py-4">
+			{@render children?.()}
+		</div>
 	</main>
 </Sidebar.Provider>
