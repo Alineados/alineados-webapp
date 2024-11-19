@@ -2,6 +2,13 @@
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import NewProblemButton from '$lib/components/NewProblemButton.svelte';
 	import ViewButton from '$lib/components/ViewButton.svelte';
+	import type { PillarItems } from '$lib/interfaces';
+
+	let {
+		handleSelectedPillar
+	}: {
+		handleSelectedPillar: (item: PillarItems) => void;
+	} = $props();
 
 	// Filter items object state
 	let cardFilter = $state<{ all: boolean; active: boolean; inactive: boolean }>({
@@ -27,7 +34,7 @@
 		<p class="text-5xl font-bold text-alineados-blue-900">Situaciones Por Mejorar</p>
 
 		<div class="flex flex-row gap-4 self-start">
-			<NewProblemButton />
+			<NewProblemButton {handleSelectedPillar} />
 			<ViewButton />
 		</div>
 	</div>
@@ -35,7 +42,7 @@
 
 <div class="flex flex-row gap-2 pb-12">
 	<CardFilter
-		type="complex"
+		type="simple"
 		text="Todos"
 		bind:selected={cardFilter.all}
 		triggerFunction={() => {
@@ -43,7 +50,7 @@
 		}}
 	/>
 	<CardFilter
-		type="complex"
+		type="simple"
 		text="Activos"
 		bind:selected={cardFilter.active}
 		triggerFunction={() => {
@@ -51,7 +58,7 @@
 		}}
 	/>
 	<CardFilter
-		type="complex"
+		type="simple"
 		text="No activas"
 		bind:selected={cardFilter.inactive}
 		triggerFunction={() => {

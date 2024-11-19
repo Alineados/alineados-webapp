@@ -1,9 +1,14 @@
 <script lang="ts">
+	import type { PillarItems } from '$lib/interfaces';
 	import PillarHeader from '$lib/modules/dashboard/Problems/PillarHeader.svelte';
 	import ProblemCard from '$lib/modules/dashboard/Problems/ProblemCard.svelte';
+
+	function handleSelectedPillar(item: PillarItems) {
+		console.log('Selected from parent	 -> ', item);
+	}
 </script>
 
-<PillarHeader />
+<PillarHeader {handleSelectedPillar} />
 
 <div class="flex flex-col gap-12 pb-12">
 	<ProblemCard title="Salud" length={3} />
