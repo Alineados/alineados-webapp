@@ -19,12 +19,14 @@
 	}
 </script>
 
-<div class="flex flex-col gap-8 pb-7">
-	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">Mis Problemas /</p>
-	<div class="flex flex-row justify-between border-b border-alineados-gray-200 pb-6">
+<div class="flex flex-col gap-6 pb-7">
+	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">Mis Problemas</p>
+	<div
+		class="flex flex-col gap-5 border-b border-alineados-gray-200 pb-6 lg:flex-row lg:justify-between"
+	>
 		<p class="text-5xl font-bold text-alineados-blue-900">Situaciones Por Mejorar</p>
 
-		<div class="flex flex-row gap-4">
+		<div class="flex self-start flex-row gap-4">
 			<NewProblemButton />
 			<ViewButton />
 		</div>

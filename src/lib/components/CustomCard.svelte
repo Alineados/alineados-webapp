@@ -5,20 +5,23 @@
 	let {
 		state = 'default',
 		headerClass,
+		isNew = false,
 		header,
 		content,
 		footer
 	}: {
 		state: 'default' | 'stable' | 'warning' | 'danger';
 		headerClass: string;
+		isNew: boolean;
 		header: Snippet;
 		content: Snippet;
 		footer: Snippet;
 	} = $props();
 </script>
 
+<!-- md:w-5/12 lg:w-3/12 -->
 <Card.Root
-	class={`h-4/6 w-1/5 transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl ${
+	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 ${isNew ? 'opacity-35' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:w-[227px] ${
 		state === 'stable'
 			? 'border-blue-500'
 			: state === 'warning'
