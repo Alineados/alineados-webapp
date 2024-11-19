@@ -10,9 +10,9 @@
 		content,
 		footer
 	}: {
-		state: 'default' | 'stable' | 'warning' | 'danger';
+		state?: 'default' | 'stable' | 'warning' | 'danger';
 		headerClass: string;
-		isNew: boolean;
+		isNew?: boolean;
 		header: Snippet;
 		content: Snippet;
 		footer: Snippet;
