@@ -90,9 +90,19 @@
 			{/snippet}
 		</CustomCard>
 	</div>
+	<div class="mt-4 flex gap-4">
+		<ProgressBar progress={42} state="stable" />
+		<ProgressBar progress={50} state="stable" />
+		<ProgressBar progress={60} state="warning" />
+		<ProgressBar progress={80} state="danger" />
+	</div>
 	<div class="mt-4 flex gap-2">
 		<DaysLeft targetDate="2024-12-31" color="#9E9E9E" />
-		<DaysLeft targetDate="2024-12-31" color="#9E9E9E" extendedText />
+		<DaysLeft targetDate="2024-12-31" color="#009807" extendedText />
+	</div>
+	<div class="mt-4 flex gap-2">
+		<HistoryButton />
+		<AccountabilityButton />
 	</div>
 	<div class="mt-4 flex gap-2">
 		<CardFilter text="Relaciones" selected={true} type="complex" />
@@ -102,19 +112,9 @@
 	<div class="mt-4">
 		<SelectablePills {items} />
 	</div>
-	<div class="mt-4 flex gap-2">
-		<HistoryButton />
-		<AccountabilityButton />
-	</div>
 
-	<div class="mt-4 flex gap-4">
-		<ProgressBar progress={42} state="stable" />
-		<ProgressBar progress={50} state="stable" />
-		<ProgressBar progress={60} state="warning" />
-		<ProgressBar progress={80} state="danger" />
-	</div>
-	<div class="mt-4 flex flex-col gap-1">
+	<div class="mt-4 flex w-2/3 flex-col gap-2">
 		<Item />
-		<Item />
+		<Item isAccountability />
 	</div>
 </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let width: number = 11;
+	export let width: number = 10;
 	export let height: number = 10;
 	export let color: string = 'white';
 </script>

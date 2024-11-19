@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let width: number = 18;
-	export let height: number = 18;
+	export let width: number = 17;
+	export let height: number = 17;
 	export let fill: string = '#626262';
 	export let stroke: string = 'none';
 </script>
