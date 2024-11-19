@@ -26,7 +26,7 @@
 	>
 		<p class="text-5xl font-bold text-alineados-blue-900">Situaciones Por Mejorar</p>
 
-		<div class="flex self-start flex-row gap-4">
+		<div class="flex flex-row gap-4 self-start">
 			<NewProblemButton />
 			<ViewButton />
 		</div>
@@ -35,6 +35,7 @@
 
 <div class="flex flex-row gap-2 pb-12">
 	<CardFilter
+		type="complex"
 		text="Todos"
 		bind:selected={cardFilter.all}
 		triggerFunction={() => {
@@ -42,6 +43,7 @@
 		}}
 	/>
 	<CardFilter
+		type="complex"
 		text="Activos"
 		bind:selected={cardFilter.active}
 		triggerFunction={() => {
@@ -49,6 +51,7 @@
 		}}
 	/>
 	<CardFilter
+		type="complex"
 		text="No activas"
 		bind:selected={cardFilter.inactive}
 		triggerFunction={() => {
