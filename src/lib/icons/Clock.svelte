@@ -2,9 +2,9 @@
 	export let width: number = 14;
 	export let height: number = 14;
 	export let fill: string = 'none';
-	export let stroke: string = '#9E9E9E';
+	export let stroke: string = 'currentColor';
 	export let strokeWidth: number = 1.3;
-	export let classCss: string = 'text-alineados-gray-400';
+	export let classCss: string = 'text-green-100';
 </script>
 
 <svg

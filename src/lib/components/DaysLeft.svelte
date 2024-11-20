@@ -15,7 +15,7 @@
 </script>
 
 <div class="flex items-center justify-center gap-1">
-	<Clock classCss="text-alineados-gray-400" />
+	<Clock classCss={`text-${color}`}/>
 	<p class={`text-xs font-medium text-${color}`} >
 		{daysLeft}
 		{extendedText ? 'días restantes' : 'días'}

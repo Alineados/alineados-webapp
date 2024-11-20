@@ -6,21 +6,21 @@
 	import HistoricalButton from '$lib/components/HistoricalButton.svelte';
 	import HistoryButton from '$lib/components/HistoryButton.svelte';
 	import Item from '$lib/components/Item.svelte';
+	import MoreButton from '$lib/components/MoreButton.svelte';
 	import NewProblem from '$lib/components/NewProblemButton.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
-	import SelectablePills from '$lib/components/SelectablePills.svelte';
+	import SelectablePill from '$lib/components/SelectablePill.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import ViewButton from '$lib/components/ViewButton.svelte';
 
 	let items = ['Salud Física', 'Salud Mental', 'Relación Propia', 'Relación Familiar'];
 </script>
 
-<div class="p-3">
+<div class="p-3 mb-8">
 	<h1>Alineados :D</h1>
 	<h2>Componentes:</h2>
 
 	<div class="mt-4 flex gap-2">
-		<NewProblem />
 		<ViewButton />
 		<HistoricalButton />
 	</div>
@@ -97,12 +97,13 @@
 		<ProgressBar progress={80} state="danger" />
 	</div>
 	<div class="mt-4 flex gap-2">
-		<DaysLeft targetDate="2024-12-31" color="#9E9E9E" />
-		<DaysLeft targetDate="2024-12-31" color="#009807" extendedText />
+		<DaysLeft targetDate="2024-12-31" color="alineados-gray-400" />
+		<DaysLeft targetDate="2024-11-31" color="green-400" extendedText />
 	</div>
-	<div class="mt-4 flex gap-2">
+	<div class="mt-4 flex gap-4">
 		<HistoryButton />
 		<AccountabilityButton />
+		<MoreButton />
 	</div>
 	<div class="mt-4 flex gap-2">
 		<CardFilter text="Relaciones" selected={true} type="complex" />
@@ -110,10 +111,10 @@
 		<CardFilter text="Espiritualidad" type="complex" />
 	</div>
 	<div class="mt-4">
-		<SelectablePills {items} />
+		<SelectablePill text="Hola"/>
 	</div>
 
-	<div class="mt-4 flex w-2/3 flex-col gap-2">
+	<div class="mt-4 flex w-2/3 flex-col gap-4">
 		<Item />
 		<Item isAccountability />
 	</div>
