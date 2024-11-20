@@ -1,21 +1,16 @@
 <script>
-	let progress = $state(75);
-	let text = $state('Loading...');
-	let strokeDasharray = $state(0);
+	export let size = 100;
+	export let strokeWidth = 10;
+	export let progress = 50;
+	export let text = 'Progress';
 
-	// Circle properties
-	const size = 120;
-	const strokeWidth = 8;
 	const radius = (size - strokeWidth) / 2;
-	const circumference = radius * 2 * Math.PI;
-
-	$effect(() => {
-		strokeDasharray = (progress / 100) * circumference;
-	});
+	const circumference = 2 * Math.PI * radius;
+	const strokeDasharray = (circumference * progress) / 100;
 </script>
 
-<div class="flex flex-col items-center">
-	<svg class="w-30 h-30 -rotate-90 transform" viewBox="0 0 {size} {size}">
+<div class="progress-circle-container">
+	<svg class="progress-circle" viewBox="0 0 {size} {size}" width={size} height={size}>
 		<circle
 			class="text-gray-300"
 			stroke-width={strokeWidth}
@@ -37,6 +32,27 @@
 			cy={size / 2}
 		/>
 	</svg>
-	<span class="absolute text-2xl font-semibold">{progress}%</span>
-	<span class="mt-2 text-sm font-medium text-gray-500">{text}</span>
+	<div class="progress-text">
+		<span class="text-2xl font-semibold">{progress}%</span>
+		<span class="mt-2 block text-sm font-medium text-gray-500">{text}</span>
+	</div>
 </div>
+
+<style>
+	.progress-circle-container {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.progress-circle {
+		transform: rotate(-90deg);
+	}
+
+	.progress-text {
+		position: absolute;
+		text-align: center;
+	}
+</style>
