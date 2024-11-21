@@ -7,6 +7,9 @@
 	import RectangularCard from '$lib/components/RectangularCard.svelte';
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
 	import ProgressCircle from '$lib/components/ProgressCircle.svelte';
+	import ImagesCarousel from '$lib/components/ImagesCarousel.svelte';
+	import Bolt from '$lib/icons/Bolt.svelte';
+	import Item from '$lib/components/Item.svelte';
 
 	let {
 		handleSelectedPillar
@@ -67,21 +70,40 @@
 				<SelectablePill text="nombre #2" />
 			</div>
 		</div>
+
+		<div class="mt-9 flex flex-col">
+			<div class="flex items-center gap-1">
+				<Bolt styleTw="size-6 text-alineados-gray-900" />
+				<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
+			</div>
+			<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+				<Item
+					value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+				/>
+				<Item
+					value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+				/>
+				<Item
+					value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+				/>
+				<Item isDisabled />
+			</div>
+		</div>
 	</div>
 
 	<div class="flex w-5/12 justify-center">
 		<div class="flex w-2/3 flex-col items-center justify-center gap-3">
-			<div class="flex w-full justify-start gap-1">
-				<Image class="size-6" />
-				<p class="text-lg font-medium text-alineados-gray-600">Recuerdos</p>
+			<div class="flex w-full items-center justify-start gap-1">
+				<Image class="size-5" />
+				<p class="text-sm font-medium text-alineados-gray-600">Recuerdos</p>
 			</div>
-			<div>Carrusel</div>
+			<ImagesCarousel />
 			<RectangularCard contentClass="w-full">
 				{#snippet leftContent()}
 					<div class="flex w-full flex-col items-center justify-center gap-1">
 						<p class="text-sm font-medium text-gray-900">Fecha meta</p>
 						<p class="text-xs font-medium text-gray-600">24/11/2024</p>
-						<DaysLeft targetDate="2024-11-24" color="red-400" textSize="sm" extendedText />
+						<DaysLeft targetDate="2024-11-24" color="green-500" textSize="sm" extendedText />
 					</div>
 				{/snippet}
 				{#snippet rightContent()}

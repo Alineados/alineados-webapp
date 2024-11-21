@@ -9,10 +9,12 @@
 
 	let {
 		value,
-		isAccountability = false
+		isAccountability = false,
+		isDisabled = false
 	}: {
 		value?: typeof $bindable;
 		isAccountability?: boolean;
+		isDisabled?: boolean;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -20,18 +22,22 @@
 		textarea.style.height = 'auto';
 		textarea.style.height = `${textarea.scrollHeight}px`;
 	}
+
+	function handleTextareaClick() {
+		isDisabled = false;
+	}
 </script>
 
 <div class="item-container group flex h-auto items-center justify-between">
 	<div class="flex items-center gap-1">
 		<button
-			class="invisible text-alineados-gray-300 hover:text-alineados-blue-600 focus:text-alineados-blue-600 group-hover:visible"
+			class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
 			aria-label="Menu"
 		>
 			<Plus width={14} height={14} color="currentColor" />
 		</button>
 		<button
-			class="text-alineados-gray-300 hover:text-alineados-blue-600 focus:text-alineados-blue-600"
+			class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? 'invisible' : 'visible'}`}
 			aria-label="Menu"
 		>
 			<Order stroke="currentColor" />
@@ -42,21 +48,24 @@
 		class="ml-1 flex w-full items-center gap-4 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
 	>
 		<button
-			class="text-alineados-gray-300 hover:text-alineados-blue-600 focus:text-alineados-blue-600"
+			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
 		>
 			<Copy fill="currentColor" />
 		</button>
 
 		<textarea
-			class="flex-grow resize-none overflow-hidden border-none bg-transparent text-xs font-medium text-gray-700 focus:outline-none"
+			class={`flex-grow resize-none overflow-hidden border-none bg-transparent text-xs font-medium text-gray-600 focus:outline-none ${isDisabled ? '' : 'underline'}`}
 			bind:value
-			placeholder="Untitled item"
+			placeholder="Agrear nuevo item"
 			oninput={autoResize}
+			onclick={handleTextareaClick}
 			rows="1"
 		></textarea>
 	</div>
 
-	<div class="invisible ml-2 flex w-auto items-center gap-2 group-hover:visible">
+	<div
+		class={`invisible ml-2 flex w-auto items-center gap-1 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
+	>
 		<button
 			class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
 			aria-label="Delete"
