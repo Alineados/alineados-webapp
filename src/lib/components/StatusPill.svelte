@@ -18,6 +18,6 @@
 	}
 </script>
 
-<div class={`inline-flex items-center rounded-full px-4 py-2 ${bgColor} ${textColor}`}>
-	<span class="text-xs font-semibold">{text}</span>
+<div class={`inline-flex items-center rounded-full px-4 py-[6px] ${bgColor} ${textColor}`}>
+	<span class="text-xs font-bold">{text}</span>
 </div>

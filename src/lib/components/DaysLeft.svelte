@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Clock from '$lib/icons/Clock.svelte';
 
-	let { targetDate, extendedText = false, color } = $props();
+	let { targetDate, extendedText = false, color, textSize = 'xs' } = $props();
 
 	function calculateDaysLeft(targetDate: string): number {
 		const currentDate = new Date();
@@ -16,7 +16,7 @@
 
 <div class="flex items-center justify-center gap-1">
 	<Clock classCss={`text-${color}`} />
-	<p class={`text-xs font-medium text-${color}`}>
+	<p class={`text-${textSize} font-medium text-${color}`}>
 		{daysLeft}
 		{extendedText ? 'días restantes' : 'días'}
 	</p>

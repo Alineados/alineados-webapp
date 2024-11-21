@@ -7,15 +7,14 @@
 		leftContent,
 		rightContent
 	}: {
-		contentClass: string;
+		contentClass?: string;
 		leftContent: Snippet;
 		rightContent: Snippet;
 	} = $props();
 </script>
 
-<!-- md:w-5/12 lg:w-3/12 -->
 <Card.Root
-	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:w-[227px] `}
+	class={`h-8/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl `}
 >
 	<Card.Content class="flex p-0 {contentClass}">
 		{@render leftContent()}

@@ -25,11 +25,11 @@
 		<Plus width={13} height={13} />
 		<p class="text-xs font-medium">Nuevo</p>
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content class="bg-white ">
+	<DropdownMenu.Content class="bg-alineados-gray-100">
 		<DropdownMenu.Group>
 			{#each listItems as item}
 				<DropdownMenu.Item
-					class="hover:cursor-pointer hover:bg-alineados-gray-100"
+					class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 					onclick={() => {
 						handleSelectedPillar(item);
 					}}

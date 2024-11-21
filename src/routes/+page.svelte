@@ -93,7 +93,7 @@
 		</CustomCard>
 	</div>
 	<div class="mt-4 flex gap-4">
-		<ProgressBar progress={42} state="stable" />
+		<ProgressBar progress={30} state="stable" />
 		<ProgressBar progress={50} state="stable" />
 		<ProgressBar progress={60} state="warning" />
 		<ProgressBar progress={80} state="danger" />
@@ -112,7 +112,7 @@
 		<CardFilter text="Salud" type="complex" />
 		<CardFilter text="Espiritualidad" type="complex" />
 	</div>
-	<div class="mt-4">
+	<div class="mt-4 flex gap-1">
 		<SelectablePill text="nombre#1" selected />
 		<SelectablePill text="nombre#2" />
 	</div>
@@ -120,8 +120,8 @@
 		<Item />
 		<Item isAccountability />
 	</div>
-	<div class="mt-4 flex w-2/3 flex-col gap-4">
-		<RectangularCard contentClass="gap-3">
+	<div class="mt-4 flex w-1/4 gap-4">
+		<RectangularCard contentClass="gap-3 justify-between px-6 py-2">
 			{#snippet leftContent()}
 				<div>Left</div>
 			{/snippet}
@@ -130,7 +130,11 @@
 			{/snippet}
 		</RectangularCard>
 	</div>
-	<div class="mt-4 flex w-2/3 flex-col gap-4">
-		<ProgressCircle />
+	<div class="f mt-4 flex gap-4">
+		<ProgressCircle progress={0} />
+		<ProgressCircle progress={25} />
+		<ProgressCircle progress={50} />
+		<ProgressCircle progress={75} />
+		<ProgressCircle progress={100} />
 	</div>
 </div>

@@ -1,8 +1,8 @@
 <script>
-	export let size = 100;
-	export let strokeWidth = 10;
+	export let size = 65;
+	export let strokeWidth = 6;
 	export let progress = 50;
-	export let text = 'Progress';
+	export let text = 'De progreso';
 
 	const radius = (size - strokeWidth) / 2;
 	const circumference = 2 * Math.PI * radius;
@@ -32,9 +32,9 @@
 			cy={size / 2}
 		/>
 	</svg>
-	<div class="progress-text">
-		<span class="text-2xl font-semibold">{progress}%</span>
-		<span class="mt-2 block text-sm font-medium text-gray-500">{text}</span>
+	<div class="absolute flex flex-col items-center justify-center">
+		<span class="text-[12px] font-medium">{progress}%</span>
+		<span class="block text-[7px] font-medium text-gray-500">{text}</span>
 	</div>
 </div>
 
@@ -49,10 +49,5 @@
 
 	.progress-circle {
 		transform: rotate(-90deg);
-	}
-
-	.progress-text {
-		position: absolute;
-		text-align: center;
 	}
 </style>
