@@ -8,6 +8,8 @@
 	import DecisionMatrix from './DecisionMatrix.svelte';
 	import Trophy from '$lib/icons/Trophy.svelte';
 	import PuzzlePiece from '$lib/icons/PuzzlePiece.svelte';
+	import SelectablePill from '$lib/components/SelectablePill.svelte';
+	import DecisionPill from '$lib/components/DecisionPill.svelte';
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -16,7 +18,7 @@
 			<Bolt styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -28,7 +30,7 @@
 			<User styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -44,7 +46,7 @@
 			<Like styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -60,7 +62,7 @@
 			<CircleCross styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -72,7 +74,7 @@
 			<Trophy styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -88,7 +90,7 @@
 			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-[6px]">
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
@@ -105,5 +107,41 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de decisión</h2>
 		</div>
 		<DecisionMatrix />
+	</div>
+
+	<div class="flex flex-col">
+		<div class="flex items-center gap-2">
+			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Desición Recomendada</h2>
+		</div>
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
+			<Item
+				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+			/>
+		</div>
+	</div>
+
+	<div class="flex flex-col">
+		<div class="flex items-center gap-2">
+			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Final</h2>
+		</div>
+		<div class=" mt-5 flex flex-col gap-2">
+			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
+			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
+			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
+		</div>
+	</div>
+
+	<div class="flex flex-col">
+		<div class="flex items-center gap-2">
+			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
+		</div>
+		<div class="-ml-10 mt-5 flex flex-col gap-2">
+			<Item
+				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+			/>
+		</div>
 	</div>
 </div>

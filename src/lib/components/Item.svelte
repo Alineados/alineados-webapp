@@ -54,7 +54,7 @@
 		</button>
 
 		<textarea
-			class={`flex-grow resize-none overflow-hidden border-none bg-transparent text-xs font-medium text-gray-600 focus:outline-none ${isDisabled ? '' : 'underline'}`}
+			class={`flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-gray-600 focus:outline-none ${isDisabled ? '' : 'underline'}`}
 			bind:value
 			placeholder="Agrear nuevo item"
 			oninput={autoResize}

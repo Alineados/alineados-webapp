@@ -20,5 +20,5 @@
 	} transition-colors duration-300 ease-in-out`}
 	onclick={selectItem}
 >
-	<span class="text-sm font-medium">{text}</span>
+	<span class="text-base font-medium">{text}</span>
 </button>
