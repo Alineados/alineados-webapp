@@ -34,7 +34,7 @@
 		<p class="text-5xl font-bold text-alineados-blue-900">Situaciones Por Mejorar</p>
 
 		<div class="flex flex-row gap-4 self-start">
-			<NewProblemButton {handleSelectedPillar} />
+			<NewProblemButton  />
 			<ViewButton />
 		</div>
 	</div>
