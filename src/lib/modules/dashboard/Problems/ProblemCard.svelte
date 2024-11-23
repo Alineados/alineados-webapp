@@ -4,20 +4,22 @@
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
+	import type { ProblemInfo } from '$lib/interfaces';
 
 	let {
 		title,
-		length
+		problems,
 	}: {
 		title: string;
-		length: number;
+
+		problems: ProblemInfo[];
 	} = $props();
 </script>
 
 <div class="flex flex-col items-start gap-3">
 	<p class="pl-2 text-xl font-bold text-alineados-gray-600 md:pl-1">{title}</p>
 	<div class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start">
-		{#each Array(length) as _, i}
+		{#each problems as problem, i}
 			<CustomCard isNew={false} state="default" headerClass="justify-between">
 				{#snippet header()}
 					<div class="flex w-full flex-row items-center justify-between">

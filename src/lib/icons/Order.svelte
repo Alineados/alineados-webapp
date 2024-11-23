@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let width: number = 15;
 	export let height: number = 15;
-	export let fill: string = 'none';
+	export let fill: string = '#9E9E9E';
 	export let stroke: string = '#9E9E9E';
 	export let strokeWidth: number = 1.5;
 </script>

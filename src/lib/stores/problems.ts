@@ -4,24 +4,24 @@ import { writable } from 'svelte/store';
 // list of info about problems
 export const healthProblems = writable<ProblemInfo[]>();
 export const relationalProblems = writable<ProblemInfo[]>();
-export const vocacionalProblems = writable<ProblemInfo[]>();
+export const vocationalProblems = writable<ProblemInfo[]>();
 export const spiritualProblems = writable<ProblemInfo[]>();
 
 // Function to initialize the store with the problems
 export const initProblems = ({
 	health,
 	relational,
-	vocacional,
+	vocational,
 	spiritual
 }: {
 	health: ProblemInfo[];
 	relational: ProblemInfo[];
-	vocacional: ProblemInfo[];
+	vocational: ProblemInfo[];
 	spiritual: ProblemInfo[];
 }) => {
 	if (health) healthProblems.set(health);
 	if (relational) relationalProblems.set(relational);
-	if (vocacional) vocacionalProblems.set(vocacional);
+	if (vocational) vocationalProblems.set(vocational);
 	if (spiritual) spiritualProblems.set(spiritual);
 };
 
@@ -35,7 +35,7 @@ export const addProblem = (problem: ProblemInfo, pillar: PillarItems) => {
 			relationalProblems.update((problems) => [...problems, problem]);
 			break;
 		case 3:
-			vocacionalProblems.update((problems) => [...problems, problem]);
+			vocationalProblems.update((problems) => [...problems, problem]);
 			break;
 		case 4:
 			spiritualProblems.update((problems) => [...problems, problem]);
@@ -53,7 +53,7 @@ export const removeProblem = (problem: ProblemInfo, pillar: PillarItems) => {
 			relationalProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
 			break;
 		case 3:
-			vocacionalProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
+			vocationalProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
 			break;
 		case 4:
 			spiritualProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
