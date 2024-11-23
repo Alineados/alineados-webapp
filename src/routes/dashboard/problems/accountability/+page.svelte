@@ -1,12 +1,12 @@
 <script lang="ts">
-	import ProblemBody from '$lib/modules/dashboard/Problems/ProblemBody.svelte';
-	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
+	import AccountabilityBody from '$lib/modules/dashboard/Problems/AccountabilityBody.svelte';
+	import AccountabilityHeader from '$lib/modules/dashboard/Problems/AccountabilityHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import ViewProblem from '$lib/modules/dashboard/Problems/ViewProblem.svelte';
 </script>
 
 <div class="sticky top-0 z-10 bg-white">
-	<ProblemHeader />
+	<AccountabilityHeader />
 </div>
 
 <div class="flex w-full items-start pb-10">
@@ -16,7 +16,7 @@
 		</div>
 
 		<div class="pl-10">
-			<ProblemBody />
+			<AccountabilityBody />
 		</div>
 	</div>
 

@@ -22,7 +22,9 @@
 	}
 </script>
 
-<PillarHeader {handleSelectedPillar} />
+<div class="sticky top-0 z-10 w-full bg-white">
+	<PillarHeader {handleSelectedPillar} />
+</div>
 
 <div class="flex flex-col gap-12 pb-12">
 	<ProblemCard title="Salud"  problems={$healthProblems} />
