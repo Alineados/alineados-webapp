@@ -27,27 +27,27 @@ export class ProblemService {
 	// Methods
 
 	public async getGroupedProblems(
-		user_id: string,
+		uid: string,
 		health_id: string,
 		relational_id: string,
 		vocational_id: string,
 		spiritual_id: string
 	): Promise<Response> {
-		const url = `${this._url}/get-grouped?user_id=${user_id}&health_id=${health_id}&relational_id=${relational_id}&vocational_id=${vocational_id}&spiritual_id=${spiritual_id}`;
+		const url = `${this._url}/get-grouped?uid=${uid}&health_id=${health_id}&relational_id=${relational_id}&vocational_id=${vocational_id}&spiritual_id=${spiritual_id}`;
 		const response: Response = await request(url, 'GET', null, this._token);
 
 		return response;
 	}
 
-	public async createProblemInfo(pillar_id: string): Promise<Response> {
-		const url = `${this._url}/create?pillar_id=${pillar_id}`;
-		const response: Response = await request(url, 'POST', null, this._token);
+	public async createProblemInfo(body: any): Promise<Response> {
+		const url = `${this._url}/create`;
+		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
 
-	public async deleteProblemInfo(problem_id: string): Promise<Response> {
-		const url = `${this._url}/delete?problem_id=${problem_id}`;
+	public async deleteProblemInfo(pid: string): Promise<Response> {
+		const url = `${this._url}/delete?pid=${pid}`;
 		const response: Response = await request(url, 'DELETE', null, this._token);
 
 		return response;
