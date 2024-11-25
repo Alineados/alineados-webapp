@@ -1,21 +1,5 @@
-interface PillarsAndCategories {
-	health: Data;
-	relational: Data;
-	vocational: Data;
-	spiritual: Data;
-}
+import type { PillarsAndCategories } from "./Pillar.interface";
 
-interface Data {
-	id: string;
-	name: string;
-	categories: Categories[];
-}
-
-export interface Categories {
-	id: string;
-	name: string;
-	active: boolean;
-}
 
 export const Pillars: PillarsAndCategories = {
 	health: {

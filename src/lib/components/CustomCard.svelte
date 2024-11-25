@@ -21,7 +21,7 @@
 
 <!-- md:w-5/12 lg:w-3/12 -->
 <Card.Root
-	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 ${isNew ? 'opacity-35' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:w-[227px] ${
+	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 p-4 ${isNew ? 'opacity-50' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl md:w-[227px] ${
 		state === 'stable'
 			? 'border-alineados-blue-900'
 			: state === 'warning'
@@ -39,7 +39,7 @@
 		<!-- <slot name="content"></slot> -->
 		{@render content()}
 	</Card.Content>
-	<Card.Footer class="flex justify-end p-0">
+	<Card.Footer class="flex justify-between p-0">
 		<!-- <slot name="footer"></slot> -->
 		{@render footer()}
 	</Card.Footer>

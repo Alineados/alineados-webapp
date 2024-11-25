@@ -1,6 +1,3 @@
-export type { PillarItems } from './Pillar.interface';
+export type { PillarItems, Categories, DataPillar ,PillarsAndCategories } from './Pillar.interface';
 
-export type { ProblemInfo } from './Problem.interface';
-
-export type {Categories} from './data';
-
+export type { ProblemCard } from './Problem.interface';
