@@ -1,53 +1,95 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
-	import type { ProblemInfo } from '$lib/interfaces';
+	import type { ProblemCard } from '$lib/interfaces';
+	import { Pillars } from '$lib/interfaces/data';
+	import { removeProblem } from '$lib/stores';
 
 	let {
 		title,
-		problems,
+		problems
 	}: {
 		title: string;
 
-		problems: ProblemInfo[];
+		problems: ProblemCard[];
 	} = $props();
+
+	let problemSelected: ProblemCard | null = $state(null);
+	let formHtml: HTMLFormElement;
+
+	function deleteCard(problem: ProblemCard, e: any) {
+		e.preventDefault();
+		problemSelected = problem;
+
+		if (problemSelected && formHtml) {
+			formHtml.requestSubmit();
+		}
+	}
 </script>
 
 <div class="flex flex-col items-start gap-3">
 	<p class="pl-2 text-xl font-bold text-alineados-gray-600 md:pl-1">{title}</p>
-	<div class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start">
+	<form
+		bind:this={formHtml}
+		method="POST"
+		action="?/delete"
+		use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+			// set data
+			if (problemSelected?.id) {
+				formData.set('pid', problemSelected.id);
+			} else {
+				console.error('Problem ID is undefined');
+			}
+			return async ({ result, update }) => {
+				// `result` is an `ActionResult` object
+				console.log(result);
+				if (result.status === 200) {
+					if (problemSelected) removeProblem(problemSelected, Pillars);
+				}
+				// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+			};
+		}}
+		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
+	>
 		{#each problems as problem, i}
-			<CustomCard isNew={false} state="default" headerClass="justify-between">
+			<CustomCard isNew={problem.is_new} state="default" headerClass="justify-between">
 				{#snippet header()}
 					<div class="flex w-full flex-row items-center justify-between">
 						<div class="flex flex-row items-center gap-1">
 							<span
 								class="rounded-lg bg-alineados-green-100 px-2 py-1 text-xs font-semibold text-alineados-green-900"
-								>Activo</span
 							>
+								{problem.active ? 'Activo' : 'Inactivo'}
+							</span>
 							<Padlock class="size-4" />
 						</div>
-						<button class="rounded-lg p-2 hover:bg-gray-100" aria-label="Delete">
-							<TrashCan width={18} height={18}  />
+						<button
+							onclick={(e) => deleteCard(problem, e)}
+							class="rounded-lg p-2 hover:bg-gray-100"
+							aria-label="delete-card"
+						>
+							<TrashCan width={18} height={18} />
 						</button>
 					</div>
 				{/snippet}
 				{#snippet content()}
 					<div class="flex flex-col gap-4 pb-3 pt-4">
-						<p class="text-xl font-semibold text-black">Estoy procrastinando mucho</p>
+						<p class="text-xl font-semibold text-black">{problem.problem_name}</p>
 						<div class="flex flex-col gap-1">
-							<p class="text-xs font-semibold text-alineados-gray-200">Progreso de tareas</p>
-							<ProgressBar progress={42} state="stable" />
+							<p class="text-xs font-semibold text-alineados-gray-400">Progreso de tareas</p>
+							<ProgressBar progress={problem.progress} state="stable" />
 						</div>
 					</div>
 				{/snippet}
 				{#snippet footer()}
-					<DaysLeft targetDate="2024-12-31" color="alineados-gray-400" />
+					<p class="text-xs font-semibold text-alineados-gray-400">{problem.category_name}</p>
+					<DaysLeft targetDate={problem.milestone_date} color="alineados-gray-400" />
 				{/snippet}
 			</CustomCard>
 		{/each}
-	</div>
+	</form>
 </div>

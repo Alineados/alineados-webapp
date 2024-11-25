@@ -3,21 +3,23 @@
 	import * as DropdownMenu from '$lib/shared/ui/dropdown-menu/index.js';
 	import { enhance } from '$app/forms';
 	import { Pillars } from '$lib/interfaces/data';
-
-	// let {
-	// 	handleSelectedPillar
-	// }: {
-	// 	handleSelectedPillar: (item: PillarItems) => void;
-	// } = $props();
+	import type { ProblemCard } from '$lib/interfaces';
+	import { addProblem } from '$lib/stores';
 
 	let formHtml: HTMLFormElement;
 
-	let pillar_id = $state('');
-	let category_id = $state('');
+	let dataToSend = $state({
+		pfid: '',
+		cid: '',
+		pillar_name: '',
+		category_name: ''
+	});
+	function submitForm(id1: string, id2: string, name1: string, name2: string) {
+		dataToSend.pfid = id1;
+		dataToSend.cid = id2;
+		dataToSend.pillar_name = name1;
+		dataToSend.category_name = name2;
 
-	function submitForm(id_pillar: string, id_category: string) {
-		pillar_id = id_pillar;
-		category_id = id_category;
 		formHtml.requestSubmit();
 	}
 </script>
@@ -36,15 +38,25 @@
 			action="?/new"
 			bind:this={formHtml}
 			use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-	
+				// set data
+				formData.set('pfid', dataToSend.pfid);
+				formData.set('cid', dataToSend.cid);
+				formData.set('pillar_name', dataToSend.pillar_name);
+				formData.set('category_name', dataToSend.category_name);
+
 				return async ({ result, update }) => {
 					// `result` is an `ActionResult` object
+					console.log(result);
+					if (result.status === 200) {
+						const { data }: { data: ProblemCard } = result.data;
+						// update stores
+						addProblem(data, Pillars );
+
+					}
 					// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 				};
 			}}
 		>
-			<input type="text" class="hidden" name="pillar_id" bind:value={pillar_id} />
-			<input type="text" class="hidden" name="category_id" bind:value={category_id} />
 			<DropdownMenu.Group>
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger class="bg-white hover:bg-alineados-gray-100">
@@ -53,7 +65,8 @@
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
 						{#each Pillars.health.categories as category}
 							<DropdownMenu.Item
-								onclick={() => submitForm(Pillars.health.id, category.id)}
+								onclick={() =>
+									submitForm(Pillars.health.id, category.id, Pillars.health.name, category.name)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
 								<span class="font-normal">{category.name}</span>
@@ -68,7 +81,13 @@
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
 						{#each Pillars.relational.categories as category}
 							<DropdownMenu.Item
-								onclick={() => submitForm(Pillars.relational.id, category.id)}
+								onclick={() =>
+									submitForm(
+										Pillars.relational.id,
+										category.id,
+										Pillars.relational.name,
+										category.name
+									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
 								<span class="font-normal">{category.name}</span>
@@ -83,7 +102,13 @@
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
 						{#each Pillars.vocational.categories as category}
 							<DropdownMenu.Item
-								onclick={() => submitForm(Pillars.vocational.id, category.id)}
+								onclick={() =>
+									submitForm(
+										Pillars.vocational.id,
+										category.id,
+										Pillars.vocational.name,
+										category.name
+									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
 								<span class="font-normal">{category.name}</span>
@@ -98,7 +123,13 @@
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
 						{#each Pillars.spiritual.categories as category}
 							<DropdownMenu.Item
-								onclick={() => submitForm(Pillars.spiritual.id, category.id)}
+								onclick={() =>
+									submitForm(
+										Pillars.spiritual.id,
+										category.id,
+										Pillars.spiritual.name,
+										category.name
+									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
 								<span class="font-normal">{category.name}</span>

@@ -25,7 +25,6 @@ export class ProblemService {
 	}
 
 	// Methods
-
 	public async getGroupedProblems(
 		uid: string,
 		health_id: string,

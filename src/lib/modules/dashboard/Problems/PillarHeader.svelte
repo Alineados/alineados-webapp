@@ -4,11 +4,6 @@
 	import ViewButton from '$lib/components/ViewButton.svelte';
 	import type { PillarItems } from '$lib/interfaces';
 
-	let {
-		handleSelectedPillar
-	}: {
-		handleSelectedPillar: (item: PillarItems) => void;
-	} = $props();
 
 	// Filter items object state
 	let cardFilter = $state<{ all: boolean; active: boolean; inactive: boolean }>({
