@@ -1,11 +1,18 @@
 <script lang="ts">
 	import ArrowNumber from '$lib/components/ArrowNumber.svelte';
 	import ViewCard from '$lib/components/ViewCard.svelte';
+	import ViewFilterSelect from '$lib/components/ViewFilterSelect.svelte';
+	import ViewTable from '$lib/components/ViewTable.svelte';
 	import ArrowDown from '$lib/icons/ArrowDown.svelte';
 	import ArrowUp from '$lib/icons/ArrowUp.svelte';
 	import Hand from '$lib/icons/Hand.svelte';
-	import ProblemCard from '$lib/modules/dashboard/Problems/ProblemCard.svelte';
 	import ViewHeader from '$lib/modules/dashboard/Problems/ViewHeader.svelte';
+
+	const options = [
+		{ value: 'uno', label: 'Uno' },
+		{ value: 'dos', label: 'Dos' },
+		{ value: 'tres', label: 'Tres' }
+	];
 </script>
 
 <div class="sticky top-0 z-10 w-full bg-white">
@@ -76,4 +83,14 @@
 			</div>
 		{/snippet}
 	</ViewCard>
+</div>
+
+<div class="flex gap-12 pb-12">
+	<ViewFilterSelect label="Pilares" name="pillars" {options} />
+	<ViewFilterSelect label="Pilares" name="pillars" {options} />
+	<ViewFilterSelect label="Pilares" name="pillars" {options} />
+</div>
+
+<div class="w-full">
+	<ViewTable />
 </div>
