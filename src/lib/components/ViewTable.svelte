@@ -1,38 +1,110 @@
 <script>
+	import TableItem from './TableItem.svelte';
+
 	// Puedes definir los datos de la tabla aquí si es necesario
 	let tableData = [
-		['Estoy procrastinando mucho', 'Fila 1, Columna 2', 'Fila 1, Columna 3'],
-		['Estoy procrastinando mucho', 'Fila 2, Columna 2', 'Fila 2, Columna 3'],
-		['Estoy procrastinando mucho', 'Fila 3, Columna 2', 'Fila 3, Columna 3']
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		],
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		],
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		],
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		],
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		],
+		[
+			'Estoy procrastinando mucho',
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non.',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			],
+			[
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. ',
+				'Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. '
+			]
+		]
 	];
 </script>
 
-<div class="overflow-x-auto rounded-xl border border-alineados-gray-100">
-	<table class="min-w-full">
-		<thead class="border-b border-alineados-gray-100 bg-alineados-gray-50">
-			<tr>
-				<th class="px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-					>Nombre identificativo</th
-				>
-				<th class="px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-					>Objetivos</th
-				>
-				<th class="px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-					>Plan de acción</th
-				>
-			</tr>
-		</thead>
-		<tbody>
-			{#each tableData as row, i}
-				<tr class={i % 2 === 0 ? 'odd-row' : 'even-row'}>
-					{#each row as cell}
-						<td class="whitespace-nowrap px-6 py-4 text-base font-medium text-black">{cell}</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
+{#each tableData as row, i}
+	<div class:bg-white={i % 2 === 0} class:bg-gray-50={i % 2 !== 0} class="grid grid-cols-3">
+		<div class="whitespace-nowrap px-6 py-8 text-left align-top text-base font-medium text-black">
+			{row[0]}
+		</div>
+		<div>
+			<div class="flex flex-col gap-y-4 px-6 py-8">
+				{#each row[1] as item}
+					<TableItem value={item} />
+				{/each}
+			</div>
+		</div>
+		<div>
+			<div class="flex flex-col gap-y-4 px-6 py-8">
+				{#each row[2] as item}
+					<TableItem value={item} />
+				{/each}
+			</div>
+		</div>
+	</div>
+{/each}
 
 <style>
 	.odd-row {

@@ -45,12 +45,12 @@
 	</div>
 
 	<div
-		class="ml-1 flex w-full items-center gap-4 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
+		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
 	>
 		<button
 			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
 		>
-			<Copy fill="currentColor" />
+			<Copy styleTw="size-5" />
 		</button>
 
 		<textarea
