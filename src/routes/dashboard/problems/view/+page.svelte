@@ -114,29 +114,23 @@
 		<ViewFilterSelect label="Pilares" name="pillars" {options} />
 	</div>
 
-	<div bind:this={tableHeaderRef} class="sticky z-10 bg-alineados-gray-50">
-		<div class=" top-0 grid grid-cols-3 rounded-xl border border-alineados-gray-100">
-			<div
-				class="w-1/5 px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-			>
+	<div bind:this={tableHeaderRef} class="sticky z-10 bg-white">
+		<div
+			class="top-0 grid grid-cols-3 rounded-t-xl border border-alineados-gray-100 bg-alineados-gray-50"
+		>
+			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">
 				Nombre identificativo
-			</div>
-			<div
-				class="w-2/5 px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-			>
-				Objetivos
-			</div>
-			<div
-				class="w-2/5 px-6 py-3 text-left text-base font-medium tracking-wider text-alineados-gray-700"
-			>
+			</p>
+			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">Objetivos</p>
+			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">
 				Plan de acción
-			</div>
+			</p>
 		</div>
 	</div>
 
 	<div
 		bind:this={tableContainerRef}
-		class="w-full overflow-hidden overscroll-contain rounded-xl border border-alineados-gray-100 bg-white pb-12"
+		class="w-full overflow-hidden overscroll-contain rounded-b-xl border border-alineados-gray-100 bg-white pb-12"
 	>
 		<ViewTable />
 	</div>
