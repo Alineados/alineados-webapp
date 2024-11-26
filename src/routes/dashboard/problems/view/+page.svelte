@@ -8,6 +8,7 @@
 	import ArrowUp from '$lib/icons/ArrowUp.svelte';
 	import Hand from '$lib/icons/Hand.svelte';
 	import ViewHeader from '$lib/modules/dashboard/Problems/ViewHeader.svelte';
+	import ViewHeaderTable from '$lib/components/ViewHeaderTable.svelte';
 
 	const options = [
 		{ value: 'uno', label: 'Uno' },
@@ -18,8 +19,8 @@
 	let headerRef: HTMLElement;
 	let cardContainerRef: HTMLElement;
 	let filterContainerRef: HTMLElement;
-	let tableContainerRef: HTMLElement;
 	let tableHeaderRef: HTMLElement;
+	let tableContainerRef: HTMLElement;
 
 	onMount(() => {
 		const headerHeight = headerRef.offsetHeight;
@@ -27,14 +28,10 @@
 		const filterContainerHeight = filterContainerRef.offsetHeight;
 		const tableHeaderHeight = tableHeaderRef.offsetHeight;
 
-		console.log(headerHeight + cardContainerHeight + filterContainerHeight);
-
 		cardContainerRef.style.top = `${headerHeight}px`;
 		filterContainerRef.style.top = `${headerHeight + cardContainerHeight}px`;
 		tableHeaderRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight}px`;
 		tableContainerRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight + tableHeaderHeight}px`;
-
-		console.log(tableContainerRef.style.top);
 	});
 </script>
 
@@ -42,6 +39,7 @@
 	<div bind:this={headerRef} class="sticky top-0 z-10 w-full bg-white">
 		<ViewHeader />
 	</div>
+
 	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
 		<ViewCard contentClass="w-full">
 			{#snippet content()}
@@ -115,22 +113,12 @@
 	</div>
 
 	<div bind:this={tableHeaderRef} class="sticky z-10 bg-white">
-		<div
-			class="top-0 grid grid-cols-3 rounded-t-xl border border-alineados-gray-100 bg-alineados-gray-50"
-		>
-			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">
-				Nombre identificativo
-			</p>
-			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">Objetivos</p>
-			<p class="px-6 py-3 text-left text-base font-medium text-alineados-gray-700">
-				Plan de acción
-			</p>
-		</div>
+		<ViewHeaderTable />
 	</div>
 
 	<div
 		bind:this={tableContainerRef}
-		class="w-full overflow-hidden overscroll-contain rounded-b-xl border border-alineados-gray-100 bg-white pb-12"
+		class="w-full overflow-hidden overscroll-contain rounded-b-xl border border-alineados-gray-100 bg-white"
 	>
 		<ViewTable />
 	</div>

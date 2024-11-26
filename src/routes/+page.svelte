@@ -3,17 +3,14 @@
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
-	import HistoricalButton from '$lib/components/HistoricalButton.svelte';
-	import HistoryButton from '$lib/components/HistoryButton.svelte';
+	import ViewButton from '$lib/components/ViewButton.svelte';
 	import Item from '$lib/components/Item.svelte';
 	import MoreButton from '$lib/components/MoreButton.svelte';
-	import NewProblem from '$lib/components/NewProblemButton.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
 	import ProgressCircle from '$lib/components/ProgressCircle.svelte';
 	import RectangularCard from '$lib/components/RectangularCard.svelte';
 	import SelectablePill from '$lib/components/SelectablePill.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
-	import ViewButton from '$lib/components/ViewButton.svelte';
 
 	let items = ['Salud Física', 'Salud Mental', 'Relación Propia', 'Relación Familiar'];
 </script>
@@ -24,7 +21,6 @@
 
 	<div class="mt-4 flex gap-2">
 		<ViewButton />
-		<HistoricalButton />
 	</div>
 	<div class="mt-4 flex gap-2">
 		<StatusPill status="active" />
@@ -103,7 +99,7 @@
 		<DaysLeft targetDate="2024-11-31" color="red-400" extendedText />
 	</div>
 	<div class="mt-4 flex gap-4">
-		<HistoryButton />
+		<ViewButton />
 		<AccountabilityButton />
 		<MoreButton />
 	</div>

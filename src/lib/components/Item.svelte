@@ -54,12 +54,13 @@
 		</button>
 
 		<textarea
-			class={`flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-gray-600 focus:outline-none ${isDisabled ? '' : 'underline'}`}
+			class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-gray-600 focus:underline focus:outline-none group-hover:underline"
 			bind:value
-			placeholder="Agrear nuevo item"
+			placeholder="Agregar nuevo item"
 			oninput={autoResize}
 			onclick={handleTextareaClick}
 			rows="1"
+			spellcheck="false"
 		></textarea>
 	</div>
 

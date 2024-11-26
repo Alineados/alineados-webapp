@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AccountabilityButton from '$lib/components/AccountabilityButton.svelte';
-	import HistoryButton from '$lib/components/HistoryButton.svelte';
+	import ViewButton from '$lib/components/ViewButton.svelte';
 	import MoreButton from '$lib/components/MoreButton.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="flex flex-row gap-4 self-start">
-			<HistoryButton />
+			<ViewButton />
 			<AccountabilityButton />
 			<MoreButton />
 		</div>

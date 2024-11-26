@@ -21,7 +21,7 @@
 	<PillarHeader />
 </div>
 
-<div class="flex flex-col gap-12 pb-12">
+<div class="flex flex-col gap-12">
 	<ProblemCard title="Salud" problems={$healthProblems} />
 	<ProblemCard title="Relación" problems={$relationalProblems} />
 	<ProblemCard title="Vocación" problems={$vocationalProblems} />

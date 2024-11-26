@@ -3,9 +3,9 @@
 </script>
 
 <button
-	class="group flex items-center gap-[6px] rounded-lg bg-[#0F172A] px-5 py-[10px] text-white transition-all duration-300 ease-in-out hover:-translate-y-[2px] hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#0F172A]"
+	class="group flex items-center gap-[6px] rounded-lg bg-[#0F172A] px-5 py-4 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
 	aria-label="Ver"
 >
-	<Eye width={13} height={13} />
-	<p class="text-xs font-medium">Ver</p>
+	<Eye styleTw="size-4" />
+	<p class="text-sm font-medium">Ver</p>
 </button>

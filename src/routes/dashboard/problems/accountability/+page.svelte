@@ -1,26 +1,41 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import AccountabilityBody from '$lib/modules/dashboard/Problems/AccountabilityBody.svelte';
 	import AccountabilityHeader from '$lib/modules/dashboard/Problems/AccountabilityHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
-	import ViewProblem from '$lib/modules/dashboard/Problems/ViewProblem.svelte';
+	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
+
+	let headerRef: HTMLElement;
+	let problemsFilterRef: HTMLElement;
+	let accountabilityBodyRef: HTMLElement;
+	let asideProblemRef: HTMLElement;
+
+	onMount(() => {
+		const headerHeight = headerRef.offsetHeight;
+		const problemsFilterHeight = problemsFilterRef.offsetHeight;
+
+		problemsFilterRef.style.top = `${headerHeight}px`;
+		asideProblemRef.style.top = `${headerHeight}px`;
+		accountabilityBodyRef.style.top = `${headerHeight + problemsFilterHeight}px`;
+	});
 </script>
 
-<div class="sticky top-0 z-10 bg-white">
+<div bind:this={headerRef} class="sticky top-0 z-10 bg-white">
 	<AccountabilityHeader />
 </div>
 
 <div class="flex w-full items-start pb-10">
-	<div class=" flex w-7/12 flex-col">
-		<div class="sticky top-32 z-10 bg-white">
+	<div class="flex w-7/12 flex-col">
+		<div bind:this={problemsFilterRef} class="sticky top-32 z-10 bg-white">
 			<ProblemsFilter />
 		</div>
 
-		<div class="pl-10">
+		<div bind:this={accountabilityBodyRef} class="pl-10">
 			<AccountabilityBody />
 		</div>
 	</div>
 
-	<div class="sticky top-32 z-10 flex w-5/12 justify-center bg-white">
-		<ViewProblem />
+	<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center bg-white">
+		<AsideProblem />
 	</div>
 </div>

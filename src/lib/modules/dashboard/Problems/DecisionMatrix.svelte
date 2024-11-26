@@ -1,5 +1,4 @@
 <script>
-	import Star from '$lib/icons/Star.svelte';
 	import StarSolid from '$lib/icons/StarSolid.svelte';
 </script>
 

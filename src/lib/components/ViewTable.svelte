@@ -85,7 +85,12 @@
 </script>
 
 {#each tableData as row, i}
-	<div class:bg-white={i % 2 === 0} class:bg-gray-50={i % 2 !== 0} class="grid grid-cols-3">
+	<div
+		class:bg-white={i % 2 === 0}
+		class:bg-alineados-gray-50={i % 2 !== 0}
+		class="top-0 grid"
+		style="grid-template-columns: 2fr 3fr 3fr;"
+	>
 		<div class="whitespace-nowrap px-6 py-8 text-left align-top text-base font-medium text-black">
 			{row[0]}
 		</div>
@@ -105,13 +110,3 @@
 		</div>
 	</div>
 {/each}
-
-<style>
-	.odd-row {
-		background-color: #ffffff; /* Color para las filas impares */
-	}
-
-	.even-row {
-		background-color: #f7f7f7; /* Color para las filas pares */
-	}
-</style>

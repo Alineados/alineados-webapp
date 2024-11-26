@@ -26,10 +26,10 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="group flex  items-center gap-[6px] rounded-lg bg-alineados-blue-900 px-4 py-[10px] text-white transition-all duration-300 ease-in-out hover:-translate-y-[2px] hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30 focus:outline-none focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-2 focus:ring-offset-[#0F172A]"
-		aria-label="Nuevo"
+		class="group flex items-center gap-[6px] rounded-lg bg-[#0F172A] px-5 py-3 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
+		aria-label="Nuevo Problema"
 	>
-		<Plus width={13} height={13} />
+		<Plus styleTw="size-4" />
 		<p class="text-xs font-medium">Nuevo</p>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="bg-alineados-gray-100">
@@ -50,8 +50,7 @@
 					if (result.status === 200) {
 						const { data }: { data: ProblemCard } = result.data;
 						// update stores
-						addProblem(data, Pillars );
-
+						addProblem(data, Pillars);
 					}
 					// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 				};
