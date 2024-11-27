@@ -16,7 +16,7 @@ const config: Config = {
 		},
 		extend: {
 			colors: {
-				"alineados-blue": {
+				'alineados-blue': {
 					50: '#E7E8EA',
 					100: '#CFD1D4',
 					200: '#B7B9BF',
@@ -28,7 +28,7 @@ const config: Config = {
 					800: '#272E3F',
 					900: '#0F172A'
 				},
-				"alineados-orange": {
+				'alineados-orange': {
 					50: '#FCF1EB',
 					100: '#FAE4D7',
 					200: '#F8D6C2',
@@ -40,7 +40,7 @@ const config: Config = {
 					800: '#E88449',
 					900: '#E67635'
 				},
-				"alineados-green": {
+				'alineados-green': {
 					50: '#E7FAE8',
 					100: '#CFF4D1',
 					200: '#B7EFB9',
@@ -52,7 +52,7 @@ const config: Config = {
 					800: '#27CE2E',
 					900: '#0FC917'
 				},
-				"alineados-gray": {
+				'alineados-gray': {
 					50: '#F7F7F7',
 					100: '#E1E1E1',
 					200: '#CFCFCF',

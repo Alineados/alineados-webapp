@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-   --sidebar-background: 0 0% 98%;
-   --sidebar-foreground: 240 5.3% 26.1%;
+   --sidebar-background: 222, 50%, 11%;
+   --sidebar-foreground: 224, 6%, 65%;
    --sidebar-primary: 240 5.9% 10%;
    --sidebar-primary-foreground: 0 0% 98%;
-   --sidebar-accent: 240 4.8% 95.9%;
-   --sidebar-accent-foreground: 240 5.9% 10%;
-   --sidebar-border: 220 13% 91%;
-   --sidebar-ring: 217.2 91.2% 59.8%;
+   --sidebar-accent: 223, 24%, 20%;
+   --sidebar-accent-foreground: 220, 7%, 91%;
+   --sidebar-border: 224, 6%, 65%;
+   --sidebar-ring: 0, 100%, 50%;
   }
   
   .dark {
