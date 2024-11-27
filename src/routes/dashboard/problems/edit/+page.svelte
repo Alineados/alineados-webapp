@@ -4,6 +4,13 @@
 	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
+	import type { PageData } from '../$types';
+	import { initProblemInfo } from '$lib/stores';
+
+	// get data from server.ts
+	let { data }: { data: any } = $props();
+	// // init stores
+	initProblemInfo({ ...data.problemInfo });
 
 	let headerRef: HTMLElement;
 	let problemsFilterRef: HTMLElement;

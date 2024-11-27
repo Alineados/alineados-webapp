@@ -8,8 +8,12 @@
 	import DecisionMatrix from './DecisionMatrix.svelte';
 	import Trophy from '$lib/icons/Trophy.svelte';
 	import PuzzlePiece from '$lib/icons/PuzzlePiece.svelte';
-	import SelectablePill from '$lib/components/SelectablePill.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
+
+	// get stores
+	import { problemInfo, pid } from '$lib/stores';
+
+	$inspect($problemInfo);
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -19,9 +23,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
+			<Item isDisabled bind:value={$problemInfo.decision_taken!.description!} />
 		</div>
 	</div>
 
@@ -31,13 +33,9 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item isDisabled />
+			{#each $problemInfo.involved as involded}
+				<Item useOrder usePlus isDisabled bind:value={involded.description} />
+			{/each}
 		</div>
 	</div>
 
@@ -47,13 +45,9 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item isDisabled />
+			{#each $problemInfo.contexts as context}
+				<Item useOrder usePlus isDisabled bind:value={context.description} />
+			{/each}
 		</div>
 	</div>
 
@@ -63,9 +57,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
+			<Item isDisabled  bind:value={$problemInfo.problem!.description!} />
 		</div>
 	</div>
 
@@ -75,13 +67,9 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item isDisabled />
+			{#each $problemInfo.objectives as objective}
+				<Item useOrder usePlus isDisabled bind:value={objective.description} />
+			{/each}
 		</div>
 	</div>
 
@@ -91,13 +79,9 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
-			<Item isDisabled />
+			{#each $problemInfo.alternatives as alternative}
+				<Item useOrder usePlus isDisabled bind:value={alternative.description} />
+			{/each}
 		</div>
 	</div>
 
@@ -116,6 +100,7 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
+				isDisabled
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
 		</div>
@@ -139,9 +124,9 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
-			/>
+			{#each $problemInfo.action_plan as action}
+				<Item useOrder usePlus isDisabled bind:value={action.description} />
+			{/each}
 		</div>
 	</div>
 </div>

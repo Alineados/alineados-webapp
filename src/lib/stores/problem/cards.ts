@@ -1,5 +1,5 @@
-import type { PillarItems, ProblemCard } from '$lib/interfaces';
-import type { DataPillar, PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
+import type { ProblemCard } from '$lib/interfaces';
+import type { PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
 import { writable } from 'svelte/store';
 
 // list of info about problems
