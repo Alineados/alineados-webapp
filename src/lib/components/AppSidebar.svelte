@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { useSidebar } from '$lib/shared/ui/sidebar/index.js';
 	import House from 'lucide-svelte/icons/house';
 	import User from 'lucide-svelte/icons/user';
 	import Users from 'lucide-svelte/icons/users';
@@ -13,17 +12,40 @@
 	import * as Avatar from '$lib/shared/ui/avatar/index.js';
 	import AlineadosCheck from '$lib/icons/AlineadosCheck.svelte';
 
+	import { useSidebar } from '$lib/shared/ui/sidebar/index.js';
+	import type { ComponentProps } from 'svelte';
+
 	const sidebar = useSidebar();
+
+	let {
+		ref = $bindable(null),
+		collapsible = 'icon',
+		...restProps
+	}: ComponentProps<typeof Sidebar.Root> = $props();
+
+	let user = {
+		name: 'José Penagos',
+		email: 'jose_example@gmail.com',
+		avatar:
+			'https://img2.wallspic.com/previews/3/0/5/7/5/157503/157503-rick_and_morty-rick_sanchez-morty_smith-jerry_smith-natacion_para_adultos-x750.jpg'
+	};
 </script>
 
-<Sidebar.Root collapsible="icon">
+<Sidebar.Root bind:ref {collapsible} {...restProps}>
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton class="py-5">
+				<Sidebar.MenuButton
+					size="lg"
+					class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+				>
 					{#snippet child({ props })}
 						<a href={'/dashboard'} {...props}>
-							<AlineadosCheck />
+							<div
+								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+							>
+								<AlineadosCheck />
+							</div>
 							<div class="flex flex-col justify-center space-y-1">
 								<span class="text-sm font-medium leading-none text-alineados-blue-50"
 									>Alineados</span
@@ -174,37 +196,57 @@
 							</Sidebar.MenuButton>
 						{/snippet}
 					</DropdownMenu.Trigger>
+
 					<DropdownMenu.Content
 						side={sidebar.isMobile ? 'bottom' : 'right'}
-						class="w-[--bits-dropdown-menu-anchor-width] bg-alineados-gray-100"
+						class="w-[--bits-dropdown-menu-anchor-width] min-w-56 rounded-lg bg-alineados-gray-100"
 						align="end"
 						sideOffset={4}
 					>
-						<DropdownMenu.Group>
+						<DropdownMenu.Label class="bg-white p-0 font-normal">
+							<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+								<Avatar.Root class="h-8 w-8 rounded-lg">
+									<Avatar.Image src={user.avatar} alt={user.name} />
+									<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+								</Avatar.Root>
+								<div class="grid flex-1 text-left text-sm leading-tight text-black">
+									<span class="truncate font-semibold">{user.name}</span>
+									<span class="truncate text-xs">{user.email}</span>
+								</div>
+							</div>
+						</DropdownMenu.Label>
+
+						<DropdownMenu.Separator class="h-0" />
+
+						<DropdownMenu.Group class="bg-alineados-gray-200">
 							<DropdownMenu.Item class="bg-white">
 								<div class="flex items-center gap-1 text-black">
 									<CircleUserRound />
-									<span>Cuenta</span>
+									<span class="truncate text-sm">Cuenta</span>
 								</div>
 							</DropdownMenu.Item>
 							<DropdownMenu.Item class="bg-white">
 								<div class="flex items-center gap-1 text-black">
 									<Settings />
-									<span>Configuración</span>
+									<span class="truncate text-sm">Configuración</span>
 								</div>
 							</DropdownMenu.Item>
 						</DropdownMenu.Group>
 
-						<DropdownMenu.Separator />
-						<DropdownMenu.Item class="bg-white">
-							<div class="flex items-center gap-1 text-black">
-								<LogOut />
-								<span>Cerrar Sesión</span>
-							</div>
-						</DropdownMenu.Item>
+						<DropdownMenu.Separator class="h-0" />
+
+						<DropdownMenu.Group class="bg-alineados-gray-200">
+							<DropdownMenu.Item class="bg-white">
+								<div class="flex items-center gap-1 text-black">
+									<LogOut />
+									<span class="truncate text-sm">Cerrar Sesión</span>
+								</div>
+							</DropdownMenu.Item>
+						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
 			</Sidebar.MenuItem>
 		</Sidebar.Menu>
 	</Sidebar.Footer>
+	<Sidebar.Rail />
 </Sidebar.Root>
