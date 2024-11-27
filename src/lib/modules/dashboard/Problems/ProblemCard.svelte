@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
@@ -29,6 +30,13 @@
 			formHtml.requestSubmit();
 		}
 	}
+
+	function handleClickCard(pid: string) {
+		console.log('Card clicked', pid);
+
+		// navigate to problem details
+		goto(`./problems/edit?pid=${pid}`);
+	}
 </script>
 
 <div class="flex flex-col items-start gap-3">
@@ -55,8 +63,18 @@
 		}}
 		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
 	>
+		{#if problems.length === 0}
+			<p class=" pl-2 text-alineados-gray-400">
+				No hay problemas registrados, para agregar uno nuevo haz clic en el botón de "+ Nuevo".
+			</p>
+		{/if}
 		{#each problems as problem, i}
-			<CustomCard isNew={problem.is_new} state="default" headerClass="justify-between">
+			<CustomCard
+				onClickCard={() => handleClickCard(problem.id)}
+				isNew={problem.is_new}
+				state="default"
+				headerClass="justify-between"
+			>
 				{#snippet header()}
 					<div class="flex w-full flex-row items-center justify-between">
 						<div class="flex flex-row items-center gap-1">

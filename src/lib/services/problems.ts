@@ -38,6 +38,13 @@ export class ProblemService {
 		return response;
 	}
 
+	public async getProblemInfo(pid: string): Promise<Response> {
+		const url = `${this._url}/get-info?pid=${pid}`;
+		const response: Response = await request(url, 'GET', null, this._token);
+
+		return response;
+	}
+
 	public async createProblemInfo(body: any): Promise<Response> {
 		const url = `${this._url}/create`;
 		const response: Response = await request(url, 'POST', body, this._token);

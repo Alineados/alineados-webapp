@@ -8,13 +8,17 @@
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 
 	let {
-		value,
+		value = $bindable(),
 		isAccountability = false,
-		isDisabled = false
+		isDisabled = false,
+		usePlus = false,
+		useOrder = false,
 	}: {
-		value?: typeof $bindable;
+		value: string;
 		isAccountability?: boolean;
 		isDisabled?: boolean;
+		usePlus?: boolean;
+		useOrder?: boolean;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -28,13 +32,14 @@
 	}
 </script>
 
-<div class="item-container group flex h-auto items-center justify-between">
+<div class="item-container group flex h-auto items-center justify-between {(!usePlus && !useOrder) ? 'pl-10' : ''}">
+	{#if usePlus && useOrder}		
 	<div class="flex items-center gap-1">
 		<button
 			class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
 			aria-label="Menu"
 		>
-			<Plus width={14} height={14} color="currentColor" />
+			<Plus styleTw="size-5" />
 		</button>
 		<button
 			class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? 'invisible' : 'visible'}`}
@@ -43,6 +48,7 @@
 			<Order stroke="currentColor" />
 		</button>
 	</div>
+	{/if}
 
 	<div
 		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
