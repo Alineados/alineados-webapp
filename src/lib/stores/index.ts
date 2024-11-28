@@ -4,10 +4,14 @@ export {
 	initProblems,
 	addProblem,
 	removeProblem,
+	initProblemCard,
 	healthProblems,
 	relationalProblems,
 	spiritualProblems,
-	vocationalProblems
+	vocationalProblems,
+	autosavingProblemCard,
+	problemCard,
+	problemCardJSON
 } from './problem/cards';
 
 export {

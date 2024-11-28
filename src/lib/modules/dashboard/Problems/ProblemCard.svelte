@@ -31,11 +31,27 @@
 		}
 	}
 
-	function handleClickCard(pid: string) {
-		console.log('Card clicked', pid);
+	function handleClickCard(pid: string, pillar: string) {
+		console.log(pid, pillar);
+		// change pillar name
+		let name: string = '';
+		switch (pillar) {
+			case 'Salud':
+				name = 'health';
+				break;
+			case 'Relaciones':
+				name = 'relational';
+				break;
+			case 'Vocaciones':
+				name = 'vocational';
+				break;
+			case 'Espiritual':
+				name = 'spiritual';
+				break;
+		}
 
 		// navigate to problem details
-		goto(`./problems/edit?pid=${pid}`);
+		goto(`./problems/edit?pid=${pid}&pillar_name=${name}`);
 	}
 </script>
 
@@ -70,7 +86,7 @@
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
-				onClickCard={() => handleClickCard(problem.id)}
+				onClickCard={() => handleClickCard(problem.id, problem.pillar_name)}
 				isNew={problem.is_new}
 				state="default"
 				headerClass="justify-between"
