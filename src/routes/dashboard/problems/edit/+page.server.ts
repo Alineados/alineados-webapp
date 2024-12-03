@@ -6,11 +6,15 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	const pid = url.searchParams.get('pid');
 	const pillar_name = url.searchParams.get('pillar_name');
 
+	
 	if (!pid) return console.error('No pid provided');
 
 	let problemService: ProblemService = ProblemService.getInstance('');
 	const result = await problemService.getProblemInfo(pid);
 
+	console.log('get inside the server load', pid, pillar_name);
+
+	
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,

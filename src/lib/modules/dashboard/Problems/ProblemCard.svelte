@@ -24,14 +24,17 @@
 
 	function deleteCard(problem: ProblemCard, e: any) {
 		e.preventDefault();
+		e.stopPropagation();
 		problemSelected = problem;
 
 		if (problemSelected && formHtml) {
 			formHtml.requestSubmit();
 		}
+		return;
 	}
 
-	function handleClickCard(pid: string, pillar: string) {
+	function handleClickCard(e: any, pid: string, pillar: string) {
+		e.preventDefault();
 		console.log(pid, pillar);
 		// change pillar name
 		let name: string = '';
@@ -39,10 +42,10 @@
 			case 'Salud':
 				name = 'health';
 				break;
-			case 'Relaciones':
+			case 'Relación':
 				name = 'relational';
 				break;
-			case 'Vocaciones':
+			case 'Vocación':
 				name = 'vocational';
 				break;
 			case 'Espiritual':
@@ -86,7 +89,7 @@
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
-				onClickCard={() => handleClickCard(problem.id, problem.pillar_name)}
+				onClickCard={(e) => handleClickCard(e, problem.id, title)}
 				isNew={problem.is_new}
 				state="default"
 				headerClass="justify-between"

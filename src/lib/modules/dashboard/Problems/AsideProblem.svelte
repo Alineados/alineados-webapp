@@ -6,6 +6,17 @@
 
 	import Image from '$lib/icons/Image.svelte';
 	import Upload from '$lib/icons/Upload.svelte';
+
+	import { problemCard } from '$lib/stores';
+
+	// Function to format this date 2025-02-25T02:42:57.957Z into 25-02-2025
+	const formatDate = (date: Date) => {
+		const d = new Date(date);
+		const year = d.getFullYear();
+		const month = d.getMonth() + 1;
+		const day = d.getDate();
+		return `${day}/${month}/${year}`;
+	};
 </script>
 
 <div class="flex w-2/3 flex-col items-center justify-center gap-3">
@@ -23,13 +34,20 @@
 		{#snippet leftContent()}
 			<div class="flex w-full flex-col items-center justify-center gap-1">
 				<p class="text-sm font-medium text-gray-900">Fecha meta</p>
-				<p class="text-xs font-medium text-gray-600">24/11/2024</p>
-				<DaysLeft targetDate="2024-11-24" color="green-500" textSize="sm" extendedText />
+				<p class="text-xs font-medium text-gray-600">
+					{formatDate($problemCard.milestone_date)}
+				</p>
+				<DaysLeft
+					targetDate={$problemCard.milestone_date}
+					color="green-500"
+					textSize="sm"
+					extendedText
+				/>
 			</div>
 		{/snippet}
 		{#snippet rightContent()}
 			<div class="flex w-full flex-col items-center justify-center">
-				<ProgressCircle progress={42} />
+				<ProgressCircle progress={$problemCard.progress} />
 			</div>
 		{/snippet}
 	</RectangularCard>
