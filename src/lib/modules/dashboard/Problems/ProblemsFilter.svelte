@@ -10,7 +10,7 @@
 	} from '$lib/stores';
 	import { onMount } from 'svelte';
 
-	let { pillar_name, pid }: { pillar_name: keyof typeof cardFilter, pid: string } = $props();
+	let { pillar_name, pid }: { pillar_name: keyof typeof cardFilter; pid: string } = $props();
 
 	// Filter items object state
 	let cardFilter = $state<{
@@ -78,22 +78,42 @@
 	<div class="flex flex-row gap-2 pb-4">
 		{#if cardFilter.health}
 			{#each $healthProblems as health}
-				<SelectablePill selected={health.id === pid} text={health.problem_name} />
+				<SelectablePill
+					pid={health.id}
+					name="health"
+					selected={health.id === pid}
+					bind:text={health.problem_name}
+				/>
 			{/each}
 		{/if}
 		{#if cardFilter.relational}
 			{#each $relationalProblems as relational}
-				<SelectablePill selected={relational.id === pid} text={relational.problem_name} />
+				<SelectablePill
+					pid={relational.id}
+					name="relational"
+					selected={relational.id === pid}
+					bind:text={relational.problem_name}
+				/>
 			{/each}
 		{/if}
 		{#if cardFilter.vocational}
 			{#each $vocationalProblems as vocational}
-				<SelectablePill selected={vocational.id === pid} text={vocational.problem_name} />
+				<SelectablePill
+					pid={vocational.id}
+					name="vocational"
+					selected={vocational.id === pid}
+					bind:text={vocational.problem_name}
+				/>
 			{/each}
 		{/if}
 		{#if cardFilter.spiritual}
 			{#each $spiritualProblems as spiritual}
-				<SelectablePill selected={spiritual.id === pid} text={spiritual.problem_name} />
+				<SelectablePill
+					pid={spiritual.id}
+					name="spiritual"
+					selected={spiritual.id === pid}
+					bind:text={spiritual.problem_name}
+				/>
 			{/each}
 		{/if}
 	</div>

@@ -16,6 +16,9 @@ export {
 
 export {
 	initProblemInfo,
+	addProblemItem,
+	removeOrCleanItem,
+	prominentItem,
 	autosavingProblemInfo,
 	pid,
 	problemInfo,

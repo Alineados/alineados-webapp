@@ -27,9 +27,9 @@ export interface ProblemCard {
 export interface ProblemInfo {
 	id: string; // primitive.ObjectID in Go
 	pid: string; // problem id
+	solved: boolean;
 	decision_taken: GenericTwo | null;
 	problem: GenericTwo | null;
-	solved: boolean;
 	involved: GenericTwo[];
 	contexts: GenericTwo[];
 	objectives: GenericTwo[];
@@ -38,4 +38,14 @@ export interface ProblemInfo {
 	memories: Documents[];
 	createdAt: string;
 	updatedAt: string | null;
+}
+
+export enum ProblemType {
+	decision_taken = 'Tomador de decisión',
+	problem = 'Problema',
+	involved = 'Involucrados',
+	contexts = 'Contexto',
+	objectives = 'Objetivos',
+	alternatives = 'Alternativas',
+	action_plan = 'Plan de acción',
 }

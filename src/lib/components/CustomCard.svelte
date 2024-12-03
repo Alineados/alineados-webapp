@@ -17,7 +17,7 @@
 		header: Snippet;
 		content: Snippet;
 		footer: Snippet;
-		onClickCard: () => void;
+		onClickCard: (e:any) => void;
 	} = $props();
 </script>
 

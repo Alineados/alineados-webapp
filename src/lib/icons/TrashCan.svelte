@@ -3,7 +3,7 @@
 	export let height: number = 15;
 	export let fill: string = 'none';
 	export let stroke: string = '#9E9E9E';
-	export let styleTw: string = '';
+	export let styleTw: string = 'hover:text-red-500';
 </script>
 
 <svg {width} {height} viewBox="0 0 14 15" {fill} xmlns="http://www.w3.org/2000/svg" class={styleTw}>
