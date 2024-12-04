@@ -18,12 +18,36 @@
 
 	// Countries code
 	const countriesCode = [
-		{ value: '+502', label: 'GT' },
-		{ value: '+504', label: 'HN' },
-		{ value: '+503', label: 'SV' },
-		{ value: '+505', label: 'NI' },
-		{ value: '+506', label: 'CR' },
-		{ value: '+507', label: 'PA' }
+		{
+			value: '+502',
+			label: 'GT',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
+		},
+		{
+			value: '+504',
+			label: 'HN',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
+		},
+		{
+			value: '+503',
+			label: 'SV',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
+		},
+		{
+			value: '+505',
+			label: 'NI',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
+		},
+		{
+			value: '+506',
+			label: 'CR',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
+		},
+		{
+			value: '+507',
+			label: 'PA',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
+		}
 	];
 </script>
 
@@ -59,11 +83,11 @@
 			<BirthdaySelect label="Fecha de Nacimiento" />
 		</div>
 		<div class="flex gap-6">
-			<PhoneInput label="Celular" name="phone-number" placeholder="Tel" options={countriesCode} />
+			<PhoneInput label="Celular" name="phone-number" placeholder="País" options={countriesCode} />
 			<WhatsAppInput
 				label="WhatsApp"
 				name="whatsapp-number"
-				placeholder="Tel"
+				placeholder="País"
 				options={countriesCode}
 			/>
 		</div>

@@ -29,16 +29,18 @@
 	<aside
 		class="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:col-span-1 lg:flex"
 	>
-		<div class="absolute inset-0 flex h-full flex-col bg-[#0F172A] px-6">
-			<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
-				<Check styleTw="size-6" />
-				<p class="text-lg font-bold text-alineados-gray-50">Alineados</p>
-			</a>
+		<div class="absolute inset-0 flex h-full flex-col justify-between bg-[#0F172A] px-6">
+			<div>
+				<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
+					<Check styleTw="size-6" />
+					<p class="text-lg font-bold text-alineados-gray-50">Alineados</p>
+				</a>
 
-			<AsideSteps {stepId} />
+				<AsideSteps {stepId} />
+			</div>
 
 			{#if stepId !== '4'}
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-2 pb-12">
 					<p class="text-pretty text-lg font-medium">
 						Inicia tu experiencia proporcionándonos algunos detalles acerca de ti.
 					</p>

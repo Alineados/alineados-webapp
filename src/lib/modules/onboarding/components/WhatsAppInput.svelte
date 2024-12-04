@@ -6,24 +6,25 @@
 
 	export let label: string = 'WhatsApp';
 	export let name: string;
-	export let options: { value: string; label: string }[] = [];
+	export let options: { value: string; label: string; flag: string }[] = [];
 	export let value: string = '';
 	export let placeholder: string = 'Select an option';
 	export let inputPlaceholder: string = 'Enter your phone number';
 	export let isLoading: boolean = false;
-	export let isOptional: boolean = false;
 	export let isChecked: boolean = false;
 	export let checkboxLabel: string = 'Mismo que celular';
 
 	// Derived content for the trigger
-	$: triggerContent = options.find((option) => option.value === value)?.label ?? placeholder;
+	$: selectedOption = options.find((option) => option.value === value);
+	$: triggerContent = selectedOption?.label ?? placeholder;
+	$: triggerFlag = selectedOption?.flag ?? '';
 </script>
 
 <div class="w-1/2 space-y-2">
+	<!-- Label -->
 	<div class="flex items-center justify-between">
 		<Label class="text-lg font-semibold text-black" for={name}>
 			{label}
-			{#if isOptional}<span class="text-xs font-medium">(Opcional)</span>{/if}
 		</Label>
 		<div class="flex items-center space-x-2">
 			<Checkbox
@@ -40,11 +41,16 @@
 	</div>
 
 	<div class="flex">
+		<!-- Select to code -->
 		<Select.Root type="single" {name} bind:value>
 			<Select.Trigger
-				class="w-1/6 border-white bg-[#0F172A] text-alineados-gray-900 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-white"
+				class="select-trigger w-1/6 border-white bg-[#0F172A] text-alineados-gray-100 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-white"
 			>
-				{triggerContent}
+				{#if triggerContent === placeholder}
+					{placeholder}
+				{:else}
+					<img class="size-6" src={triggerFlag} alt={triggerContent} />
+				{/if}
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group class="bg-alineados-gray-100">
@@ -55,13 +61,26 @@
 							value={option.value}
 							label={option.label}
 						>
-							{option.label}
+							<div class="flex items-center gap-1">
+								<img class="size-7" src={option.flag} alt={option.label} />
+								<span class="text-xl-">{option.value}</span>
+							</div>
 						</Select.Item>
 					{/each}
 				</Select.Group>
 			</Select.Content>
 		</Select.Root>
 
+		<!-- Input to the number -->
+		<Input
+			class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-500"
+			id={name}
+			type="tel"
+			autocapitalize="none"
+			autocorrect="off"
+			disabled={isLoading}
+			bind:value
+		/>
 		<Input
 			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-500"
 			id={name}

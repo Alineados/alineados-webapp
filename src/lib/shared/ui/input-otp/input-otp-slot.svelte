@@ -22,8 +22,8 @@
 	{cell}
 	bind:ref
 	class={cn(
-		'relative flex h-12 w-12 items-center justify-center border border-gray-300 text-lg font-semibold text-gray-700 transition-all duration-200 ease-in-out first:rounded-l-md last:rounded-r-md focus-within:ring-2 focus-within:ring-blue-500',
-		cell.isActive && 'z-10 ring-2 ring-blue-500 ring-offset-2',
+		'relative flex h-12 w-12 items-center justify-center border border-gray-300 text-lg font-semibold text-gray-700 transition-all duration-200 ease-in-out first:rounded-l-md last:rounded-r-md focus-within:ring-2 focus-within:ring-green-500',
+		cell.isActive && 'z-10 ring-2 ring-green-500 ring-offset-2',
 		className
 	)}
 	{...restProps}
