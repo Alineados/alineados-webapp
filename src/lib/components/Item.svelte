@@ -5,6 +5,7 @@
 	import Plus from '$lib/icons/Plus.svelte';
 	import Repeat from '$lib/icons/Repeat.svelte';
 	import Star from '$lib/icons/Star.svelte';
+	import Sun from '$lib/icons/Sun.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 
 	let {
@@ -13,12 +14,20 @@
 		isDisabled = false,
 		usePlus = false,
 		useOrder = false,
+		isProminent = $bindable(),
+		addItem,
+		deleteItem,
+		prominentItem
 	}: {
 		value: string;
 		isAccountability?: boolean;
 		isDisabled?: boolean;
 		usePlus?: boolean;
 		useOrder?: boolean;
+		isProminent?: boolean;
+		addItem?: () => void;
+		deleteItem?: () => void;
+		prominentItem?: () => void;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -30,24 +39,36 @@
 	function handleTextareaClick() {
 		isDisabled = false;
 	}
+
+	function handleKeyPress(event: KeyboardEvent) {
+		if (event.key === 'Tab') {
+			event.preventDefault();
+			if (addItem) addItem();
+		}
+	}
 </script>
 
-<div class="item-container group flex h-auto items-center justify-between {(!usePlus && !useOrder) ? 'pl-10' : ''}">
-	{#if usePlus && useOrder}		
-	<div class="flex items-center gap-1">
-		<button
-			class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
-			aria-label="Menu"
-		>
-			<Plus styleTw="size-5" />
-		</button>
-		<button
-			class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? 'invisible' : 'visible'}`}
-			aria-label="Menu"
-		>
-			<Order stroke="currentColor" />
-		</button>
-	</div>
+<div
+	class="item-container group flex h-auto items-center justify-between {!usePlus && !useOrder
+		? 'pl-10'
+		: ''}"
+>
+	{#if usePlus && useOrder}
+		<div class="flex items-center gap-1">
+			<button
+				onclick={addItem}
+				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
+				aria-label="Menu"
+			>
+				<Plus styleTw="size-5" />
+			</button>
+			<button
+				class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? 'invisible' : 'visible'}`}
+				aria-label="Menu"
+			>
+				<Order stroke="currentColor" />
+			</button>
+		</div>
 	{/if}
 
 	<div
@@ -65,26 +86,34 @@
 			placeholder="Agregar nuevo item"
 			oninput={autoResize}
 			onclick={handleTextareaClick}
+			onkeydown={handleKeyPress}
 			rows="1"
 			spellcheck="false"
 		></textarea>
 	</div>
 
 	<div
-		class={`invisible ml-2 flex w-auto items-center gap-1 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
+		class={`invisible ml-2 flex w-auto items-center justify-center gap-1 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
 	>
 		<button
-			class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
-			aria-label="Delete"
-		>
-			<TrashCan stroke="currentColor" />
-		</button>
-
-		<button
+			onclick={prominentItem}
 			class="text-alineados-gray-400 hover:text-yellow-500 focus:text-yellow-500"
 			aria-label="Star"
 		>
 			<Star stroke="currentColor" />
+		</button>
+		<button
+			class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
+			aria-label="Day"
+		>
+			<Sun stroke="currentColor" />
+		</button>
+		<button
+			onclick={deleteItem}
+			class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
+			aria-label="Delete"
+		>
+			<TrashCan stroke="currentColor" />
 		</button>
 
 		{#if isAccountability}

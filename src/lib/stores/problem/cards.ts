@@ -1,12 +1,14 @@
 import type { ProblemCard } from '$lib/interfaces';
 import type { PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
 // list of info about problems
 export const healthProblems = writable<ProblemCard[]>();
 export const relationalProblems = writable<ProblemCard[]>();
 export const vocationalProblems = writable<ProblemCard[]>();
 export const spiritualProblems = writable<ProblemCard[]>();
+
+export const problemCard = writable<ProblemCard>();
 
 // Function to initialize the store with the problems
 export const initProblems = ({
@@ -26,14 +28,19 @@ export const initProblems = ({
 	if (spiritual) spiritualProblems.set(spiritual);
 };
 
+export const initProblemCard = (card: ProblemCard) => {
+
+	console.log('card', card);
+
+	if (card) problemCard.set(card);
+};
+
 // Function to add a problem to the store
 export const addProblem = (problem: ProblemCard, pillar: PillarsAndCategories) => {
 	// get the key name of the pillar
 	const key = Object.keys(pillar).find(
 		(key) => pillar[key as keyof PillarsAndCategories].id === problem.pfid
 	);
-
-	console.log('key', key);
 
 	if (key === 'health') {
 		healthProblems.update((problems) => [...problems, problem]);
@@ -63,3 +70,22 @@ export const removeProblem = (problem: ProblemCard, pillar: PillarsAndCategories
 		spiritualProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
 	}
 };
+
+// Function to update the problem info (Autosave)
+let timeoutId: number;
+let endTimeoutId: number;
+
+export const autosavingProblemCard = derived([problemCard], (_, set) => {
+	clearTimeout(timeoutId);
+	timeoutId = setTimeout(() => {
+		set(true);
+		endTimeoutId = setTimeout(() => {
+			set(false);
+			clearTimeout(endTimeoutId);
+		}, 1000);
+	}, 1000);
+});
+
+export const problemCardJSON = derived([problemCard], ([$problemCard], set) => {
+	set(JSON.stringify($problemCard));
+});

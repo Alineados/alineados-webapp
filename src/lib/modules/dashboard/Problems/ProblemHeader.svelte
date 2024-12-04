@@ -5,7 +5,11 @@
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
 
-	let { title = 'Nombre identificativo' } = $props();
+	import { autosavingProblemCard, autosavingProblemInfo } from '$lib/stores';
+	import Cloud from '$lib/icons/Cloud.svelte';
+	import Loading from '$lib/icons/Loading.svelte';
+
+	let { title = $bindable() } = $props();
 </script>
 
 <div class="flex flex-col gap-5 pb-6">
@@ -26,6 +30,17 @@
 			<div class="ml-5 flex items-center gap-3">
 				<Padlock class="size-5" />
 				<StatusPill status="active" />
+			</div>
+			<!-- Autosave -->
+
+			<div class="pl-5">
+				{#if $autosavingProblemCard || $autosavingProblemInfo}
+					<div class="h-6 w-6 animate-spin text-white">
+						<Loading />
+					</div>
+				{:else}
+					<Cloud styleTw="size-6 text-alineados-gray-400" />
+				{/if}
 			</div>
 		</div>
 

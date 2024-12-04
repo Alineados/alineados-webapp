@@ -4,13 +4,15 @@
 	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
-	import type { PageData } from '../$types';
-	import { initProblemInfo } from '$lib/stores';
+	import { initProblemCard, initProblemInfo, pid, problemCard } from '$lib/stores';
 
 	// get data from server.ts
 	let { data }: { data: any } = $props();
-	// // init stores
-	initProblemInfo({ ...data.problemInfo });
+	// init stores
+	$effect(() => {
+		initProblemInfo({ ...data.problemInfo });
+		initProblemCard({ ...data.problemCard });
+	});
 
 	let headerRef: HTMLElement;
 	let problemsFilterRef: HTMLElement;
@@ -28,16 +30,16 @@
 </script>
 
 <div bind:this={headerRef} class="sticky top-0 z-10 bg-white">
-	<ProblemHeader />
+	<ProblemHeader bind:title={$problemCard.problem_name} />
 </div>
 
 <div class="flex w-full items-start">
 	<div class=" flex w-7/12 flex-col">
 		<div bind:this={problemsFilterRef} class="sticky top-32 z-10 bg-white">
-			<ProblemsFilter />
+			<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
 		</div>
 
-		<div bind:this={accountabilityBodyRef} class="pl-10">
+		<div bind:this={accountabilityBodyRef} >
 			<ProblemBody />
 		</div>
 	</div>

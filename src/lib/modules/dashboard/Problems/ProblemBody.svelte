@@ -11,7 +11,15 @@
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
 
 	// get stores
-	import { problemInfo, pid } from '$lib/stores';
+	import {
+		problemInfo,
+		pid,
+		addProblemItem,
+		removeOrCleanItem,
+		problemInfoJSON,
+		prominentItem
+	} from '$lib/stores';
+	import { ProblemType } from '$lib/interfaces';
 
 	$inspect($problemInfo);
 </script>
@@ -23,7 +31,16 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item isDisabled bind:value={$problemInfo.decision_taken!.description!} />
+			<Item
+				prominentItem={() => {
+					prominentItem($problemInfo.decision_taken!.id, ProblemType.decision_taken);
+				}}
+				deleteItem={() => {
+					removeOrCleanItem($problemInfo.decision_taken!.id, ProblemType.decision_taken);
+				}}
+				isDisabled
+				bind:value={$problemInfo.decision_taken!.description!}
+			/>
 		</div>
 	</div>
 
@@ -34,7 +51,18 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.involved as involded}
-				<Item useOrder usePlus isDisabled bind:value={involded.description} />
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(involded.id, ProblemType.involved);
+					}}
+					addItem={() => {
+						addProblemItem(involded.id, ProblemType.involved);
+					}}
+					useOrder
+					usePlus
+					isDisabled
+					bind:value={involded.description}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -46,7 +74,18 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.contexts as context}
-				<Item useOrder usePlus isDisabled bind:value={context.description} />
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(context.id, ProblemType.contexts);
+					}}
+					addItem={() => {
+						addProblemItem(context.id, ProblemType.contexts);
+					}}
+					useOrder
+					usePlus
+					isDisabled
+					bind:value={context.description}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -57,7 +96,13 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item isDisabled  bind:value={$problemInfo.problem!.description!} />
+			<Item
+				deleteItem={() => {
+					removeOrCleanItem($problemInfo.problem!.id, ProblemType.problem);
+				}}
+				isDisabled
+				bind:value={$problemInfo.problem!.description!}
+			/>
 		</div>
 	</div>
 
@@ -68,7 +113,18 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.objectives as objective}
-				<Item useOrder usePlus isDisabled bind:value={objective.description} />
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(objective.id, ProblemType.objectives);
+					}}
+					addItem={() => {
+						addProblemItem(objective.id, ProblemType.objectives);
+					}}
+					useOrder
+					usePlus
+					isDisabled
+					bind:value={objective.description}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -80,7 +136,18 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.alternatives as alternative}
-				<Item useOrder usePlus isDisabled bind:value={alternative.description} />
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(alternative.id, ProblemType.alternatives);
+					}}
+					addItem={() => {
+						addProblemItem(alternative.id, ProblemType.alternatives);
+					}}
+					useOrder
+					usePlus
+					isDisabled
+					bind:value={alternative.description}
+				/>
 			{/each}
 		</div>
 	</div>
@@ -125,7 +192,18 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.action_plan as action}
-				<Item useOrder usePlus isDisabled bind:value={action.description} />
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(action.id, ProblemType.action_plan);
+					}}
+					addItem={() => {
+						addProblemItem(action.id, ProblemType.action_plan);
+					}}
+					useOrder
+					usePlus
+					isDisabled
+					bind:value={action.description}
+				/>
 			{/each}
 		</div>
 	</div>
