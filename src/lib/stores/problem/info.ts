@@ -10,8 +10,6 @@ export const problemInfo = writable<ProblemInfo>();
 // Function to initialize the store with the problem info
 export const initProblemInfo = (info: ProblemInfo) => {
 
-	console.log('info', info);
-
 	if (info) {
 
 		pid.set(info.pid);

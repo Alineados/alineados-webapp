@@ -53,17 +53,19 @@
 		? 'pl-10'
 		: ''}"
 >
+	<!-- ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
 	{#if usePlus && useOrder}
 		<div class="flex items-center gap-1">
 			<button
 				onclick={addItem}
-				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
+				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600`}
 				aria-label="Menu"
 			>
 				<Plus styleTw="size-5" />
 			</button>
+			<!-- ${isDisabled ? 'invisible' : 'visible'} -->
 			<button
-				class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 ${isDisabled ? 'invisible' : 'visible'}`}
+				class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 `}
 				aria-label="Menu"
 			>
 				<Order stroke="currentColor" />
@@ -92,12 +94,13 @@
 		></textarea>
 	</div>
 
-	<div
-		class={`invisible ml-2 flex w-auto items-center justify-center gap-1 ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'}`}
-	>
+	<!-- invisible ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
+	<div class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}>
 		<button
 			onclick={prominentItem}
-			class="text-alineados-gray-400 hover:text-yellow-500 focus:text-yellow-500"
+			class="{isProminent
+				? 'text-yellow-500'
+				: 'text-alineados-gray-400'} hover:text-yellow-500 focus:text-yellow-500"
 			aria-label="Star"
 		>
 			<Star stroke="currentColor" />
