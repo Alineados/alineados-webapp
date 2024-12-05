@@ -88,62 +88,62 @@
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Datos Personales" />
 
-	<form action="/?/username" method="POST" use:enhance>
+	<form action="/?/username" method="POST" use:enhance class="mt-9 flex w-full flex-col gap-9">
 		<Form.Field {form} name="firstName">
 			<Form.Control>
 				{#snippet children({ props })}
-					<div class="mt-9 flex w-full flex-col gap-9">
-						<div class="flex gap-6">
-							<RegisterInput
-								label="Nombre"
-								forId="first-name"
-								placeholder="Ingrese su nombre"
-								type="text"
-							/>
-							<RegisterInput
-								label="Apellido"
-								forId="last-name"
-								placeholder="Ingrese su apellido"
-								type="text"
-							/>
-						</div>
-						<div class="flex gap-6">
-							<RegisterSelect
-								label="País de Residencia"
-								name="country-of-residence"
-								options={countries}
-								placeholder="Selecciona un país"
-							/>
-							<RegisterSelect
-								label="País de Nacimiento"
-								name="country-of-birth"
-								options={countries}
-								placeholder="Selecciona un país"
-							/>
-						</div>
-						<div class="flex gap-6">
-							<RegisterInput
-								label="Correo Electrónico"
-								forId="email"
-								placeholder="Ingrese su correo electrónico"
-								type="email"
-							/>
-							<BirthdaySelect label="Fecha de Nacimiento" />
-						</div>
-						<div class="flex gap-6">
-							<PhoneInput
-								label="Celular"
-								name="phone-number"
-								placeholder="País"
-								options={countriesCode}
-							/>
-							<WhatsAppInput
-								label="WhatsApp"
-								name="whatsapp-number"
-								placeholder="País"
-								options={countriesCode}
-							/>
-						</div>
+					<div class="flex gap-6" {...props}>
+						<RegisterInput
+							label="Nombre"
+							forId="first-name"
+							placeholder="Ingrese su nombre"
+							type="text"
+							{...props}
+						/>
+						<RegisterInput
+							label="Apellido"
+							forId="last-name"
+							placeholder="Ingrese su apellido"
+							type="text"
+							{...props}
+						/>
+					</div>
+					<div class="flex gap-6">
+						<RegisterSelect
+							label="País de Residencia"
+							name="country-of-residence"
+							options={countries}
+							placeholder="Selecciona un país"
+						/>
+						<RegisterSelect
+							label="País de Nacimiento"
+							name="country-of-birth"
+							options={countries}
+							placeholder="Selecciona un país"
+						/>
+					</div>
+					<div class="flex gap-6">
+						<RegisterInput
+							label="Correo Electrónico"
+							forId="email"
+							placeholder="Ingrese su correo electrónico"
+							type="email"
+						/>
+						<BirthdaySelect label="Fecha de Nacimiento" />
+					</div>
+					<div class="flex gap-6">
+						<PhoneInput
+							label="Celular"
+							name="phone-number"
+							placeholder="País"
+							options={countriesCode}
+						/>
+						<WhatsAppInput
+							label="WhatsApp"
+							name="whatsapp-number"
+							placeholder="País"
+							options={countriesCode}
+						/>
 					</div>
 				{/snippet}
 			</Form.Control>
