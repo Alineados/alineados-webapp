@@ -95,30 +95,9 @@
 	</div>
 
 	<!-- invisible ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
-	<div class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}>
-		<button
-			onclick={prominentItem}
-			class="{isProminent
-				? 'text-yellow-500'
-				: 'text-alineados-gray-400'} hover:text-yellow-500 focus:text-yellow-500"
-			aria-label="Star"
-		>
-			<Star stroke="currentColor" />
-		</button>
-		<button
-			class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
-			aria-label="Day"
-		>
-			<Sun stroke="currentColor" />
-		</button>
-		<button
-			onclick={deleteItem}
-			class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
-			aria-label="Delete"
-		>
-			<TrashCan stroke="currentColor" />
-		</button>
-
+	<div
+		class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
+	>
 		{#if isAccountability}
 			<button
 				class="text-alineados-gray-400 hover:text-green-500 focus:text-green-500"
@@ -132,6 +111,29 @@
 				aria-label="Refresh"
 			>
 				<Repeat stroke="currentColor" />
+			</button>
+		{:else}
+			<button
+				onclick={prominentItem}
+				class="{isProminent
+					? 'text-yellow-500'
+					: 'text-alineados-gray-400'} hover:text-yellow-500 focus:text-yellow-500"
+				aria-label="Star"
+			>
+				<Star stroke="currentColor" />
+			</button>
+			<button
+				class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
+				aria-label="Day"
+			>
+				<Sun stroke="currentColor" />
+			</button>
+			<button
+				onclick={deleteItem}
+				class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
+				aria-label="Delete"
+			>
+				<TrashCan stroke="currentColor" />
 			</button>
 		{/if}
 	</div>
