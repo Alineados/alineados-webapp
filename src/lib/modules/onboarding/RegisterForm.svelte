@@ -1,3 +1,13 @@
+<script lang="ts" module>
+	import { z } from 'zod';
+
+	export const formSchema = z.object({
+		firstName: z.string().min(2).max(20),
+		lastName: z.string().min(2).max(20)
+	});
+	export type FormSchema = typeof formSchema;
+</script>
+
 <script lang="ts">
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterSelect from '$lib/modules/onboarding/components/RegisterSelect.svelte';
@@ -49,47 +59,98 @@
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
 	];
+
+	// Zod
+	import SuperDebug, { type Infer, type SuperValidated, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { browser } from '$app/environment';
+	import * as Form from '$lib/shared/ui/form/index.js';
+	import { page } from '$app/stores';
+
+	// Definición del esquema de validación
+	const formSchema = z.object({
+		firstName: z.string().min(2).max(50)
+	});
+	type FormSchema = typeof formSchema;
+
+	let { form: data = $page.data.firstName }: { form: SuperValidated<Infer<FormSchema>> } = $props();
+
+	const form = superForm(data, {
+		validators: zodClient(formSchema),
+		onUpdated: ({ form: f }) => {
+			console.log(`Current input value: ${f.data.firstName}`);
+		}
+	});
+
+	const { form: formData, enhance } = form;
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Datos Personales" />
 
-	<div class="mt-9 flex w-full flex-col gap-9">
-		<div class="flex gap-6">
-			<RegisterInput label="Nombre" forId="first-name" placeholder="Ej: José" type="text" />
-			<RegisterInput label="Apellido" forId="last-name" placeholder="Ej: Penados" type="text" />
-		</div>
-		<div class="flex gap-6">
-			<RegisterSelect
-				label="País de Residencia"
-				name="country-of-residence"
-				options={countries}
-				placeholder="Selecciona un país"
-			/>
-			<RegisterSelect
-				label="País de Nacimiento"
-				name="country-of-birth"
-				options={countries}
-				placeholder="Selecciona un país"
-			/>
-		</div>
-		<div class="flex gap-6">
-			<RegisterInput
-				label="Correo Electrónico"
-				forId="email"
-				placeholder="Ej: jose.penados@gmail.com"
-				type="email"
-			/>
-			<BirthdaySelect label="Fecha de Nacimiento" />
-		</div>
-		<div class="flex gap-6">
-			<PhoneInput label="Celular" name="phone-number" placeholder="País" options={countriesCode} />
-			<WhatsAppInput
-				label="WhatsApp"
-				name="whatsapp-number"
-				placeholder="País"
-				options={countriesCode}
-			/>
-		</div>
-	</div>
+	<form action="/?/username" method="POST" use:enhance>
+		<Form.Field {form} name="firstName">
+			<Form.Control>
+				{#snippet children({ props })}
+					<div class="mt-9 flex w-full flex-col gap-9">
+						<div class="flex gap-6">
+							<RegisterInput
+								label="Nombre"
+								forId="first-name"
+								placeholder="Ingrese su nombre"
+								type="text"
+							/>
+							<RegisterInput
+								label="Apellido"
+								forId="last-name"
+								placeholder="Ingrese su apellido"
+								type="text"
+							/>
+						</div>
+						<div class="flex gap-6">
+							<RegisterSelect
+								label="País de Residencia"
+								name="country-of-residence"
+								options={countries}
+								placeholder="Selecciona un país"
+							/>
+							<RegisterSelect
+								label="País de Nacimiento"
+								name="country-of-birth"
+								options={countries}
+								placeholder="Selecciona un país"
+							/>
+						</div>
+						<div class="flex gap-6">
+							<RegisterInput
+								label="Correo Electrónico"
+								forId="email"
+								placeholder="Ingrese su correo electrónico"
+								type="email"
+							/>
+							<BirthdaySelect label="Fecha de Nacimiento" />
+						</div>
+						<div class="flex gap-6">
+							<PhoneInput
+								label="Celular"
+								name="phone-number"
+								placeholder="País"
+								options={countriesCode}
+							/>
+							<WhatsAppInput
+								label="WhatsApp"
+								name="whatsapp-number"
+								placeholder="País"
+								options={countriesCode}
+							/>
+						</div>
+					</div>
+				{/snippet}
+			</Form.Control>
+		</Form.Field>
+		<Form.Button>Submit</Form.Button>
+		{#if browser}
+			<SuperDebug data={$formData} />
+		{/if}
+	</form>
 </div>

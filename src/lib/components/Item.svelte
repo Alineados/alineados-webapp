@@ -30,6 +30,12 @@
 		prominentItem?: () => void;
 	} = $props();
 
+	let isStarred = $state(false);
+	let isSunActive = $state(false);
+	let isDeleted = $state(false);
+	let isDone = $state(false);
+	let isRepeated = $state(false);
+
 	function autoResize(event: Event) {
 		const textarea = event.target as HTMLTextAreaElement;
 		textarea.style.height = 'auto';
@@ -95,7 +101,9 @@
 	</div>
 
 	<!-- invisible ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
-	<div class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}>
+	<div
+		class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
+	>
 		<button
 			onclick={prominentItem}
 			class="{isProminent
@@ -109,7 +117,7 @@
 			class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
 			aria-label="Day"
 		>
-			<Sun stroke="currentColor" />
+			<Sun styleTw="size-5" />
 		</button>
 		<button
 			onclick={deleteItem}

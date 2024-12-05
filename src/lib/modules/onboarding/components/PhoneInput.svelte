@@ -8,7 +8,6 @@
 	export let options: { value: string; label: string; flag: string }[] = [];
 	export let value: string = '';
 	export let placeholder: string = 'Select an option';
-	export let inputPlaceholder: string = 'Enter your phone number';
 	export let isOptional: boolean = false;
 
 	// Derived content for the trigger
@@ -38,7 +37,7 @@
 					<Select.GroupHeading>{label}</Select.GroupHeading>
 					{#each options as option}
 						<Select.Item
-							class="default-text bg-alineados-gray-50"
+							class="bg-alineados-gray-50  text-base"
 							value={option.value}
 							label={option.label}
 						>
@@ -53,18 +52,19 @@
 		</Select.Root>
 
 		<Input
-			class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-500"
+			class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-center text-base placeholder:text-alineados-gray-500"
 			id={name}
 			type="tel"
 			autocapitalize="none"
 			autocorrect="off"
+			placeholder="+000"
 			bind:value
 		/>
 		<Input
-			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-500"
+			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-base placeholder:text-alineados-gray-500"
 			id={name}
 			type="tel"
-			placeholder={inputPlaceholder}
+			placeholder="Ingrese su número de celular"
 			autocapitalize="none"
 			autocorrect="off"
 		/>

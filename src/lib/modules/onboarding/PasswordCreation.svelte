@@ -78,7 +78,7 @@
 
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Creación de Contraseña" />
-	<div class="mt-9 flex w-full flex-col gap-11">
+	<div class="mt-9 flex w-full flex-col gap-5">
 		<PasswordInput
 			label="Contraseña"
 			id="password"
@@ -86,43 +86,40 @@
 			bind:value={password}
 			oninput={evaluatePassword}
 		/>
-		{#if showConfirmPassword}
-			<PasswordInput
-				label="Confirmar Contraseña"
-				id="confirm-password"
-				placeholder="Confirme su contraseña"
-				bind:value={confirmPassword}
-				oninput={evaluateConfirmPassword}
-			/>
-		{/if}
+		<ul class="space-y-1">
+			<li>
+				<PasswordStrengthening {strengthening} />
+			</li>
+			<li>
+				<PasswordRequirement
+					checked={requirements.noNameOrEmail}
+					text="No puede contener tu nombre o dirección de correo electrónicos"
+				/>
+			</li>
+			<li>
+				<PasswordRequirement checked={requirements.minLength} text="Mínimo 8 caracteres" />
+			</li>
+			<li>
+				<PasswordRequirement
+					checked={requirements.hasNumberOrSymbol}
+					text="Contiene un número o símbolo"
+				/>
+			</li>
+		</ul>
 	</div>
 
-	<div class="mt-4 {showConfirmPassword ? '' : 'mt-9'}">
+	<div class="mt-11 flex w-full flex-col gap-4" class:invisible={!showConfirmPassword}>
+		<PasswordInput
+			label="Confirmar Contraseña"
+			id="confirm-password"
+			placeholder="Confirme su contraseña"
+			bind:value={confirmPassword}
+			oninput={evaluateConfirmPassword}
+		/>
 		<ul class="space-y-1">
-			{#if !showConfirmPassword}
-				<li>
-					<PasswordStrengthening {strengthening} />
-				</li>
-				<li>
-					<PasswordRequirement
-						checked={requirements.noNameOrEmail}
-						text="No puede contener tu nombre o dirección de correo electrónicos"
-					/>
-				</li>
-				<li>
-					<PasswordRequirement checked={requirements.minLength} text="Mínimo 8 caracteres" />
-				</li>
-				<li>
-					<PasswordRequirement
-						checked={requirements.hasNumberOrSymbol}
-						text="Contiene un número o símbolo"
-					/>
-				</li>
-			{:else}
-				<li>
-					<PasswordRequirement checked={matchPasswords} text="Match de contraseñas" />
-				</li>
-			{/if}
+			<li>
+				<PasswordRequirement checked={matchPasswords} text="Match de contraseñas" />
+			</li>
 		</ul>
 	</div>
 </div>

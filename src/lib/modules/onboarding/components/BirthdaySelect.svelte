@@ -19,18 +19,18 @@
 	});
 
 	const months = [
-		{ value: '01', label: 'Enero' },
-		{ value: '02', label: 'Febrero' },
-		{ value: '03', label: 'Marzo' },
-		{ value: '04', label: 'Abril' },
-		{ value: '05', label: 'Mayo' },
-		{ value: '06', label: 'Junio' },
-		{ value: '07', label: 'Julio' },
-		{ value: '08', label: 'Agosto' },
-		{ value: '09', label: 'Septiembre' },
-		{ value: '10', label: 'Octubre' },
-		{ value: '11', label: 'Noviembre' },
-		{ value: '12', label: 'Diciembre' }
+		{ value: '01', label: '01 - Enero' },
+		{ value: '02', label: '02 - Febrero' },
+		{ value: '03', label: '03 - Marzo' },
+		{ value: '04', label: '04 - Abril' },
+		{ value: '05', label: '05 -Mayo' },
+		{ value: '06', label: '06 Junio' },
+		{ value: '07', label: '07 - Julio' },
+		{ value: '08', label: '08 - Agosto' },
+		{ value: '09', label: '09 - Septiembre' },
+		{ value: '10', label: '10 - Octubre' },
+		{ value: '11', label: '11 - Noviembre' },
+		{ value: '12', label: '12 - Diciembre' }
 	];
 	const years = Array.from({ length: 100 }, (_, i) => ({
 		value: `${2023 - i}`,

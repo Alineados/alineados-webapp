@@ -113,7 +113,6 @@
 		<SelectablePill text="nombre#2" />
 	</div>
 	<div class="mt-4 flex w-2/3 flex-col gap-4">
-		<Item />
 		<Item isAccountability />
 	</div>
 	<div class="mt-4 flex w-1/4 gap-4">
