@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="flex flex-row gap-4 self-start">
-			<ViewButton />
+			<!-- <ViewButton /> -->
 			<AccountabilityButton />
 			<MoreButton />
 		</div>

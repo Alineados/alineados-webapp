@@ -50,7 +50,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.involved as involded}
+			<!-- {#each $problemInfo.involved as involded}
 				<Item
 					deleteItem={() => {
 						removeOrCleanItem(involded.id, ProblemType.involved);
@@ -63,7 +63,7 @@
 					isDisabled
 					bind:value={involded.description}
 				/>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 
@@ -73,7 +73,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.contexts as context}
+			<!-- {#each $problemInfo.contexts as context}
 				<Item
 					deleteItem={() => {
 						removeOrCleanItem(context.id, ProblemType.contexts);
@@ -86,7 +86,7 @@
 					isDisabled
 					bind:value={context.description}
 				/>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 
@@ -96,13 +96,13 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
+			<!-- <Item
 				deleteItem={() => {
 					removeOrCleanItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
 				isDisabled
 				bind:value={$problemInfo.problem!.description!}
-			/>
+			/> -->
 		</div>
 	</div>
 
@@ -112,7 +112,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.objectives as objective}
+			<!-- {#each $problemInfo.objectives as objective}
 				<Item
 					deleteItem={() => {
 						removeOrCleanItem(objective.id, ProblemType.objectives);
@@ -125,7 +125,7 @@
 					isDisabled
 					bind:value={objective.description}
 				/>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 
@@ -135,7 +135,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.alternatives as alternative}
+			<!-- {#each $problemInfo.alternatives as alternative}
 				<Item
 					deleteItem={() => {
 						removeOrCleanItem(alternative.id, ProblemType.alternatives);
@@ -148,7 +148,7 @@
 					isDisabled
 					bind:value={alternative.description}
 				/>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 
@@ -191,7 +191,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.action_plan as action}
+			<!-- {#each $problemInfo.action_plan as action}
 				<Item
 					deleteItem={() => {
 						removeOrCleanItem(action.id, ProblemType.action_plan);
@@ -204,7 +204,7 @@
 					isDisabled
 					bind:value={action.description}
 				/>
-			{/each}
+			{/each} -->
 		</div>
 	</div>
 </div>

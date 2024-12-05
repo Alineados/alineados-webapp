@@ -12,8 +12,8 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	let problemService: ProblemService = ProblemService.getInstance('');
 	const result = await problemService.getProblemInfo(pid);
 
-	console.log('get inside the server load', pid, pillar_name);
-
+	
+	console.log('result', result);
 	
 	return {
 		problemInfo: result.data.problem_info,

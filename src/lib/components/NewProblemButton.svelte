@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Plus from '$lib/icons/Plus.svelte';
-	import * as DropdownMenu from '$lib/shared/ui/dropdown-menu/index.js';
+	import * as DropdownMenu from '$lib/shared/ui/dropdown-menu/index';
 	import { enhance } from '$app/forms';
 	import { Pillars } from '$lib/interfaces/data';
 	import type { ProblemCard } from '$lib/interfaces';
@@ -26,7 +26,7 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="group flex items-center gap-[6px] rounded-lg bg-[#0F172A] px-5 py-3 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
+		class="group flex items-center gap-2 rounded-lg bg-[#0F172A] px-5 py-2 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
 		aria-label="Nuevo Problema"
 	>
 		<Plus styleTw="size-4" />
