@@ -2,7 +2,6 @@
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import NewProblemButton from '$lib/components/NewProblemButton.svelte';
 	import ViewButton from '$lib/components/ViewButton.svelte';
-	import type { PillarItems } from '$lib/interfaces';
 
 
 	// Filter items object state

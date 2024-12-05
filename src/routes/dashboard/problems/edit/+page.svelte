@@ -9,6 +9,9 @@
 	// get data from server.ts
 	let { data }: { data: any } = $props();
 	// init stores
+	initProblemInfo({ ...data.problemInfo });
+	initProblemCard({ ...data.problemCard });
+
 	$effect(() => {
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
@@ -39,7 +42,7 @@
 			<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
 		</div>
 
-		<div bind:this={accountabilityBodyRef} >
+		<div bind:this={accountabilityBodyRef}>
 			<ProblemBody />
 		</div>
 	</div>

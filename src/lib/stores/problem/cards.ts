@@ -29,9 +29,6 @@ export const initProblems = ({
 };
 
 export const initProblemCard = (card: ProblemCard) => {
-
-	console.log('card', card);
-
 	if (card) problemCard.set(card);
 };
 
