@@ -6,7 +6,8 @@
 		healthProblems,
 		relationalProblems,
 		spiritualProblems,
-		vocationalProblems
+		vocationalProblems,
+		problemCard
 	} from '$lib/stores';
 	import { onMount } from 'svelte';
 
@@ -44,7 +45,7 @@
 		{#if $healthProblems.length > 0}
 			<CardFilter
 				type="complex"
-				text="  Salud"
+				text="Salud"
 				bind:selected={cardFilter.health}
 				triggerFunction={() => changeFilter('health')}
 			/>
@@ -78,42 +79,66 @@
 	<div class="flex flex-row gap-2 pb-4">
 		{#if cardFilter.health}
 			{#each $healthProblems as health}
-				<SelectablePill
-					pid={health.id}
-					name="health"
-					selected={health.id === pid}
-					bind:text={health.problem_name}
-				/>
+				{#if health.id === pid}
+					<SelectablePill
+						pid={health.id}
+						name="health"
+						selected
+						bind:text={$problemCard.problem_name}
+					/>
+				{:else}
+					<SelectablePill pid={health.id} name="health" bind:text={health.problem_name} />
+				{/if}
 			{/each}
 		{/if}
 		{#if cardFilter.relational}
 			{#each $relationalProblems as relational}
-				<SelectablePill
-					pid={relational.id}
-					name="relational"
-					selected={relational.id === pid}
-					bind:text={relational.problem_name}
-				/>
+				{#if relational.id === pid}
+					<SelectablePill
+						pid={relational.id}
+						name="relational"
+						selected
+						bind:text={$problemCard.problem_name}
+					/>
+				{:else}
+					<SelectablePill
+						pid={relational.id}
+						name="relational"
+						bind:text={relational.problem_name}
+					/>
+				{/if}
 			{/each}
 		{/if}
 		{#if cardFilter.vocational}
 			{#each $vocationalProblems as vocational}
-				<SelectablePill
-					pid={vocational.id}
-					name="vocational"
-					selected={vocational.id === pid}
-					bind:text={vocational.problem_name}
-				/>
+				{#if vocational.id === pid}
+					<SelectablePill
+						pid={vocational.id}
+						name="vocational"
+						selected
+						bind:text={$problemCard.problem_name}
+					/>
+				{:else}
+					<SelectablePill
+						pid={vocational.id}
+						name="vocational"
+						bind:text={vocational.problem_name}
+					/>
+				{/if}
 			{/each}
 		{/if}
 		{#if cardFilter.spiritual}
 			{#each $spiritualProblems as spiritual}
-				<SelectablePill
-					pid={spiritual.id}
-					name="spiritual"
-					selected={spiritual.id === pid}
-					bind:text={spiritual.problem_name}
-				/>
+				{#if spiritual.id === pid}
+					<SelectablePill
+						pid={spiritual.id}
+						name="spiritual"
+						selected
+						bind:text={$problemCard.problem_name}
+					/>
+				{:else}
+					<SelectablePill pid={spiritual.id} name="spiritual" bind:text={spiritual.problem_name} />
+				{/if}
 			{/each}
 		{/if}
 	</div>
