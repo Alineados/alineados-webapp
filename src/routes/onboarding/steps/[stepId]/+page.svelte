@@ -55,7 +55,7 @@
 	<div class="col-span-5 flex h-full w-full flex-col px-[152px]">
 		<div class="h-4/5">
 			{#if stepId === '1'}
-				<RegisterForm form={}/>
+				<RegisterForm />
 			{:else if stepId === '2'}
 				<EmailVerification />
 			{:else if stepId === '3'}

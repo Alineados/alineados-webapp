@@ -61,7 +61,7 @@
 						>
 							<div class="flex items-center gap-1">
 								<img class="size-7" src={option.flag} alt={option.label} />
-								<span class="text-xl-">{option.value}</span>
+								<span class="text-base">{option.value}</span>
 							</div>
 						</Select.Item>
 					{/each}
