@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { goto, onNavigate } from '$app/navigation';
-
 	let {
 		text = $bindable(),
 		selected = false,

@@ -1,11 +1,10 @@
 <script lang="ts">
 	import AccountabilityButton from '$lib/components/AccountabilityButton.svelte';
-	import ViewButton from '$lib/components/ViewButton.svelte';
 	import MoreButton from '$lib/components/MoreButton.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
-
 	import { autosavingProblemCard, autosavingProblemInfo } from '$lib/stores';
+
 	import Cloud from '$lib/icons/Cloud.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
 
@@ -45,7 +44,6 @@
 		</div>
 
 		<div class="flex flex-row gap-4 self-start">
-			<!-- <ViewButton /> -->
 			<AccountabilityButton />
 			<MoreButton />
 		</div>
