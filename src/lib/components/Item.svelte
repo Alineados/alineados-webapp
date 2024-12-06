@@ -132,7 +132,7 @@
 				class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
 				aria-label="Day"
 			>
-				<Sun stroke="currentColor" />
+				<Sun styleTw="size-5" />
 			</button>
 			<button
 				onclick={deleteItem}
