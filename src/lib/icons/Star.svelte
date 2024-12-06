@@ -1,19 +1,14 @@
-<script>
-	export let width = 15;
-	export let height = 15;
-	export let fill = 'none';
-	export let stroke = 'currentColor';
-	export let strokeWidth = 1.5;
+<script lang="ts">
+	let { styleTw = 'size-6' } = $props();
 </script>
 
 <svg
-	{width}
-	{height}
 	xmlns="http://www.w3.org/2000/svg"
-	{fill}
+	fill="none"
 	viewBox="0 0 24 24"
-	stroke-width={strokeWidth}
-	{stroke}
+	stroke-width="1.5"
+	stroke="currentColor"
+	class={styleTw}
 >
 	<path
 		stroke-linecap="round"

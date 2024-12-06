@@ -113,7 +113,13 @@
 		<SelectablePill text="nombre#2" />
 	</div>
 	<div class="mt-4 flex w-2/3 flex-col gap-4">
-		<Item isAccountability />
+		<Item value="Este item es único, por lo cuál no se puede agregar ni mover" isUnique />
+		<Item value="Este item es para la edición" />
+		<Item value="Este item es para rendir cuentas" isAccountability />
+		<Item
+			value="El item de abajo es para cuando se quiera agregar uno nuevo, solo se hace click en el text area y se activará"
+		/>
+		<Item isNew />
 	</div>
 	<div class="mt-4 flex w-1/4 gap-4">
 		<RectangularCard contentClass="gap-3 justify-between px-6 py-2">
