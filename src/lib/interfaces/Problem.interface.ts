@@ -1,4 +1,4 @@
-import type { Documents, GenericThree, GenericTwo } from './index';
+import type { Documents, Generic } from './index';
 
 export interface ProblemCard {
 	// ids
@@ -28,14 +28,15 @@ export interface ProblemInfo {
 	id: string; // primitive.ObjectID in Go
 	pid: string; // problem id
 	solved: boolean;
-	decision_taken: GenericTwo | null;
-	problem: GenericTwo | null;
-	involved: GenericTwo[];
-	contexts: GenericTwo[];
-	objectives: GenericTwo[];
-	alternatives: GenericTwo[];
-	action_plan: GenericThree[];
+	decision_taken: Generic | null;
+	problem: Generic | null;
+	involved: Generic[];
+	contexts: Generic[];
+	objectives: Generic[];
+	alternatives: Generic[];
+	action_plan: Generic[];
 	memories: Documents[];
+	final_decision: string | null; // will save the id of the objective selected
 	createdAt: string;
 	updatedAt: string | null;
 }

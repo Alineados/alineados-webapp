@@ -17,7 +17,7 @@
 
 	<Select.Root type="single" {name} bind:value>
 		<Select.Trigger
-			class="w-full border-alineados-gray-100 bg-alineados-gray-50 text-alineados-gray-900 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+			class="w-full border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-900 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 		>
 			{triggerContent}
 		</Select.Trigger>

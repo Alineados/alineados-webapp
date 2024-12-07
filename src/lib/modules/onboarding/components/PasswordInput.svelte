@@ -4,12 +4,15 @@
 	import EyeOff from '$lib/icons/BlockEye.svelte';
 	import Eye from '$lib/icons/NoBlockEye.svelte';
 
-	export let label: string = 'Contraseña';
-	export let id: string = 'password';
-	export let placeholder: string = 'Ingrese su contraseña';
-	export let isLoading: boolean = false;
+	let {
+		label = 'Contraseña',
+		id = 'password',
+		placeholder = 'Ingrese su contraseña',
+		value = $bindable(),
+		...props
+	} = $props();
 
-	let isPasswordVisible = false;
+	let isPasswordVisible = $state(false);
 
 	function togglePasswordVisibility() {
 		isPasswordVisible = !isPasswordVisible;
@@ -26,12 +29,13 @@
 			type={isPasswordVisible ? 'text' : 'password'}
 			autocapitalize="none"
 			autocorrect="off"
-			disabled={isLoading}
+			bind:value
+			{...props}
 		/>
 		<button
 			type="button"
 			class="absolute inset-y-0 right-0 flex items-center pr-3"
-			on:click={togglePasswordVisibility}
+			onclick={togglePasswordVisibility}
 		>
 			{#if isPasswordVisible}
 				<EyeOff class="h-5 w-5 text-alineados-gray-500" />

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CodeVerification from '$lib/modules/onboarding/components/CodeVerification.svelte';
-	const customPattern: RegExp = /^[0-9]+$/; // Asegúrate de que sea de tipo RegExp
+	//const customPattern: RegExp = /^[0-9]+$/; // Asegúrate de que sea de tipo RegExp
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center">
@@ -15,7 +15,7 @@
 		</p>
 	</div>
 
-	<CodeVerification maxlength={6} pattern={customPattern.source} />
+	<CodeVerification maxlength={6} />
 
 	<div class="mt-5 flex w-full items-center justify-center gap-1">
 		<p class="text-sm font-normal text-[#000000]">¿No recibiste el correo?</p>

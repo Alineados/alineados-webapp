@@ -10,20 +10,32 @@
 		spiritualProblems,
 		vocationalProblems
 	} from '$lib/stores';
+	import { onMount } from 'svelte';
 	// get data from server.ts
 	let { data }: { data: PageData } = $props();
 
 	// init stores
-	initProblems({ ...data.problems });
+	$effect(() => {
+		initProblems({ ...data.problems });
+	});
+	onMount(() => {
+		initProblems({ ...data.problems });
+	});
 </script>
 
 <div class="sticky top-0 z-10 w-full bg-white">
 	<PillarHeader />
 </div>
 
-<div class="flex flex-col gap-12">
-	<ProblemCard title="Salud" problems={$healthProblems} />
-	<ProblemCard title="Relación" problems={$relationalProblems} />
-	<ProblemCard title="Vocación" problems={$vocationalProblems} />
-	<ProblemCard title="Espiritual" problems={$spiritualProblems} />
-</div>
+{#await $healthProblems && $relationalProblems && $vocationalProblems && $spiritualProblems}
+	<p>Loading...</p>
+{:then}
+	<div class="flex flex-col gap-12">
+		<ProblemCard title="Salud" problems={$healthProblems} />
+		<ProblemCard title="Relación" problems={$relationalProblems} />
+		<ProblemCard title="Vocación" problems={$vocationalProblems} />
+		<ProblemCard title="Espiritual" problems={$spiritualProblems} />
+	</div>
+{:catch error}
+	<p>{error.message}</p>
+{/await}

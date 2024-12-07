@@ -11,23 +11,25 @@
 	let {
 		value = $bindable(),
 		isAccountability = false,
-		isDisabled = false,
-		usePlus = false,
-		useOrder = false,
-		isProminent = $bindable(),
+		isUnique = false,
+		isNew = false,
+		isStarred = $bindable(),
+		isDaily = $bindable(),
 		addItem,
 		deleteItem,
-		prominentItem
+		prominentItem,
+		dailyItem
 	}: {
-		value: string;
+		value?: string;
 		isAccountability?: boolean;
-		isDisabled?: boolean;
-		usePlus?: boolean;
-		useOrder?: boolean;
-		isProminent?: boolean;
+		isUnique?: boolean;
+		isNew?: boolean;
+		isStarred?: boolean;
+		isDaily?: boolean;
 		addItem?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
+		dailyItem?: () => void;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -37,7 +39,7 @@
 	}
 
 	function handleTextareaClick() {
-		isDisabled = false;
+		isNew = false;
 	}
 
 	function handleKeyPress(event: KeyboardEvent) {
@@ -46,27 +48,38 @@
 			if (addItem) addItem();
 		}
 	}
+
+	let isDone = $state(false);
+	let isRepeated = $state(false);
+
+	// Handlers
+
+	function handlerDoneItem() {
+		isDone = !isDone;
+		console.log(isDone);
+	}
+
+	function handlerRepeatItem() {
+		isRepeated = !isRepeated;
+	}
 </script>
 
 <div
-	class="item-container group flex h-auto items-center justify-between {!usePlus && !useOrder
-		? 'pl-10'
-		: ''}"
+	class="item-container group flex h-auto items-center justify-between"
+	class:pl-8={isUnique || isNew}
 >
-	<!-- ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
-	{#if usePlus && useOrder}
-		<div class="flex items-center gap-1">
+	{#if !isUnique && !isNew}
+		<div class="flex items-center gap-0">
 			<button
 				onclick={addItem}
-				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600`}
-				aria-label="Menu"
+				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 group-hover:visible`}
+				aria-label="Plus"
 			>
-				<Plus styleTw="size-5" />
+				<Plus styleTw="size-4" />
 			</button>
-			<!-- ${isDisabled ? 'invisible' : 'visible'} -->
 			<button
-				class={`text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 `}
-				aria-label="Menu"
+				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 group-hover:visible`}
+				aria-label="Order"
 			>
 				<Order stroke="currentColor" />
 			</button>
@@ -77,6 +90,8 @@
 		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
 	>
 		<button
+			aria-label="Copy"
+			onclick={() => navigator.clipboard.writeText(value!)}
 			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
 		>
 			<Copy styleTw="size-5" />
@@ -94,47 +109,63 @@
 		></textarea>
 	</div>
 
-	<!-- invisible ${isDisabled ? '' : 'group-focus-within:visible group-hover:visible'} -->
-	<div
-		class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
-	>
-		{#if isAccountability}
-			<button
-				class="text-alineados-gray-400 hover:text-green-500 focus:text-green-500"
-				aria-label="Check"
-			>
-				<Done stroke="currentColor" />
-			</button>
+	{#if !isNew}
+		<div
+			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
+		>
+			{#if isAccountability}
+				<button
+					onclick={handlerDoneItem}
+					class:text-alineados-gray-400={!isDone}
+					class:text-green-500={isDone}
+					class="hover:text-green-500"
+					aria-label="Check"
+				>
+					<Done styleTw="size-4" />
+				</button>
 
-			<button
-				class="text-alineados-gray-400 hover:text-blue-500 focus:text-blue-500"
-				aria-label="Refresh"
-			>
-				<Repeat stroke="currentColor" />
-			</button>
-		{:else}
-			<button
-				onclick={prominentItem}
-				class="{isProminent
-					? 'text-yellow-500'
-					: 'text-alineados-gray-400'} hover:text-yellow-500 focus:text-yellow-500"
-				aria-label="Star"
-			>
-				<Star stroke="currentColor" />
-			</button>
-			<button
-				class="text-alineados-gray-400 hover:text-alineados-green-500 focus:text-alineados-green-500"
-				aria-label="Day"
-			>
-				<Sun stroke="currentColor" />
-			</button>
-			<button
-				onclick={deleteItem}
-				class="text-alineados-gray-400 hover:text-red-500 focus:text-red-500"
-				aria-label="Delete"
-			>
-				<TrashCan stroke="currentColor" />
-			</button>
-		{/if}
-	</div>
+				<button
+					onclick={handlerRepeatItem}
+					class:text-alineados-gray-400={!isRepeated}
+					class:text-blue-500={isRepeated}
+					class=" hover:text-blue-500"
+					aria-label="Repeat"
+				>
+					<Repeat styleTw="size-4" />
+				</button>
+			{:else}
+				<button
+					onclick={() => {
+						if (prominentItem) prominentItem();
+					}}
+					class:text-alineados-gray-400={!isStarred}
+					class:text-yellow-500={isStarred}
+					class="hover:text-yellow-500"
+					aria-label="Star"
+				>
+					<Star styleTw="size-4" />
+				</button>
+				<button
+					onclick={() => {
+						if (dailyItem) dailyItem();
+					}}
+					class:text-alineados-gray-400={!isDaily}
+					class:text-alineados-green-500={isDaily}
+					class=" hover:text-alineados-green-500"
+					aria-label="Day"
+				>
+					<Sun styleTw="size-4" />
+				</button>
+				<button
+					onclick={() => {
+						if (deleteItem) deleteItem();
+					}}
+					class="text-alineados-gray-400 hover:text-red-500"
+					aria-label="Delete"
+				>
+					<TrashCan styleTw="size-4" />
+				</button>
+			{/if}
+		</div>
+	{/if}
 </div>

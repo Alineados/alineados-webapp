@@ -2,51 +2,123 @@
 	import Header from '$lib/modules/onboarding/components/Header.svelte';
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
+	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
 
-	let isLoading = false;
-	async function onSubmit() {
-		isLoading = true;
+	// Mock data
+	let userFirstName = 'José';
+	let userLastName = 'Penagos';
+	let userEmail = 'jose.penados@gmail.com';
 
-		setTimeout(() => {
-			isLoading = false;
-		}, 3000);
+	// Control visibility of confirm password input
+	let showConfirmPassword = $state(false);
+
+	// Password and requirements
+	let password = $state('');
+
+	let strengthening = $state(0);
+	let requirements = $state({
+		noNameOrEmail: false,
+		minLength: false,
+		hasNumberOrSymbol: false
+	});
+
+	function normalizeString(str: string): string {
+		return str
+			.normalize('NFD')
+			.replace(/[\u0300-\u036f]/g, '')
+			.toLowerCase();
+	}
+
+	function evaluatePassword() {
+		// Reset requirements and strengthening
+		if (password.trim() === '') {
+			requirements.noNameOrEmail = false;
+			requirements.minLength = false;
+			requirements.hasNumberOrSymbol = false;
+			strengthening = 0;
+			return;
+		}
+
+		// Normalize password and user data
+		const normalizedPassword = normalizeString(password);
+		requirements.noNameOrEmail =
+			!normalizedPassword.includes(normalizeString(userFirstName)) &&
+			!normalizedPassword.includes(normalizeString(userLastName)) &&
+			!normalizedPassword.includes(normalizeString(userEmail));
+		requirements.minLength = password.length >= 8;
+		requirements.hasNumberOrSymbol = /[0-9!@#$%^&*]/.test(password);
+
+		strengthening = Object.values(requirements).filter(Boolean).length;
+
+		// Show confirm password input if password is strong
+		if (strengthening === 3) {
+			showConfirmPassword = true;
+		} else {
+			showConfirmPassword = false;
+		}
+	}
+
+	// Confirm password
+	let confirmPassword = $state('');
+
+	// Confirm password evaluation
+	let matchPasswords = $state(false);
+
+	// Evaluate confirm password
+	function evaluateConfirmPassword() {
+		if (confirmPassword.trim() === '') return;
+
+		if (confirmPassword === password) {
+			matchPasswords = true;
+		} else {
+			matchPasswords = false;
+		}
 	}
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Creación de Contraseña" />
-	<div class="mt-9 flex w-full flex-col gap-11">
-		<PasswordInput label="Contraseña" id="password" placeholder="Ingrese su contraseña" />
+	<div class="mt-9 flex w-full flex-col gap-5">
 		<PasswordInput
-			label="Confirmar Contraseña"
-			id="confirm-password"
-			placeholder="Confirme su contraseña"
+			label="Contraseña"
+			id="password"
+			placeholder="Ingrese su contraseña"
+			bind:value={password}
+			oninput={evaluatePassword}
 		/>
-	</div>
-
-	<div class="mt-4">
 		<ul class="space-y-1">
 			<li>
-				<PasswordRequirement icon="cross" text="Fortaleza de la contraseña:" highlight="débil" />
+				<PasswordStrengthening {strengthening} />
 			</li>
 			<li>
 				<PasswordRequirement
-					icon="check"
+					checked={requirements.noNameOrEmail}
 					text="No puede contener tu nombre o dirección de correo electrónicos"
 				/>
 			</li>
 			<li>
-				<PasswordRequirement icon="check" text="Mínimo 8 caracteres" />
+				<PasswordRequirement checked={requirements.minLength} text="Mínimo 8 caracteres" />
 			</li>
 			<li>
 				<PasswordRequirement
-					icon="check"
+					checked={requirements.hasNumberOrSymbol}
 					text="Contiene un número o símbolo"
-					highlightColor="#7BB026"
 				/>
 			</li>
+		</ul>
+	</div>
+
+	<div class="mt-11 flex w-full flex-col gap-4" class:invisible={!showConfirmPassword}>
+		<PasswordInput
+			label="Confirmar Contraseña"
+			id="confirm-password"
+			placeholder="Confirme su contraseña"
+			bind:value={confirmPassword}
+			oninput={evaluateConfirmPassword}
+		/>
+		<ul class="space-y-1">
 			<li>
-				<PasswordRequirement icon="check" text="Match de contraseñas" />
+				<PasswordRequirement checked={matchPasswords} text="Match de contraseñas" />
 			</li>
 		</ul>
 	</div>

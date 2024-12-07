@@ -1,48 +1,23 @@
 <script lang="ts">
+	import { SocketService } from '$lib/services/socket';
 	import { Socket, type Channel } from 'phoenix';
 	import { onMount } from 'svelte';
 
-	let socket: Socket;
-	let channel: Channel;
-
-	function connect(): Channel {
-		let channel = socket.channel(`autosave:1234567`, {});
-		channel
-			.join()
-			.receive('ok', (resp: any) => {
-				console.log('Joined successfully', resp);
-			})
-			.receive('error', (resp: any) => {
-				console.error('Unable to join', resp);
-			});
-		return channel;
-	}
-
-	function disconnect() {
-		if (channel) {
-			channel.leave();
-		}
-	}
+	let socket: SocketService;
 
 	onMount(() => {
 		// channels
-		// socket = new Socket('wss://backtest.authworkinglive.com/socket');
-		socket = new Socket('ws://localhost:4000/socket');
-		socket.connect();
-		channel = connect();
-		channel.on('autosave_pc_success', (response: any) => {
-			console.log('autosave_pc_success', response);
-		});
-		return () => {
-			disconnect();
-		};
+		socket = new SocketService('123456');
 
+		return () => {
+			socket.disconnect();
+		};
 	});
 </script>
 
 <button
 	onclick={() => {
-		channel.push('autosave_pc', { data: 'Hello' });
+		socket.push('autosave_pc', '{data:"data"}');
 	}}
 >
 	Send data

@@ -8,8 +8,8 @@ export const relationalProblems = writable<ProblemCard[]>();
 export const vocationalProblems = writable<ProblemCard[]>();
 export const spiritualProblems = writable<ProblemCard[]>();
 
+export const pcid = writable<string>(''); // Problem Card ID
 export const problemCard = writable<ProblemCard>();
-
 // Function to initialize the store with the problems
 export const initProblems = ({
 	health,
@@ -29,8 +29,14 @@ export const initProblems = ({
 };
 
 export const initProblemCard = (card: ProblemCard) => {
-	if (card) problemCard.set(card);
+	if (card) {
+		pcid.set(card.id);
+		problemCard.set(card);
+	}
 };
+
+
+
 
 // Function to add a problem to the store
 export const addProblem = (problem: ProblemCard, pillar: PillarsAndCategories) => {

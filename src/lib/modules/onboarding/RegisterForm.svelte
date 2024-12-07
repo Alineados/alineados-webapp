@@ -1,6 +1,7 @@
 <script lang="ts">
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterSelect from '$lib/modules/onboarding/components/RegisterSelect.svelte';
+	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
 	import PhoneInput from '$lib/modules/onboarding/components/PhoneInput.svelte';
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
@@ -8,41 +9,111 @@
 
 	// Countries
 	const countries = [
-		{ value: 'gt', label: 'Guatemala' },
-		{ value: 'hn', label: 'Honduras' },
-		{ value: 'sv', label: 'El Salvador' },
-		{ value: 'ni', label: 'Nicaragua' },
-		{ value: 'cr', label: 'Costa Rica' },
-		{ value: 'pa', label: 'Panamá' }
+		{
+			value: 'guatemala',
+			label: 'Guatemala',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
+		},
+		{
+			value: 'honduras',
+			label: 'Honduras',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
+		},
+		{
+			value: 'el salvador',
+			label: 'El Salvador',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
+		},
+		{
+			value: 'nicaragua',
+			label: 'Nicaragua',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
+		},
+		{
+			value: 'costa rica',
+			label: 'Costa Rica',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
+		},
+		{
+			value: 'panama',
+			label: 'Panamá',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
+		}
 	];
 
 	// Countries code
 	const countriesCode = [
-		{ value: '+502', label: 'GT' },
-		{ value: '+504', label: 'HN' },
-		{ value: '+503', label: 'SV' },
-		{ value: '+505', label: 'NI' },
-		{ value: '+506', label: 'CR' },
-		{ value: '+507', label: 'PA' }
+		{
+			value: '+502',
+			label: 'GT',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
+		},
+		{
+			value: '+504',
+			label: 'HN',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
+		},
+		{
+			value: '+503',
+			label: 'SV',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
+		},
+		{
+			value: '+505',
+			label: 'NI',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
+		},
+		{
+			value: '+506',
+			label: 'CR',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
+		},
+		{
+			value: '+507',
+			label: 'PA',
+			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
+		}
 	];
+
+	// Form data
+	let firstName = '';
+	let lastName = '';
+	let countryOfResidence = '';
+	let countryOfBirth = '';
+	let email = '';
+	let birthday = '';
+	let phoneNumber = '';
+	let whatsappNumber = '';
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Datos Personales" />
 
-	<div class="mt-9 flex w-full flex-col gap-9">
+	<form action="/?/username" method="POST" class="mt-9 flex w-full flex-col gap-7">
 		<div class="flex gap-6">
-			<RegisterInput label="Nombre" forId="first-name" placeholder="Ej: José" type="text" />
-			<RegisterInput label="Apellido" forId="last-name" placeholder="Ej: Penados" type="text" />
+			<RegisterInput
+				label="Nombre"
+				forId="first-name"
+				placeholder="Ingrese su nombre"
+				type="text"
+				bind:value={firstName}
+			/>
+			<RegisterInput
+				label="Apellido"
+				forId="last-name"
+				placeholder="Ingrese su apellido"
+				type="text"
+				bind:value={lastName}
+			/>
 		</div>
 		<div class="flex gap-6">
-			<RegisterSelect
+			<RegisterCombobox
 				label="País de Residencia"
 				name="country-of-residence"
 				options={countries}
 				placeholder="Selecciona un país"
 			/>
-			<RegisterSelect
+			<RegisterCombobox
 				label="País de Nacimiento"
 				name="country-of-birth"
 				options={countries}
@@ -53,19 +124,19 @@
 			<RegisterInput
 				label="Correo Electrónico"
 				forId="email"
-				placeholder="Ej: jose.penados@gmail.com"
+				placeholder="Ingrese su correo electrónico"
 				type="email"
 			/>
 			<BirthdaySelect label="Fecha de Nacimiento" />
 		</div>
 		<div class="flex gap-6">
-			<PhoneInput label="Celular" name="phone-number" placeholder="Tel" options={countriesCode} />
+			<PhoneInput label="Celular" name="phone-number" placeholder="País" options={countriesCode} />
 			<WhatsAppInput
 				label="WhatsApp"
 				name="whatsapp-number"
-				placeholder="Tel"
+				placeholder="País"
 				options={countriesCode}
 			/>
 		</div>
-	</div>
+	</form>
 </div>

@@ -14,7 +14,7 @@
 	<div class="-mb-3"></div>
 	<div class="-mb-3"></div>
 	<div class="-mb-3">
-		<span class="text-xs font-medium text-alineados-gray-300">Criterios &rarr;</span>
+		<span class="text-xs font-medium text-alineados-gray-300">Alternativas &rarr;</span>
 	</div>
 	<div class="-mb-3"></div>
 	<div class="-mb-3"></div>
@@ -39,7 +39,7 @@
 			class="absolute origin-top-left translate-y-full -rotate-90 transform whitespace-nowrap text-xs font-medium tracking-wider text-alineados-gray-300"
 			style="left: 50%; bottom: 0.5rem;"
 		>
-			&larr; Alternativas
+			&larr; Objettivos
 		</span>
 	</div>
 	<div

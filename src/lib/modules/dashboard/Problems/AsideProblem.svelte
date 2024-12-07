@@ -29,7 +29,7 @@
 			<Upload styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900" />
 		</button>
 	</div>
-	<!-- <ImagesCarousel /> -->
+	<ImagesCarousel />
 	<RectangularCard contentClass="w-full">
 		{#snippet leftContent()}
 			<div class="flex w-full flex-col items-center justify-center gap-1">
