@@ -17,6 +17,10 @@
 	function togglePasswordVisibility() {
 		isPasswordVisible = !isPasswordVisible;
 	}
+
+	function preventCopyPaste(event: Event) {
+		event.preventDefault();
+	}
 </script>
 
 <div class="w-3/5 space-y-2">
@@ -30,6 +34,9 @@
 			autocapitalize="none"
 			autocorrect="off"
 			bind:value
+			oncopy={preventCopyPaste}
+			oncut={preventCopyPaste}
+			onpaste={preventCopyPaste}
 			{...props}
 		/>
 		<button

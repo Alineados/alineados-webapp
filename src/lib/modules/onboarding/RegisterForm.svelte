@@ -10,32 +10,32 @@
 	// Countries
 	const countries = [
 		{
-			value: 'guatemala',
+			value: 'Guatemala',
 			label: 'Guatemala',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
 		},
 		{
-			value: 'honduras',
+			value: 'Honduras',
 			label: 'Honduras',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
 		},
 		{
-			value: 'el salvador',
+			value: 'El Salvador',
 			label: 'El Salvador',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
 		},
 		{
-			value: 'nicaragua',
+			value: 'Nicaragua',
 			label: 'Nicaragua',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
 		},
 		{
-			value: 'costa rica',
+			value: 'Costa Rica',
 			label: 'Costa Rica',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
 		},
 		{
-			value: 'panama',
+			value: 'Panamá',
 			label: 'Panamá',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
@@ -45,32 +45,32 @@
 	const countriesCode = [
 		{
 			value: '+502',
-			label: 'GT',
+			label: 'Guatemala',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
 		},
 		{
 			value: '+504',
-			label: 'HN',
+			label: 'Honduras',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
 		},
 		{
 			value: '+503',
-			label: 'SV',
+			label: 'El Salvador',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
 		},
 		{
 			value: '+505',
-			label: 'NI',
+			label: 'Nicaragua',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
 		},
 		{
 			value: '+506',
-			label: 'CR',
+			label: 'Costa Rica',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
 		},
 		{
 			value: '+507',
-			label: 'PA',
+			label: 'Panamá',
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
 	];
