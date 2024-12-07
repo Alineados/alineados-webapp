@@ -1,72 +1,108 @@
 <script lang="ts">
 	import { Input } from '$lib/shared/ui/input/index';
 	import { Label } from '$lib/shared/ui/label/index';
-	import * as Select from '$lib/shared/ui/select/index';
+	import Check from 'lucide-svelte/icons/check';
+	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
+	import { tick } from 'svelte';
+	import * as Command from '$lib/shared/ui/command/index.js';
+	import * as Popover from '$lib/shared/ui/popover/index.js';
+	import { Button } from '$lib/shared/ui/button/index.js';
+	import { cn } from '$lib/utils.js';
 
-	export let label: string = 'Celular';
-	export let name: string;
-	export let options: { value: string; label: string; flag: string }[] = [];
-	export let value: string = '';
-	export let placeholder: string = 'Select an option';
-	export let isOptional: boolean = false;
+	let { name, label, placeholder, options = [], isInvalid = false, errorMessage = '' } = $props();
 
-	// Derived content for the trigger
-	$: selectedOption = options.find((option) => option.value === value);
-	$: triggerContent = selectedOption?.label ?? placeholder;
-	$: triggerFlag = selectedOption?.flag ?? '';
+	let open = $state(false);
+	let value = $state('');
+	let triggerRef = $state<HTMLButtonElement>(null!);
+
+	const selectedValue = $derived(options.find((f) => f.value === value));
+
+	// We want to refocus the trigger button when the user selects
+	// an item from the list so users can continue navigating the
+	// rest of the form with the keyboard.
+	function closeAndFocusTrigger() {
+		open = false;
+		tick().then(() => {
+			triggerRef.focus();
+		});
+	}
 </script>
 
-<div class="w-1/2 space-y-2">
-	<Label class="text-lg font-semibold text-black" for={name}>
-		{label}
-		{#if isOptional}<span class="text-xs font-medium">(Opcional)</span>{/if}
-	</Label>
-	<div class="flex">
-		<Select.Root type="single" {name} bind:value>
-			<Select.Trigger
-				class="select-trigger w-1/6 border-white bg-[#0F172A] text-alineados-gray-100 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-white"
-			>
-				{#if triggerContent === placeholder}
-					{placeholder}
-				{:else}
-					<img class="size-6" src={triggerFlag} alt={triggerContent} />
-				{/if}
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group class="bg-alineados-gray-100">
-					<Select.GroupHeading>{label}</Select.GroupHeading>
-					{#each options as option}
-						<Select.Item
-							class="bg-alineados-gray-50  text-base"
-							value={option.value}
-							label={option.label}
+<div class="flex w-1/2 flex-col gap-0">
+	<div class="flex flex-col gap-2">
+		<Label class="text-lg font-semibold text-black" for={name}>
+			{label}
+		</Label>
+		<div class="flex">
+			<Popover.Root bind:open>
+				<Popover.Trigger bind:ref={triggerRef}>
+					{#snippet child({ props })}
+						<Button
+							variant="outline"
+							class="w-[103px] justify-between rounded-lg border-white bg-[#0F172A] text-sm font-normal text-white hover:bg-[#0F172A] hover:text-white"
+							{...props}
+							role="combobox"
+							aria-expanded={open}
 						>
-							<div class="flex items-center gap-1">
-								<img class="size-7" src={option.flag} alt={option.label} />
-								<span class="text-xl-">{option.value}</span>
-							</div>
-						</Select.Item>
-					{/each}
-				</Select.Group>
-			</Select.Content>
-		</Select.Root>
+							{#if !selectedValue}
+								{placeholder}
+							{:else}
+								<div class="flex items-center gap-2">
+									<img class="size-5" src={selectedValue.flag} alt={selectedValue.label} />
+								</div>
+							{/if}
+							<ChevronsUpDown class="opacity-50" />
+						</Button>
+					{/snippet}
+				</Popover.Trigger>
+				<Popover.Content class={`w-[140px] bg-alineados-gray-50 p-0`}>
+					<Command.Root>
+						<Command.Input {placeholder} />
+						<Command.List>
+							<Command.Empty>País no encontrado.</Command.Empty>
+							<Command.Group class="bg-alineados-gray-100">
+								{#each options as option}
+									<Command.Item
+										value={option.label}
+										class="bg-alineados-gray-50"
+										onSelect={() => {
+											value = option.value;
+											closeAndFocusTrigger();
+										}}
+									>
+										<Check class={cn(value !== option.value && 'text-transparent')} />
+										<div class="flex items-center gap-2">
+											<img class="size-5" src={option.flag} alt={option.label} />
+											<span class="text-base">{option.value}</span>
+										</div>
+									</Command.Item>
+								{/each}
+							</Command.Group>
+						</Command.List>
+					</Command.Root>
+				</Popover.Content>
+			</Popover.Root>
 
-		<Input
-			class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-center text-base placeholder:text-alineados-gray-500"
-			id={name}
-			type="tel"
-			autocapitalize="none"
-			autocorrect="off"
-			placeholder="+000"
-			bind:value
-		/>
-		<Input
-			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-base placeholder:text-alineados-gray-500"
-			id={name}
-			type="tel"
-			placeholder="Ingrese su número de celular"
-			autocapitalize="none"
-			autocorrect="off"
-		/>
+			<Input
+				class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-center text-base placeholder:text-alineados-gray-500"
+				id={name}
+				type="tel"
+				autocapitalize="none"
+				autocorrect="off"
+				placeholder="+000"
+				bind:value
+			/>
+			<Input
+				class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-base placeholder:text-alineados-gray-500"
+				id={name}
+				type="tel"
+				placeholder="Ingrese su número de celular"
+				autocapitalize="none"
+				autocorrect="off"
+			/>
+		</div>
 	</div>
+	<span class="text-xs text-[#C90404]" style="opacity: {isInvalid ? 1 : 0}; height: 1em;">
+		{errorMessage}
+	</span>
 </div>

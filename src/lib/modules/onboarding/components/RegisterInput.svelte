@@ -8,22 +8,22 @@
 		forId,
 		type = 'text',
 		placeholder,
-		errorMessage = '*Campo requerido',
-		value = $bindable()
+		value = $bindable(),
+		isInvalid = false,
+		errorMessage = ''
 	} = $props();
-
-	// State
-	let isInvalid = $state(false);
 
 	// Functions
 	function validateInput() {
 		const regex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{2,10}$/;
-		/*
+
 		if (value.trim() === '') {
 			isInvalid = true;
-			errorMessage = '*Campo requerido';
-		} 			
-		else */ if (!regex.test(value)) {
+			//errorMessage = '*Campo requerido';
+		} else if (value.length > 10) {
+			isInvalid = true;
+			errorMessage = '*Máximo 10 caracteres';
+		} else if (!regex.test(value)) {
 			isInvalid = true;
 			errorMessage = '*Solo se aceptan letras';
 		} else {
@@ -33,7 +33,7 @@
 	}
 </script>
 
-<div class="flex w-1/2 flex-col gap-1">
+<div class="flex w-1/2 flex-col gap-0">
 	<div class="flex flex-col gap-2">
 		<Label class="text-lg font-semibold text-black" for={forId}>{label}</Label>
 		<Input
@@ -47,5 +47,7 @@
 			oninput={validateInput}
 		/>
 	</div>
-	<span class:invisible={!isInvalid} class="text-xs text-[#C90404]">{errorMessage}</span>
+	<span class="text-xs text-[#C90404]" style="opacity: {isInvalid ? 1 : 0}; height: 1em;">
+		{errorMessage}
+	</span>
 </div>
