@@ -1,14 +1,17 @@
 <script lang="ts">
 	let {
-		text,
-		selected = false
+		text = $bindable(),
+		selected = false,
+		changeFinalDecision
 	}: {
 		text: string;
 		selected?: boolean;
+		changeFinalDecision?: () => void;
 	} = $props();
 
 	function selectItem() {
 		selected = !selected;
+		changeFinalDecision && changeFinalDecision();
 	}
 </script>
 

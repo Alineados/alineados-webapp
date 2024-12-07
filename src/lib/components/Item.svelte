@@ -13,19 +13,23 @@
 		isAccountability = false,
 		isUnique = false,
 		isNew = false,
-		isProminent = $bindable(),
+		isStarred = $bindable(),
+		isDaily = $bindable(),
 		addItem,
 		deleteItem,
-		prominentItem
+		prominentItem,
+		dailyItem
 	}: {
 		value?: string;
 		isAccountability?: boolean;
 		isUnique?: boolean;
 		isNew?: boolean;
-		isProminent?: boolean;
+		isStarred?: boolean;
+		isDaily?: boolean;
 		addItem?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
+		dailyItem?: () => void;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -45,27 +49,10 @@
 		}
 	}
 
-	let isStarred = $state(false);
-	let isSunActive = $state(false);
-	let isDeleted = $state(false);
 	let isDone = $state(false);
 	let isRepeated = $state(false);
 
 	// Handlers
-	function handlerStarItem() {
-		isStarred = !isStarred;
-		console.log(isStarred);
-		prominentItem;
-	}
-
-	function handlerSunItem() {
-		isSunActive = !isSunActive;
-	}
-
-	function handlerDeleteItem() {
-		isDeleted = true;
-		deleteItem;
-	}
 
 	function handlerDoneItem() {
 		isDone = !isDone;
@@ -103,6 +90,8 @@
 		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
 	>
 		<button
+			aria-label="Copy"
+			onclick={() => navigator.clipboard.writeText(value!)}
 			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
 		>
 			<Copy styleTw="size-5" />
@@ -146,7 +135,9 @@
 				</button>
 			{:else}
 				<button
-					onclick={handlerStarItem}
+					onclick={() => {
+						if (prominentItem) prominentItem();
+					}}
 					class:text-alineados-gray-400={!isStarred}
 					class:text-yellow-500={isStarred}
 					class="hover:text-yellow-500"
@@ -155,16 +146,20 @@
 					<Star styleTw="size-4" />
 				</button>
 				<button
-					onclick={handlerSunItem}
-					class:text-alineados-gray-400={!isSunActive}
-					class:text-alineados-green-500={isSunActive}
+					onclick={() => {
+						if (dailyItem) dailyItem();
+					}}
+					class:text-alineados-gray-400={!isDaily}
+					class:text-alineados-green-500={isDaily}
 					class=" hover:text-alineados-green-500"
 					aria-label="Day"
 				>
 					<Sun styleTw="size-4" />
 				</button>
 				<button
-					onclick={handlerDeleteItem}
+					onclick={() => {
+						if (deleteItem) deleteItem();
+					}}
 					class="text-alineados-gray-400 hover:text-red-500"
 					aria-label="Delete"
 				>

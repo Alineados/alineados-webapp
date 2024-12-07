@@ -17,11 +17,15 @@
 		addProblemItem,
 		removeOrCleanItem,
 		problemInfoJSON,
-		prominentItem
+		prominentItem,
+		changeFinalDecision,
+
+		markDailytItem
+
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 
-	$inspect($problemInfo);
+	// $inspect($problemInfo);
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -38,7 +42,12 @@
 				deleteItem={() => {
 					removeOrCleanItem($problemInfo.decision_taken!.id, ProblemType.decision_taken);
 				}}
-				isDisabled
+				dailyItem={() => {
+					markDailytItem($problemInfo.decision_taken!.id, ProblemType.decision_taken);
+				}}
+				isUnique
+				bind:isStarred={$problemInfo.decision_taken!.prominent}
+				bind:isDaily={$problemInfo.decision_taken!.daily}
 				bind:value={$problemInfo.decision_taken!.description!}
 			/>
 		</div>
@@ -58,9 +67,14 @@
 					addItem={() => {
 						addProblemItem(involded.id, ProblemType.involved);
 					}}
-					useOrder
-					usePlus
-					isDisabled
+					prominentItem={() => {
+						prominentItem(involded.id, ProblemType.involved);
+					}}
+					dailyItem={() => {
+						markDailytItem(involded.id, ProblemType.involved);
+					}}
+					bind:isDaily={involded.daily}
+					bind:isStarred={involded.prominent}
 					bind:value={involded.description}
 				/>
 			{/each}
@@ -81,9 +95,14 @@
 					addItem={() => {
 						addProblemItem(context.id, ProblemType.contexts);
 					}}
-					useOrder
-					usePlus
-					isDisabled
+					prominentItem={() => {
+						prominentItem(context.id, ProblemType.contexts);
+					}}
+					dailyItem={() => {
+						markDailytItem(context.id, ProblemType.contexts);
+					}}
+					bind:isDaily={context.daily}
+					bind:isStarred={context.prominent}
 					bind:value={context.description}
 				/>
 			{/each}
@@ -100,7 +119,15 @@
 				deleteItem={() => {
 					removeOrCleanItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
-				isDisabled
+				prominentItem={() => {
+					prominentItem($problemInfo.problem!.id, ProblemType.problem);
+				}}
+				dailyItem={() => {
+					markDailytItem($problemInfo.problem!.id, ProblemType.problem);
+				}}
+				isUnique
+				bind:isDaily={$problemInfo.problem!.daily}
+				bind:isStarred={$problemInfo.problem!.prominent}
 				bind:value={$problemInfo.problem!.description!}
 			/>
 		</div>
@@ -120,9 +147,14 @@
 					addItem={() => {
 						addProblemItem(objective.id, ProblemType.objectives);
 					}}
-					useOrder
-					usePlus
-					isDisabled
+					prominentItem={() => {
+						prominentItem(objective.id, ProblemType.objectives);
+					}}
+					dailyItem={() => {
+						markDailytItem(objective.id, ProblemType.objectives);
+					}}
+					bind:isDaily={objective.daily}
+					bind:isStarred={objective.prominent}
 					bind:value={objective.description}
 				/>
 			{/each}
@@ -143,9 +175,14 @@
 					addItem={() => {
 						addProblemItem(alternative.id, ProblemType.alternatives);
 					}}
-					useOrder
-					usePlus
-					isDisabled
+					prominentItem={() => {
+						prominentItem(alternative.id, ProblemType.alternatives);
+					}}
+					dailyItem={() => {
+						markDailytItem(alternative.id, ProblemType.alternatives);
+					}}
+					bind:isDaily={alternative.daily}
+					bind:isStarred={alternative.prominent}
 					bind:value={alternative.description}
 				/>
 			{/each}
@@ -167,7 +204,7 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
-				isDisabled
+				isUnique
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
 		</div>
@@ -179,9 +216,19 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Final</h2>
 		</div>
 		<div class=" mt-5 flex flex-col gap-2">
-			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
-			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
-			<DecisionPill text="Lorem ipsum dolor sit amet consectetur." />
+			{#if $problemInfo.objectives.length === 1 && $problemInfo.objectives[0].description === ''}
+				<p class="pl-2 text-alineados-gray-400">No hay objetivos</p>
+			{:else}
+				{#each $problemInfo.objectives as objective}
+					<DecisionPill
+						changeFinalDecision={() => {
+							changeFinalDecision(objective.id);
+						}}
+						selected={objective.id === $problemInfo.final_decision}
+						bind:text={objective.description}
+					/>
+				{/each}
+			{/if}
 		</div>
 	</div>
 
@@ -199,9 +246,14 @@
 					addItem={() => {
 						addProblemItem(action.id, ProblemType.action_plan);
 					}}
-					useOrder
-					usePlus
-					isDisabled
+					prominentItem={() => {
+						prominentItem(action.id, ProblemType.action_plan);
+					}}
+					dailyItem={() => {
+						markDailytItem(action.id, ProblemType.action_plan);
+					}}
+					bind:isDaily={action.daily}
+					bind:isStarred={action.prominent}
 					bind:value={action.description}
 				/>
 			{/each}

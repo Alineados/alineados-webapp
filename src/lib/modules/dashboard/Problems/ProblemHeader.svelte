@@ -3,12 +3,40 @@
 	import MoreButton from '$lib/components/MoreButton.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
-	import { autosavingProblemCard, autosavingProblemInfo } from '$lib/stores';
+	import {
+		autosavingProblemCard,
+		autosavingProblemInfo,
+		pcid,
+		problemCardJSON,
+		problemInfoJSON
+	} from '$lib/stores';
 
 	import Cloud from '$lib/icons/Cloud.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
+	import { onMount } from 'svelte';
+	import { SocketService } from '$lib/services/socket';
 
+	let socket: SocketService;
 	let { title = $bindable() } = $props();
+
+	$effect(() => {
+		if ($autosavingProblemCard) {
+			// console.log('autosaving', $problemCardJSON);
+			socket.push('autosave_pc', $problemCardJSON as string);
+		}
+
+		if ($autosavingProblemInfo) {
+			// console.log('autosaving', $problemInfoJSON);
+			socket.push('autosave_pi', $problemInfoJSON as string);
+		}
+	});
+
+	onMount(() => {
+		socket = new SocketService($pcid);
+		return () => {
+			socket.disconnect();
+		};
+	});
 </script>
 
 <div class="flex flex-col gap-5 pb-6">

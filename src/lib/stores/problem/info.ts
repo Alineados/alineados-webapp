@@ -1,10 +1,10 @@
 import type { ProblemInfo } from '$lib/interfaces';
 import { ProblemType } from '$lib/interfaces';
 import { derived, writable } from 'svelte/store';
-import { emptyGenericThree, emptyGenericTwo } from '../generic';
+import { emptyGeneric } from '../generic';
 
 // Problem info store
-export const pid = writable<string>('');
+export const pid = writable<string>(''); // Problem info ID
 export const problemInfo = writable<ProblemInfo>();
 
 // Function to initialize the store with the problem info
@@ -15,13 +15,13 @@ export const initProblemInfo = (info: ProblemInfo) => {
 		pid.set(info.pid);
 
 		// evaluate the problem info
-		if (!info.decision_taken) info.decision_taken = emptyGenericTwo();
-		if (!info.problem) info.problem = emptyGenericTwo();
-		if (info.involved.length === 0) info.involved = [{ ...emptyGenericTwo() }];
-		if (info.contexts.length === 0) info.contexts = [{ ...emptyGenericTwo() }];
-		if (info.objectives.length === 0) info.objectives = [{ ...emptyGenericTwo() }];
-		if (info.alternatives.length === 0) info.alternatives = [{ ...emptyGenericTwo() }];
-		if (info.action_plan.length === 0) info.action_plan = [{ ...emptyGenericThree() }];
+		if (!info.decision_taken) info.decision_taken = emptyGeneric();
+		if (!info.problem) info.problem = emptyGeneric();
+		if (info.involved.length === 0) info.involved = [{ ...emptyGeneric() }];
+		if (info.contexts.length === 0) info.contexts = [{ ...emptyGeneric() }];
+		if (info.objectives.length === 0) info.objectives = [{ ...emptyGeneric() }];
+		if (info.alternatives.length === 0) info.alternatives = [{ ...emptyGeneric() }];
+		if (info.action_plan.length === 0) info.action_plan = [{ ...emptyGeneric() }];
 
 		problemInfo.set(info);
 	}
@@ -46,12 +46,20 @@ export const problemInfoJSON = derived([problemInfo], ([$problemInfo], set) => {
 	set(JSON.stringify($problemInfo));
 });
 
+// Function to change the id of the final decision taken
+export const changeFinalDecision = (id: string) => {
+	problemInfo.update((info) => {
+		info.final_decision = id;
+		return info;
+	});
+};
+
 // Function to insert new elements in the problem info arrays
 export const addProblemItem = (previous_id: string, problemType: ProblemType) => {
 	if (problemType === ProblemType.involved) {
 		problemInfo.update((info) => {
 			const index = info.involved.findIndex((inv) => inv.id === previous_id);
-			info.involved.splice(index + 1, 0, { ...emptyGenericTwo() });
+			info.involved.splice(index + 1, 0, { ...emptyGeneric() });
 			return info;
 		});
 	}
@@ -59,7 +67,7 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 	if (problemType === ProblemType.contexts) {
 		problemInfo.update((info) => {
 			const index = info.contexts.findIndex((inv) => inv.id === previous_id);
-			info.contexts.splice(index + 1, 0, { ...emptyGenericTwo() });
+			info.contexts.splice(index + 1, 0, { ...emptyGeneric() });
 			return info;
 		});
 	}
@@ -67,7 +75,7 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 	if (problemType === ProblemType.objectives) {
 		problemInfo.update((info) => {
 			const index = info.objectives.findIndex((inv) => inv.id === previous_id);
-			info.objectives.splice(index + 1, 0, { ...emptyGenericTwo() });
+			info.objectives.splice(index + 1, 0, { ...emptyGeneric() });
 			return info;
 		});
 	}
@@ -75,7 +83,7 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 	if (problemType === ProblemType.alternatives) {
 		problemInfo.update((info) => {
 			const index = info.alternatives.findIndex((inv) => inv.id === previous_id);
-			info.alternatives.splice(index + 1, 0, { ...emptyGenericTwo() });
+			info.alternatives.splice(index + 1, 0, { ...emptyGeneric() });
 			return info;
 		});
 	}
@@ -83,7 +91,7 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 	if (problemType === ProblemType.action_plan) {
 		problemInfo.update((info) => {
 			const index = info.action_plan.findIndex((inv) => inv.id === previous_id);
-			info.action_plan.splice(index + 1, 0, { ...emptyGenericThree() });
+			info.action_plan.splice(index + 1, 0, { ...emptyGeneric() });
 			return info;
 		});
 	}
@@ -223,6 +231,63 @@ export const prominentItem = (id: string, problemType: ProblemType) => {
 		problemInfo.update((info) => {
 			const index = info.action_plan.findIndex((inv) => inv.id === id);
 			info.action_plan[index].prominent = !info.action_plan[index].prominent;
+			return info;
+		});
+	}
+};
+
+// Function to mark as daily item
+export const markDailytItem = (id: string, problemType: ProblemType) => {
+	if (problemType === ProblemType.decision_taken) {
+		problemInfo.update((info) => {
+			info.decision_taken!.daily = !info.decision_taken!.daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.problem) {
+		problemInfo.update((info) => {
+			info.problem!.daily = !info.problem!.daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.involved) {
+		problemInfo.update((info) => {
+			const index = info.involved.findIndex((inv) => inv.id === id);
+			info.involved[index].daily = !info.involved[index].daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.contexts) {
+		problemInfo.update((info) => {
+			const index = info.contexts.findIndex((inv) => inv.id === id);
+			info.contexts[index].daily = !info.contexts[index].daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.objectives) {
+		problemInfo.update((info) => {
+			const index = info.objectives.findIndex((inv) => inv.id === id);
+			info.objectives[index].daily = !info.objectives[index].daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.alternatives) {
+		problemInfo.update((info) => {
+			const index = info.alternatives.findIndex((inv) => inv.id === id);
+			info.alternatives[index].daily = !info.alternatives[index].daily;
+			return info;
+		});
+	}
+
+	if (problemType === ProblemType.action_plan) {
+		problemInfo.update((info) => {
+			const index = info.action_plan.findIndex((inv) => inv.id === id);
+			info.action_plan[index].daily = !info.action_plan[index].daily;
 			return info;
 		});
 	}

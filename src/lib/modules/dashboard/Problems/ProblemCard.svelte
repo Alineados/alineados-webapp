@@ -109,7 +109,7 @@
 							class="rounded-lg p-2 hover:bg-gray-100"
 							aria-label="delete-card"
 						>
-							<TrashCan width={18} height={18} />
+							<TrashCan styleTw="size-4" />
 						</button>
 					</div>
 				{/snippet}

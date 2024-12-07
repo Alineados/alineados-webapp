@@ -11,6 +11,7 @@ export {
 	vocationalProblems,
 	autosavingProblemCard,
 	problemCard,
+	pcid,
 	problemCardJSON
 } from './problem/cards';
 
@@ -19,6 +20,8 @@ export {
 	addProblemItem,
 	removeOrCleanItem,
 	prominentItem,
+	changeFinalDecision,
+	markDailytItem,
 	autosavingProblemInfo,
 	pid,
 	problemInfo,
@@ -26,4 +29,4 @@ export {
 } from './problem/info';
 
 // Generics
-export { emptyGenericOne, emptyGenericTwo, emptyGenericThree } from './generic';
+export { emptyGeneric } from './generic';
