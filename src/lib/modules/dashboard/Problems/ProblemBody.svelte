@@ -19,9 +19,7 @@
 		problemInfoJSON,
 		prominentItem,
 		changeFinalDecision,
-
 		markDailytItem
-
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 
@@ -204,7 +202,7 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
-				isUnique
+				isOnlyText
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
 		</div>

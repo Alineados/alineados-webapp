@@ -11,6 +11,8 @@
 	import RectangularCard from '$lib/components/RectangularCard.svelte';
 	import SelectablePill from '$lib/components/SelectablePill.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
+	import DecisionMatrix from '$lib/modules/dashboard/Problems/DecisionMatrix.svelte';
+	import InformationButton from '$lib/components/InformationButton.svelte';
 
 	let items = ['Salud Física', 'Salud Mental', 'Relación Propia', 'Relación Familiar'];
 </script>
@@ -120,6 +122,12 @@
 			value="El item de abajo es para cuando se quiera agregar uno nuevo, solo se hace click en el text area y se activará"
 		/>
 		<Item isNew />
+		<Item
+			isDisabled
+			isStarred
+			value="Este item está deshabilitado, no se puede hacer nada solo copiar y ver los estados"
+		/>
+		<Item value="Este item sirve para solo texto, solo se puede copiar" isOnlyText />
 	</div>
 	<div class="mt-4 flex w-1/4 gap-4">
 		<RectangularCard contentClass="gap-3 justify-between px-6 py-2">
@@ -131,11 +139,19 @@
 			{/snippet}
 		</RectangularCard>
 	</div>
-	<div class="f mt-4 flex gap-4">
+	<div class=" mt-4 flex gap-4">
 		<ProgressCircle progress={0} />
 		<ProgressCircle progress={25} />
 		<ProgressCircle progress={50} />
 		<ProgressCircle progress={75} />
 		<ProgressCircle progress={100} />
+	</div>
+
+	<div class="mt-4 flex w-1/2 items-start gap-4">
+		<DecisionMatrix />
+		<InformationButton
+			tittle="Aquí deberá de ir el título"
+			description="Aquí deberá ir la explicación de la matríz"
+		/>
 	</div>
 </div>

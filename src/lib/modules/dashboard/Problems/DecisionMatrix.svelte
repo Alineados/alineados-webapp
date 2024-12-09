@@ -30,8 +30,8 @@
 			</span>
 		</div>
 		<div class="flex w-1/3 flex-col items-center gap-1">
-			<span class="text-2xl text-gray-400">#</span>
-			<span class="text-xs font-medium text-gray-400">unidades</span>
+			<input class="w-full text-center text-3xl text-alineados-green-900 outline-none" value="#" />
+			<span class="text-xs font-medium text-alineados-green-900">unidades</span>
 		</div>
 	</div>
 	<div class="relative -mr-3 flex justify-end overflow-hidden">
@@ -43,19 +43,46 @@
 		</span>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-green-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-green-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-green-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 
 	<!-- Row 2 -->
@@ -69,25 +96,52 @@
 			</span>
 		</div>
 		<div class="flex w-1/3 flex-col items-center gap-1">
-			<span class="text-2xl text-gray-400">#</span>
-			<span class="text-xs font-medium text-gray-400">unidades</span>
+			<input class="w-full text-center text-3xl text-alineados-orange-900 outline-none" value="#" />
+			<span class="text-xs font-medium text-alineados-orange-900">unidades</span>
 		</div>
 	</div>
 	<div></div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-orange-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-orange-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-orange-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 
 	<!-- Row 3 -->
@@ -101,25 +155,54 @@
 			</span>
 		</div>
 		<div class="flex w-1/3 flex-col items-center gap-1">
-			<span class="text-2xl text-gray-400">#</span>
-			<span class="text-xs font-medium text-gray-400">unidades</span>
+			<input class="w-full text-center text-3xl text-alineados-blue-800 outline-none" value="#" />
+			<span class="text-xs font-medium text-alineados-blue-800">unidades</span>
 		</div>
 	</div>
+
 	<div></div>
+
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-blue-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-blue-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 	<div
-		class="flex size-[100px] items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
+		class="relative flex size-[100px] flex-col items-center justify-center rounded-xl border border-alineados-gray-100 bg-alineados-gray-50 text-3xl font-medium text-[#7C8089]"
 	>
-		2
+		<input
+			class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal text-alineados-blue-900 outline-none"
+			value="165"
+		/>
+		<div class="flex h-full w-full items-center justify-center">
+			<input
+				class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
+				value="2"
+			/>
+		</div>
 	</div>
 
 	<!-- Footer Row -->
