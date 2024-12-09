@@ -9,6 +9,7 @@
 	import Trophy from '$lib/icons/Trophy.svelte';
 	import PuzzlePiece from '$lib/icons/PuzzlePiece.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
+	import InformationButton from '$lib/components/InformationButton.svelte';
 
 	// get stores
 	import {
@@ -192,7 +193,13 @@
 			<Cube styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de decisión</h2>
 		</div>
-		<DecisionMatrix />
+		<div class="flex items-start gap-4">
+			<DecisionMatrix />
+			<InformationButton
+				tittle="Aquí deberá de ir el título"
+				description="Aquí deberá ir la explicación de la matríz"
+			/>
+		</div>
 	</div>
 
 	<div class="flex flex-col">
