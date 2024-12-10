@@ -1,14 +1,21 @@
 <script lang="ts">
 	import * as Select from '$lib/shared/ui/select/index';
 
-	export let label: string;
-	export let name: string;
-	export let options: { value: string; label: string }[] = [];
-	export let value: string = '';
-	export let placeholder: string = 'Select an option';
+	let { name, options, placeholder, isAll = false } = $props();
 
-	// Derived content for the trigger
-	$: triggerContent = options.find((option) => option.value === value)?.label ?? placeholder;
+	let value = $state('');
+
+	const triggerContent = $derived.by(() => {
+		for (const optionGroup of options) {
+			const foundItem = optionGroup.items.find((item: any) => item.id === value);
+			if (foundItem) {
+				return foundItem.label;
+			}
+		}
+		return placeholder;
+	});
+
+	$inspect({ value });
 </script>
 
 <div class="w-1/2 space-y-2">
@@ -19,14 +26,22 @@
 			{triggerContent}
 		</Select.Trigger>
 		<Select.Content>
-			<Select.Group class="bg-alineados-gray-50">
-				<Select.GroupHeading>{label}</Select.GroupHeading>
-				{#each options as option}
-					<Select.Item class="bg-white" value={option.value} label={option.label}>
-						{option.label}
-					</Select.Item>
-				{/each}
-			</Select.Group>
+			{#if isAll}
+				<Select.Item class="bg-white" value="all" label="Seleccionar todos">
+					Seleccionar todos
+				</Select.Item>
+			{/if}
+
+			{#each options as optionGroup}
+				<Select.Group class="bg-alineados-gray-50">
+					<Select.GroupHeading>{optionGroup.label}</Select.GroupHeading>
+					{#each optionGroup.items as option}
+						<Select.Item class="bg-white" value={option.id} label={option.label}>
+							{option.label}
+						</Select.Item>
+					{/each}
+				</Select.Group>
+			{/each}
 		</Select.Content>
 	</Select.Root>
 </div>

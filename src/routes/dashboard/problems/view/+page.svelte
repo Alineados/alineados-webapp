@@ -10,10 +10,55 @@
 	import ViewHeader from '$lib/modules/dashboard/Problems/ViewHeader.svelte';
 	import ViewHeaderTable from '$lib/components/ViewHeaderTable.svelte';
 
-	const options = [
-		{ value: 'uno', label: 'Uno' },
-		{ value: 'dos', label: 'Dos' },
-		{ value: 'tres', label: 'Tres' }
+	const problemsOptions = [
+		{
+			category: 'health',
+			label: 'Salud',
+			items: [
+				{ id: 'uno', label: 'Uno' },
+				{ id: 'dos', label: 'Dos' },
+				{ id: 'tres', label: 'Tres' }
+			]
+		},
+		{
+			category: 'relationship',
+			label: 'Relaciones',
+			items: [
+				{ id: 'cuatro', label: 'Cuatro' },
+				{ id: 'cinco', label: 'Cinco' },
+				{ id: 'seis', label: 'Seis' }
+			]
+		},
+		{
+			category: 'vocation',
+			label: 'Vocación',
+			items: [
+				{ id: 'siete', label: 'Siete' },
+				{ id: 'ocho', label: 'Ocho' },
+				{ id: 'nueve', label: 'Nueve' }
+			]
+		},
+		{
+			category: 'spirituality',
+			label: 'Espiritualidad',
+			items: [
+				{ id: 'diez', label: 'Diez' },
+				{ id: 'once', label: 'Once' },
+				{ id: 'doce', label: 'Doce' }
+			]
+		}
+	];
+
+	const criteriaOptions = [
+		{
+			category: 'criteria ',
+			label: 'Criterios',
+			items: [
+				{ id: 'uno', label: 'Uno' },
+				{ id: 'dos', label: 'Dos' },
+				{ id: 'tres', label: 'Tres' }
+			]
+		}
 	];
 
 	let headerRef: HTMLElement;
@@ -29,10 +74,15 @@
 		const tableHeaderHeight = tableHeaderRef.offsetHeight;
 
 		cardContainerRef.style.top = `${headerHeight}px`;
-		filterContainerRef.style.top = `${headerHeight + cardContainerHeight}px`;
-		tableHeaderRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight}px`;
-		tableContainerRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight + tableHeaderHeight}px`;
+		filterContainerRef.style.top = `${headerHeight /*+ cardContainerHeight*/}px`;
+		tableHeaderRef.style.top = `${headerHeight /*+ cardContainerHeight*/ + filterContainerHeight}px`;
+		tableContainerRef.style.top = `${headerHeight /*+ cardContainerHeight*/ + filterContainerHeight + tableHeaderHeight}px`;
 	});
+
+	let { data } = $props();
+	let problems = $state(data.problems);
+
+	$inspect({ problems });
 </script>
 
 <div class="relative h-full">
@@ -40,7 +90,7 @@
 		<ViewHeader />
 	</div>
 
-	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
+	<div bind:this={cardContainerRef} class="sticky -z-10 flex w-full gap-12 bg-white pb-12">
 		<ViewCard contentClass="w-full">
 			{#snippet content()}
 				<div class="flex w-full items-center gap-3 p-6">
@@ -48,8 +98,8 @@
 						<Hand styleTw="size-9 text-alineados-green-900" />
 					</div>
 					<div>
-						<p class="text-base font-medium text-black">Total de Problemas</p>
-						<p class="-mt-1 text-3xl font-semibold text-alineados-gray-800">242</p>
+						<p class="text-sm font-medium text-black">Total de Problemas</p>
+						<p class="-mt-1 text-2xl font-semibold text-alineados-gray-800">242</p>
 					</div>
 				</div>
 			{/snippet}
@@ -65,7 +115,7 @@
 							</div>
 							<div>
 								<p class="text-xs font-medium text-alineados-gray-400">Pilar</p>
-								<p class="-mt-1 text-2xl font-medium text-alineados-gray-800">Salud</p>
+								<p class="-mt-1 text-xl font-medium text-alineados-gray-800">Salud</p>
 							</div>
 						</div>
 					</div>
@@ -107,9 +157,22 @@
 	</div>
 
 	<div bind:this={filterContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
-		<ViewFilterSelect label="Pilares" name="pillars" {options} />
-		<ViewFilterSelect label="Pilares" name="pillars" {options} />
-		<ViewFilterSelect label="Pilares" name="pillars" {options} />
+		<ViewFilterSelect
+			name="pillars"
+			options={problemsOptions}
+			placeholder="Selecciona un problema"
+			isAll
+		/>
+		<ViewFilterSelect
+			name="pillars"
+			options={criteriaOptions}
+			placeholder="Selecciona un criterio"
+		/>
+		<ViewFilterSelect
+			name="pillars"
+			options={criteriaOptions}
+			placeholder="Selecciona un criterio"
+		/>
 	</div>
 
 	<div bind:this={tableHeaderRef} class="sticky z-10 bg-white">
@@ -118,7 +181,7 @@
 
 	<div
 		bind:this={tableContainerRef}
-		class="w-full overflow-hidden overscroll-contain rounded-b-xl border border-alineados-gray-100 bg-white"
+		class="z-10 w-full overflow-hidden overscroll-contain rounded-b-xl border border-alineados-gray-100 bg-white"
 	>
 		<ViewTable />
 	</div>
