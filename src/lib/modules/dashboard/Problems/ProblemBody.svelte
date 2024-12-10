@@ -9,23 +9,21 @@
 	import Trophy from '$lib/icons/Trophy.svelte';
 	import PuzzlePiece from '$lib/icons/PuzzlePiece.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
+	import InformationButton from '$lib/components/InformationButton.svelte';
 
 	// get stores
 	import {
 		problemInfo,
-		pid,
 		addProblemItem,
 		removeOrCleanItem,
-		problemInfoJSON,
 		prominentItem,
 		changeFinalDecision,
-
-		markDailytItem
-
+		markDailytItem,
+		problemCard
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 
-	// $inspect($problemInfo);
+
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -46,6 +44,7 @@
 					markDailytItem($problemInfo.decision_taken!.id, ProblemType.decision_taken);
 				}}
 				isUnique
+				bind:isOnlyText={$problemCard.active}
 				bind:isStarred={$problemInfo.decision_taken!.prominent}
 				bind:isDaily={$problemInfo.decision_taken!.daily}
 				bind:value={$problemInfo.decision_taken!.description!}
@@ -73,6 +72,7 @@
 					dailyItem={() => {
 						markDailytItem(involded.id, ProblemType.involved);
 					}}
+					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={involded.daily}
 					bind:isStarred={involded.prominent}
 					bind:value={involded.description}
@@ -101,6 +101,7 @@
 					dailyItem={() => {
 						markDailytItem(context.id, ProblemType.contexts);
 					}}
+					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={context.daily}
 					bind:isStarred={context.prominent}
 					bind:value={context.description}
@@ -126,6 +127,7 @@
 					markDailytItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
 				isUnique
+				bind:isOnlyText={$problemCard.active}
 				bind:isDaily={$problemInfo.problem!.daily}
 				bind:isStarred={$problemInfo.problem!.prominent}
 				bind:value={$problemInfo.problem!.description!}
@@ -153,6 +155,7 @@
 					dailyItem={() => {
 						markDailytItem(objective.id, ProblemType.objectives);
 					}}
+					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={objective.daily}
 					bind:isStarred={objective.prominent}
 					bind:value={objective.description}
@@ -181,6 +184,7 @@
 					dailyItem={() => {
 						markDailytItem(alternative.id, ProblemType.alternatives);
 					}}
+					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={alternative.daily}
 					bind:isStarred={alternative.prominent}
 					bind:value={alternative.description}
@@ -194,7 +198,13 @@
 			<Cube styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de decisión</h2>
 		</div>
-		<DecisionMatrix />
+		<div class="flex items-start gap-4">
+			<DecisionMatrix />
+			<InformationButton
+				tittle="Aquí deberá de ir el título"
+				description="Aquí deberá ir la explicación de la matríz"
+			/>
+		</div>
 	</div>
 
 	<div class="flex flex-col">
@@ -204,7 +214,7 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
-				isUnique
+				isOnlyText={false}
 				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
 			/>
 		</div>
@@ -217,15 +227,15 @@
 		</div>
 		<div class=" mt-5 flex flex-col gap-2">
 			{#if $problemInfo.objectives.length === 1 && $problemInfo.objectives[0].description === ''}
-				<p class="pl-2 text-alineados-gray-400">No hay objetivos</p>
+				<p class="pl-2 text-alineados-gray-400">No hay alternativas</p>
 			{:else}
-				{#each $problemInfo.objectives as objective}
+				{#each $problemInfo.alternatives as alternative}
 					<DecisionPill
 						changeFinalDecision={() => {
-							changeFinalDecision(objective.id);
+							changeFinalDecision(alternative.id);
 						}}
-						selected={objective.id === $problemInfo.final_decision}
-						bind:text={objective.description}
+						selected={alternative.id === $problemInfo.final_decision}
+						bind:text={alternative.description}
 					/>
 				{/each}
 			{/if}
@@ -252,6 +262,7 @@
 					dailyItem={() => {
 						markDailytItem(action.id, ProblemType.action_plan);
 					}}
+					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={action.daily}
 					bind:isStarred={action.prominent}
 					bind:value={action.description}

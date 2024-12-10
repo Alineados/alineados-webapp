@@ -4,21 +4,7 @@
 	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
-	import {
-		initProblemCard,
-		initProblemInfo,
-		pid,
-		pcid,
-		problemCard,
-		problemCardJSON,
-		autosavingProblemCard,
-		autosavingProblemInfo,
-		problemInfoJSON
-	} from '$lib/stores';
-	import { SocketService } from '$lib/services/socket';
-
-	// variables / states
-	let socket: SocketService;
+	import { initProblemCard, initProblemInfo, pid, problemCard } from '$lib/stores';
 
 	// get data from server.ts
 	let { data }: { data: any } = $props();
@@ -37,8 +23,6 @@
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
 
-		// socket = new SocketService($pcid);
-
 		const headerHeight = headerRef ? headerRef.offsetHeight : 0;
 		const problemsFilterHeight = problemsFilterRef ? problemsFilterRef.offsetHeight : 0;
 
@@ -47,16 +31,12 @@
 
 		if (accountabilityBodyRef)
 			accountabilityBodyRef.style.top = `${headerHeight + problemsFilterHeight}px`;
-
-		// return () => {
-		// 	socket.disconnect();
-		// };
 	});
 </script>
 
-{#await $problemCard}
+{#if !$problemCard}
 	<p>Loading...</p>
-{:then}
+{:else}
 	<div bind:this={headerRef} class="sticky top-0 z-10 bg-white">
 		<ProblemHeader bind:title={$problemCard.problem_name} />
 	</div>
@@ -72,10 +52,8 @@
 			</div>
 		</div>
 
-		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center bg-white">
+		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center ">
 			<AsideProblem />
 		</div>
 	</div>
-{:catch error}
-	<p>{error.message}</p>
-{/await}
+{/if}

@@ -2,7 +2,7 @@
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import NewProblemButton from '$lib/components/NewProblemButton.svelte';
 	import ViewButton from '$lib/components/ViewButton.svelte';
-
+	import { filterBy } from '$lib/stores';
 
 	// Filter items object state
 	let cardFilter = $state<{ all: boolean; active: boolean; inactive: boolean }>({
@@ -17,7 +17,11 @@
 		cardFilter.inactive = false;
 
 		cardFilter[filter] = true;
+
+		filterBy.set(filter);
 	}
+
+	$inspect($filterBy);
 </script>
 
 <div class="flex flex-col gap-6 pb-6">

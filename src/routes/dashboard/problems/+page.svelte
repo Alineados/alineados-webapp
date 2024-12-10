@@ -1,24 +1,20 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import type { PillarItems } from '$lib/interfaces';
 	import PillarHeader from '$lib/modules/dashboard/Problems/PillarHeader.svelte';
 	import ProblemCard from '$lib/modules/dashboard/Problems/ProblemCard.svelte';
 	import { initProblems } from '$lib/stores';
 	import {
-		healthProblems,
-		relationalProblems,
-		spiritualProblems,
-		vocationalProblems
+		relationalProblemsFiltered,
+		spiritualProblemsFiltered,
+		vocationalProblemsFiltered,
+		healthProblemsFiltered
 	} from '$lib/stores';
-	import { onMount } from 'svelte';
+
 	// get data from server.ts
 	let { data }: { data: PageData } = $props();
 
 	// init stores
 	$effect(() => {
-		initProblems({ ...data.problems });
-	});
-	onMount(() => {
 		initProblems({ ...data.problems });
 	});
 </script>
@@ -27,15 +23,9 @@
 	<PillarHeader />
 </div>
 
-{#await $healthProblems && $relationalProblems && $vocationalProblems && $spiritualProblems}
-	<p>Loading...</p>
-{:then}
-	<div class="flex flex-col gap-12">
-		<ProblemCard title="Salud" problems={$healthProblems} />
-		<ProblemCard title="Relación" problems={$relationalProblems} />
-		<ProblemCard title="Vocación" problems={$vocationalProblems} />
-		<ProblemCard title="Espiritual" problems={$spiritualProblems} />
-	</div>
-{:catch error}
-	<p>{error.message}</p>
-{/await}
+<div class="flex flex-col gap-12">
+	<ProblemCard title="Salud" problems={$healthProblemsFiltered} />
+	<ProblemCard title="Relación" problems={$relationalProblemsFiltered} />
+	<ProblemCard title="Vocación" problems={$vocationalProblemsFiltered} />
+	<ProblemCard title="Espiritual" problems={$spiritualProblemsFiltered} />
+</div>

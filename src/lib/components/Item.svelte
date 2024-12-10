@@ -13,6 +13,8 @@
 		isAccountability = false,
 		isUnique = false,
 		isNew = false,
+		isOnlyText = $bindable(),
+		isDisabled = false,
 		isStarred = $bindable(),
 		isDaily = $bindable(),
 		addItem,
@@ -24,6 +26,8 @@
 		isAccountability?: boolean;
 		isUnique?: boolean;
 		isNew?: boolean;
+		isOnlyText?: boolean;
+		isDisabled?: boolean;
 		isStarred?: boolean;
 		isDaily?: boolean;
 		addItem?: () => void;
@@ -43,6 +47,8 @@
 	}
 
 	function handleKeyPress(event: KeyboardEvent) {
+		if (!isOnlyText) return;
+
 		if (event.key === 'Tab') {
 			event.preventDefault();
 			if (addItem) addItem();
@@ -66,20 +72,22 @@
 
 <div
 	class="item-container group flex h-auto items-center justify-between"
-	class:pl-8={isUnique || isNew}
+	class:pl-8={isUnique || isNew || !isOnlyText}
 >
-	{#if !isUnique && !isNew}
+	{#if !isUnique && !isNew && isOnlyText}
 		<div class="flex items-center gap-0">
 			<button
-				onclick={addItem}
-				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 group-hover:visible`}
+				onclick={isDisabled ? null : addItem}
+				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
 				aria-label="Plus"
+				disabled={isDisabled}
 			>
 				<Plus styleTw="size-4" />
 			</button>
 			<button
-				class={`invisible text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 group-hover:visible`}
+				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
 				aria-label="Order"
+				disabled={isDisabled}
 			>
 				<Order stroke="currentColor" />
 			</button>
@@ -106,10 +114,11 @@
 			onkeydown={handleKeyPress}
 			rows="1"
 			spellcheck="false"
+			readonly={!isOnlyText || isDisabled}
 		></textarea>
 	</div>
 
-	{#if !isNew}
+	{#if !isNew && isOnlyText}
 		<div
 			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
 		>
@@ -118,8 +127,9 @@
 					onclick={handlerDoneItem}
 					class:text-alineados-gray-400={!isDone}
 					class:text-green-500={isDone}
-					class="hover:text-green-500"
+					class:hover:text-green-500={!isDisabled}
 					aria-label="Check"
+					disabled={isDisabled}
 				>
 					<Done styleTw="size-4" />
 				</button>
@@ -128,8 +138,9 @@
 					onclick={handlerRepeatItem}
 					class:text-alineados-gray-400={!isRepeated}
 					class:text-blue-500={isRepeated}
-					class=" hover:text-blue-500"
+					class:hover:text-blue-500={!isDisabled}
 					aria-label="Repeat"
+					disabled={isDisabled}
 				>
 					<Repeat styleTw="size-4" />
 				</button>
@@ -140,8 +151,9 @@
 					}}
 					class:text-alineados-gray-400={!isStarred}
 					class:text-yellow-500={isStarred}
-					class="hover:text-yellow-500"
+					class:hover:text-yellow-500={!isDisabled}
 					aria-label="Star"
+					disabled={isDisabled}
 				>
 					<Star styleTw="size-4" />
 				</button>
@@ -151,8 +163,9 @@
 					}}
 					class:text-alineados-gray-400={!isDaily}
 					class:text-alineados-green-500={isDaily}
-					class=" hover:text-alineados-green-500"
+					class:hover:text-alineados-green-500={!isDisabled}
 					aria-label="Day"
+					disabled={isDisabled}
 				>
 					<Sun styleTw="size-4" />
 				</button>
@@ -160,8 +173,10 @@
 					onclick={() => {
 						if (deleteItem) deleteItem();
 					}}
-					class="text-alineados-gray-400 hover:text-red-500"
+					class="text-alineados-gray-400"
+					class:hover:text-red-500={!isDisabled}
 					aria-label="Delete"
+					disabled={isDisabled}
 				>
 					<TrashCan styleTw="size-4" />
 				</button>

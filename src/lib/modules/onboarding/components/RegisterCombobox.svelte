@@ -8,7 +8,7 @@
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
-	let { name = 'name', label, placeholder = 'placeholder', options = [] } = $props();
+	let { name, label, placeholder, options = [], isInvalid = false, errorMessage = '' } = $props();
 
 	let open = $state(false);
 	let value = $state('');
@@ -51,7 +51,7 @@
 	*/
 </script>
 
-<div class="flex w-1/2 flex-col gap-1">
+<div class="flex w-1/2 flex-col gap-0">
 	<div class="flex flex-col gap-2">
 		<Label class="text-lg font-semibold text-black" for={name}>{label}</Label>
 
@@ -105,4 +105,7 @@
 			</Popover.Content>
 		</Popover.Root>
 	</div>
+	<span class="text-xs text-[#C90404]" style="opacity: {isInvalid ? 1 : 0}; height: 1em;">
+		{errorMessage}
+	</span>
 </div>
