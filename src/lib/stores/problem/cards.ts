@@ -1,4 +1,4 @@
-import type { ProblemCard } from '$lib/interfaces';
+import { FilterBy, type ProblemCard } from '$lib/interfaces';
 import type { PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
 import { derived, writable } from 'svelte/store';
 
@@ -10,6 +10,54 @@ export const spiritualProblems = writable<ProblemCard[]>();
 
 export const pcid = writable<string>(''); // Problem Card ID
 export const problemCard = writable<ProblemCard>();
+
+// Filters
+export const filterBy = writable<string>(typeof FilterBy);
+
+export const healthProblemsFiltered = derived(
+	[healthProblems, filterBy],
+	([$healthProblems, $filterBy]) => {
+		return $healthProblems?.filter((p) => {
+			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else return true;
+		});
+	}
+);
+
+export const relationalProblemsFiltered = derived(
+	[relationalProblems, filterBy],
+	([$relationalProblems, $filterBy]) => {
+		return $relationalProblems?.filter((p) => {
+			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else return true;
+		});
+	}
+);
+
+export const vocationalProblemsFiltered = derived(
+	[vocationalProblems, filterBy],
+	([$vocationalProblems, $filterBy]) => {
+		return $vocationalProblems?.filter((p) => {
+			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else return true;
+		});
+	}
+);
+
+export const spiritualProblemsFiltered = derived(
+	[spiritualProblems, filterBy],
+	([$spiritualProblems, $filterBy]) => {
+		return $spiritualProblems?.filter((p) => {
+			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else return true;
+		});
+	}
+);
+
 // Function to initialize the store with the problems
 export const initProblems = ({
 	health,
@@ -35,8 +83,15 @@ export const initProblemCard = (card: ProblemCard) => {
 	}
 };
 
-
-
+// Function to update
+// 1. active / inactive .....  2. security / non-security
+export const updateSecurityAndActive = (kind: number) => {
+	problemCard.update((card) => {
+		if (kind === 1) card.active = !card.active;
+		else if (kind === 2) card.security = !card.security;
+		return card;
+	});
+};
 
 // Function to add a problem to the store
 export const addProblem = (problem: ProblemCard, pillar: PillarsAndCategories) => {

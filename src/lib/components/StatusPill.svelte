@@ -1,23 +1,9 @@
 <script lang="ts">
-	export let status: 'active' | 'inactive';
+	let { status = $bindable(), classTw = "px-4 py-[6px] " } = $props();
 
-	let bgColor: string;
-	let textColor: string;
-	let text: string;
-
-	$: {
-		if (status === 'active') {
-			bgColor = 'bg-[#DBFFDD]';
-			textColor = 'text-[#0FC917]';
-			text = 'Activo';
-		} else if (status === 'inactive') {
-			bgColor = 'bg-[#FFDDDD]';
-			textColor = 'text-[#C9170F]';
-			text = 'Inactivo';
-		}
-	}
 </script>
 
-<div class={`inline-flex items-center rounded-full px-4 py-[6px] ${bgColor} ${textColor}`}>
-	<span class="text-xs font-bold">{text}</span>
+<div class={`inline-flex items-center rounded-full ${classTw} 
+	${status ? 'bg-alineados-green-100 text-alineados-green-900' : 'bg-red-100 text-red-600'}`}>
+	<span class="text-xs font-semibold">{status ? 'Activo' : 'Inactivo'}</span>
 </div>

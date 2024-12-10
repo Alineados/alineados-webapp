@@ -4,7 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { Pillars } from '$lib/interfaces/data';
 	import type { ProblemCard } from '$lib/interfaces';
-	import { addProblem } from '$lib/stores';
+	import { goto } from '$app/navigation';
 
 	let formHtml: HTMLFormElement;
 
@@ -21,6 +21,28 @@
 		dataToSend.category_name = name2;
 
 		formHtml.requestSubmit();
+	}
+	function navigateToProblem(pid: string, pillar: string) {
+		console.log(pid, pillar);
+		// change pillar name
+		let name: string = '';
+		switch (pillar) {
+			case 'Salud':
+				name = 'health';
+				break;
+			case 'Relación':
+				name = 'relational';
+				break;
+			case 'Vocación':
+				name = 'vocational';
+				break;
+			case 'Espiritual':
+				name = 'spiritual';
+				break;
+		}
+
+		// navigate to problem details
+		goto(`./problems/edit?pid=${pid}&pillar_name=${name}`);
 	}
 </script>
 
@@ -49,8 +71,10 @@
 					console.log(result);
 					if (result.status === 200) {
 						const { data }: { data: ProblemCard } = result.data;
+						// navigate to new problem
+						navigateToProblem(data.id, dataToSend.pillar_name);
 						// update stores
-						addProblem(data, Pillars);
+						// addProblem(data, Pillars);
 					}
 					// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 				};

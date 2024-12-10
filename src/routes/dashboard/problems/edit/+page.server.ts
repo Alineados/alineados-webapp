@@ -13,8 +13,6 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	const result = await problemService.getProblemInfo(pid);
 
 	
-	console.log('result', result);
-	
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,

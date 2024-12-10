@@ -13,7 +13,7 @@
 		isAccountability = false,
 		isUnique = false,
 		isNew = false,
-		isOnlyText = false,
+		isOnlyText = $bindable(),
 		isDisabled = false,
 		isStarred = $bindable(),
 		isDaily = $bindable(),
@@ -47,6 +47,8 @@
 	}
 
 	function handleKeyPress(event: KeyboardEvent) {
+		if (!isOnlyText) return;
+
 		if (event.key === 'Tab') {
 			event.preventDefault();
 			if (addItem) addItem();
@@ -70,9 +72,9 @@
 
 <div
 	class="item-container group flex h-auto items-center justify-between"
-	class:pl-8={isUnique || isNew || isOnlyText}
+	class:pl-8={isUnique || isNew || !isOnlyText}
 >
-	{#if !isUnique && !isNew && !isOnlyText}
+	{#if !isUnique && !isNew && isOnlyText}
 		<div class="flex items-center gap-0">
 			<button
 				onclick={isDisabled ? null : addItem}
@@ -112,11 +114,11 @@
 			onkeydown={handleKeyPress}
 			rows="1"
 			spellcheck="false"
-			readonly={isOnlyText || isDisabled}
+			readonly={!isOnlyText || isDisabled}
 		></textarea>
 	</div>
 
-	{#if !isNew && !isOnlyText}
+	{#if !isNew && isOnlyText}
 		<div
 			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
 		>

@@ -5,6 +5,8 @@ export {
 	addProblem,
 	removeProblem,
 	initProblemCard,
+	updateSecurityAndActive,
+	filterBy,
 	healthProblems,
 	relationalProblems,
 	spiritualProblems,
@@ -12,7 +14,11 @@ export {
 	autosavingProblemCard,
 	problemCard,
 	pcid,
-	problemCardJSON
+	problemCardJSON,
+	healthProblemsFiltered,
+	relationalProblemsFiltered,
+	spiritualProblemsFiltered,
+	vocationalProblemsFiltered
 } from './problem/cards';
 
 export {

@@ -4,11 +4,14 @@
 	import CustomCard from '$lib/components/CustomCard.svelte';
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
 	import ProgressBar from '$lib/components/ProgressBar.svelte';
+	import StatusPill from '$lib/components/StatusPill.svelte';
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
-	import type { ProblemCard } from '$lib/interfaces';
+	import UnPadlock from '$lib/icons/UnPadlock.svelte';
+	import {  type ProblemCard } from '$lib/interfaces';
 	import { Pillars } from '$lib/interfaces/data';
 	import { removeProblem } from '$lib/stores';
+	import MessageLength from './MessageLength.svelte';
 
 	let {
 		title,
@@ -83,9 +86,7 @@
 		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
 	>
 		{#if problems.length === 0}
-			<p class=" pl-2 text-alineados-gray-400">
-				No hay problemas registrados, para agregar uno nuevo haz clic en el botón de "+ Nuevo".
-			</p>
+			<MessageLength />
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
@@ -97,12 +98,13 @@
 				{#snippet header()}
 					<div class="flex w-full flex-row items-center justify-between">
 						<div class="flex flex-row items-center gap-1">
-							<span
-								class="rounded-lg bg-alineados-green-100 px-2 py-1 text-xs font-semibold text-alineados-green-900"
-							>
-								{problem.active ? 'Activo' : 'Inactivo'}
-							</span>
-							<Padlock class="size-4" />
+							<StatusPill classTw="px-2 py-1" bind:status={problem.active} />
+
+							{#if problem.security}
+								<Padlock class="size-4" />
+							{:else}
+								<UnPadlock class="size-4" />
+							{/if}
 						</div>
 						<button
 							onclick={(e) => deleteCard(problem, e)}

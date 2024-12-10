@@ -37,8 +37,8 @@ export interface ProblemInfo {
 	action_plan: Generic[];
 	memories: Documents[];
 	final_decision: string | null; // will save the id of the objective selected
-	createdAt: string;
-	updatedAt: string | null;
+	created_at: string;
+	updated_at: string | null;
 }
 
 export enum ProblemType {

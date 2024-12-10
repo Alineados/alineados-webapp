@@ -14,17 +14,11 @@ export interface Generic {
 	repeatable: boolean;
 	daily: boolean;
 }
-// export interface GenericOne {
-// 	id: string;
-// 	createdAt: string;
-// 	description: string;
-// 	deleted: boolean;
-// }
 
-// export interface GenericTwo {
-// 	id: string;
-// 	createdAt: string;
-// 	description: string;
-// 	deleted: boolean;
-// 	prominent: boolean;
-// }
+
+export enum FilterBy {
+	ALL = 'all',
+	ACTIVE = 'active',
+	INACTIVE = 'inactive',
+}
+

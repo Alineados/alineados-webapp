@@ -14,7 +14,7 @@
 		currentIndex.set(index);
 	}
 
-	let interval;
+	let interval: number;
 
 	onMount(() => {
 		interval = setInterval(() => {
@@ -25,7 +25,7 @@
 	});
 </script>
 
-<div class="relative h-60 w-full overflow-hidden rounded-lg bg-[#E3E5E7]">
+<div class="relative z-10 h-60 w-full overflow-hidden rounded-lg bg-[#E3E5E7]">
 	{#each images as image, index}
 		<img
 			src={image}
@@ -34,13 +34,13 @@
 			style="opacity: {index === $currentIndex ? 1 : 0}"
 		/>
 	{/each}
-
-	<div class="absolute bottom-2 left-1/2 flex -translate-x-1/2 transform space-x-2">
+	<div class="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 transform space-x-2">
 		{#each images as _, index}
 			<button
 				class="h-2 w-2 rounded-full bg-white transition-opacity duration-300"
 				class:bg-opacity-50={index !== $currentIndex}
 				on:click={() => selectImage(index)}
+				aria-label="Select image {index + 1}"
 			></button>
 		{/each}
 	</div>

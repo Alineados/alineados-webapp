@@ -8,13 +8,15 @@
 		autosavingProblemInfo,
 		pcid,
 		problemCardJSON,
-		problemInfoJSON
+		problemInfoJSON,
+		problemCard
 	} from '$lib/stores';
 
 	import Cloud from '$lib/icons/Cloud.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
 	import { onMount } from 'svelte';
 	import { SocketService } from '$lib/services/socket';
+	import UnPadlock from '$lib/icons/UnPadlock.svelte';
 
 	let socket: SocketService;
 	let { title = $bindable() } = $props();
@@ -55,8 +57,12 @@
 				class="border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
 			/>
 			<div class="ml-5 flex items-center gap-3">
-				<Padlock class="size-5" />
-				<StatusPill status="active" />
+				{#if $problemCard.security}
+					<Padlock class="size-5" />
+				{:else}
+					<UnPadlock class="size-5" />
+				{/if}
+				<StatusPill bind:status={$problemCard.active} />
 			</div>
 			<!-- Autosave -->
 
