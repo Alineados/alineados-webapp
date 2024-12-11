@@ -69,9 +69,11 @@
 			<Select.Item class="bg-white" value="all" label="Seleccionar todos">
 				Seleccionar todos
 			</Select.Item>
-			{#each pilars as pilar}
+			{#each pilars as pilar (pilar.pilar_name)}
 				<Select.Group class="bg-alineados-gray-50">
-					<Select.GroupHeading>{pilarNameMap[pilar.pilar_name]}</Select.GroupHeading>
+					<Select.GroupHeading
+						>{pilarNameMap[pilar.pilar_name as keyof typeof pilarNameMap]}</Select.GroupHeading
+					>
 					{#each pilar.problems as problem}
 						<Select.Item
 							class="bg-white"
