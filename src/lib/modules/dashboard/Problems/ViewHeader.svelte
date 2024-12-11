@@ -1,6 +1,8 @@
 <div class="flex flex-col gap-5 pb-4">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-		Mis Problemas / <span class="ml-1 text-alineados-orange-900">Ver</span>
+		<a href="/dashboard/problems" class="text-alineados-gray-600 hover:underline">Mis Problemas</a>
+		<span class="mx-1">/</span>
+		<span class="text-alineados-orange-900">Ver</span>
 	</p>
 	<div
 		class="flex flex-col gap-5 border-b border-alineados-gray-100 pb-4 lg:flex-row lg:justify-between"

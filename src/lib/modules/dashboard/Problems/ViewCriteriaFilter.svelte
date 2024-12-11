@@ -1,14 +1,12 @@
 <script lang="ts">
 	import * as Select from '$lib/shared/ui/select/index';
 
-	export let label: string;
-	export let name: string;
-	export let options: { value: string; label: string }[] = [];
-	export let value: string = '';
-	export let placeholder: string = 'Select an option';
+	// Props
+	let { name, criteria, value = $bindable() } = $props();
 
-	// Derived content for the trigger
-	$: triggerContent = options.find((option) => option.value === value)?.label ?? placeholder;
+	const triggerContent = $derived(
+		criteria.find((f: any) => f.criterion === value)?.label ?? 'Seleccione un criterio'
+	);
 </script>
 
 <div class="w-1/2 space-y-2">
@@ -20,10 +18,10 @@
 		</Select.Trigger>
 		<Select.Content>
 			<Select.Group class="bg-alineados-gray-50">
-				<Select.GroupHeading>{label}</Select.GroupHeading>
-				{#each options as option}
-					<Select.Item class="bg-white" value={option.value} label={option.label}>
-						{option.label}
+				<Select.GroupHeading>Criterios</Select.GroupHeading>
+				{#each criteria as item}
+					<Select.Item class="bg-white" value={item.criterion} label={item.label}>
+						{item.label}
 					</Select.Item>
 				{/each}
 			</Select.Group>
