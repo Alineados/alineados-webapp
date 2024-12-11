@@ -1,5 +1,5 @@
 <script>
-	import TableItem from './TableItem.svelte';
+	import TableItem from '../../../components/TableItem.svelte';
 
 	// Puedes definir los datos de la tabla aquí si es necesario
 	let tableData = [

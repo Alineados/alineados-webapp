@@ -2,65 +2,17 @@
 	import { onMount } from 'svelte';
 	import ArrowNumber from '$lib/components/ArrowNumber.svelte';
 	import ViewCard from '$lib/components/ViewCard.svelte';
-	import ViewFilterSelect from '$lib/components/ViewFilterSelect.svelte';
-	import ViewTable from '$lib/components/ViewTable.svelte';
+	import ViewProblemsFilter from '$lib/modules/dashboard/Problems/ViewProblemsFilter.svelte';
+	import ViewCriteriaFilter from '$lib/modules/dashboard/Problems/ViewCriteriaFilter.svelte';
+	import ViewTable from '$lib/modules/dashboard/Problems/ViewTable.svelte';
 	import ArrowDown from '$lib/icons/ArrowDown.svelte';
 	import ArrowUp from '$lib/icons/ArrowUp.svelte';
 	import Hand from '$lib/icons/Hand.svelte';
 	import ViewHeader from '$lib/modules/dashboard/Problems/ViewHeader.svelte';
-	import ViewHeaderTable from '$lib/components/ViewHeaderTable.svelte';
+	import ViewHeaderTable from '$lib/modules/dashboard/Problems/ViewHeaderTable.svelte';
+	import type { PageData } from '../$types';
 
-	const problemsOptions = [
-		{
-			category: 'health',
-			label: 'Salud',
-			items: [
-				{ id: 'uno', label: 'Uno' },
-				{ id: 'dos', label: 'Dos' },
-				{ id: 'tres', label: 'Tres' }
-			]
-		},
-		{
-			category: 'relationship',
-			label: 'Relaciones',
-			items: [
-				{ id: 'cuatro', label: 'Cuatro' },
-				{ id: 'cinco', label: 'Cinco' },
-				{ id: 'seis', label: 'Seis' }
-			]
-		},
-		{
-			category: 'vocation',
-			label: 'Vocación',
-			items: [
-				{ id: 'siete', label: 'Siete' },
-				{ id: 'ocho', label: 'Ocho' },
-				{ id: 'nueve', label: 'Nueve' }
-			]
-		},
-		{
-			category: 'spirituality',
-			label: 'Espiritualidad',
-			items: [
-				{ id: 'diez', label: 'Diez' },
-				{ id: 'once', label: 'Once' },
-				{ id: 'doce', label: 'Doce' }
-			]
-		}
-	];
-
-	const criteriaOptions = [
-		{
-			category: 'criteria ',
-			label: 'Criterios',
-			items: [
-				{ id: 'uno', label: 'Uno' },
-				{ id: 'dos', label: 'Dos' },
-				{ id: 'tres', label: 'Tres' }
-			]
-		}
-	];
-
+	// Sticker header
 	let headerRef: HTMLElement;
 	let cardContainerRef: HTMLElement;
 	let filterContainerRef: HTMLElement;
@@ -79,10 +31,44 @@
 		tableContainerRef.style.top = `${headerHeight /*+ cardContainerHeight*/ + filterContainerHeight + tableHeaderHeight}px`;
 	});
 
-	let { data } = $props();
-	let problems = $state(data.problems);
+	// get data from server.ts
+	let { data }: { data: PageData } = $props();
 
-	$inspect({ problems });
+	$inspect({ ...data.problems });
+
+	// Criteria options
+	const criteriaOptions = [
+		{ criterion: 'decision_taken', label: 'Tomador de Decisión' },
+		{ criterion: 'involved', label: 'Involucrados' },
+		{ criterion: 'contexts', label: 'Contexto' },
+		{ criterion: 'problem', label: 'Problema' },
+		{ criterion: 'objectives', label: 'Objetivos' },
+		{ criterion: 'alternatives', label: 'Alternativas' },
+		{ criterion: 'recommended_decision', label: 'Decisión Recomendada' },
+		{ criterion: 'final_decision', label: 'Decisión Final' },
+		{ criterion: 'action_plan', label: 'Plan de Acción' }
+	];
+
+	// States
+	let selectedProblem = $state('all');
+	let firstCriterion = $state('objectives');
+	let secondCriterion = $state('action_plan');
+
+	$inspect({ selectedProblem });
+	//$inspect({ firstCriterion });
+	//$inspect({ secondCriterion });
+
+	const firstCriterionLabel = $derived(
+		firstCriterion
+			? criteriaOptions.find((opt) => opt.criterion === firstCriterion)?.label || ''
+			: ''
+	);
+
+	const secondCriterionLabel = $derived(
+		secondCriterion
+			? criteriaOptions.find((opt) => opt.criterion === secondCriterion)?.label || ''
+			: ''
+	);
 </script>
 
 <div class="relative h-full">
@@ -157,26 +143,21 @@
 	</div>
 
 	<div bind:this={filterContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
-		<ViewFilterSelect
-			name="pillars"
-			options={problemsOptions}
-			placeholder="Selecciona un problema"
-			isAll
+		<ViewProblemsFilter name="pillars" {...data.problems} bind:value={selectedProblem} />
+		<ViewCriteriaFilter
+			name="first_criterion"
+			criteria={criteriaOptions}
+			bind:value={firstCriterion}
 		/>
-		<ViewFilterSelect
-			name="pillars"
-			options={criteriaOptions}
-			placeholder="Selecciona un criterio"
-		/>
-		<ViewFilterSelect
-			name="pillars"
-			options={criteriaOptions}
-			placeholder="Selecciona un criterio"
+		<ViewCriteriaFilter
+			name="second_criterion"
+			criteria={criteriaOptions}
+			bind:value={secondCriterion}
 		/>
 	</div>
 
 	<div bind:this={tableHeaderRef} class="sticky z-10 bg-white">
-		<ViewHeaderTable />
+		<ViewHeaderTable {firstCriterionLabel} {secondCriterionLabel} />
 	</div>
 
 	<div

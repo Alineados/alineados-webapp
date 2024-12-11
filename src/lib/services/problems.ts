@@ -58,4 +58,17 @@ export class ProblemService {
 
 		return response;
 	}
+
+	public async getAllProblems(
+		uid: string,
+		health_id: string,
+		relational_id: string,
+		vocational_id: string,
+		spiritual_id: string
+	): Promise<Response> {
+		const url = `${this._url}/get-all?uid=${uid}&health_id=${health_id}&relational_id=${relational_id}&vocational_id=${vocational_id}&spiritual_id=${spiritual_id}`;
+		const response: Response = await request(url, 'GET', null, this._token);
+
+		return response;
+	}
 }
