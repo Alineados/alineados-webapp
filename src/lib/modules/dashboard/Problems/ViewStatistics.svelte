@@ -59,8 +59,8 @@
 				<Hand styleTw="size-9 text-alineados-green-900" />
 			</div>
 			<div>
-				<p class="text-sm font-medium text-black">Total de Problemas</p>
-				<p class="-mt-1 text-3xl font-semibold text-alineados-gray-800">{totalProblems}</p>
+				<p class="text-base font-medium text-black">Total de Problemas</p>
+				<p class="-mt-1 text-4xl font-semibold text-alineados-gray-800">{totalProblems}</p>
 			</div>
 		</div>
 	{/snippet}
@@ -83,7 +83,7 @@
 			<div class="flex h-full items-end">
 				<ArrowNumber value={minPilarStats.count}>
 					{#snippet arrow()}
-						<ArrowDown styleTw="size-6 text-[#FB5B5B]" strokeWidth={2} />
+						<ArrowUp styleTw="size-6 text-[#0FC917]" strokeWidth={2} />
 					{/snippet}
 				</ArrowNumber>
 			</div>
@@ -108,7 +108,7 @@
 			<div class="flex h-full items-end">
 				<ArrowNumber value={maxPilarStats.count}>
 					{#snippet arrow()}
-						<ArrowUp styleTw="size-6 text-[#0FC917]" strokeWidth={2} />
+						<ArrowDown styleTw="size-6 text-[#FB5B5B]" strokeWidth={2} />
 					{/snippet}
 				</ArrowNumber>
 			</div>

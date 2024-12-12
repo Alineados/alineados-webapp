@@ -2,10 +2,12 @@
 	import { Label } from '$lib/shared/ui/label/index';
 	import * as Select from '$lib/shared/ui/select/index';
 
-	export let label: string = 'Fecha de Nacimiento';
-	export let day: string = '';
-	export let month: string = '';
-	export let year: string = '';
+	let { value = $bindable() } = $props();
+
+	let label = $state('Fecha de Nacimiento');
+	let day = $state('');
+	let month = $state('');
+	let year = $state('');
 
 	/*
 	export let onDayChange: (day: string) => void;
@@ -13,11 +15,13 @@
 	export let onYearChange: (year: string) => void;
 	*/
 
+	// Days
 	const days = Array.from({ length: 31 }, (_, i) => {
 		const day = `${i + 1}`.padStart(2, '0');
 		return { value: day, label: day };
 	});
 
+	// Months
 	const months = [
 		{ value: '01', label: '01 - Enero' },
 		{ value: '02', label: '02 - Febrero' },
@@ -32,28 +36,21 @@
 		{ value: '11', label: '11 - Noviembre' },
 		{ value: '12', label: '12 - Diciembre' }
 	];
+
+	// Years
 	const years = Array.from({ length: 100 }, (_, i) => ({
 		value: `${2023 - i}`,
 		label: `${2023 - i}`
 	}));
 
-	/*
-	function handleDayChange(event) {
-		day = event.detail;
-		onDayChange(day);
-	}
-
-	function handleMonthChange(event) {
-		month = event.detail;
-		onMonthChange(month);
-	}
-
-	function handleYearChange(event) {
-		year = event.detail;
-		onYearChange(year);
-	}
- 
-    */
+	// Create reactive statement for combined date
+	$effect(() => {
+		if (day && month && year) {
+			value = `${year}-${month}-${day}`; // YYYY-MM-DD format
+		} else {
+			value = undefined;
+		}
+	});
 </script>
 
 <div class="w-1/2 space-y-2">

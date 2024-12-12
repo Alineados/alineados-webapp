@@ -7,7 +7,6 @@
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
 	import AsideSteps from '$lib/modules/onboarding/components/AsideSteps.svelte';
-
 	import Check from '$lib/icons/AlineadosCheck.svelte';
 
 	let stepId: string;

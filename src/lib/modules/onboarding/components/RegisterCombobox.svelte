@@ -8,10 +8,17 @@
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
-	let { name, label, placeholder, options = [], isInvalid = false, errorMessage = '' } = $props();
+	let {
+		name,
+		label,
+		placeholder,
+		options = [],
+		isInvalid = false,
+		errorMessage = '',
+		value = $bindable()
+	} = $props();
 
 	let open = $state(false);
-	let value = $state('');
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	const selectedValue = $derived(options.find((f) => f.value === value));

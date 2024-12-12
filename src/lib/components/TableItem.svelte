@@ -13,7 +13,7 @@
 	}
 </script>
 
-<div class="group flex items-center gap-2">
+<div class="group flex items-start gap-2">
 	<button
 		class="text-alineados-gray-300 hover:text-alineados-gray-600"
 		onclick={copyToClipboard}
