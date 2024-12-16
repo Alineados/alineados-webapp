@@ -11,7 +11,7 @@
 		footer,
 		onClickCard
 	}: {
-		state?: 'default' | 'stable' | 'warning' | 'danger';
+		state?: 'default' | 'stable' | 'warning' | 'danger' | 'completed';
 		headerClass: string;
 		isNew?: boolean;
 		header: Snippet;
@@ -31,7 +31,9 @@
 				? 'border-yellow-500'
 				: state === 'danger'
 					? 'border-red-500'
-					: ''
+					: state === 'completed'
+						? 'border-green-500'
+						: ''
 	}`}
 >
 	<Card.Header class="flex flex-row p-0 {headerClass}">

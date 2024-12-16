@@ -12,7 +12,7 @@
 </script>
 
 <Card.Root
-	class={`h-8/12 w-full transform rounded-md bg-gradient-to-br from-white to-gray-50 p-4 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl `}
+	class={`h-auto w-full transform rounded-md bg-gradient-to-br from-white to-gray-50 p-2 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl `}
 >
 	<Card.Content class="flex p-0 {contentClass}">
 		{@render content()}

@@ -1,12 +1,9 @@
-<script>
-	export let size = 65;
-	export let strokeWidth = 6;
-	export let progress = 50;
-	export let text = 'De progreso';
+<script lang="ts">
+	let { size = 65, strokeWidth = 6, progress = $bindable(), text = 'De progreso' } = $props();
 
-	const radius = (size - strokeWidth) / 2;
-	const circumference = 2 * Math.PI * radius;
-	const strokeDasharray = (circumference * progress) / 100;
+	const radius = $state((size - strokeWidth) / 2);
+	const circumference = $derived(2 * Math.PI * radius);
+	const strokeDasharray = $derived((circumference * progress) / 100);
 </script>
 
 <div class="progress-circle-container">

@@ -88,7 +88,7 @@
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
 										<a href={'#'} {...props}>
-											<span>Pilares de Vida y conociendome</span>
+											<span>Acciones</span>
 										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
@@ -97,7 +97,7 @@
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
 										<a href={'#'} {...props}>
-											<span>Pensamientos y Reglas de Vida</span>
+											<span>Pensamientos</span>
 										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
@@ -106,7 +106,7 @@
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
 										<a href={'#'} {...props}>
-											<span>Testimonios y Organización</span>
+											<span>Relatos</span>
 										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
@@ -122,26 +122,6 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-						<Sidebar.MenuSub>
-							<Sidebar.MenuSubItem>
-								<Sidebar.MenuSubButton>
-									{#snippet child({ props })}
-										<a href={'#'} {...props}>
-											<span>Personas</span>
-										</a>
-									{/snippet}
-								</Sidebar.MenuSubButton>
-							</Sidebar.MenuSubItem>
-							<Sidebar.MenuSubItem>
-								<Sidebar.MenuSubButton>
-									{#snippet child({ props })}
-										<a href={'#'} {...props}>
-											<span>Compañer@ de vida</span>
-										</a>
-									{/snippet}
-								</Sidebar.MenuSubButton>
-							</Sidebar.MenuSubItem>
-						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
@@ -203,21 +183,6 @@
 						align="end"
 						sideOffset={4}
 					>
-						<DropdownMenu.Label class="bg-white p-0 font-normal">
-							<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-								<Avatar.Root class="h-8 w-8 rounded-lg">
-									<Avatar.Image src={user.avatar} alt={user.name} />
-									<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
-								</Avatar.Root>
-								<div class="grid flex-1 text-left text-sm leading-tight text-black">
-									<span class="truncate font-semibold">{user.name}</span>
-									<span class="truncate text-xs">{user.email}</span>
-								</div>
-							</div>
-						</DropdownMenu.Label>
-
-						<DropdownMenu.Separator class="h-0" />
-
 						<DropdownMenu.Group class="bg-alineados-gray-200">
 							<DropdownMenu.Item class="bg-white">
 								<div class="flex items-center gap-1 text-black">
@@ -231,11 +196,6 @@
 									<span class="truncate text-sm">Configuración</span>
 								</div>
 							</DropdownMenu.Item>
-						</DropdownMenu.Group>
-
-						<DropdownMenu.Separator class="h-0" />
-
-						<DropdownMenu.Group class="bg-alineados-gray-200">
 							<DropdownMenu.Item class="bg-white">
 								<div class="flex items-center gap-1 text-black">
 									<LogOut />

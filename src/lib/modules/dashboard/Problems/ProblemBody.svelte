@@ -22,8 +22,10 @@
 		problemCard
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
-
-
+	import Lines from '$lib/icons/Lines.svelte';
+	import Rocket from '$lib/icons/Rocket.svelte';
+	import Check from '$lib/icons/Check.svelte';
+	import Spotlight from '$lib/icons/Spotlight.svelte';
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -83,7 +85,7 @@
 
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
-			<Like styleTw="size-6 text-alineados-gray-900" />
+			<Lines styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
@@ -209,7 +211,7 @@
 
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
-			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<Spotlight styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Desición Recomendada</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
@@ -222,16 +224,18 @@
 
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
-			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<Check styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Final</h2>
 		</div>
 		<div class=" mt-5 flex flex-col gap-2">
 			{#if $problemInfo.objectives.length === 1 && $problemInfo.objectives[0].description === ''}
-				<p class="pl-2 text-alineados-gray-400">No hay alternativas</p>
+				<p class="pl-2 text-alineados-gray-400">
+					No hay alternativas para tomar una decisión final
+				</p>
 			{:else}
 				{#each $problemInfo.alternatives as alternative}
 					<DecisionPill
-						changeFinalDecision={() => {
+						changeSelected={() => {
 							changeFinalDecision(alternative.id);
 						}}
 						selected={alternative.id === $problemInfo.final_decision}
@@ -244,7 +248,7 @@
 
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
-			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
+			<Rocket styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">

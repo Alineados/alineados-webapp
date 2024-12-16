@@ -6,16 +6,17 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	const pid = url.searchParams.get('pid');
 	const pillar_name = url.searchParams.get('pillar_name');
 
-	
 	if (!pid) return console.error('No pid provided');
 
 	let problemService: ProblemService = ProblemService.getInstance('');
 	const result = await problemService.getProblemInfo(pid);
 
-	
+	console.log('result', result);
+
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,
+		problemMatrix: result.data.problem_matrix,
 		pillar_name: pillar_name
 	};
 };

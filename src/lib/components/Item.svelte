@@ -7,20 +7,25 @@
 	import Star from '$lib/icons/Star.svelte';
 	import Sun from '$lib/icons/Sun.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let {
 		value = $bindable(),
+		isOnlyText = $bindable(),
+		isStarred = $bindable(),
+		isDaily = $bindable(),
+		isDone = $bindable(),
+		isRepeated = $bindable(),
 		isAccountability = false,
 		isUnique = false,
 		isNew = false,
-		isOnlyText = $bindable(),
 		isDisabled = false,
-		isStarred = $bindable(),
-		isDaily = $bindable(),
 		addItem,
 		deleteItem,
 		prominentItem,
-		dailyItem
+		dailyItem,
+		doneItem,
+		repeatItem
 	}: {
 		value?: string;
 		isAccountability?: boolean;
@@ -30,10 +35,14 @@
 		isDisabled?: boolean;
 		isStarred?: boolean;
 		isDaily?: boolean;
+		isDone?: boolean;
+		isRepeated?: boolean;
 		addItem?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
 		dailyItem?: () => void;
+		doneItem?: () => void;
+		repeatItem?: () => void;
 	} = $props();
 
 	function autoResize(event: Event) {
@@ -55,18 +64,13 @@
 		}
 	}
 
-	let isDone = $state(false);
-	let isRepeated = $state(false);
+	function copyClipboard() {
+		navigator.clipboard.writeText(value!);
 
-	// Handlers
-
-	function handlerDoneItem() {
-		isDone = !isDone;
-		console.log(isDone);
-	}
-
-	function handlerRepeatItem() {
-		isRepeated = !isRepeated;
+		// Show toast
+		toast.success('Copiado al portapapeles', {
+			duration: 1000
+		});
 	}
 </script>
 
@@ -80,10 +84,12 @@
 				onclick={isDisabled ? null : addItem}
 				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
 				aria-label="Plus"
-				disabled={isDisabled}
+				disabled={isDisabled || isAccountability}
+				class:opacity-0={isAccountability}
 			>
 				<Plus styleTw="size-4" />
 			</button>
+	
 			<button
 				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
 				aria-label="Order"
@@ -99,7 +105,7 @@
 	>
 		<button
 			aria-label="Copy"
-			onclick={() => navigator.clipboard.writeText(value!)}
+			onclick={copyClipboard}
 			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
 		>
 			<Copy styleTw="size-5" />
@@ -124,7 +130,9 @@
 		>
 			{#if isAccountability}
 				<button
-					onclick={handlerDoneItem}
+					onclick={() => {
+						if (doneItem) doneItem();
+					}}
 					class:text-alineados-gray-400={!isDone}
 					class:text-green-500={isDone}
 					class:hover:text-green-500={!isDisabled}
@@ -135,7 +143,9 @@
 				</button>
 
 				<button
-					onclick={handlerRepeatItem}
+					onclick={() => {
+						if (repeatItem) repeatItem();
+					}}
 					class:text-alineados-gray-400={!isRepeated}
 					class:text-blue-500={isRepeated}
 					class:hover:text-blue-500={!isDisabled}

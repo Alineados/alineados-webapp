@@ -21,7 +21,7 @@ export interface ProblemCard {
 	created_at: string;
 	updated_at?: string;
 	deleted_at?: string;
-	completed_at?: string;
+	completed_at?: string | null;
 }
 
 export interface ProblemInfo {
@@ -41,6 +41,30 @@ export interface ProblemInfo {
 	updated_at: string | null;
 }
 
+export interface Matrix {
+	id: string; // primitive.ObjectID in Go
+	pid : string; // problem id
+	pfd: string; // problem info id
+	uid: string; // user id
+	rows: MatrixRow[];
+	results: MatrixRow | null;
+}
+
+export interface MatrixRow {
+	id: string; // uuid
+	objective: string;
+	percentage: number;
+	units: string;
+	cells: CellMatrix[];
+}
+
+export interface CellMatrix {
+	id: string; // uuid
+	value: number;
+	reference_value: string;
+	winner: boolean;
+}
+
 export enum ProblemType {
 	decision_taken = 'Tomador de decisión',
 	problem = 'Problema',
@@ -48,5 +72,5 @@ export enum ProblemType {
 	contexts = 'Contexto',
 	objectives = 'Objetivos',
 	alternatives = 'Alternativas',
-	action_plan = 'Plan de acción',
+	action_plan = 'Plan de acción'
 }
