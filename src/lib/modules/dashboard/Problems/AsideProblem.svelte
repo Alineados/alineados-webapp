@@ -7,7 +7,7 @@
 	import Image from '$lib/icons/Image.svelte';
 	import Upload from '$lib/icons/Upload.svelte';
 
-	import { problemCard } from '$lib/stores';
+	import { problemCard, problemProgress } from '$lib/stores';
 
 	// Function to format this date 2025-02-25T02:42:57.957Z into 25-02-2025
 	const formatDate = (date: Date) => {
@@ -17,6 +17,10 @@
 		const day = d.getDate();
 		return `${day}/${month}/${year}`;
 	};
+
+
+	$inspect($problemProgress);
+
 </script>
 
 <div class="flex w-2/3 flex-col items-center justify-center gap-3">
@@ -47,7 +51,7 @@
 		{/snippet}
 		{#snippet rightContent()}
 			<div class="flex w-full flex-col items-center justify-center">
-				<ProgressCircle progress={$problemCard.progress} />
+				<ProgressCircle bind:progress={$problemProgress} />
 			</div>
 		{/snippet}
 	</RectangularCard>

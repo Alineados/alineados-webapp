@@ -3,7 +3,6 @@
 	import ThreeDots from '$lib/icons/ElipsisVertical.svelte';
 	import Blocked from '$lib/icons/Blocked.svelte';
 	import Lock from '$lib/icons/Lock.svelte';
-	import File from '$lib/icons/File.svelte';
 	import { updateSecurityAndActive, problemCard } from '$lib/stores';
 
 	// Function to update

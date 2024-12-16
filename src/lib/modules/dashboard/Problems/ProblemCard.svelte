@@ -90,9 +90,12 @@
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
+			
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
 				isNew={problem.is_new}
-				state="default"
+				state={
+					problem.active && problem.completed_at ? 'completed' : problem.active ? 'default' : 'default'
+				}
 				headerClass="justify-between"
 			>
 				{#snippet header()}

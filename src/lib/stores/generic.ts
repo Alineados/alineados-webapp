@@ -1,4 +1,4 @@
-import type { Generic } from '$lib/interfaces';
+import type { CellMatrix, Generic, MatrixRow } from '$lib/interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 export const emptyGeneric = (): Generic => {
@@ -13,22 +13,25 @@ export const emptyGeneric = (): Generic => {
 	};
 };
 
-// export const emptyGenericTwo = (): GenericTwo => {
-// 	return {
-// 		id: uuidv4(),
-// 		description: '',
-// 		createdAt: new Date().toISOString(),
-// 		deleted: false,
-// 		prominent: false
-// 	};
-// };
+export const generateNewMatrixRow = (): MatrixRow => {
+	return {
+		id: uuidv4(),
+		objective: '',
+		percentage: 0,
+		units: '#',
+		cells: [
+			{ ...generateNewMatrixCell() },
+			{ ...generateNewMatrixCell() },
+			{ ...generateNewMatrixCell() }
+		]
+	};
+};
 
-// export const emptyGenericOne = (): GenericOne => {
-// 	return {
-// 		id: uuidv4(),
-// 		description: '',
-// 		createdAt: new Date().toISOString(),
-// 		deleted: false
-// 	};
-// };
-
+export const generateNewMatrixCell = (): CellMatrix => {
+	return {
+		id: uuidv4(),
+		value: 0,
+		reference_value: '##',
+		winner: false
+	};
+};

@@ -5,6 +5,7 @@
 	import { Pillars } from '$lib/interfaces/data';
 	import type { ProblemCard } from '$lib/interfaces';
 	import { goto } from '$app/navigation';
+	import { addProblem } from '$lib/stores';
 
 	let formHtml: HTMLFormElement;
 
@@ -30,10 +31,10 @@
 			case 'Salud':
 				name = 'health';
 				break;
-			case 'Relación':
+			case 'Relaciones':
 				name = 'relational';
 				break;
-			case 'Vocación':
+			case 'Vocaciones':
 				name = 'vocational';
 				break;
 			case 'Espiritual':
@@ -74,7 +75,9 @@
 						// navigate to new problem
 						navigateToProblem(data.id, dataToSend.pillar_name);
 						// update stores
-						// addProblem(data, Pillars);
+						setTimeout(() => {
+							addProblem(data, Pillars);
+						}, 500);
 					}
 					// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 				};

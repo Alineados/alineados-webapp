@@ -12,6 +12,7 @@ export interface Generic {
 	deleted: boolean;
 	prominent: boolean;
 	repeatable: boolean;
+	done: boolean;
 	daily: boolean;
 }
 
@@ -20,5 +21,6 @@ export enum FilterBy {
 	ALL = 'all',
 	ACTIVE = 'active',
 	INACTIVE = 'inactive',
+	FINISHED = 'finished',
 }
 

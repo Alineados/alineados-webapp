@@ -1,17 +1,35 @@
-import type { ProblemInfo } from '$lib/interfaces';
+import type { Matrix, ProblemInfo } from '$lib/interfaces';
 import { ProblemType } from '$lib/interfaces';
 import { derived, writable } from 'svelte/store';
-import { emptyGeneric } from '../generic';
+import { emptyGeneric, generateNewMatrixRow } from '../generic';
 
 // Problem info store
 export const pid = writable<string>(''); // Problem info ID
 export const problemInfo = writable<ProblemInfo>();
+export const matrix = writable<Matrix>();
+export const problemReadyToComplete = writable<boolean>(false);
+
+// function to check if the problem is ready to be completed
+export const changeCompleteStatus = (ready: boolean) => {
+	problemReadyToComplete.set(ready);
+};
+
+/**
+ * 1. default
+ * 2. report
+ */
+export const reportProblem = writable<number>(1);
+
+export const changeReportProblem = (report: number) => {
+	reportProblem.update((r) => {
+		if (r === report) return 1;
+		else return report;
+	})
+};
 
 // Function to initialize the store with the problem info
 export const initProblemInfo = (info: ProblemInfo) => {
-
 	if (info) {
-
 		pid.set(info.pid);
 
 		// evaluate the problem info
@@ -24,6 +42,27 @@ export const initProblemInfo = (info: ProblemInfo) => {
 		if (info.action_plan.length === 0) info.action_plan = [{ ...emptyGeneric() }];
 
 		problemInfo.set(info);
+	}
+};
+
+// Function to initialize the store with the matrix
+export const initMatrix = (matrixData: Matrix) => {
+	if (matrixData) {
+		// evaluate if the matrix is populated
+		if (matrixData.rows.length === 0 && matrixData.results === null) {
+			console.log('Matrix is empty');
+			matrixData.rows = [
+				{ ...generateNewMatrixRow() },
+				{ ...generateNewMatrixRow() },
+				{ ...generateNewMatrixRow() }
+			];
+
+			matrixData.results = { ...generateNewMatrixRow() };
+		}
+
+		matrix.set(matrixData);
+
+		console.log('Matrix', matrixData);
 	}
 };
 
@@ -288,6 +327,27 @@ export const markDailytItem = (id: string, problemType: ProblemType) => {
 		problemInfo.update((info) => {
 			const index = info.action_plan.findIndex((inv) => inv.id === id);
 			info.action_plan[index].daily = !info.action_plan[index].daily;
+			return info;
+		});
+	}
+};
+
+// Function to mark only done or repeated items in action plan
+export const markOnlyDoneOrRepeatedItems = (
+	id: string,
+	problemType: ProblemType,
+	done: boolean
+) => {
+	if (problemType === ProblemType.action_plan) {
+		problemInfo.update((info) => {
+			const index = info.action_plan.findIndex((inv) => inv.id === id);
+			if (done) {
+				info.action_plan[index].done = !info.action_plan[index].done;
+				info.action_plan[index].repeatable = false;
+			} else {
+				info.action_plan[index].done = false;
+				info.action_plan[index].repeatable = !info.action_plan[index].repeatable;
+			}
 			return info;
 		});
 	}

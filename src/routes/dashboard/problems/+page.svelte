@@ -17,6 +17,8 @@
 	$effect(() => {
 		initProblems({ ...data.problems });
 	});
+
+	
 </script>
 
 <div class="sticky top-0 z-10 w-full bg-white">

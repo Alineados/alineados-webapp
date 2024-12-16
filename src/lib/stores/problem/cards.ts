@@ -1,6 +1,7 @@
 import { FilterBy, type ProblemCard } from '$lib/interfaces';
 import type { PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
 import { derived, writable } from 'svelte/store';
+import { problemInfo, problemReadyToComplete } from './info';
 
 // list of info about problems
 export const healthProblems = writable<ProblemCard[]>();
@@ -18,8 +19,9 @@ export const healthProblemsFiltered = derived(
 	[healthProblems, filterBy],
 	([$healthProblems, $filterBy]) => {
 		return $healthProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
-			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active
+			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
 	}
@@ -29,8 +31,9 @@ export const relationalProblemsFiltered = derived(
 	[relationalProblems, filterBy],
 	([$relationalProblems, $filterBy]) => {
 		return $relationalProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
 	}
@@ -40,8 +43,9 @@ export const vocationalProblemsFiltered = derived(
 	[vocationalProblems, filterBy],
 	([$vocationalProblems, $filterBy]) => {
 		return $vocationalProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
 	}
@@ -51,8 +55,9 @@ export const spiritualProblemsFiltered = derived(
 	[spiritualProblems, filterBy],
 	([$spiritualProblems, $filterBy]) => {
 		return $spiritualProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
 	}
@@ -147,3 +152,32 @@ export const autosavingProblemCard = derived([problemCard], (_, set) => {
 export const problemCardJSON = derived([problemCard], ([$problemCard], set) => {
 	set(JSON.stringify($problemCard));
 });
+
+// Derived store to calculate the progress based on the number of action plans done in problem info
+export const problemProgress = derived([problemInfo], ([$problemInfo]) => {
+	const total = $problemInfo.action_plan.length;
+	const done = $problemInfo.action_plan.filter((action) => action.done).length;
+	const percentage = Math.round((done / total) * 100);
+
+	// set the progress and if completed in the problem card
+	problemCard.update((card) => {
+		card.progress = percentage;
+
+		return card;
+	});
+
+	return percentage;
+});
+
+// Function to complete a problem and card
+export const completeProblem = () => {
+	problemCard.update((card) => {
+		card.completed_at = new Date().toISOString();
+		return card;
+	});
+
+	problemInfo.update((info) => {
+		info.solved = true;
+		return info;
+	});
+};

@@ -3,17 +3,17 @@
 		text = $bindable(),
 		selected = false,
 		isDisabled = false,
-		changeFinalDecision
+		changeSelected
 	}: {
 		text: string;
 		selected?: boolean;
 		isDisabled?: boolean;
-		changeFinalDecision?: () => void;
+		changeSelected?: () => void;
 	} = $props();
 
 	function selectItem() {
 		selected = !selected;
-		changeFinalDecision && changeFinalDecision();
+		changeSelected && changeSelected();
 	}
 </script>
 

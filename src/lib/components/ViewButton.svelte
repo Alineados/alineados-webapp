@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Eye from '$lib/icons/Eye.svelte';
 	import { goto } from '$app/navigation';
 
@@ -8,7 +9,10 @@
 </script>
 
 <button
-	class="group flex items-center gap-[6px] rounded-lg bg-[#0F172A] px-5 py-4 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
+	onclick={() => {
+		goto('./problems/view');
+	}}
+	class="group flex items-center gap-[6px] rounded-lg bg-alineados-blue-900 px-5 py-4 text-white transition duration-300 ease-in-out hover:bg-alineados-blue-800 hover:shadow-lg hover:shadow-alineados-blue-900/30"
 	aria-label="Ver"
 	on:click={handleClick}
 >

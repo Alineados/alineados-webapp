@@ -2,6 +2,7 @@
 	import AccountabilityButton from '$lib/components/AccountabilityButton.svelte';
 	import MoreButton from '$lib/components/MoreButton.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
+
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import {
 		autosavingProblemCard,
@@ -9,7 +10,8 @@
 		pcid,
 		problemCardJSON,
 		problemInfoJSON,
-		problemCard
+		problemCard,
+		reportProblem
 	} from '$lib/stores';
 
 	import Cloud from '$lib/icons/Cloud.svelte';
@@ -22,15 +24,9 @@
 	let { title = $bindable() } = $props();
 
 	$effect(() => {
-		if ($autosavingProblemCard) {
-			// console.log('autosaving', $problemCardJSON);
-			socket.push('autosave_pc', $problemCardJSON as string);
-		}
+		if ($autosavingProblemCard) socket.push('autosave_pc', $problemCardJSON as string);
 
-		if ($autosavingProblemInfo) {
-			// console.log('autosaving', $problemInfoJSON);
-			socket.push('autosave_pi', $problemInfoJSON as string);
-		}
+		if ($autosavingProblemInfo) socket.push('autosave_pi', $problemInfoJSON as string);
 	});
 
 	onMount(() => {
@@ -62,7 +58,7 @@
 				{:else}
 					<UnPadlock class="size-5" />
 				{/if}
-				<StatusPill bind:status={$problemCard.active} />
+				<StatusPill status={$problemCard.active} />
 			</div>
 			<!-- Autosave -->
 
@@ -79,7 +75,9 @@
 
 		<div class="flex flex-row gap-4 self-start">
 			<AccountabilityButton />
-			<MoreButton />
+			{#if $reportProblem === 1}
+				<MoreButton />
+			{/if}
 		</div>
 	</div>
 </div>

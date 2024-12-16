@@ -5,23 +5,23 @@
 	import { filterBy } from '$lib/stores';
 
 	// Filter items object state
-	let cardFilter = $state<{ all: boolean; active: boolean; inactive: boolean }>({
+	let cardFilter = $state<{ all: boolean; active: boolean; inactive: boolean; finished: boolean }>({
 		all: true,
 		active: false,
-		inactive: false
+		inactive: false,
+		finished: false
 	});
 
 	function changeFilter(filter: keyof typeof cardFilter) {
 		cardFilter.all = false;
 		cardFilter.active = false;
 		cardFilter.inactive = false;
+		cardFilter.finished = false;
 
 		cardFilter[filter] = true;
 
 		filterBy.set(filter);
 	}
-
-	$inspect($filterBy);
 </script>
 
 <div class="flex flex-col gap-6 pb-6">
@@ -61,6 +61,14 @@
 		bind:selected={cardFilter.inactive}
 		triggerFunction={() => {
 			changeFilter('inactive');
+		}}
+	/>
+	<CardFilter
+		type="simple"
+		text="Concluidos"
+		bind:selected={cardFilter.finished}
+		triggerFunction={() => {
+			changeFilter('finished');
 		}}
 	/>
 </div>
