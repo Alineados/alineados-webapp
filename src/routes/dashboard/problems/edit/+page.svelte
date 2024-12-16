@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { onMount, untrack } from 'svelte';
+	import { onMount } from 'svelte';
 	import ProblemBody from '$lib/modules/dashboard/Problems/ProblemBody.svelte';
 	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
-	import { initProblemCard, initProblemInfo, pid, problemCard } from '$lib/stores';
+	import {
+		initMatrix,
+		initProblemCard,
+		initProblemInfo,
+		pid,
+		problemCard,
+		reportProblem
+	} from '$lib/stores';
+	import AccountabilityBody from '$lib/modules/dashboard/Problems/AccountabilityBody.svelte';
 
 	// get data from server.ts
 	let { data }: { data: any } = $props();
@@ -12,6 +20,7 @@
 	$effect(() => {
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
+		initMatrix({ ...data.problemMatrix });
 	});
 
 	let headerRef = $state<HTMLElement>();
@@ -22,6 +31,7 @@
 	onMount(() => {
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
+		initMatrix({ ...data.problemMatrix });
 
 		const headerHeight = headerRef ? headerRef.offsetHeight : 0;
 		const problemsFilterHeight = problemsFilterRef ? problemsFilterRef.offsetHeight : 0;
@@ -48,11 +58,15 @@
 			</div>
 
 			<div bind:this={accountabilityBodyRef}>
-				<ProblemBody />
+				{#if $reportProblem === 2}
+					<AccountabilityBody />
+				{:else}
+					<ProblemBody />
+				{/if}
 			</div>
 		</div>
 
-		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center ">
+		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center">
 			<AsideProblem />
 		</div>
 	</div>

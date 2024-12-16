@@ -1,9 +1,11 @@
 <script lang="ts">
 	import * as Sidebar from '$lib/shared/ui/sidebar/index.js';
 	import AppSidebar from '$lib/components/AppSidebar.svelte';
+	import { Toaster } from 'svelte-sonner';
 
 	let { children } = $props();
 </script>
+
 
 <Sidebar.Provider>
 	<AppSidebar />

@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,
+		problemMatrix: result.data.problem_matrix,
 		pillar_name: pillar_name
 	};
 };

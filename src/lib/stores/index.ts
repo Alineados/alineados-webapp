@@ -6,6 +6,8 @@ export {
 	removeProblem,
 	initProblemCard,
 	updateSecurityAndActive,
+	completeProblem,
+	problemProgress,
 	filterBy,
 	healthProblems,
 	relationalProblems,
@@ -28,6 +30,13 @@ export {
 	prominentItem,
 	changeFinalDecision,
 	markDailytItem,
+	initMatrix,
+	markOnlyDoneOrRepeatedItems,
+	changeCompleteStatus,
+	changeReportProblem,
+	reportProblem,
+	problemReadyToComplete,
+	matrix,
 	autosavingProblemInfo,
 	pid,
 	problemInfo,
@@ -35,4 +44,4 @@ export {
 } from './problem/info';
 
 // Generics
-export { emptyGeneric } from './generic';
+export { emptyGeneric, generateNewMatrixCell, generateNewMatrixRow } from './generic';
