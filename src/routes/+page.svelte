@@ -147,6 +147,6 @@
 		<ProgressCircle progress={100} />
 	</div>
 	<div class="flex">
-		<DateDialog />
+		<DateDialog open={true} />
 	</div>
 </div>

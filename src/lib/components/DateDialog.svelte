@@ -2,7 +2,7 @@
 	import * as AlertDialog from '$lib/shared/ui/alert-dialog/index.js';
 	import DatePicker from './DatePicker.svelte';
 
-	let { open = true } = $props();
+	let { open = false } = $props();
 
 	let date = $state('');
 
