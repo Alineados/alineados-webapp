@@ -19,8 +19,8 @@ export const healthProblemsFiltered = derived(
 	[healthProblems, filterBy],
 	([$healthProblems, $filterBy]) => {
 		return $healthProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
-			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active
 			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
@@ -31,7 +31,7 @@ export const relationalProblemsFiltered = derived(
 	[relationalProblems, filterBy],
 	([$relationalProblems, $filterBy]) => {
 		return $relationalProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
 			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
@@ -43,7 +43,7 @@ export const vocationalProblemsFiltered = derived(
 	[vocationalProblems, filterBy],
 	([$vocationalProblems, $filterBy]) => {
 		return $vocationalProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
 			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
@@ -55,7 +55,7 @@ export const spiritualProblemsFiltered = derived(
 	[spiritualProblems, filterBy],
 	([$spiritualProblems, $filterBy]) => {
 		return $spiritualProblems?.filter((p) => {
-			if ($filterBy === FilterBy.ACTIVE) return p.active;
+			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
 			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
 			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;

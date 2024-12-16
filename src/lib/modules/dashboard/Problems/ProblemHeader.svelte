@@ -23,18 +23,10 @@
 	let socket: SocketService;
 	let { title = $bindable() } = $props();
 
-	
-
 	$effect(() => {
-		if ($autosavingProblemCard) {
-			// console.log('autosaving', $problemCardJSON);
-			socket.push('autosave_pc', $problemCardJSON as string);
-		}
+		if ($autosavingProblemCard) socket.push('autosave_pc', $problemCardJSON as string);
 
-		if ($autosavingProblemInfo) {
-			// console.log('autosaving', $problemInfoJSON);
-			socket.push('autosave_pi', $problemInfoJSON as string);
-		}
+		if ($autosavingProblemInfo) socket.push('autosave_pi', $problemInfoJSON as string);
 	});
 
 	onMount(() => {
@@ -89,5 +81,3 @@
 		</div>
 	</div>
 </div>
-
-
