@@ -9,13 +9,30 @@
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
-	let { name, label, placeholder, options = [], isInvalid = false, errorMessage = '' } = $props();
+	interface PhoneNumber {
+		code: string;
+		number: string;
+	}
 
+	// Props
+	let {
+		name,
+		label,
+		placeholder,
+		options = [],
+		isInvalid = false,
+		errorMessage = '',
+		value = $bindable<PhoneNumber>({ code: '', number: '' })
+	} = $props();
+
+	let countryCode = $state(value.code);
+	let phoneNumber = $state(value.number);
+
+	// Shadcn
 	let open = $state(false);
-	let value = $state('');
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(options.find((f) => f.value === value));
+	const selectedValue = $derived(options.find((f) => f.value === countryCode));
 
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
@@ -26,6 +43,16 @@
 			triggerRef.focus();
 		});
 	}
+
+	// Update value object when either part changes
+	$effect(() => {
+		value = {
+			code: countryCode,
+			number: phoneNumber
+		};
+	});
+
+	$inspect({ value });
 </script>
 
 <div class="flex w-1/2 flex-col gap-0">
@@ -66,11 +93,11 @@
 										value={option.label}
 										class="bg-alineados-gray-50"
 										onSelect={() => {
-											value = option.value;
+											countryCode = option.value;
 											closeAndFocusTrigger();
 										}}
 									>
-										<Check class={cn(value !== option.value && 'text-transparent')} />
+										<Check class={cn(countryCode !== option.value && 'text-transparent')} />
 										<div class="flex items-center gap-2">
 											<img class="size-5" src={option.flag} alt={option.label} />
 											<span class="text-base">{option.value}</span>
@@ -85,20 +112,21 @@
 
 			<Input
 				class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-center text-base placeholder:text-alineados-gray-500"
-				id={name}
+				id={`${name}-code`}
 				type="tel"
 				autocapitalize="none"
 				autocorrect="off"
 				placeholder="+000"
-				bind:value
+				bind:value={countryCode}
 			/>
 			<Input
 				class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-base placeholder:text-alineados-gray-500"
-				id={name}
+				id={`${name}-number`}
 				type="tel"
 				placeholder="Ingrese su número de celular"
 				autocapitalize="none"
 				autocorrect="off"
+				bind:value={phoneNumber}
 			/>
 		</div>
 	</div>

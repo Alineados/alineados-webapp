@@ -10,9 +10,9 @@
 	} = $props();
 </script>
 
-<div class="flex items-start justify-center">
+<div class="flex items-start justify-center gap-x-1">
 	<div class="flex items-start">
 		{@render arrow()}
 	</div>
-	<p class="text-3xl font-semibold text-alineados-gray-800">{value}</p>
+	<p class="text-4xl font-semibold text-alineados-gray-800">{value}</p>
 </div>

@@ -9,7 +9,7 @@
 	);
 </script>
 
-<div class="w-1/2 space-y-2">
+<div class="w-11/12 space-y-2">
 	<Select.Root type="single" {name} bind:value>
 		<Select.Trigger
 			class="w-full border-alineados-gray-100  text-alineados-gray-700 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-700"

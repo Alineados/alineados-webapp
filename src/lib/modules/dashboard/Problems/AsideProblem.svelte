@@ -9,8 +9,8 @@
 
 	import { problemCard, problemProgress } from '$lib/stores';
 
-	// Function to format this date 2025-02-25T02:42:57.957Z into 25-02-2025
-	const formatDate = (date: Date) => {
+	// Function to format date
+	const formatDate = (date: string) => {
 		const d = new Date(date);
 		const year = d.getFullYear();
 		const month = d.getMonth() + 1;
@@ -18,9 +18,7 @@
 		return `${day}/${month}/${year}`;
 	};
 
-
 	$inspect($problemProgress);
-
 </script>
 
 <div class="flex w-2/3 flex-col items-center justify-center gap-3">
@@ -42,7 +40,7 @@
 					{formatDate($problemCard.milestone_date)}
 				</p>
 				<DaysLeft
-					targetDate={$problemCard.milestone_date}
+					bind:targetDate={$problemCard.milestone_date}
 					color="green-500"
 					textSize="sm"
 					extendedText

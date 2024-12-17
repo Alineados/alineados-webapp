@@ -1,11 +1,15 @@
 <script lang="ts">
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
-	import RegisterSelect from '$lib/modules/onboarding/components/RegisterSelect.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
 	import PhoneInput from '$lib/modules/onboarding/components/PhoneInput.svelte';
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
 	import Header from '$lib/modules/onboarding/components/Header.svelte';
+
+	interface PhoneNumber {
+		code: string;
+		number: string;
+	}
 
 	// Countries
 	const countries = [
@@ -76,20 +80,31 @@
 	];
 
 	// Form data
-	let firstName = '';
-	let lastName = '';
-	let countryOfResidence = '';
-	let countryOfBirth = '';
-	let email = '';
-	let birthday = '';
-	let phoneNumber = '';
-	let whatsappNumber = '';
+	let firstName = $state('');
+	let lastName = $state('');
+	let countryOfResidence = $state('');
+	let countryOfBirth = $state('');
+	let email = $state('');
+	let birthday = $state('');
+	let phoneNumber = $state<PhoneNumber>({ code: '', number: '' });
+	let whatsappNumber = $state<PhoneNumber>({ code: '', number: '' });
+
+	$inspect({
+		firstName,
+		lastName,
+		countryOfResidence,
+		countryOfBirth,
+		email,
+		birthday,
+		phoneNumber,
+		whatsappNumber
+	});
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
 	<Header title="Datos Personales" />
 
-	<form action="/?/username" method="POST" class="mt-9 flex w-full flex-col gap-7">
+	<form class="mt-9 flex w-full flex-col gap-7">
 		<div class="flex gap-6">
 			<RegisterInput
 				label="Nombre"
@@ -112,12 +127,14 @@
 				name="country-of-residence"
 				options={countries}
 				placeholder="Selecciona un país"
+				bind:value={countryOfResidence}
 			/>
 			<RegisterCombobox
 				label="País de Nacimiento"
 				name="country-of-birth"
 				options={countries}
 				placeholder="Selecciona un país"
+				bind:value={countryOfBirth}
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -126,16 +143,24 @@
 				forId="email"
 				placeholder="Ingrese su correo electrónico"
 				type="email"
+				bind:value={email}
 			/>
-			<BirthdaySelect label="Fecha de Nacimiento" />
+			<BirthdaySelect bind:value={birthday} />
 		</div>
 		<div class="flex gap-6">
-			<PhoneInput label="Celular" name="phone-number" placeholder="País" options={countriesCode} />
+			<PhoneInput
+				label="Celular"
+				name="phone-number"
+				placeholder="País"
+				options={countriesCode}
+				bind:value={phoneNumber}
+			/>
 			<WhatsAppInput
 				label="WhatsApp"
 				name="whatsapp-number"
 				placeholder="País"
 				options={countriesCode}
+				bind:value={whatsappNumber}
 			/>
 		</div>
 	</form>

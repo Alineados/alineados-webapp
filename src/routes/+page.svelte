@@ -13,6 +13,7 @@
 	import StatusPill from '$lib/components/StatusPill.svelte';
 	import DecisionMatrix from '$lib/modules/dashboard/Problems/DecisionMatrix.svelte';
 	import InformationButton from '$lib/components/InformationButton.svelte';
+	import DateDialog from '$lib/components/DateDialog.svelte';
 
 	let items = ['Salud Física', 'Salud Mental', 'Relación Propia', 'Relación Familiar'];
 </script>
@@ -102,7 +103,6 @@
 	</div>
 	<div class="mt-4 flex gap-4">
 		<ViewButton />
-		<AccountabilityButton />
 		<MoreButton />
 	</div>
 	<div class="mt-4 flex gap-2">
@@ -146,12 +146,7 @@
 		<ProgressCircle progress={75} />
 		<ProgressCircle progress={100} />
 	</div>
-
-	<div class="mt-4 flex w-1/2 items-start gap-4">
-		<DecisionMatrix />
-		<InformationButton
-			tittle="Aquí deberá de ir el título"
-			description="Aquí deberá ir la explicación de la matríz"
-		/>
+	<div class="flex">
+		<DateDialog open={true} />
 	</div>
 </div>

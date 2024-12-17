@@ -1,23 +1,33 @@
 <script lang="ts">
 	import Clock from '$lib/icons/Clock.svelte';
 
-	let { targetDate, extendedText = false, color, textSize = 'xs' } = $props();
+	let { targetDate = $bindable(), extendedText = false, color, textSize = 'xs' } = $props();
 
 	function calculateDaysLeft(targetDate: string): number {
-		const currentDate = new Date();
-		const target = new Date(targetDate);
-		const timeDiff = target.getTime() - currentDate.getTime();
-		const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
-		return daysLeft;
-	}
+		if (!targetDate) return 0;
 
-	const daysLeft = calculateDaysLeft(targetDate);
+		// Get today at midnight UTC
+		const today = new Date();
+		today.setUTCHours(0, 0, 0, 0);
+
+		// Convert target to Date and set to midnight UTC
+		const target = new Date(targetDate);
+		target.setUTCHours(0, 0, 0, 0);
+
+		// Get difference in milliseconds
+		const diffTime = target.getTime() - today.getTime();
+
+		// Convert to days (milliseconds * seconds * minutes * hours)
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+		return diffDays;
+	}
 </script>
 
 <div class={`flex items-center justify-center gap-1 text-${color}`}>
 	<Clock stroke="currentColor" />
 	<p class={`text-${textSize} font-medium text-current`}>
-		{daysLeft}
+		{calculateDaysLeft(targetDate)}
 		{extendedText ? 'días restantes' : 'días'}
 	</p>
 </div>

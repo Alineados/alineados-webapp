@@ -58,7 +58,7 @@
 	});
 </script>
 
-<div class="w-1/2 space-y-2">
+<div class="w-11/12 space-y-2">
 	<Select.Root type="single" {name} bind:value>
 		<Select.Trigger
 			class="w-full border-alineados-gray-100  text-alineados-gray-700 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-700"
@@ -66,12 +66,15 @@
 			{triggerContent}
 		</Select.Trigger>
 		<Select.Content>
-			<Select.Item class="bg-white" value="all" label="Seleccionar todos">
-				Seleccionar todos
-			</Select.Item>
+			<Select.Group class="bg-alineados-gray-50 ">
+				<Select.Item class="bg-alineados-gray-50 " value="all" label="Seleccionar todos">
+					Seleccionar todos
+				</Select.Item>
+			</Select.Group>
+
 			{#each pilars as pilar (pilar.pilar_name)}
-				<Select.Group class="bg-alineados-gray-50">
-					<Select.GroupHeading
+				<Select.Group class="bg-alineados-gray-50 ">
+					<Select.GroupHeading class="bg-white text-base"
 						>{pilarNameMap[pilar.pilar_name as keyof typeof pilarNameMap]}</Select.GroupHeading
 					>
 					{#each pilar.problems as problem}

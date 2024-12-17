@@ -6,7 +6,7 @@
 	import ViewProblemsFilter from '$lib/modules/dashboard/Problems/ViewProblemsFilter.svelte';
 	import ViewCriteriaFilter from '$lib/modules/dashboard/Problems/ViewCriteriaFilter.svelte';
 	import ViewTable from '$lib/modules/dashboard/Problems/ViewTable.svelte';
-	import ViewHeaderTable from '$lib/modules/dashboard/Problems/ViewHeaderTable.svelte';
+	import ViewTableHeader from '$lib/modules/dashboard/Problems/ViewTableHeader.svelte';
 	import type { PageData } from '../$types';
 
 	// Sitcky references for positioning
@@ -23,9 +23,9 @@
 		const tableHeaderHeight = tableHeaderRef.offsetHeight;
 
 		cardContainerRef.style.top = `${headerHeight}px`;
-		filterContainerRef.style.top = `${headerHeight /*+ cardContainerHeight*/}px`;
-		tableHeaderRef.style.top = `${headerHeight /*+ cardContainerHeight*/ + filterContainerHeight}px`;
-		tableContainerRef.style.top = `${headerHeight /*+ cardContainerHeight*/ + filterContainerHeight + tableHeaderHeight}px`;
+		filterContainerRef.style.top = `${headerHeight + cardContainerHeight}px`;
+		tableHeaderRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight}px`;
+		tableContainerRef.style.top = `${headerHeight + cardContainerHeight + filterContainerHeight + tableHeaderHeight}px`;
 	});
 
 	// get data from server.ts
@@ -72,11 +72,15 @@
 		<ViewHeader />
 	</div>
 
-	<div bind:this={cardContainerRef} class="sticky -z-10 flex w-full gap-12 bg-white pb-12">
+	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
 		<ViewStatistics {...data.problems} />
 	</div>
 
-	<div bind:this={filterContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
+	<div
+		bind:this={filterContainerRef}
+		class="sticky z-10 grid w-full bg-white pb-12"
+		style="grid-template-columns: 2fr 3fr 3fr;"
+	>
 		<ViewProblemsFilter name="pillars" {...data.problems} bind:value={selectedProblem} />
 		<ViewCriteriaFilter
 			name="first_criterion"
@@ -91,7 +95,7 @@
 	</div>
 
 	<div bind:this={tableHeaderRef} class="sticky z-10 bg-white">
-		<ViewHeaderTable {firstCriterionLabel} {secondCriterionLabel} />
+		<ViewTableHeader {firstCriterionLabel} {secondCriterionLabel} />
 	</div>
 
 	<div

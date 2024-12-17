@@ -11,7 +11,7 @@ export interface ProblemCard {
 	problem_name: string;
 	category_name: string;
 	pillar_name: string;
-	milestone_date: Date;
+	milestone_date: string;
 	progress: number;
 	active: boolean;
 	security: boolean;

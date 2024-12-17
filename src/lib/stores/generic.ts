@@ -9,6 +9,7 @@ export const emptyGeneric = (): Generic => {
 		deleted: false,
 		prominent: false,
 		repeatable: false,
+		done: false,
 		daily: false
 	};
 };
