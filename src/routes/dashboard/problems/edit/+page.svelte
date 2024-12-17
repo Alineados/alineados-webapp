@@ -13,6 +13,7 @@
 		reportProblem
 	} from '$lib/stores';
 	import AccountabilityBody from '$lib/modules/dashboard/Problems/AccountabilityBody.svelte';
+	import DateDialog from '$lib/components/DateDialog.svelte';
 
 	// get data from server.ts
 	let { data }: { data: any } = $props();
@@ -27,6 +28,18 @@
 	let problemsFilterRef = $state<HTMLElement>();
 	let accountabilityBodyRef = $state<HTMLElement>();
 	let asideProblemRef = $state<HTMLElement>();
+	let date = $state('');
+	let closeDialog = $state(false);
+
+	// function
+	function handleDate() {
+		closeDialog = true;
+
+		$problemCard.milestone_date = date;
+
+		// reset date
+		date = '';
+	}
 
 	onMount(() => {
 		initProblemInfo({ ...data.problemInfo });
@@ -69,5 +82,8 @@
 		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center">
 			<AsideProblem />
 		</div>
+	</div>
+	<div class="flex">
+		<DateDialog open={$problemCard.is_new && !closeDialog} bind:date confirm={handleDate} />
 	</div>
 {/if}

@@ -30,9 +30,10 @@
 	];
 
 	// Years
-	const years = Array.from({ length: 100 }, (_, i) => ({
-		value: `${2023 - i}`,
-		label: `${2023 - i}`
+	const currentYear = new Date().getFullYear();
+	const years = Array.from({ length: 3 }, (_, i) => ({
+		value: `${currentYear + i}`,
+		label: `${currentYear + i}`
 	}));
 
 	// Create reactive statement for combined date

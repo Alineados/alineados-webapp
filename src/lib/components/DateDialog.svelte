@@ -2,11 +2,7 @@
 	import * as AlertDialog from '$lib/shared/ui/alert-dialog/index.js';
 	import DatePicker from './DatePicker.svelte';
 
-	let { open = false } = $props();
-
-	let date = $state('');
-
-	$inspect({ date });
+	let { open = false, date = $bindable(), confirm } = $props();
 </script>
 
 <AlertDialog.Root {open}>
@@ -24,6 +20,7 @@
 
 		<AlertDialog.Footer class="pt-4">
 			<AlertDialog.Action
+				onclick={() => confirm()}
 				class="w-full rounded-xl bg-alineados-blue-900 text-sm font-normal text-white hover:bg-alineados-blue-900"
 				>Confirmar</AlertDialog.Action
 			>
