@@ -10,17 +10,29 @@
 		return colors[i];
 	}
 
-	$inspect($matrix);
+	$inspect("$matrix -> ", $matrix);
 </script>
 
 <div class="grid grid-cols-[200px,25px,100px,100px,100px] gap-4 p-4">
 	<!-- Header Row -->
 	<div></div>
 	<div></div>
-	{#each $problemInfo.alternatives as alternative}
-		<div class="text-center text-base font-medium text-alineados-gray-900">
-			{alternative.description}
-		</div>
+	{#each Array(3) as _, index}
+		{#if $problemInfo.alternatives[index]}
+			{#if index === 0 && $problemInfo.alternatives[index].description === ''}
+				<div class="text-center text-xs font-medium text-alineados-gray-300">
+					Alternativa {index + 1}
+				</div>
+			{:else}
+				<div class="text-center text-xs font-medium text-alineados-gray-300">
+					{$problemInfo.alternatives[index].description}
+				</div>
+			{/if}
+		{:else}
+			<div class="text-center text-xs font-medium text-alineados-gray-300">
+				Alternativa {index + 1}
+			</div>
+		{/if}
 	{/each}
 
 	<!-- Subheader Row -->
@@ -34,24 +46,22 @@
 
 	<!-- Rows -->
 	{#each $matrix.rows as row, i}
-			<RowMatrix color={setColor(i)} />
-			{#if i === 0}
-				<div class="relative -mr-3 flex justify-end overflow-hidden">
-					<span
-						class="absolute origin-top-left translate-y-full -rotate-90 transform whitespace-nowrap text-xs font-medium tracking-wider text-alineados-gray-300"
-						style="left: 50%; bottom: 0.5rem;"
-					>
-						&larr; Objettivos
-					</span>
-				</div>
-			{:else}
-				<div></div>
-			{/if}
-			{#each row.cells as cell}
-				<MatrixCell
-					color={setColor(i)}
-				/>
-			{/each}
+		<RowMatrix rowIndex={i} color={setColor(i)} />
+		{#if i === 0}
+			<div class="relative -mr-3 flex justify-end overflow-hidden">
+				<span
+					class="absolute origin-top-left translate-y-full -rotate-90 transform whitespace-nowrap text-xs font-medium tracking-wider text-alineados-gray-300"
+					style="left: 50%; bottom: 0.5rem;"
+				>
+					&larr; Objetivos
+				</span>
+			</div>
+		{:else}
+			<div></div>
+		{/if}
+		{#each row.cells as cell}
+			<MatrixCell color={setColor(i)} />
+		{/each}
 	{/each}
 
 	<!-- Footer Row -->

@@ -50,7 +50,8 @@ export const initMatrix = (matrixData: Matrix) => {
 	if (matrixData) {
 		// evaluate if the matrix is populated
 		if (matrixData.rows.length === 0 && matrixData.results === null) {
-			console.log('Matrix is empty');
+
+			// rows of objectives
 			matrixData.rows = [
 				{ ...generateNewMatrixRow() },
 				{ ...generateNewMatrixRow() },
