@@ -30,7 +30,6 @@
 
 	// get data from server.ts
 	let { data }: { data: PageData } = $props();
-	//$inspect({ ...data.problems });
 
 	// Criteria options
 	const criteriaOptions = [
@@ -46,12 +45,9 @@
 	];
 
 	// States
-	let selectedProblem = $state('all');
+	let selectedProblem = $state(['all']);
 	let firstCriterion = $state('problem');
 	let secondCriterion = $state('action_plan');
-	//$inspect({ selectedProblem });
-	//$inspect({ firstCriterion });
-	//$inspect({ secondCriterion });
 
 	// Get labels for criteria
 	const firstCriterionLabel = $derived(
@@ -65,6 +61,8 @@
 			? criteriaOptions.find((opt) => opt.criterion === secondCriterion)?.label || ''
 			: ''
 	);
+
+	$inspect({ selectedProblem });
 </script>
 
 <div class="relative h-full">
@@ -81,7 +79,7 @@
 		class="sticky z-10 grid w-full bg-white pb-12"
 		style="grid-template-columns: 2fr 3fr 3fr;"
 	>
-		<ViewProblemsFilter name="pillars" {...data.problems} bind:value={selectedProblem} />
+		<ViewProblemsFilter name="problems" {...data.problems} bind:value={selectedProblem} />
 		<ViewCriteriaFilter
 			name="first_criterion"
 			criteria={criteriaOptions}
