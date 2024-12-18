@@ -89,7 +89,7 @@
 		</Select.Trigger>
 		<Select.Content>
 			<Select.Group class="bg-alineados-gray-50 ">
-				<Select.Item class="bg-white " value="all" label="Seleccionar todos">
+				<Select.Item class="bg-white" value="all" label="Seleccionar todos">
 					Seleccionar todos
 				</Select.Item>
 			</Select.Group>
