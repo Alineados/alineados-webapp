@@ -1,7 +1,10 @@
 <script lang="ts">
-	const { register = $bindable() }: { register: Register } = $props();
+	let {
+		register = $bindable(),
+		validation = $bindable()
+	}: { register: Register; validation: OnboardingValidation } = $props();
 
-	import type { Register } from '$lib/interfaces/onbarding';
+	import type { OnboardingValidation, Register } from '$lib/interfaces/onbarding';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
@@ -111,17 +114,23 @@
 		<div class="flex gap-6">
 			<RegisterInput
 				label="Nombre"
-				forId="first-name"
+				forId="firstName"
 				placeholder="Ingrese su nombre"
 				type="text"
+				isInvalid={false}
+				errorMessage=""
+				bind:validation
 				bind:value={register.firstName}
 			/>
 			<RegisterInput
 				label="Apellido"
-				forId="last-name"
+				forId="lastName"
 				placeholder="Ingrese su apellido"
 				type="text"
 				bind:value={register.lastName}
+				bind:validation
+				isInvalid={false}
+				errorMessage=""
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -147,6 +156,9 @@
 				placeholder="Ingrese su correo electrónico"
 				type="email"
 				bind:value={register.email}
+				bind:validation
+				isInvalid={false}
+				errorMessage=""
 			/>
 			<BirthdaySelect bind:value={register.birthday} />
 		</div>

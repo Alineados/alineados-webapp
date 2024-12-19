@@ -8,16 +8,28 @@
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
 	import AsideSteps from '$lib/modules/onboarding/components/AsideSteps.svelte';
 	import Check from '$lib/icons/AlineadosCheck.svelte';
-	import type { OnboardingData } from '$lib/interfaces/onbarding';
+	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/onbarding';
 	import { onMount } from 'svelte';
 
 	let onboardingData = $state<OnboardingData>();
-
+	let validation = $state<OnboardingValidation>();
 	//let stepId: string;
 	//let isFirst = false;
 	//let isLast = false;
 
 	onMount(() => {
+		validation = {
+			register: {
+				firstName: false,
+				lastName: false,
+				email: false,
+				countryOfResidence: false,
+				countryOfBirth: false,
+				birthday: false,
+				phoneNumber: false,
+				whatsappNumber: false
+			}
+		};
 		onboardingData = {
 			register: {
 				firstName: '',
@@ -42,8 +54,12 @@
 	const stepId = $derived($page.params.stepId);
 	const isFirst = $derived(stepId === '1');
 	const isLast = $derived(stepId === '4');
+
+	/*	
 	const nextStep = $derived(`/onboarding/steps/${parseInt(stepId) + 1}`);
 	const previousStep = $derived(`/onboarding/steps/${parseInt(stepId) - 1}`);
+	*/
+
 	let onboardingDataSJSON = $state('');
 
 	$effect(() => {
@@ -64,6 +80,7 @@
 
 	$: nextStep = `/onboarding/steps/${parseInt(stepId) + 1}`;
 	$: previousStep = `/onboarding/steps/${parseInt(stepId) - 1}`;*/
+	$inspect(validation);
 </script>
 
 <div
@@ -97,9 +114,9 @@
 
 	<div class="col-span-5 flex h-full w-full flex-col px-[152px]">
 		<div class="h-4/5">
-			{#if onboardingData}
+			{#if onboardingData && validation}
 				{#if stepId === '1'}
-					<RegisterForm bind:register={onboardingData.register} />
+					<RegisterForm bind:validation bind:register={onboardingData.register} />
 				{:else if stepId === '2'}
 					<EmailVerification />
 				{:else if stepId === '3'}
@@ -110,10 +127,9 @@
 				<Buttons
 					action={buttonAction.get(stepId) ?? '1'}
 					bind:data={onboardingDataSJSON}
+					bind:validation
 					{isFirst}
 					{isLast}
-					{nextStep}
-					{previousStep}
 				/>
 			{/if}
 		</div>

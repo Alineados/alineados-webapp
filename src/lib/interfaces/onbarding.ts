@@ -17,3 +17,18 @@ interface PhoneNumber {
 export type OnboardingData = {
 	register: Register;
 };
+
+export type RegisterValidation = {
+	firstName: boolean;
+	lastName: boolean;
+	email: boolean;
+	countryOfResidence: boolean;
+	countryOfBirth: boolean;
+	birthday: boolean;
+	phoneNumber: boolean;
+	whatsappNumber: boolean;
+};
+
+export type OnboardingValidation = {
+	register: RegisterValidation;
+};

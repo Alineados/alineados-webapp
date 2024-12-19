@@ -1,4 +1,5 @@
 import type { OnboardingData } from '$lib/interfaces/onbarding';
+import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions = {
@@ -8,13 +9,12 @@ export const actions = {
 		console.log(dataJSON);
 		// TODO: Implement validations here
 
-		const success = true;
-
-		if (!success) {
+		if (!dataJSON.register.firstName) {
 			return {
 				type: 'error',
 				button: 'register',
-				message: 'Validation failed'
+				label: ['firstName', 'lastName'],
+				message: 'First name is required'
 			};
 		}
 
@@ -30,14 +30,13 @@ export const actions = {
 			response.type = 'register';
 			return response;
 		}
-		*/
 
 		const response = {
 			type: 'register',
 			message: 'Success'
 		};
-
-		return response;
+		*/
+		redirect(307, '/onboarding/steps/2');
 	},
 	finsh: async (event) => {
 		const data = await event.request.formData();
