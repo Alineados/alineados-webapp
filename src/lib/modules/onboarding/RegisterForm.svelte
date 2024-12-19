@@ -1,4 +1,7 @@
 <script lang="ts">
+	const { register = $bindable() }: { register: Register } = $props();
+
+	import type { Register } from '$lib/interfaces/onbarding';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
@@ -111,14 +114,14 @@
 				forId="first-name"
 				placeholder="Ingrese su nombre"
 				type="text"
-				bind:value={firstName}
+				bind:value={register.firstName}
 			/>
 			<RegisterInput
 				label="Apellido"
 				forId="last-name"
 				placeholder="Ingrese su apellido"
 				type="text"
-				bind:value={lastName}
+				bind:value={register.lastName}
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -127,14 +130,14 @@
 				name="country-of-residence"
 				options={countries}
 				placeholder="Selecciona un país"
-				bind:value={countryOfResidence}
+				bind:value={register.countryOfResidence}
 			/>
 			<RegisterCombobox
 				label="País de Nacimiento"
 				name="country-of-birth"
 				options={countries}
 				placeholder="Selecciona un país"
-				bind:value={countryOfBirth}
+				bind:value={register.countryOfBirth}
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -143,9 +146,9 @@
 				forId="email"
 				placeholder="Ingrese su correo electrónico"
 				type="email"
-				bind:value={email}
+				bind:value={register.email}
 			/>
-			<BirthdaySelect bind:value={birthday} />
+			<BirthdaySelect bind:value={register.birthday} />
 		</div>
 		<div class="flex gap-6">
 			<PhoneInput
@@ -153,14 +156,14 @@
 				name="phone-number"
 				placeholder="País"
 				options={countriesCode}
-				bind:value={phoneNumber}
+				bind:value={register.phoneNumber}
 			/>
 			<WhatsAppInput
 				label="WhatsApp"
 				name="whatsapp-number"
 				placeholder="País"
 				options={countriesCode}
-				bind:value={whatsappNumber}
+				bind:value={register.whatsappNumber}
 			/>
 		</div>
 	</form>
