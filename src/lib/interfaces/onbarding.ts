@@ -9,7 +9,7 @@ export type Register = {
 	whatsappNumber: PhoneNumber;
 };
 
-interface PhoneNumber {
+export interface PhoneNumber {
 	code: string;
 	number: string;
 }

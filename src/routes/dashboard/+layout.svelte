@@ -6,7 +6,6 @@
 	let { children } = $props();
 </script>
 
-
 <Sidebar.Provider>
 	<AppSidebar />
 	<Sidebar.Inset>

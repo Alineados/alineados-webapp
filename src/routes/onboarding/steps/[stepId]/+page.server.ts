@@ -7,14 +7,48 @@ export const actions = {
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
 		console.log(dataJSON);
-		// TODO: Implement validations here
+
+		//  Validate the data
+		const invalidFields: string[] = [];
 
 		if (!dataJSON.register.firstName) {
+			invalidFields.push('firstName');
+		}
+
+		if (!dataJSON.register.lastName) {
+			invalidFields.push('lastName');
+		}
+
+		if (!dataJSON.register.countryOfResidence) {
+			invalidFields.push('countryOfResidence');
+		}
+
+		if (!dataJSON.register.countryOfBirth) {
+			invalidFields.push('countryOfBirth');
+		}
+
+		if (!dataJSON.register.birthday) {
+			invalidFields.push('birthday');
+		}
+
+		if (!dataJSON.register.email) {
+			invalidFields.push('email');
+		}
+
+		if (!dataJSON.register.phoneNumber.number || !dataJSON.register.phoneNumber.code) {
+			invalidFields.push('phoneNumber');
+		}
+
+		if (!dataJSON.register.whatsappNumber.code || !dataJSON.register.whatsappNumber.number) {
+			invalidFields.push('whatsappNumber');
+		}
+
+		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
 				button: 'register',
-				label: ['firstName', 'lastName'],
-				message: 'First name is required'
+				label: invalidFields,
+				message: 'Please fill in all required fields'
 			};
 		}
 
@@ -36,9 +70,10 @@ export const actions = {
 			message: 'Success'
 		};
 		*/
+
 		redirect(307, '/onboarding/steps/2');
 	},
-	finsh: async (event) => {
+	finish: async (event) => {
 		const data = await event.request.formData();
 		console.log(data);
 		const register = data.get('data');

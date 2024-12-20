@@ -20,22 +20,21 @@
 
 <form
 	method="POST"
-	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+	use:enhance={({}) => {
 		return async ({ result, update }) => {
-			console.log(result);
-
+			// If there is an error
 			if (result.type === 'success' && result.data && result.data.type === 'error') {
-				// $validation
+				// Update validation
 				Object.keys(validation.register).forEach((key) => {
 					let label: string[] = result?.data?.label as string[];
 					if (label.includes(key)) {
 						let keyString = key as keyof RegisterValidation;
 						validation.register[keyString] = true;
-						console.log('input empty', true);
 					}
 				});
 			}
 
+			// If there is a redirect
 			if (result.type === 'redirect') {
 				goto(result.location);
 			}
