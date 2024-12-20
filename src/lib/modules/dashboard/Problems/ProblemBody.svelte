@@ -2,7 +2,6 @@
 	import Item from '$lib/components/Item.svelte';
 	import Bolt from '$lib/icons/Bolt.svelte';
 	import User from '$lib/icons/User.svelte';
-	import Like from '$lib/icons/Like.svelte';
 	import CircleCross from '$lib/icons/CircleCross.svelte';
 	import Cube from '$lib/icons/Cube.svelte';
 	import DecisionMatrix from './DecisionMatrix.svelte';
@@ -26,6 +25,13 @@
 	import Rocket from '$lib/icons/Rocket.svelte';
 	import Check from '$lib/icons/Check.svelte';
 	import Spotlight from '$lib/icons/Spotlight.svelte';
+
+	// $effect(() => {
+	// 	// check problem info
+	// 	if ($problemInfo.involved[$problemInfo.involved.length - 1].description !== '') {
+	// 		addProblemItem('', ProblemType.involved);
+	// 	}
+	// });
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -74,6 +80,15 @@
 					dailyItem={() => {
 						markDailytItem(involded.id, ProblemType.involved);
 					}}
+					onInput={() => {
+						if ($problemInfo.involved[$problemInfo.involved.length - 1].description !== '') {
+							addProblemItem(involded.id, ProblemType.involved);
+						}
+
+						if (involded.description === '') {
+							removeOrCleanItem(involded.id, ProblemType.involved);
+						}
+					}}
 					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={involded.daily}
 					bind:isStarred={involded.prominent}
@@ -102,6 +117,15 @@
 					}}
 					dailyItem={() => {
 						markDailytItem(context.id, ProblemType.contexts);
+					}}
+					onInput={() => {
+						if ($problemInfo.contexts[$problemInfo.contexts.length - 1].description !== '') {
+							addProblemItem(context.id, ProblemType.involved);
+						}
+
+						if (context.description === '') {
+							removeOrCleanItem(context.id, ProblemType.involved);
+						}
 					}}
 					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={context.daily}
@@ -157,6 +181,15 @@
 					dailyItem={() => {
 						markDailytItem(objective.id, ProblemType.objectives);
 					}}
+					onInput={() => {
+						if ($problemInfo.objectives[$problemInfo.objectives.length - 1].description !== '') {
+							addProblemItem(objective.id, ProblemType.objectives);
+						}
+
+						if (objective.description === '') {
+							removeOrCleanItem(objective.id, ProblemType.objectives);
+						}
+					}}
 					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={objective.daily}
 					bind:isStarred={objective.prominent}
@@ -185,6 +218,17 @@
 					}}
 					dailyItem={() => {
 						markDailytItem(alternative.id, ProblemType.alternatives);
+					}}
+					onInput={() => {
+						if (
+							$problemInfo.alternatives[$problemInfo.alternatives.length - 1].description !== ''
+						) {
+							addProblemItem(alternative.id, ProblemType.alternatives);
+						}
+
+						if (alternative.description === '') {
+							removeOrCleanItem(alternative.id, ProblemType.alternatives);
+						}
 					}}
 					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={alternative.daily}
@@ -227,20 +271,24 @@
 			<Check styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Final</h2>
 		</div>
-		<div class=" mt-5 flex flex-col gap-2">
+		<div class="mt-5 flex flex-col gap-2">
 			{#if $problemInfo.objectives.length === 1 && $problemInfo.objectives[0].description === ''}
 				<p class="pl-2 text-alineados-gray-400">
 					No hay alternativas para tomar una decisión final
 				</p>
 			{:else}
-				{#each $problemInfo.alternatives as alternative}
-					<DecisionPill
-						changeSelected={() => {
-							changeFinalDecision(alternative.id);
-						}}
-						selected={alternative.id === $problemInfo.final_decision}
-						bind:text={alternative.description}
-					/>
+				{#each $problemInfo.alternatives as alternative, i}
+					{#if alternative.description !== ''}
+						<DecisionPill
+							changeSelected={() => {
+								changeFinalDecision(alternative.id);
+							}}
+							index={i + 1}
+							selected={alternative.id === $problemInfo.final_decision}
+							bind:isDisabled={$problemCard.active}
+							bind:text={alternative.description}
+						/>
+					{/if}
 				{/each}
 			{/if}
 		</div>
@@ -253,24 +301,39 @@
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.action_plan as action}
-				<Item
-					deleteItem={() => {
-						removeOrCleanItem(action.id, ProblemType.action_plan);
-					}}
-					addItem={() => {
-						addProblemItem(action.id, ProblemType.action_plan);
-					}}
-					prominentItem={() => {
-						prominentItem(action.id, ProblemType.action_plan);
-					}}
-					dailyItem={() => {
-						markDailytItem(action.id, ProblemType.action_plan);
-					}}
-					bind:isOnlyText={$problemCard.active}
-					bind:isDaily={action.daily}
-					bind:isStarred={action.prominent}
-					bind:value={action.description}
-				/>
+				{#if action.done}
+					<DecisionPill isDisabled selected bind:text={action.description} />
+				{:else}
+					<Item
+						deleteItem={() => {
+							removeOrCleanItem(action.id, ProblemType.action_plan);
+						}}
+						addItem={() => {
+							addProblemItem(action.id, ProblemType.action_plan);
+						}}
+						prominentItem={() => {
+							prominentItem(action.id, ProblemType.action_plan);
+						}}
+						dailyItem={() => {
+							markDailytItem(action.id, ProblemType.action_plan);
+						}}
+						onInput={() => {
+							if (
+								$problemInfo.action_plan[$problemInfo.action_plan.length - 1].description !== ''
+							) {
+								addProblemItem(action.id, ProblemType.action_plan);
+							}
+
+							if (action.description === '') {
+								removeOrCleanItem(action.id, ProblemType.action_plan);
+							}
+						}}
+						bind:isOnlyText={$problemCard.active}
+						bind:isDaily={action.daily}
+						bind:isStarred={action.prominent}
+						bind:value={action.description}
+					/>
+				{/if}
 			{/each}
 		</div>
 	</div>

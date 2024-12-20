@@ -60,7 +60,7 @@ export interface MatrixRow {
 
 export interface CellMatrix {
 	id: string; // uuid
-	value: number;
+	value: string;
 	reference_value: string;
 	winner: boolean;
 }

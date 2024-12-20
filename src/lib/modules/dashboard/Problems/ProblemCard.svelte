@@ -8,7 +8,7 @@
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import UnPadlock from '$lib/icons/UnPadlock.svelte';
-	import {  type ProblemCard } from '$lib/interfaces';
+	import { type ProblemCard } from '$lib/interfaces';
 	import { Pillars } from '$lib/interfaces/data';
 	import { removeProblem } from '$lib/stores';
 	import MessageLength from './MessageLength.svelte';
@@ -34,6 +34,20 @@
 			formHtml.requestSubmit();
 		}
 		return;
+	}
+
+	function setProgressBarStatus(
+		problen: ProblemCard
+	): 'default' | 'stable' | 'warning' | 'danger' | 'complete' {
+		if (problen.progress === 100 && problen.completed_at) {
+			return 'complete';
+		} else if (problen.active && problen.progress >= 50) {
+			return 'warning';
+		} else if (problen.active && problen.progress >= 25) {
+			return 'stable';
+		} else {
+			return 'default';
+		}
 	}
 
 	function handleClickCard(e: any, pid: string, pillar: string) {
@@ -90,12 +104,13 @@
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
-			
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
 				isNew={problem.is_new}
-				state={
-					problem.active && problem.completed_at ? 'completed' : problem.active ? 'default' : 'default'
-				}
+				state={problem.active && problem.completed_at
+					? 'completed'
+					: problem.active
+						? 'default'
+						: 'default'}
 				headerClass="justify-between"
 			>
 				{#snippet header()}
@@ -120,10 +135,14 @@
 				{/snippet}
 				{#snippet content()}
 					<div class="flex flex-col gap-4 pb-3 pt-4">
-						<p class="text-xl font-semibold text-black">{problem.problem_name}</p>
+						<p class="h-14 text-xl font-semibold text-black">
+							{problem.problem_name.length > 25
+								? `${problem.problem_name.slice(0, 25)}...`
+								: problem.problem_name}
+						</p>
 						<div class="flex flex-col gap-1">
 							<p class="text-xs font-semibold text-alineados-gray-400">Progreso de tareas</p>
-							<ProgressBar progress={problem.progress} state="stable" />
+							<ProgressBar progress={problem.progress} state={setProgressBarStatus(problem)} />
 						</div>
 					</div>
 				{/snippet}

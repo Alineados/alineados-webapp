@@ -1,6 +1,11 @@
 <script lang="ts">
-	export let progress = 80;
-	export let state: 'default' | 'stable' | 'warning' | 'danger' = 'default';
+	let {
+		progress = 0,
+		state
+	}: {
+		progress: number;
+		state: 'default' | 'stable' | 'warning' | 'danger' | 'complete';
+	} = $props();
 </script>
 
 <div class="relative w-full rounded-xl bg-alineados-gray-50 py-4">
@@ -10,6 +15,7 @@
 		class:stable={state === 'stable'}
 		class:warning={state === 'warning'}
 		class:danger={state === 'danger'}
+		class:complete={state === 'complete'}
 	></div>
 	<p
 		class="progress-text relative z-10 text-center text-sm font-semibold"
@@ -30,5 +36,8 @@
 	}
 	.danger {
 		background-color: #d64545;
+	}
+	.complete {
+		background-color: #0fc917;
 	}
 </style>

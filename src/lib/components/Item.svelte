@@ -20,6 +20,7 @@
 		isUnique = false,
 		isNew = false,
 		isDisabled = false,
+		onInput,
 		addItem,
 		deleteItem,
 		prominentItem,
@@ -37,6 +38,7 @@
 		isDaily?: boolean;
 		isDone?: boolean;
 		isRepeated?: boolean;
+		onInput?: () => void;
 		addItem?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
@@ -49,6 +51,8 @@
 		const textarea = event.target as HTMLTextAreaElement;
 		textarea.style.height = 'auto';
 		textarea.style.height = `${textarea.scrollHeight}px`;
+
+		if (onInput) onInput();
 	}
 
 	function handleTextareaClick() {
@@ -89,7 +93,7 @@
 			>
 				<Plus styleTw="size-4" />
 			</button>
-	
+
 			<button
 				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
 				aria-label="Order"
