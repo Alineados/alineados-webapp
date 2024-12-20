@@ -1,4 +1,10 @@
 <script lang="ts">
+	let {
+		register = $bindable(),
+		validation = $bindable()
+	}: { register: Register; validation: OnboardingValidation } = $props();
+
+	import type { OnboardingValidation, Register } from '$lib/interfaces/onbarding';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
@@ -108,17 +114,23 @@
 		<div class="flex gap-6">
 			<RegisterInput
 				label="Nombre"
-				forId="first-name"
+				forId="firstName"
 				placeholder="Ingrese su nombre"
 				type="text"
-				bind:value={firstName}
+				isInvalid={false}
+				errorMessage=""
+				bind:validation
+				bind:value={register.firstName}
 			/>
 			<RegisterInput
 				label="Apellido"
-				forId="last-name"
+				forId="lastName"
 				placeholder="Ingrese su apellido"
 				type="text"
-				bind:value={lastName}
+				bind:value={register.lastName}
+				bind:validation
+				isInvalid={false}
+				errorMessage=""
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -127,14 +139,14 @@
 				name="country-of-residence"
 				options={countries}
 				placeholder="Selecciona un país"
-				bind:value={countryOfResidence}
+				bind:value={register.countryOfResidence}
 			/>
 			<RegisterCombobox
 				label="País de Nacimiento"
 				name="country-of-birth"
 				options={countries}
 				placeholder="Selecciona un país"
-				bind:value={countryOfBirth}
+				bind:value={register.countryOfBirth}
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -143,9 +155,12 @@
 				forId="email"
 				placeholder="Ingrese su correo electrónico"
 				type="email"
-				bind:value={email}
+				bind:value={register.email}
+				bind:validation
+				isInvalid={false}
+				errorMessage=""
 			/>
-			<BirthdaySelect bind:value={birthday} />
+			<BirthdaySelect bind:value={register.birthday} />
 		</div>
 		<div class="flex gap-6">
 			<PhoneInput
@@ -153,14 +168,14 @@
 				name="phone-number"
 				placeholder="País"
 				options={countriesCode}
-				bind:value={phoneNumber}
+				bind:value={register.phoneNumber}
 			/>
 			<WhatsAppInput
 				label="WhatsApp"
 				name="whatsapp-number"
 				placeholder="País"
 				options={countriesCode}
-				bind:value={whatsappNumber}
+				bind:value={register.whatsappNumber}
 			/>
 		</div>
 	</form>

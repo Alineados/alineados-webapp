@@ -81,7 +81,7 @@
 					{#snippet child({ props })}
 						<Button
 							variant="outline"
-							class="w-[103px] justify-between rounded-lg border-white bg-[#0F172A] text-sm font-normal text-white hover:bg-[#0F172A] hover:text-white"
+							class="w-[103px] justify-between rounded-lg border-white bg-alineados-gray-50 text-sm font-normal text-white hover:bg-[#0F172A] hover:text-white"
 							{...props}
 							role="combobox"
 							aria-expanded={open}

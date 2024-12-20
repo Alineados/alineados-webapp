@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex flex-col gap-6 pb-6">
-	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">Mis Problemas</p>
+	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">Situaciones por mejorar</p>
 	<div
 		class="flex flex-col gap-5 border-b border-alineados-gray-200 pb-6 lg:flex-row lg:justify-between"
 	>

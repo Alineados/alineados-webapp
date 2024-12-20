@@ -2,7 +2,7 @@
 	import * as Select from '$lib/shared/ui/select/index';
 
 	// Props
-	let { name, pilars, value = $bindable() } = $props();
+	let { name, pilars, value = $bindable<string[]>([]) } = $props();
 
 	// Problem Interface
 	interface ProblemCard {
@@ -40,26 +40,48 @@
 		vocationalID: 'Vocación'
 	};
 
-	// Trigger content
-	const triggerContent = $derived.by(() => {
-		if (value === 'all') {
-			return 'Seleccionar todo';
+	// Handle select value changes
+	let previousValue: string[] = [];
+	let isTransitioningFromAll = false;
+
+	function handleValueChange(newValue: string[]) {
+		// Case 1: Selecting 'all' - clear other selections
+		if (newValue.includes('all') && !previousValue.includes('all')) {
+			value = ['all'];
+			previousValue = ['all'];
+			isTransitioningFromAll = false;
+			return;
 		}
 
-		for (const pilar of pilars) {
-			const foundItem = pilar.problems.find(
-				(problem: Problem) => problem.problem_card.id === value
-			);
-			if (foundItem) {
-				return foundItem.problem_card.problem_name;
-			}
+		// Case 2: Moving from 'all' to specific selections
+		if (previousValue.includes('all')) {
+			isTransitioningFromAll = true;
+			value = newValue.filter((v) => v !== 'all');
+			previousValue = [...value];
+			return;
 		}
-		return 'Selecciona un problema';
+
+		// Case 3: Normal selection/deselection
+		if (!isTransitioningFromAll && !newValue.includes('all')) {
+			value = newValue;
+			previousValue = [...value];
+			return;
+		}
+
+		isTransitioningFromAll = false;
+	}
+
+	// Trigger content
+	const triggerContent = $derived.by(() => {
+		if (value.includes('all')) {
+			return 'Seleccionar todos';
+		}
+		return value.length === 0 ? 'Selecciona un problema' : `Seleccionado(s) (${value.length})`;
 	});
 </script>
 
 <div class="w-11/12 space-y-2">
-	<Select.Root type="single" {name} bind:value>
+	<Select.Root type="multiple" {name} bind:value onValueChange={handleValueChange}>
 		<Select.Trigger
 			class="w-full border-alineados-gray-100  text-alineados-gray-700 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-700"
 		>
@@ -67,13 +89,13 @@
 		</Select.Trigger>
 		<Select.Content>
 			<Select.Group class="bg-alineados-gray-50 ">
-				<Select.Item class="bg-alineados-gray-50 " value="all" label="Seleccionar todos">
+				<Select.Item class="bg-white" value="all" label="Seleccionar todos">
 					Seleccionar todos
 				</Select.Item>
 			</Select.Group>
 
 			{#each pilars as pilar (pilar.pilar_name)}
-				<Select.Group class="bg-alineados-gray-50 ">
+				<Select.Group class="bg-alineados-gray-50">
 					<Select.GroupHeading class="bg-white text-base"
 						>{pilarNameMap[pilar.pilar_name as keyof typeof pilarNameMap]}</Select.GroupHeading
 					>
@@ -82,6 +104,7 @@
 							class="bg-white"
 							value={problem.problem_card.id}
 							label={problem.problem_card.problem_name}
+							spellcheck="false"
 						>
 							{problem.problem_card.problem_name}
 						</Select.Item>

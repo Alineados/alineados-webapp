@@ -18,7 +18,7 @@
 		</Select.Trigger>
 		<Select.Content>
 			<Select.Group class="bg-alineados-gray-50">
-				<Select.GroupHeading>Criterios</Select.GroupHeading>
+				<Select.GroupHeading class="bg-white text-base">Criterios</Select.GroupHeading>
 				{#each criteria as item}
 					<Select.Item class="bg-white" value={item.criterion} label={item.label}>
 						{item.label}

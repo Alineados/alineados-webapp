@@ -126,7 +126,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/dashboard/problems'} {...props}>
 									<CircleFadingArrowUp />
 									<span>Situaciones por mejorar</span>
 								</a>

@@ -97,9 +97,6 @@
 	// Props
 	let { pilars, selectedProblem, firstCriterion, secondCriterion } = $props();
 
-	$inspect({ pilars });
-	$inspect({ selectedProblem });
-
 	// Helper function to get descriptions based on criterion
 	function getDescriptionsByCriterion(problemInfo: any, criterion: string) {
 		if (criterion === 'decision_taken' || criterion === 'problem') {
@@ -111,12 +108,11 @@
 
 	// Filter and transform problems data
 	const problems = $derived.by(() => {
-		const allProblems =
-			selectedProblem === 'all'
-				? pilars.flatMap((pilar: any) => pilar.problems)
-				: pilars.flatMap((pilar: any) =>
-						pilar.problems.filter((p: any) => p.problem_card.id === selectedProblem)
-					);
+		const allProblems = selectedProblem.includes('all')
+			? pilars.flatMap((pilar: any) => pilar.problems)
+			: pilars.flatMap((pilar: any) =>
+					pilar.problems.filter((p: any) => selectedProblem.includes(p.problem_card.id))
+				);
 
 		return allProblems.map((problem: any) => ({
 			problemName: problem.problem_card.problem_name,

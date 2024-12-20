@@ -51,8 +51,6 @@
 			number: phoneNumber
 		};
 	});
-
-	$inspect({ value });
 </script>
 
 <div class="flex w-1/2 flex-col gap-0">
