@@ -13,6 +13,7 @@
 		RegisterValidation,
 		PhoneNumber
 	} from '$lib/interfaces/onbarding';
+	import { RegisterValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -34,8 +35,10 @@
 
 	// States
 	let placeholder = 'País';
+
 	let countryCode = $state(value.code);
 	let phoneNumber = $state(value.number);
+
 	let isInvalid = $state(false);
 	let errorMessage = $state('');
 
@@ -63,23 +66,25 @@
 		};
 	});
 
-	const phoneRegex = /^\d{8}$/;
+	// Regex
+	const phoneRegex = /^\d{0,}$/;
 
+	// Validation function
 	function validatePhoneNumber() {
 		// Required validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
-				validation.register[keyString] = false;
+				validation.register[keyString].isWrong = false;
 			}
 		});
 
 		// Phone number validation
-		if (!phoneNumber) {
-			isInvalid = true;
-			errorMessage = '*campo requerido';
+		if (phoneNumber.length === 0) {
+			isInvalid = false;
+			errorMessage = '';
 		} else if (!phoneRegex.test(phoneNumber)) {
 			isInvalid = true;
-			errorMessage = '*número inválido (8 dígitos)';
+			errorMessage = '*solo se aceptan números';
 		} else {
 			isInvalid = false;
 			errorMessage = '';
@@ -98,7 +103,7 @@
 				{#snippet child({ props })}
 					<Button
 						variant="outline"
-						class="w-[103px] justify-between rounded-lg border-white bg-[#0F172A] text-sm font-normal text-white hover:bg-[#0F172A] hover:text-white"
+						class="w-[103px] justify-between rounded-lg border-alineados-gray-200  bg-alineados-gray-100 text-sm font-normal text-black hover:bg-alineados-gray-100  hover:text-black"
 						{...props}
 						role="combobox"
 						aria-expanded={open}
@@ -158,13 +163,22 @@
 			placeholder="Ingrese su número de celular"
 			autocapitalize="none"
 			autocorrect="off"
+			oninput={validatePhoneNumber}
 			bind:value={phoneNumber}
 		/>
 	</div>
 
-	{#if validation.register[keyString]}
+	{#if isInvalid || validation.register[keyString].isWrong}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			*campo requerido
+			{#if validation.register[keyString].errorType === RegisterValidationType.REQUIRED_PHONE_CODE && validation.register[keyString].isWrong}
+				*código de país requerido
+			{:else if validation.register[keyString].errorType === RegisterValidationType.REQUIRED && validation.register[keyString].isWrong}
+				*campo requerido
+			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_PHONE_NUMBER && validation.register[keyString].isWrong}
+				*número inválido
+			{:else}
+				{errorMessage}
+			{/if}
 		</span>
 	{/if}
 </div>

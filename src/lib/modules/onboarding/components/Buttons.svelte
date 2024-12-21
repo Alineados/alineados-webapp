@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
+	import type {
+		OnboardingValidation,
+		RegisterValidation,
+		ValidationError
+	} from '$lib/interfaces/onbarding';
 
 	let {
 		isFirst,
@@ -24,13 +28,13 @@
 		return async ({ result, update }) => {
 			// If there is an error
 			if (result.type === 'success' && result.data && result.data.type === 'error') {
-				// Update validation
-				Object.keys(validation.register).forEach((key) => {
-					let label: string[] = result?.data?.label as string[];
-					if (label.includes(key)) {
-						let keyString = key as keyof RegisterValidation;
-						validation.register[keyString] = true;
-					}
+				const fields = result.data.validations as ValidationError[];
+				fields.forEach((error: ValidationError) => {
+					const { field, errorType } = error;
+					validation.register[field] = {
+						isWrong: true,
+						errorType: errorType
+					};
 				});
 			}
 

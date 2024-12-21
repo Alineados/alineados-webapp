@@ -7,6 +7,7 @@
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
 	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/onbarding';
+	import { RegisterValidationType } from '$lib/interfaces/onbarding';
 	import { onMount } from 'svelte';
 
 	let onboardingData = $state<OnboardingData>();
@@ -15,14 +16,38 @@
 	onMount(() => {
 		validation = {
 			register: {
-				firstName: false,
-				lastName: false,
-				email: false,
-				countryOfResidence: false,
-				countryOfBirth: false,
-				birthday: false,
-				phoneNumber: false,
-				whatsappNumber: false
+				firstName: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				lastName: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				email: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				countryOfResidence: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				countryOfBirth: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				birthday: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				phoneNumber: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				},
+				whatsappNumber: {
+					isWrong: false,
+					errorType: RegisterValidationType.ALL_GOOD
+				}
 			}
 		};
 		onboardingData = {

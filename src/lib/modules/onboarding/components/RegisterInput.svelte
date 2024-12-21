@@ -2,6 +2,7 @@
 	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
 	import { Input } from '$lib/shared/ui/input/index';
 	import { Label } from '$lib/shared/ui/label/index';
+	import { RegisterValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -28,37 +29,34 @@
 	let keyString = $derived(inputKey) as keyof RegisterValidation;
 
 	// Regex
-	const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{2,20}$/;
-	const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
 
 	// Validation function
 	function validateInput() {
 		// Reguired validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
-				validation.register[keyString] = false;
+				validation.register[keyString].isWrong = false;
+				validation.register[keyString].errorType = RegisterValidationType.ALL_GOOD;
 			}
 		});
 
 		// Input validation
-		if (type === 'email') {
-			if (!emailRegex.test(value)) {
-				isInvalid = true;
-				errorMessage = '*correo electrónico inválido';
-			} else {
-				isInvalid = false;
-				errorMessage = '';
-			}
+		if (value.length === 0) {
+			isInvalid = false;
+			errorMessage = '';
 		} else {
-			if (value.length > 20) {
-				isInvalid = true;
-				errorMessage = '*máximo 20 caracteres';
-			} else if (!textRegex.test(value)) {
-				isInvalid = true;
-				errorMessage = '*solo se aceptan letras';
-			} else {
-				isInvalid = false;
-				errorMessage = '';
+			if (type !== 'email') {
+				if (value.length > 20) {
+					isInvalid = true;
+					errorMessage = '*máximo 20 caracteres';
+				} else if (!textRegex.test(value)) {
+					isInvalid = true;
+					errorMessage = '*solo se aceptan letras';
+				} else {
+					isInvalid = false;
+					errorMessage = '';
+				}
 			}
 		}
 	}
@@ -77,10 +75,16 @@
 		bind:value
 		oninput={validateInput}
 	/>
-	{#if isInvalid || validation.register[keyString]}
+	{#if isInvalid || validation.register[keyString].isWrong}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.register[keyString]}
+			{#if validation.register[keyString].errorType === RegisterValidationType.REQUIRED && validation.register[keyString].isWrong}
 				*campo requerido
+			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_NAME && validation.register[keyString].isWrong}
+				*solo se aceptan letras
+			{:else if validation.register[keyString].errorType === RegisterValidationType.IS_TOO_LONG && validation.register[keyString].isWrong}
+				*máximo 20 caracteres
+			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_EMAIL && validation.register[keyString].isWrong}
+				*correo electrónico inválido
 			{:else}
 				{errorMessage}
 			{/if}

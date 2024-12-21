@@ -8,6 +8,7 @@
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
+	import { RegisterValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -33,7 +34,7 @@
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(options.find((f) => f.value === value));
+	let selectedValue = $derived(options.find((f) => f.value === value));
 
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
@@ -83,6 +84,13 @@
 								class="bg-alineados-gray-50"
 								onSelect={() => {
 									value = option.value;
+									// Reset validation state when value is selected
+									if (inputKey in validation.register) {
+										validation.register[keyString] = {
+											isWrong: false,
+											errorType: RegisterValidationType.ALL_GOOD
+										};
+									}
 									closeAndFocusTrigger();
 								}}
 							>
@@ -99,7 +107,7 @@
 		</Popover.Content>
 	</Popover.Root>
 
-	{#if validation.register[keyString]}
+	{#if validation.register[keyString].isWrong}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
 			*campo requerido
 		</span>
