@@ -5,7 +5,8 @@
 		OnboardingValidation,
 		ValidationError,
 		RegisterValidation,
-		EmailValidation
+		EmailValidation,
+		PasswordValidation
 	} from '$lib/interfaces/onbarding';
 	import { ValidationType } from '$lib/interfaces/onbarding';
 	import { ButtonAction } from '$lib/interfaces/onbarding';
@@ -43,23 +44,20 @@
 	use:enhance={({}) => {
 		return async ({ result }) => {
 			// If there is an error in the form
-			if (
-				result.type === 'success' &&
-				result.data &&
-				result.data.type === 'error'
-				//&& result.data.button === 'register'
-			) {
+			if (result.type === 'success' && result.data && result.data.type === 'error') {
 				const fields = result.data.validations as ValidationError[];
 				fields.forEach((error: ValidationError) => {
 					const { field, errorType } = error as {
-						field: keyof RegisterValidation | keyof EmailValidation;
+						field: keyof RegisterValidation | keyof EmailValidation | keyof PasswordValidation;
 						errorType: ValidationType;
 					};
 
 					if (result.data?.button === 'register') {
 						validation.register[field as keyof RegisterValidation] = errorType;
-					} else {
+					} else if (result.data?.button === 'email') {
 						validation.email[field as keyof EmailValidation] = errorType;
+					} else {
+						validation.password[field as keyof PasswordValidation] = errorType;
 					}
 				});
 			}

@@ -2,7 +2,8 @@ import type {
 	OnboardingData,
 	ValidationError,
 	RegisterValidation,
-	EmailValidation
+	EmailValidation,
+	PasswordValidation
 } from '$lib/interfaces/onbarding';
 import { ValidationType } from '$lib/interfaces/onbarding';
 import { redirect } from '@sveltejs/kit';
@@ -154,7 +155,7 @@ export const actions = {
 		const invalidFields: ValidationError[] = [];
 
 		// Check if the fields are empty
-		if (!dataJSON.emailVerification.code) {
+		if (!dataJSON.email.code) {
 			invalidFields.push({
 				field: 'code',
 				errorType: ValidationType.REQUIRED
@@ -166,13 +167,13 @@ export const actions = {
 			(error) => error.field === 'code' && error.errorType === ValidationType.REQUIRED
 		);
 
-		if (!hasCodeRequiredError && dataJSON.emailVerification.code) {
-			if (dataJSON.emailVerification.code.length !== 6) {
+		if (!hasCodeRequiredError && dataJSON.email.code) {
+			if (dataJSON.email.code.length !== 6) {
 				invalidFields.push({
 					field: 'code',
 					errorType: ValidationType.IS_TOO_SHORT
 				});
-			} else if (dataJSON.emailVerification.code !== '123456') {
+			} else if (dataJSON.email.code !== '123456') {
 				invalidFields.push({
 					field: 'code',
 					errorType: ValidationType.INVALID_CODE
@@ -196,33 +197,65 @@ export const actions = {
 		redirect(307, '/onboarding/steps/3');
 	},
 
-	finish: async (event) => {
+	password: async (event) => {
 		const data = await event.request.formData();
-		console.log(data);
-		const register = data.get('data');
-		console.log(register);
+		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
+		console.log(dataJSON);
 
-		// TODO: Implement validations here
-		const success = true;
+		//  Validate the data
+		const invalidFields: ValidationError[] = [];
 
-		if (!success) {
+		// Basic fields validation
+		const basicFields: (keyof PasswordValidation)[] = ['password', 'confirmPassword'];
+
+		// Check if the fields are empty
+		basicFields.forEach((field) => {
+			if (!dataJSON.password[field]) {
+				invalidFields.push({
+					field,
+					errorType: ValidationType.REQUIRED
+				});
+			}
+		});
+
+		// Confirm password validation
+		const hasConfirmPasswordRequiredError = invalidFields.some(
+			(error) => error.field === 'confirmPassword' && error.errorType === ValidationType.REQUIRED
+		);
+
+		if (!hasConfirmPasswordRequiredError && dataJSON.password.confirmPassword) {
+			if (dataJSON.password.password !== dataJSON.password.confirmPassword) {
+				invalidFields.push({
+					field: 'confirmPassword',
+					errorType: ValidationType.PASSWORDS_DONT_MATCH
+				});
+			}
+		}
+
+		// Return the error if there are any
+		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
-				button: 'register',
-				message: 'Validation failed'
+				button: 'password',
+				validations: invalidFields,
+				message: 'Check the fields'
 			};
 		}
 
-		const res = await fetch('https://api.example.com/register', {
-			method: 'post',
-			body: data
-		});
+		// TODO: API CALL
 
-		if (res.ok) {
-			const response = await res.json();
-			response.type = 'register';
-			return response;
-		}
+		// Redirect to the next step
+		redirect(307, '/onboarding/steps/4');
+	},
+
+	finish: async (event) => {
+		const data = await event.request.formData();
+		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
+		console.log(dataJSON);
+
+		// TODO: Implement validations here
+
+		// Redirect to the login page
+		redirect(307, '/auth/login');
 	}
-	// TODO: Implement the rest of the actions
 } satisfies Actions;

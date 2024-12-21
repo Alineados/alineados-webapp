@@ -9,7 +9,8 @@ export const ButtonAction = new Map([
 // Onboarding interfaces
 export type OnboardingData = {
 	register: Register;
-	emailVerification: Email;
+	email: Email;
+	password: Password;
 };
 
 // Register interface
@@ -34,10 +35,17 @@ export type Email = {
 	code: string;
 };
 
+// Password verification interface
+export type Password = {
+	password: string;
+	confirmPassword: string;
+};
+
 // Validation interfaces
 export type OnboardingValidation = {
 	register: RegisterValidation;
 	email: EmailValidation;
+	password: PasswordValidation;
 };
 
 // Register validation interface
@@ -57,6 +65,12 @@ export type EmailValidation = {
 	code: ValidationType;
 };
 
+// Password verification validation interface
+export type PasswordValidation = {
+	password: ValidationType;
+	confirmPassword: ValidationType;
+};
+
 // Enum for validation types
 export enum ValidationType {
 	// Default validation
@@ -72,11 +86,15 @@ export enum ValidationType {
 
 	// Email validation
 	IS_TOO_SHORT = 'isTooShort',
-	INVALID_CODE = 'isInvalidCode'
+	INVALID_CODE = 'isInvalidCode',
+
+	// Password validation
+	INVALID_PASSWORD = 'isInvalidPassword',
+	PASSWORDS_DONT_MATCH = 'passwordsDontMatch'
 }
 
 // Validation error for server response
 export type ValidationError = {
-	field: keyof RegisterValidation | keyof EmailValidation;
+	field: keyof RegisterValidation | keyof EmailValidation | keyof PasswordValidation;
 	errorType: ValidationType;
 };

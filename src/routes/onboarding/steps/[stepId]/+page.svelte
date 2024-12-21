@@ -28,6 +28,10 @@
 			},
 			email: {
 				code: ValidationType.ALL_GOOD
+			},
+			password: {
+				password: ValidationType.ALL_GOOD,
+				confirmPassword: ValidationType.ALL_GOOD
 			}
 		};
 		onboardingData = {
@@ -48,8 +52,12 @@
 					number: ''
 				}
 			},
-			emailVerification: {
+			email: {
 				code: ''
+			},
+			password: {
+				password: '',
+				confirmPassword: ''
 			}
 		};
 	});
@@ -72,12 +80,9 @@
 		{#if stepId === '1'}
 			<RegisterForm bind:validation bind:register={onboardingData.register} />
 		{:else if stepId === '2'}
-			<EmailVerification
-				bind:validation
-				bind:emailVerification={onboardingData.emailVerification}
-			/>
+			<EmailVerification bind:validation bind:emailVerification={onboardingData.email} />
 		{:else if stepId === '3'}
-			<PasswordCreation />
+			<PasswordCreation bind:validation bind:passwordCreation={onboardingData.password} />
 		{:else if stepId === '4'}
 			<Welcome />
 		{/if}
