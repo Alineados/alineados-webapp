@@ -14,7 +14,7 @@
 		RegisterValidation,
 		PhoneNumber
 	} from '$lib/interfaces/onbarding';
-	import { RegisterValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -76,7 +76,7 @@
 		// Required validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
-				validation.register[keyString].isWrong = false;
+				validation.register[keyString] = ValidationType.ALL_GOOD;
 			}
 		});
 
@@ -147,6 +147,13 @@
 									class="bg-alineados-gray-50"
 									onSelect={() => {
 										countryCode = option.value;
+
+										Object.keys(validation.register).forEach((key) => {
+											if (key === inputKey) {
+												validation.register[keyString] = ValidationType.ALL_GOOD;
+											}
+										});
+
 										closeAndFocusTrigger();
 									}}
 								>
@@ -171,6 +178,7 @@
 			autocapitalize="none"
 			autocorrect="off"
 			placeholder="+000"
+			oninput={validatePhoneNumber}
 			bind:value={countryCode}
 		/>
 		<Input
@@ -185,13 +193,13 @@
 		/>
 	</div>
 
-	{#if isInvalid || validation.register[keyString].isWrong}
+	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.register[keyString].errorType === RegisterValidationType.REQUIRED_PHONE_CODE && validation.register[keyString].isWrong}
+			{#if validation.register[keyString] === ValidationType.REQUIRED_PHONE_CODE}
 				*código de país requerido
-			{:else if validation.register[keyString].errorType === RegisterValidationType.REQUIRED && validation.register[keyString].isWrong}
+			{:else if validation.register[keyString] === ValidationType.REQUIRED}
 				*número de celular requerido
-			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_PHONE_NUMBER && validation.register[keyString].isWrong}
+			{:else if validation.register[keyString] === ValidationType.INVALID_PHONE_NUMBER}
 				*número de celular inválido
 			{:else}
 				{errorMessage}

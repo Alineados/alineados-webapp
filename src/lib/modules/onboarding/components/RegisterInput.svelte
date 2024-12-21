@@ -2,7 +2,7 @@
 	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
 	import { Input } from '$lib/shared/ui/input/index';
 	import { Label } from '$lib/shared/ui/label/index';
-	import { RegisterValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -36,8 +36,7 @@
 		// Reguired validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
-				validation.register[keyString].isWrong = false;
-				validation.register[keyString].errorType = RegisterValidationType.ALL_GOOD;
+				validation.register[keyString] = ValidationType.ALL_GOOD;
 			}
 		});
 
@@ -75,15 +74,15 @@
 		bind:value
 		oninput={validateInput}
 	/>
-	{#if isInvalid || validation.register[keyString].isWrong}
+	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.register[keyString].errorType === RegisterValidationType.REQUIRED && validation.register[keyString].isWrong}
+			{#if validation.register[keyString] === ValidationType.REQUIRED}
 				*campo requerido
-			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_NAME && validation.register[keyString].isWrong}
+			{:else if validation.register[keyString] === ValidationType.INVALID_NAME}
 				*solo se aceptan letras
-			{:else if validation.register[keyString].errorType === RegisterValidationType.IS_TOO_LONG && validation.register[keyString].isWrong}
+			{:else if validation.register[keyString] === ValidationType.IS_TOO_LONG}
 				*máximo 20 caracteres
-			{:else if validation.register[keyString].errorType === RegisterValidationType.INVALID_EMAIL && validation.register[keyString].isWrong}
+			{:else if validation.register[keyString] === ValidationType.INVALID_EMAIL}
 				*correo electrónico inválido
 			{:else}
 				{errorMessage}

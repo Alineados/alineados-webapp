@@ -1,9 +1,4 @@
 <script lang="ts">
-	let {
-		register = $bindable(),
-		validation = $bindable()
-	}: { register: Register; validation: OnboardingValidation } = $props();
-
 	import type { OnboardingValidation, Register } from '$lib/interfaces/onbarding';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
@@ -11,6 +6,12 @@
 	import PhoneInput from '$lib/modules/onboarding/components/PhoneInput.svelte';
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
 	import Header from '$lib/modules/onboarding/components/Header.svelte';
+
+	// Props
+	let {
+		register = $bindable(),
+		validation = $bindable()
+	}: { register: Register; validation: OnboardingValidation } = $props();
 
 	// Countries
 	const countries = [

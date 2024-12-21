@@ -1,5 +1,12 @@
 <script lang="ts">
+	import type { OnboardingValidation, Email } from '$lib/interfaces/onbarding';
 	import CodeVerification from '$lib/modules/onboarding/components/CodeVerification.svelte';
+
+	// Props
+	let {
+		emailVerification = $bindable(),
+		validation = $bindable()
+	}: { emailVerification: Email; validation: OnboardingValidation } = $props();
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center">
@@ -14,9 +21,9 @@
 		</p>
 	</div>
 
-	<CodeVerification />
+	<CodeVerification bind:value={emailVerification.code} bind:validation />
 
-	<div class="mt-5 flex w-full items-center justify-center gap-1">
+	<div class="mt-10 flex w-full items-center justify-center gap-1">
 		<p class="text-sm font-normal text-[#000000]">¿No recibiste el correo?</p>
 		<a class="text-sm font-medium text-[#E67635] underline hover:text-[#e67635b4]" href="/"
 			>Enviar de nuevo</a

@@ -7,47 +7,27 @@
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
 	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/onbarding';
-	import { RegisterValidationType } from '$lib/interfaces/onbarding';
+	import { ButtonAction, ValidationType } from '$lib/interfaces/onbarding';
 	import { onMount } from 'svelte';
 
+	// Initial state
 	let onboardingData = $state<OnboardingData>();
 	let validation = $state<OnboardingValidation>();
 
 	onMount(() => {
 		validation = {
 			register: {
-				firstName: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				lastName: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				email: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				countryOfResidence: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				countryOfBirth: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				birthday: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				phoneNumber: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				},
-				whatsappNumber: {
-					isWrong: false,
-					errorType: RegisterValidationType.ALL_GOOD
-				}
+				firstName: ValidationType.ALL_GOOD,
+				lastName: ValidationType.ALL_GOOD,
+				email: ValidationType.ALL_GOOD,
+				countryOfResidence: ValidationType.ALL_GOOD,
+				countryOfBirth: ValidationType.ALL_GOOD,
+				birthday: ValidationType.ALL_GOOD,
+				phoneNumber: ValidationType.ALL_GOOD,
+				whatsappNumber: ValidationType.ALL_GOOD
+			},
+			email: {
+				code: ValidationType.ALL_GOOD
 			}
 		};
 		onboardingData = {
@@ -67,26 +47,22 @@
 					code: '',
 					number: ''
 				}
+			},
+			emailVerification: {
+				code: ''
 			}
 		};
 	});
 
+	// Derived stores for the current step
 	const stepId = $derived($page.params.stepId);
-	const isFirst = $derived(stepId === '1');
-	const isLast = $derived(stepId === '4');
 
+	// JSON representation of the onboarding data
 	let onboardingDataSJSON = $state('');
 
 	$effect(() => {
 		onboardingDataSJSON = JSON.stringify(onboardingData);
 	});
-
-	const buttonAction = new Map([
-		['1', 'register'],
-		['2', 'email'],
-		['3', 'password'],
-		['4', 'finish']
-	]);
 
 	$inspect(validation);
 </script>
@@ -96,18 +72,19 @@
 		{#if stepId === '1'}
 			<RegisterForm bind:validation bind:register={onboardingData.register} />
 		{:else if stepId === '2'}
-			<EmailVerification />
+			<EmailVerification
+				bind:validation
+				bind:emailVerification={onboardingData.emailVerification}
+			/>
 		{:else if stepId === '3'}
 			<PasswordCreation />
 		{:else if stepId === '4'}
 			<Welcome />
 		{/if}
 		<Buttons
-			action={buttonAction.get(stepId) ?? '1'}
+			action={ButtonAction.get(stepId) ?? '1'}
 			bind:data={onboardingDataSJSON}
 			bind:validation
-			{isFirst}
-			{isLast}
 		/>
 	{/if}
 </div>

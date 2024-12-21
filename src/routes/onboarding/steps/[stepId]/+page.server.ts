@@ -1,9 +1,10 @@
 import type {
 	OnboardingData,
 	ValidationError,
-	RegisterValidation
+	RegisterValidation,
+	EmailValidation
 } from '$lib/interfaces/onbarding';
-import { RegisterValidationType } from '$lib/interfaces/onbarding';
+import { ValidationType } from '$lib/interfaces/onbarding';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
@@ -36,59 +37,59 @@ export const actions = {
 			if (!dataJSON.register[field]) {
 				invalidFields.push({
 					field,
-					errorType: RegisterValidationType.REQUIRED
+					errorType: ValidationType.REQUIRED
 				});
 			}
 		});
 
 		// FirstName validation
 		const hasFirstNameRequiredError = invalidFields.some(
-			(error) => error.field === 'firstName' && error.errorType === RegisterValidationType.REQUIRED
+			(error) => error.field === 'firstName' && error.errorType === ValidationType.REQUIRED
 		);
 
 		if (!hasFirstNameRequiredError && dataJSON.register.firstName) {
 			if (dataJSON.register.firstName.length > 20) {
 				invalidFields.push({
 					field: 'firstName',
-					errorType: RegisterValidationType.IS_TOO_LONG
+					errorType: ValidationType.IS_TOO_LONG
 				});
 			} else if (!textRegex.test(dataJSON.register.firstName)) {
 				invalidFields.push({
 					field: 'firstName',
-					errorType: RegisterValidationType.INVALID_NAME
+					errorType: ValidationType.INVALID_NAME
 				});
 			}
 		}
 
 		// LastName validation
 		const hasLastNameRequiredError = invalidFields.some(
-			(error) => error.field === 'lastName' && error.errorType === RegisterValidationType.REQUIRED
+			(error) => error.field === 'lastName' && error.errorType === ValidationType.REQUIRED
 		);
 
 		if (!hasLastNameRequiredError && dataJSON.register.lastName) {
 			if (dataJSON.register.lastName.length > 20) {
 				invalidFields.push({
 					field: 'lastName',
-					errorType: RegisterValidationType.IS_TOO_LONG
+					errorType: ValidationType.IS_TOO_LONG
 				});
 			} else if (!textRegex.test(dataJSON.register.lastName)) {
 				invalidFields.push({
 					field: 'lastName',
-					errorType: RegisterValidationType.INVALID_NAME
+					errorType: ValidationType.INVALID_NAME
 				});
 			}
 		}
 
 		// Email validation
 		const hasEmailRequiredError = invalidFields.some(
-			(error) => error.field === 'email' && error.errorType === RegisterValidationType.REQUIRED
+			(error) => error.field === 'email' && error.errorType === ValidationType.REQUIRED
 		);
 
 		if (!hasEmailRequiredError && dataJSON.register.email) {
 			if (!emailRegex.test(dataJSON.register.email)) {
 				invalidFields.push({
 					field: 'email',
-					errorType: RegisterValidationType.INVALID_EMAIL
+					errorType: ValidationType.INVALID_EMAIL
 				});
 			}
 		}
@@ -96,17 +97,17 @@ export const actions = {
 		if (!dataJSON.register.phoneNumber.code) {
 			invalidFields.push({
 				field: 'phoneNumber',
-				errorType: RegisterValidationType.REQUIRED_PHONE_CODE
+				errorType: ValidationType.REQUIRED_PHONE_CODE
 			});
 		} else if (!dataJSON.register.phoneNumber.number) {
 			invalidFields.push({
 				field: 'phoneNumber',
-				errorType: RegisterValidationType.REQUIRED
+				errorType: ValidationType.REQUIRED
 			});
 		} else if (!phoneRegex.test(dataJSON.register.phoneNumber.number)) {
 			invalidFields.push({
 				field: 'phoneNumber',
-				errorType: RegisterValidationType.INVALID_PHONE_NUMBER
+				errorType: ValidationType.INVALID_PHONE_NUMBER
 			});
 		}
 
@@ -114,17 +115,17 @@ export const actions = {
 		if (!dataJSON.register.whatsappNumber.code) {
 			invalidFields.push({
 				field: 'whatsappNumber',
-				errorType: RegisterValidationType.REQUIRED_PHONE_CODE
+				errorType: ValidationType.REQUIRED_PHONE_CODE
 			});
 		} else if (!dataJSON.register.whatsappNumber.number) {
 			invalidFields.push({
 				field: 'whatsappNumber',
-				errorType: RegisterValidationType.REQUIRED
+				errorType: ValidationType.REQUIRED
 			});
 		} else if (!phoneRegex.test(dataJSON.register.whatsappNumber.number)) {
 			invalidFields.push({
 				field: 'whatsappNumber',
-				errorType: RegisterValidationType.INVALID_PHONE_NUMBER
+				errorType: ValidationType.INVALID_PHONE_NUMBER
 			});
 		}
 
@@ -143,6 +144,58 @@ export const actions = {
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/2');
 	},
+
+	email: async (event) => {
+		const data = await event.request.formData();
+		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
+		console.log(dataJSON);
+
+		// Basic fields validation
+		const invalidFields: ValidationError[] = [];
+
+		// Check if the fields are empty
+		if (!dataJSON.emailVerification.code) {
+			invalidFields.push({
+				field: 'code',
+				errorType: ValidationType.REQUIRED
+			});
+		}
+
+		// Code validation
+		const hasCodeRequiredError = invalidFields.some(
+			(error) => error.field === 'code' && error.errorType === ValidationType.REQUIRED
+		);
+
+		if (!hasCodeRequiredError && dataJSON.emailVerification.code) {
+			if (dataJSON.emailVerification.code.length !== 6) {
+				invalidFields.push({
+					field: 'code',
+					errorType: ValidationType.IS_TOO_SHORT
+				});
+			} else if (dataJSON.emailVerification.code !== '123456') {
+				invalidFields.push({
+					field: 'code',
+					errorType: ValidationType.INVALID_CODE
+				});
+			}
+		}
+
+		// Return the error if there are any
+		if (invalidFields.length > 0) {
+			return {
+				type: 'error',
+				button: 'email',
+				validations: invalidFields,
+				message: 'Check the fields'
+			};
+		}
+
+		// TODO: API CALL
+
+		// Redirect to the next step
+		redirect(307, '/onboarding/steps/3');
+	},
+
 	finish: async (event) => {
 		const data = await event.request.formData();
 		console.log(data);

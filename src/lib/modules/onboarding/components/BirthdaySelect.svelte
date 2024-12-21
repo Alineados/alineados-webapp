@@ -2,7 +2,7 @@
 	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
 	import { Label } from '$lib/shared/ui/label/index';
 	import * as Select from '$lib/shared/ui/select/index';
-	import { RegisterValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/onbarding';
 
 	// Props
 	let {
@@ -58,8 +58,7 @@
 			// Reguired validation
 			Object.keys(validation.register).forEach((key) => {
 				if (key === inputKey) {
-					validation.register[keyString].isWrong = false;
-					validation.register[keyString].errorType = RegisterValidationType.ALL_GOOD;
+					validation.register[keyString] = ValidationType.ALL_GOOD;
 				}
 			});
 
@@ -142,7 +141,7 @@
 		</Select.Root>
 	</div>
 
-	{#if validation.register[keyString].isWrong}
+	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
 			*campo requerido
 		</span>

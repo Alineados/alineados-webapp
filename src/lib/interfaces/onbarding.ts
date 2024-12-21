@@ -1,6 +1,15 @@
+// Button actions
+export const ButtonAction = new Map([
+	['1', 'register'],
+	['2', 'email'],
+	['3', 'password'],
+	['4', 'finish']
+]);
+
 // Onboarding interfaces
 export type OnboardingData = {
 	register: Register;
+	emailVerification: Email;
 };
 
 // Register interface
@@ -20,48 +29,54 @@ export type Register = {
 	whatsappNumber: PhoneNumber;
 };
 
+// Email verification interface
+export type Email = {
+	code: string;
+};
+
 // Validation interfaces
 export type OnboardingValidation = {
 	register: RegisterValidation;
+	email: EmailValidation;
 };
 
 // Register validation interface
 export type RegisterValidation = {
-	firstName: ValidationState;
-	lastName: ValidationState;
-	email: ValidationState;
-	countryOfResidence: ValidationState;
-	countryOfBirth: ValidationState;
-	birthday: ValidationState;
-	phoneNumber: ValidationState;
-	whatsappNumber: ValidationState;
+	firstName: ValidationType;
+	lastName: ValidationType;
+	email: ValidationType;
+	countryOfResidence: ValidationType;
+	countryOfBirth: ValidationType;
+	birthday: ValidationType;
+	phoneNumber: ValidationType;
+	whatsappNumber: ValidationType;
 };
 
-interface ValidationState {
-	isWrong: boolean;
-	errorType: RegisterValidationType;
-}
+// Email verification validation interface
+export type EmailValidation = {
+	code: ValidationType;
+};
 
-export enum RegisterValidationType {
+// Enum for validation types
+export enum ValidationType {
+	// Default validation
 	ALL_GOOD = 'allGood',
 	REQUIRED = 'isRequired',
+
+	// Register validation
 	INVALID_NAME = 'isInvalidName',
 	IS_TOO_LONG = 'isTooLong',
 	INVALID_EMAIL = 'isInvalidEmail',
 	REQUIRED_PHONE_CODE = 'isRequiredPhoneCode',
-	INVALID_PHONE_NUMBER = 'isNumberInvalid'
+	INVALID_PHONE_NUMBER = 'isNumberInvalid',
+
+	// Email validation
+	IS_TOO_SHORT = 'isTooShort',
+	INVALID_CODE = 'isInvalidCode'
 }
 
-// Validation error type
+// Validation error for server response
 export type ValidationError = {
-	field: keyof RegisterValidation;
-	errorType: RegisterValidationType;
+	field: keyof RegisterValidation | keyof EmailValidation;
+	errorType: ValidationType;
 };
-
-// Register validation response
-export interface APIResponse {
-	type: 'error';
-	button: string;
-	validations: ValidationError[];
-	message: string;
-}
