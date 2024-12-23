@@ -1,6 +1,8 @@
 <script lang="ts">
 	let { size = 65, strokeWidth = 6, progress = $bindable(), text = 'De progreso' } = $props();
 
+	console.log("progress", progress);
+
 	const radius = $state((size - strokeWidth) / 2);
 	const circumference = $derived(2 * Math.PI * radius);
 	const strokeDasharray = $derived((circumference * progress) / 100);

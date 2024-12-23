@@ -10,7 +10,7 @@
 		return colors[i];
 	}
 
-	$inspect("$matrix -> ", $matrix);
+	$inspect('$matrix -> ', $matrix);
 </script>
 
 <div class="grid grid-cols-[200px,25px,100px,100px,100px] gap-4 p-4">
@@ -59,8 +59,8 @@
 		{:else}
 			<div></div>
 		{/if}
-		{#each row.cells as cell}
-			<MatrixCell color={setColor(i)} />
+		{#each row.cells as cell, j}
+			<MatrixCell bind:value={$matrix.rows[i].cells[j].value} color={setColor(i)} />
 		{/each}
 	{/each}
 
@@ -73,8 +73,8 @@
 				<div class="flex items-center justify-center text-xl font-medium text-alineados-gray-700">
 					7
 				</div>
+				<StarSolid styleTw="size-4 text-alineados-green-900" />
 				{#if result.winner}
-					<StarSolid styleTw="size-4 text-alineados-green-900" />
 				{/if}
 			</div>
 		{/each}

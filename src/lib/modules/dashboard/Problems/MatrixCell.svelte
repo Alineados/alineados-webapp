@@ -1,8 +1,10 @@
 <script lang="ts">
 	let {
 		color = 'alineados-blue-900',
+		value = $bindable()
 	}: {
 		color?: string;
+		value?: string;
 
 	} = $props();
 </script>
@@ -17,7 +19,7 @@
 	<div class="flex h-full w-full items-center justify-center">
 		<input
 			class="w-full border-none bg-transparent text-center text-3xl font-medium text-[#7C8089] outline-none"
-			value="3"
+			bind:value
 		/>
 	</div>
 </div>

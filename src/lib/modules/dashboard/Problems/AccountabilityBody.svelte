@@ -8,7 +8,8 @@
 		removeOrCleanItem,
 		markOnlyDoneOrRepeatedItems,
 		problemCard,
-		changeCompleteStatus
+		changeCompleteStatus,
+		isCompleteProblem
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Rocket from '$lib/icons/Rocket.svelte';
@@ -25,38 +26,70 @@
 	});
 </script>
 
-<div class="mt-9 flex flex-col gap-12">
+<div class="flex flex-col gap-12">
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
 			<Rocket styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.action_plan as action}
-				<Item
-					deleteItem={() => {
-						removeOrCleanItem(action.id, ProblemType.action_plan);
-					}}
-					addItem={() => {
-						addProblemItem(action.id, ProblemType.action_plan);
-						completed = { alternative: 3 };
-						changeCompleteStatus(false);
-					}}
-					doneItem={() => {
-						markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
-						completed = { alternative: 3 };
-						changeCompleteStatus(false);
-					}}
-					repeatItem={() => {
-						markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
-					}}
-					isOnlyText
-					isAccountability={changeToEdit}
-					bind:isRepeated={action.repeatable}
-					bind:isDone={action.done}
-					bind:value={action.description}
-				/>
-			{/each}
+			{#if changeToEdit}
+				{#each $problemInfo.action_plan as action}
+					{#if action.done}
+						<DecisionPill isDisabled selected bind:text={action.description} />
+					{:else if action.description !== ''}
+						<Item
+							deleteItem={() => {
+								removeOrCleanItem(action.id, ProblemType.action_plan);
+							}}
+							addItem={() => {
+								addProblemItem(action.id, ProblemType.action_plan);
+								completed = { alternative: 3 };
+								changeCompleteStatus(false);
+							}}
+							doneItem={() => {
+								markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
+								completed = { alternative: 3 };
+								changeCompleteStatus(false);
+							}}
+							repeatItem={() => {
+								markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
+							}}
+							isOnlyText
+							isAccountability={changeToEdit}
+							bind:isRepeated={action.repeatable}
+							bind:isDone={action.done}
+							bind:value={action.description}
+						/>
+					{/if}
+				{/each}
+			{:else}
+				{#each $problemInfo.action_plan as action}
+					<Item
+						deleteItem={() => {
+							removeOrCleanItem(action.id, ProblemType.action_plan);
+						}}
+						addItem={() => {
+							addProblemItem(action.id, ProblemType.action_plan);
+							completed = { alternative: 3 };
+							changeCompleteStatus(false);
+						}}
+						doneItem={() => {
+							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
+							completed = { alternative: 3 };
+							changeCompleteStatus(false);
+						}}
+						repeatItem={() => {
+							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
+						}}
+						isOnlyText
+						isAccountability={changeToEdit}
+						bind:isRepeated={action.repeatable}
+						bind:isDone={action.done}
+						bind:value={action.description}
+					/>
+				{/each}
+			{/if}
 		</div>
 	</div>
 
@@ -66,7 +99,7 @@
 				<Question styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">¿Resolviste el Problema?</h2>
 			</div>
-			<div class=" mt-5 flex flex-col gap-2">
+			<div class="-ml-10 mt-5 flex flex-col gap-2">
 				<DecisionPill
 					text="Alternativa 1 - Sí resolví el problema"
 					changeSelected={() => {
@@ -80,6 +113,7 @@
 					changeSelected={() => {
 						completed = { alternative: 2 };
 						changeCompleteStatus(false);
+						isCompleteProblem(false);
 					}}
 					selected={completed.alternative === 2}
 				/>

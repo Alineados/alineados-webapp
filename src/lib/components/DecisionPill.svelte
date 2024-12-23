@@ -2,12 +2,14 @@
 	let {
 		text = $bindable(),
 		selected = false,
-		isDisabled = false,
+		isDisabled = $bindable(),
+		index = 0,
 		changeSelected
 	}: {
 		text: string;
 		selected?: boolean;
 		isDisabled?: boolean;
+		index?: number;
 		changeSelected?: () => void;
 	} = $props();
 
@@ -24,7 +26,8 @@
 			: 'border-alineados-gray-200  text-alineados-gray-600'
 	} transition-colors duration-300 ease-in-out`}
 	onclick={selectItem}
+	class:ml-10={index === 0}
 	disabled={isDisabled}
 >
-	<span class="text-sm font-medium">{text}</span>
+	<span class="text-sm font-medium">{index !== 0 ? `Alternativa ${index} - ` : ''} {text}</span>
 </button>
