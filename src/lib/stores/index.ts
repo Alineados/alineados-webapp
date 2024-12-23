@@ -5,7 +5,7 @@ export {
 	removeProblem,
 	initProblemCard,
 	updateSecurityAndActive,
-	completeProblem,
+	isCompleteProblem,
 	problemProgress,
 	filterBy,
 	healthProblems,

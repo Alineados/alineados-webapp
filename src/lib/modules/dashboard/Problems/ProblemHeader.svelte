@@ -37,7 +37,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-5 pb-6">
+<div class="flex flex-col gap-2">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<a href="/dashboard/problems" class="text-alineados-gray-600 hover:underline"
 			>Situaciones por mejorar</a
@@ -45,10 +45,8 @@
 		<span class="mx-1">/</span>
 		<span class="text-alineados-orange-900">{title}</span>
 	</p>
-	<div
-		class="flex flex-col gap-5 border-b border-alineados-gray-100 pb-4 lg:flex-row lg:justify-between"
-	>
-		<div class="gap- flex items-center">
+	<div class="flex flex-col gap-5 pb-3 lg:flex-row lg:justify-between ">
+		<div class="gap-2 flex items-center">
 			<input
 				type="text"
 				bind:value={title}
@@ -75,7 +73,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row gap-4 self-start">
+		<div class="flex flex-row gap-4 self-center py-6">
 			<AccountabilityButton />
 			{#if $reportProblem === 1}
 				<MoreButton />

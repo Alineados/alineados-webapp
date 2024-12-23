@@ -20,7 +20,7 @@ export const healthProblemsFiltered = derived(
 	([$healthProblems, $filterBy]) => {
 		return $healthProblems?.filter((p) => {
 			if ($filterBy === FilterBy.ACTIVE) return p.active && !p.completed_at;
-			else if ($filterBy === FilterBy.INACTIVE) return !p.active
+			else if ($filterBy === FilterBy.INACTIVE) return !p.active;
 			else if ($filterBy === FilterBy.FINISHED) return p.completed_at;
 			else return true;
 		});
@@ -155,8 +155,16 @@ export const problemCardJSON = derived([problemCard], ([$problemCard], set) => {
 
 // Derived store to calculate the progress based on the number of action plans done in problem info
 export const problemProgress = derived([problemInfo], ([$problemInfo]) => {
-	const total = $problemInfo.action_plan.length;
-	const done = $problemInfo.action_plan.filter((action) => action.done).length;
+	if ($problemInfo.action_plan.length === 1 && $problemInfo.action_plan[0].description === '')
+		return 0;
+
+	const isEmpty = $problemInfo.action_plan[$problemInfo.action_plan.length - 1].description === '';
+
+	let total = $problemInfo.action_plan.length;
+
+	if (isEmpty) total -= 1;
+	let done = $problemInfo.action_plan.filter((action) => action.done).length;
+
 	const percentage = Math.round((done / total) * 100);
 
 	// set the progress and if completed in the problem card
@@ -170,14 +178,17 @@ export const problemProgress = derived([problemInfo], ([$problemInfo]) => {
 });
 
 // Function to complete a problem and card
-export const completeProblem = () => {
+export const isCompleteProblem = (complete: boolean) => {
 	problemCard.update((card) => {
-		card.completed_at = new Date().toISOString();
+		if (complete) card.completed_at = new Date().toISOString();
+		else card.completed_at = null;
 		return card;
 	});
 
 	problemInfo.update((info) => {
-		info.solved = true;
+		if (complete) info.solved = true;
+		else info.solved = false;
+
 		return info;
 	});
 };

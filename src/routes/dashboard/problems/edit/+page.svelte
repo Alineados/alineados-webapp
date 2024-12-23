@@ -45,6 +45,7 @@
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
 		initMatrix({ ...data.problemMatrix });
+		$reportProblem = 1;
 
 		const headerHeight = headerRef ? headerRef.offsetHeight : 0;
 		const problemsFilterHeight = problemsFilterRef ? problemsFilterRef.offsetHeight : 0;
@@ -66,9 +67,11 @@
 
 	<div class="flex w-full items-start">
 		<div class=" flex w-7/12 flex-col">
-			<div bind:this={problemsFilterRef} class="sticky top-32 z-10 bg-white">
-				<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
-			</div>
+			{#if $reportProblem !== 2}
+				<div bind:this={problemsFilterRef} class="sticky top-32 z-10 bg-white">
+					<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
+				</div>
+			{/if}
 
 			<div bind:this={accountabilityBodyRef}>
 				{#if $reportProblem === 2}
@@ -79,7 +82,7 @@
 			</div>
 		</div>
 
-		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-center">
+		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-end">
 			<AsideProblem />
 		</div>
 	</div>

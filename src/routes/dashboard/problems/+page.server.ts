@@ -19,8 +19,6 @@ export const actions = {
 			category_name
 		});
 
-		console.log(result);
-
 		if (result.status !== 200 && result.status !== 201) {
 			return fail(result.data);
 		}

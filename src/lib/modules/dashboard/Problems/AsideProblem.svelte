@@ -17,8 +17,6 @@
 		const day = d.getDate();
 		return `${day}/${month}/${year}`;
 	};
-
-	$inspect($problemProgress);
 </script>
 
 <div class="flex w-2/3 flex-col items-center justify-center gap-3">
