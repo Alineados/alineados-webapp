@@ -7,9 +7,7 @@
 		problemReadyToComplete,
 		reportProblem,
 		problemInfo,
-
-		completeProblem
-
+		isCompleteProblem
 	} from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 
@@ -29,7 +27,7 @@
 	function onCompleteProblem() {
 		console.log('completing problem');
 		showConfetti = true;
-		completeProblem();
+		isCompleteProblem(true);
 		setTimeout(() => {
 			showConfetti = false;
 		}, 5000);

@@ -8,6 +8,7 @@
 	import Sun from '$lib/icons/Sun.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import { toast } from 'svelte-sonner';
+	import Tooltip from './Tooltip.svelte';
 
 	let {
 		value = $bindable(),
@@ -133,32 +134,38 @@
 			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
 		>
 			{#if isAccountability}
-				<button
-					onclick={() => {
-						if (doneItem) doneItem();
-					}}
-					class:text-alineados-gray-400={!isDone}
-					class:text-green-500={isDone}
-					class:hover:text-green-500={!isDisabled}
-					aria-label="Check"
-					disabled={isDisabled}
-				>
-					<Done styleTw="size-4" />
-				</button>
+				<Tooltip message="Completado">
+					<button
+						onclick={() => {
+							if (doneItem) doneItem();
+						}}
+						class:text-alineados-gray-400={!isDone}
+						class:text-green-500={isDone}
+						class:hover:text-green-500={!isDisabled}
+						aria-label="Check"
+						disabled={isDisabled}
+					>
+						<Done styleTw="size-4" />
+					</button>
+				</Tooltip>
 
-				<button
-					onclick={() => {
-						if (repeatItem) repeatItem();
-					}}
-					class:text-alineados-gray-400={!isRepeated}
-					class:text-blue-500={isRepeated}
-					class:hover:text-blue-500={!isDisabled}
-					aria-label="Repeat"
-					disabled={isDisabled}
-				>
-					<Repeat styleTw="size-4" />
-				</button>
+				<Tooltip message="Repetir">
+					<button
+						onclick={() => {
+							if (repeatItem) repeatItem();
+						}}
+						class:text-alineados-gray-400={!isRepeated}
+						class:text-blue-500={isRepeated}
+						class:hover:text-blue-500={!isDisabled}
+						aria-label="Repeat"
+						disabled={isDisabled}
+					>
+						<Repeat styleTw="size-4" />
+					</button>
+				</Tooltip>
 			{:else}
+			<Tooltip message="Destacar">
+
 				<button
 					onclick={() => {
 						if (prominentItem) prominentItem();
@@ -171,6 +178,9 @@
 				>
 					<Star styleTw="size-4" />
 				</button>
+			</Tooltip>
+			<Tooltip message="Diario">
+
 				<button
 					onclick={() => {
 						if (dailyItem) dailyItem();
@@ -183,6 +193,8 @@
 				>
 					<Sun styleTw="size-4" />
 				</button>
+			</Tooltip>
+			<Tooltip message="Borrar">
 				<button
 					onclick={() => {
 						if (deleteItem) deleteItem();
@@ -194,6 +206,7 @@
 				>
 					<TrashCan styleTw="size-4" />
 				</button>
+			</Tooltip>
 			{/if}
 		</div>
 	{/if}

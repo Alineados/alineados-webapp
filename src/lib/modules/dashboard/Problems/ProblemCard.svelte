@@ -11,6 +11,7 @@
 	import { type ProblemCard } from '$lib/interfaces';
 	import { Pillars } from '$lib/interfaces/data';
 	import { removeProblem } from '$lib/stores';
+	import { calculateDaysLeft } from '$lib/utils/dates';
 	import MessageLength from './MessageLength.svelte';
 
 	let {
@@ -37,13 +38,15 @@
 	}
 
 	function setProgressBarStatus(
-		problen: ProblemCard
+		problem: ProblemCard
 	): 'default' | 'stable' | 'warning' | 'danger' | 'complete' {
-		if (problen.progress === 100 && problen.completed_at) {
+		if (calculateDaysLeft(problem.milestone_date) <= 10 && !problem.completed_at) {
+			return 'danger';
+		} else if (problem.progress === 100 && problem.completed_at) {
 			return 'complete';
-		} else if (problen.active && problen.progress >= 50) {
+		} else if (problem.active && problem.progress >= 50) {
 			return 'warning';
-		} else if (problen.active && problen.progress >= 25) {
+		} else if (problem.active && problem.progress >= 25) {
 			return 'stable';
 		} else {
 			return 'default';
@@ -106,11 +109,13 @@
 			<CustomCard
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
 				isNew={problem.is_new}
-				state={problem.active && problem.completed_at
-					? 'completed'
-					: problem.active
-						? 'default'
-						: 'default'}
+				state={calculateDaysLeft(problem.milestone_date) <= 10 && !problem.completed_at
+					? 'danger'
+					: problem.active && problem.completed_at
+						? 'completed'
+						: problem.active
+							? 'default'
+							: 'default'}
 				headerClass="justify-between"
 			>
 				{#snippet header()}
@@ -148,7 +153,16 @@
 				{/snippet}
 				{#snippet footer()}
 					<p class="text-xs font-semibold text-alineados-gray-400">{problem.category_name}</p>
-					<DaysLeft targetDate={problem.milestone_date} color="alineados-gray-400" />
+					{#if problem.completed_at}
+						<p class="text-xs font-semibold text-alineados-green-700">Completado</p>
+					{:else}
+						<DaysLeft
+							targetDate={problem.milestone_date}
+							color={calculateDaysLeft(problem.milestone_date) <= 10
+								? 'red-500'
+								: 'alineados-gray-400'}
+						/>
+					{/if}
 				{/snippet}
 			</CustomCard>
 		{/each}

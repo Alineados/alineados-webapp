@@ -45,6 +45,7 @@
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
 		initMatrix({ ...data.problemMatrix });
+		$reportProblem = 1;
 
 		const headerHeight = headerRef ? headerRef.offsetHeight : 0;
 		const problemsFilterHeight = problemsFilterRef ? problemsFilterRef.offsetHeight : 0;

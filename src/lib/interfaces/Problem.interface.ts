@@ -37,6 +37,7 @@ export interface ProblemInfo {
 	action_plan: Generic[];
 	memories: Documents[];
 	final_decision: string | null; // will save the id of the objective selected
+	recommended_decision: string | null; // will save the id of the objective selected
 	created_at: string;
 	updated_at: string | null;
 }

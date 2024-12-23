@@ -8,7 +8,8 @@
 		removeOrCleanItem,
 		markOnlyDoneOrRepeatedItems,
 		problemCard,
-		changeCompleteStatus
+		changeCompleteStatus,
+		isCompleteProblem
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Rocket from '$lib/icons/Rocket.svelte';
@@ -34,7 +35,9 @@
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#if changeToEdit}
 				{#each $problemInfo.action_plan as action}
-					{#if action.description !== ''}
+					{#if action.done}
+						<DecisionPill isDisabled selected bind:text={action.description} />
+					{:else if action.description !== ''}
 						<Item
 							deleteItem={() => {
 								removeOrCleanItem(action.id, ProblemType.action_plan);
@@ -110,6 +113,7 @@
 					changeSelected={() => {
 						completed = { alternative: 2 };
 						changeCompleteStatus(false);
+						isCompleteProblem(false);
 					}}
 					selected={completed.alternative === 2}
 				/>
