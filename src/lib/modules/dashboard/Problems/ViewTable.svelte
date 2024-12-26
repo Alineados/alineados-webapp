@@ -129,20 +129,24 @@
 		class="top-0 grid"
 		style="grid-template-columns: 2fr 3fr 3fr;"
 	>
-		<div class="whitespace-nowrap px-6 py-8 text-left align-top text-base font-medium text-black">
+		<div class="whitespace-nowrap px-6 py-3 text-left align-top text-base font-medium text-black">
 			{problem.problemName}
 		</div>
 		<div>
-			<div class="flex flex-col gap-y-4 px-6 py-8">
+			<div class="flex flex-col gap-y-4 px-6 py-3">
 				{#each problem.firstCriterionData as description}
-					<TableItem value={description} />
+					{#if description !== ''}
+						<TableItem value={description} />
+					{/if}
 				{/each}
 			</div>
 		</div>
 		<div>
-			<div class="flex flex-col gap-y-4 px-6 py-8">
+			<div class="flex flex-col gap-y-4 px-6 py-3">
 				{#each problem.secondCriterionData as description}
-					<TableItem value={description} />
+					{#if description !== ''}
+						<TableItem value={description} />
+					{/if}
 				{/each}
 			</div>
 		</div>

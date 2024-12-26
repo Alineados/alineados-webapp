@@ -1,5 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/shared/ui/select/index';
+	import * as Collapsible from '$lib/shared/ui/collapsible/index';
+	import { ChevronRight, ChevronDown } from 'lucide-svelte';
 
 	// Props
 	let { name, pilars, value = $bindable<string[]>([]) } = $props();
@@ -95,21 +97,36 @@
 			</Select.Group>
 
 			{#each pilars as pilar (pilar.pilar_name)}
-				<Select.Group class="bg-alineados-gray-50">
-					<Select.GroupHeading class="bg-white text-base"
-						>{pilarNameMap[pilar.pilar_name as keyof typeof pilarNameMap]}</Select.GroupHeading
-					>
-					{#each pilar.problems as problem}
-						<Select.Item
-							class="bg-white"
-							value={problem.problem_card.id}
-							label={problem.problem_card.problem_name}
-							spellcheck="false"
-						>
-							{problem.problem_card.problem_name}
-						</Select.Item>
-					{/each}
-				</Select.Group>
+				<Collapsible.Root class="group/collapsible">
+					<Select.Group class="bg-alineados-gray-50">
+						<Collapsible.Trigger>
+							{#snippet child({ props })}
+								<Select.GroupHeading
+									{...props}
+									class="flex  items-center justify-between bg-white text-base"
+									>{pilarNameMap[pilar.pilar_name as keyof typeof pilarNameMap]}
+									<ChevronRight
+										size={16}
+										class="transition-transform group-data-[state=open]/collapsible:rotate-90"
+									/>
+								</Select.GroupHeading>
+							{/snippet}
+						</Collapsible.Trigger>
+
+						<Collapsible.Content>
+							{#each pilar.problems as problem}
+								<Select.Item
+									class="bg-white"
+									value={problem.problem_card.id}
+									label={problem.problem_card.problem_name}
+									spellcheck="false"
+								>
+									{problem.problem_card.problem_name}
+								</Select.Item>
+							{/each}
+						</Collapsible.Content>
+					</Select.Group>
+				</Collapsible.Root>
 			{/each}
 		</Select.Content>
 	</Select.Root>

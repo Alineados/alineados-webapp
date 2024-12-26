@@ -70,13 +70,13 @@
 		<ViewHeader />
 	</div>
 
-	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-12">
+	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-5">
 		<ViewStatistics {...data.problems} />
 	</div>
 
 	<div
 		bind:this={filterContainerRef}
-		class="sticky z-10 grid w-full bg-white pb-12"
+		class="sticky z-10 grid w-full bg-white pb-5"
 		style="grid-template-columns: 2fr 3fr 3fr;"
 	>
 		<ViewProblemsFilter name="problems" {...data.problems} bind:value={selectedProblem} />

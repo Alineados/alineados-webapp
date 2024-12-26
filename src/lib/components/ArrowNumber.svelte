@@ -14,5 +14,5 @@
 	<div class="flex items-start">
 		{@render arrow()}
 	</div>
-	<p class="text-4xl font-semibold text-alineados-gray-800">{value}</p>
+	<p class="text-2xl font-semibold text-alineados-gray-800">{value}</p>
 </div>

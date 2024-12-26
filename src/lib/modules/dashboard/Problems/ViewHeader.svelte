@@ -1,7 +1,7 @@
-<div class="flex flex-col gap-5 pb-4">
+<div class="flex flex-col gap-2 pb-4">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<a href="/dashboard/problems" class="text-alineados-gray-600 hover:underline"
-			>Situaciones por mejorar</a
+			>Situaciones por Mejorar</a
 		>
 		<span class="mx-1">/</span>
 		<span class="text-alineados-orange-900">Ver</span>
@@ -10,7 +10,7 @@
 		class="flex flex-col gap-5 border-b border-alineados-gray-100 pb-4 lg:flex-row lg:justify-between"
 	>
 		<div class="gap- flex items-center">
-			<p class="text-5xl font-bold text-alineados-gray-900">Visualizando Mis Problemas</p>
+			<p class="text-4xl font-bold text-alineados-gray-900">Mis Situaciones por Mejorar</p>
 			<div class="ml-5 flex items-center gap-3"></div>
 		</div>
 
