@@ -1,19 +1,28 @@
 <script lang="ts">
+	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
 	import { Label } from '$lib/shared/ui/label/index';
 	import * as Select from '$lib/shared/ui/select/index';
+	import { ValidationType } from '$lib/interfaces/onbarding';
 
-	let { value = $bindable() } = $props();
+	// Props
+	let {
+		inputKey,
+		value = $bindable(),
+		validation = $bindable()
+	}: {
+		inputKey: string;
+		value: string;
+		validation: OnboardingValidation;
+	} = $props();
 
+	// States
 	let label = $state('Fecha de Nacimiento');
 	let day = $state('');
 	let month = $state('');
 	let year = $state('');
 
-	/*
-	export let onDayChange: (day: string) => void;
-	export let onMonthChange: (month: string) => void;
-	export let onYearChange: (year: string) => void;
-	*/
+	// Derived
+	let keyString = $derived(inputKey) as keyof RegisterValidation;
 
 	// Days
 	const days = Array.from({ length: 31 }, (_, i) => {
@@ -46,15 +55,23 @@
 	// Create reactive statement for combined date
 	$effect(() => {
 		if (day && month && year) {
+			// Reguired validation
+			Object.keys(validation.register).forEach((key) => {
+				if (key === inputKey) {
+					validation.register[keyString] = ValidationType.ALL_GOOD;
+				}
+			});
+
 			value = `${year}-${month}-${day}`; // YYYY-MM-DD format
 		} else {
-			value = undefined;
+			value = '';
 		}
 	});
 </script>
 
-<div class="w-1/2 space-y-2">
+<div class="relative flex w-1/2 flex-col gap-1">
 	<Label class="text-lg font-semibold text-black" for="date-select">{label}</Label>
+
 	<div class="flex">
 		<Select.Root type="single" name="day" bind:value={day}>
 			<Select.Trigger
@@ -123,4 +140,10 @@
 			</Select.Content>
 		</Select.Root>
 	</div>
+
+	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
+		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
+			*campo requerido
+		</span>
+	{/if}
 </div>

@@ -6,10 +6,10 @@
 
 <p class=" pl-2 text-alineados-gray-400">
 	{#if $filterBy === FilterBy.ACTIVE}
-		No hay problemas activos registrados, para agregar uno nuevo haz clic en el botón de "+ Nuevo".
+		No hay situaciones por mejorar activas registradas, para agregar una nueva haz clic en el botón de "+ Nuevo".
 	{:else if $filterBy === FilterBy.INACTIVE}
-		No hay problemas inactivos registrados
+		No hay situaciones por mejorar no activas.
 	{:else}
-		No hay problemas registrados, para agregar uno nuevo haz clic en el botón de "+ Nuevo".
+		No hay situaciones por mejorar registradas, para agregar una nueva haz clic en el botón de "+ Nuevo".
 	{/if}
 </p>

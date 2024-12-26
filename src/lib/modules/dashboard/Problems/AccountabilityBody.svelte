@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Item from '$lib/components/Item.svelte';
-	import PuzzlePiece from '$lib/icons/PuzzlePiece.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
 	import {
 		addProblemItem,
@@ -9,7 +8,13 @@
 		markOnlyDoneOrRepeatedItems,
 		problemCard,
 		changeCompleteStatus,
-		isCompleteProblem
+		isCompleteProblem,
+
+		prominentItem,
+
+		markDailytItem
+
+
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Rocket from '$lib/icons/Rocket.svelte';
@@ -28,25 +33,29 @@
 
 <div class="flex flex-col gap-12">
 	<div class="flex flex-col">
-		<div class="flex items-center gap-2">
-			<Rocket styleTw="size-6 text-alineados-gray-900" />
-			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
+		<div class="mr-10 flex items-center justify-between gap-2">
+			<div class="flex flex-row items-center">
+				<Rocket styleTw="size-6 text-alineados-gray-900" />
+				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
+			</div>
+			{#if !changeToEdit}
+				<button
+					class="focus group flex items-center rounded-lg bg-alineados-blue-900 px-2 py-1 text-xs text-alineados-blue-50 transition duration-300 ease-in-out hover:shadow-lg"
+					aria-label="Rendir Cuentas nuevamente"
+					onclick={() => {
+						completed = { alternative: 3 };
+						changeCompleteStatus(false);
+					}}
+				>
+					Rendir cuentas
+				</button>
+			{/if}
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#if changeToEdit}
 				{#each $problemInfo.action_plan as action}
-					{#if action.done}
-						<DecisionPill isDisabled selected bind:text={action.description} />
-					{:else if action.description !== ''}
+					{#if action.description !== ''}
 						<Item
-							deleteItem={() => {
-								removeOrCleanItem(action.id, ProblemType.action_plan);
-							}}
-							addItem={() => {
-								addProblemItem(action.id, ProblemType.action_plan);
-								completed = { alternative: 3 };
-								changeCompleteStatus(false);
-							}}
 							doneItem={() => {
 								markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
 								completed = { alternative: 3 };
@@ -71,8 +80,6 @@
 						}}
 						addItem={() => {
 							addProblemItem(action.id, ProblemType.action_plan);
-							completed = { alternative: 3 };
-							changeCompleteStatus(false);
 						}}
 						doneItem={() => {
 							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
@@ -82,8 +89,16 @@
 						repeatItem={() => {
 							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
 						}}
+						prominentItem={() => {
+							prominentItem(action.id, ProblemType.action_plan);
+						}}
+						dailyItem={() => {
+							markDailytItem(action.id, ProblemType.action_plan);
+						}}
 						isOnlyText
 						isAccountability={changeToEdit}
+						bind:isDaily={action.daily}
+						bind:isStarred={action.prominent}
 						bind:isRepeated={action.repeatable}
 						bind:isDone={action.done}
 						bind:value={action.description}
@@ -107,15 +122,17 @@
 						changeCompleteStatus(true);
 					}}
 					selected={completed.alternative === 1}
+					isDisabled={true}
 				/>
 				<DecisionPill
-					text="Alternativa 2 - No resolví el problema. Ir a cambiar el plan de acción"
+					text="Alternativa 2 - No resolví el problema. Editar plan de acción"
 					changeSelected={() => {
 						completed = { alternative: 2 };
 						changeCompleteStatus(false);
 						isCompleteProblem(false);
 					}}
 					selected={completed.alternative === 2}
+					isDisabled={true}
 				/>
 			</div>
 		{/if}

@@ -1,9 +1,4 @@
 <script lang="ts">
-	let {
-		register = $bindable(),
-		validation = $bindable()
-	}: { register: Register; validation: OnboardingValidation } = $props();
-
 	import type { OnboardingValidation, Register } from '$lib/interfaces/onbarding';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
@@ -12,10 +7,11 @@
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
 	import Header from '$lib/modules/onboarding/components/Header.svelte';
 
-	interface PhoneNumber {
-		code: string;
-		number: string;
-	}
+	// Props
+	let {
+		register = $bindable(),
+		validation = $bindable()
+	}: { register: Register; validation: OnboardingValidation } = $props();
 
 	// Countries
 	const countries = [
@@ -84,27 +80,6 @@
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
 	];
-
-	// Form data
-	let firstName = $state('');
-	let lastName = $state('');
-	let countryOfResidence = $state('');
-	let countryOfBirth = $state('');
-	let email = $state('');
-	let birthday = $state('');
-	let phoneNumber = $state<PhoneNumber>({ code: '', number: '' });
-	let whatsappNumber = $state<PhoneNumber>({ code: '', number: '' });
-
-	$inspect({
-		firstName,
-		lastName,
-		countryOfResidence,
-		countryOfBirth,
-		email,
-		birthday,
-		phoneNumber,
-		whatsappNumber
-	});
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
@@ -113,68 +88,64 @@
 	<form class="mt-9 flex w-full flex-col gap-7">
 		<div class="flex gap-6">
 			<RegisterInput
-				label="Nombre"
-				forId="firstName"
+				label="Nombres"
+				inputKey="firstName"
 				placeholder="Ingrese su nombre"
 				type="text"
-				isInvalid={false}
-				errorMessage=""
 				bind:validation
 				bind:value={register.firstName}
 			/>
 			<RegisterInput
-				label="Apellido"
-				forId="lastName"
+				label="Apellidos"
+				inputKey="lastName"
 				placeholder="Ingrese su apellido"
 				type="text"
-				bind:value={register.lastName}
 				bind:validation
-				isInvalid={false}
-				errorMessage=""
+				bind:value={register.lastName}
 			/>
 		</div>
 		<div class="flex gap-6">
 			<RegisterCombobox
 				label="País de Residencia"
-				name="country-of-residence"
-				options={countries}
+				inputKey="countryOfResidence"
 				placeholder="Selecciona un país"
+				options={countries}
+				bind:validation
 				bind:value={register.countryOfResidence}
 			/>
 			<RegisterCombobox
 				label="País de Nacimiento"
-				name="country-of-birth"
-				options={countries}
+				inputKey="countryOfBirth"
 				placeholder="Selecciona un país"
+				options={countries}
+				bind:validation
 				bind:value={register.countryOfBirth}
 			/>
 		</div>
 		<div class="flex gap-6">
 			<RegisterInput
 				label="Correo Electrónico"
-				forId="email"
+				inputKey="email"
 				placeholder="Ingrese su correo electrónico"
 				type="email"
-				bind:value={register.email}
 				bind:validation
-				isInvalid={false}
-				errorMessage=""
+				bind:value={register.email}
 			/>
-			<BirthdaySelect bind:value={register.birthday} />
+			<BirthdaySelect inputKey="birthday" bind:validation bind:value={register.birthday} />
 		</div>
 		<div class="flex gap-6">
 			<PhoneInput
 				label="Celular"
-				name="phone-number"
-				placeholder="País"
+				inputKey="phoneNumber"
 				options={countriesCode}
+				bind:validation
 				bind:value={register.phoneNumber}
 			/>
 			<WhatsAppInput
 				label="WhatsApp"
-				name="whatsapp-number"
-				placeholder="País"
+				inputKey="whatsappNumber"
 				options={countriesCode}
+				bind:validation
 				bind:value={register.whatsappNumber}
 			/>
 		</div>

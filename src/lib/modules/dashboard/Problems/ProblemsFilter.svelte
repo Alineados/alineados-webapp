@@ -40,7 +40,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-3 border-b border-alineados-gray-100">
+<div class="flex flex-col gap-3 px-4 md:px-8 lg:px-16">
 	<div class="flex flex-row gap-2">
 		{#if $healthProblems.length > 0}
 			<CardFilter

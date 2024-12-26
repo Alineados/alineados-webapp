@@ -21,8 +21,13 @@
 	<!-- Content -->
 	<DropdownMenu.Content class="z-50 bg-alineados-gray-100">
 		<DropdownMenu.Item
-			onclick={() => handleClick(1)}
-			class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
+			onclick={() => {
+				if (!$problemCard.completed_at) handleClick(1);
+			}}
+			class={$problemCard.completed_at !== null
+				? 'opacity-100'
+				: 'bg-white hover:cursor-pointer hover:bg-alineados-gray-100 '}
+			disabled={$problemCard.completed_at !== null}
 		>
 			<Blocked class="mt-0.5" />
 			<span class="font-normal">

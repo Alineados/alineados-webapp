@@ -26,6 +26,8 @@
 	import Check from '$lib/icons/Check.svelte';
 	import Spotlight from '$lib/icons/Spotlight.svelte';
 	import Button from '$lib/shared/ui/button/button.svelte';
+	import Tooltip from '$lib/components/Tooltip.svelte';
+	import InformationIcon from '$lib/icons/InformationIcon.svelte';
 
 	let errorHandling = $state({
 		alternative_max: false,
@@ -41,6 +43,9 @@
 		<div class="flex items-center gap-2">
 			<Bolt styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
+			<Tooltip message="Información sobre el tomador de decisión">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
@@ -66,6 +71,9 @@
 		<div class="flex items-center gap-2">
 			<User styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
+			<Tooltip message="Información sobre involucrados">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.involved as involded}
@@ -104,6 +112,9 @@
 		<div class="flex items-center gap-2">
 			<Lines styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
+			<Tooltip message="Información sobre contexto">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.contexts as context}
@@ -142,6 +153,9 @@
 		<div class="flex items-center gap-2">
 			<CircleCross styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
+			<Tooltip message="Información sobre problema">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
@@ -167,13 +181,16 @@
 		<div class="flex items-center gap-2">
 			<Trophy styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
-			<p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.objective_max}>
+			<!-- <p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.objective_max}>
 				{#if errorHandling.objective_max}
 					{errorHandling.message}
 				{:else}
 					*Máximo de 5 objetivos
 				{/if}
-			</p>
+			</p> -->
+			<Tooltip message="Información sobre objetivos">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.objectives as objective}
@@ -220,13 +237,16 @@
 		<div class="flex items-center gap-2">
 			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
-			<p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.alternative_max}>
+			<!-- <p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.alternative_max}>
 				{#if errorHandling.alternative_max}
 					{errorHandling.message}
 				{:else}
 					*Máximo de 3 alternativas
 				{/if}
-			</p>
+			</p> -->
+			<Tooltip message="Información sobre alternativas">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.alternatives as alternative}
@@ -273,21 +293,22 @@
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
 			<Cube styleTw="size-6 text-alineados-gray-900" />
-			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de decisión</h2>
-		</div>
-		<div class="flex items-start gap-4">
-			<DecisionMatrix />
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de Decisión</h2>
 			<InformationButton
 				tittle="Aquí deberá de ir el título"
 				description="Aquí deberá ir la explicación de la matríz"
 			/>
 		</div>
+		<DecisionMatrix />
 	</div>
 
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
 			<Spotlight styleTw="size-6 text-alineados-gray-900" />
-			<h2 class="text-2xl font-medium text-alineados-gray-900">Desición Recomendada</h2>
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Recomendada</h2>
+			<Tooltip message="Información sobre la decisión recomendada">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
@@ -300,7 +321,10 @@
 	<div class="flex flex-col">
 		<div class="flex items-center gap-2">
 			<Check styleTw="size-6 text-alineados-gray-900" />
-			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Final</h2>
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Mi Decisión Final</h2>
+			<Tooltip message="Información sobre la decisión final">
+				<InformationIcon styleTw="size-4" />
+			</Tooltip>
 		</div>
 		<div class="mt-5 flex flex-col gap-2">
 			{#if $problemInfo.alternatives.length === 1 && $problemInfo.alternatives[0].description === ''}
@@ -330,59 +354,42 @@
 			<div class="flex flex-row items-center justify-center gap-2">
 				<Rocket styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
+				<Tooltip message="Información sobre plan de acción">
+					<InformationIcon styleTw="size-4" />
+				</Tooltip>
 			</div>
-
-			<button
-				onclick={() => (editActionPlans = !editActionPlans)}
-				disabled={!$problemCard.active}
-				class:bg-alineados-blue-500={!$problemCard.active}
-				class:bg-alineados-blue-800={$problemCard.active}
-				class:hover:bg-alineados-blue-900={$problemCard.active}
-				class=" rounded-lg px-2 py-1 text-white transition duration-300 ease-in-out hover:shadow-lg"
-				aria-label="Rendir Cuentas"
-			>
-				<p class="text-xs font-normal">
-					{#if editActionPlans}
-						Regresar
-					{:else}
-						Editar
-					{/if}
-				</p>
-			</button>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.action_plan as action}
-				{#if action.done && !editActionPlans}
-					<DecisionPill isDisabled selected bind:text={action.description} />
-				{:else}
-					<Item
-						deleteItem={() => {
-							removeOrCleanItem(action.id, ProblemType.action_plan);
-						}}
-						addItem={() => {
+				<Item
+					deleteItem={() => {
+						removeOrCleanItem(action.id, ProblemType.action_plan);
+					}}
+					addItem={() => {
+						addProblemItem(action.id, ProblemType.action_plan);
+					}}
+					prominentItem={() => {
+						prominentItem(action.id, ProblemType.action_plan);
+					}}
+					dailyItem={() => {
+						markDailytItem(action.id, ProblemType.action_plan);
+					}}
+					onInput={() => {
+						if ($problemInfo.action_plan[$problemInfo.action_plan.length - 1].description !== '') {
 							addProblemItem(action.id, ProblemType.action_plan);
-						}}
-						prominentItem={() => {
-							prominentItem(action.id, ProblemType.action_plan);
-						}}
-						dailyItem={() => {
-							markDailytItem(action.id, ProblemType.action_plan);
-						}}
-						onInput={() => {
-							if ($problemInfo.action_plan[$problemInfo.action_plan.length - 1].description !== '') {
-								addProblemItem(action.id, ProblemType.action_plan);
-							}
+						}
 
-							if (action.description === '') {
-								removeOrCleanItem(action.id, ProblemType.action_plan);
-							}
-						}}
-						bind:isOnlyText={$problemCard.active}
-						bind:isDaily={action.daily}
-						bind:isStarred={action.prominent}
-						bind:value={action.description}
-					/>
-				{/if}
+						if (action.description === '') {
+							removeOrCleanItem(action.id, ProblemType.action_plan);
+						}
+					}}
+					bind:isOnlyText={$problemCard.active}
+					bind:isDaily={action.daily}
+					bind:isStarred={action.prominent}
+					bind:value={action.description}
+					bind:isDone={action.done}
+					bind:isRepeated={action.repeatable}
+				/>
 			{/each}
 		</div>
 	</div>

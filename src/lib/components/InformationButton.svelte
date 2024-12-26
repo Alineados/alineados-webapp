@@ -8,7 +8,7 @@
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<InformationIcon styleTw="size-7" />
+		<InformationIcon styleTw="size-4" />
 	</Dialog.Trigger>
 	<Dialog.Content class="bg-white">
 		<Dialog.Header>
