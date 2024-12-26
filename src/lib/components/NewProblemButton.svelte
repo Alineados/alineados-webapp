@@ -53,7 +53,7 @@
 		aria-label="Nuevo Problema"
 	>
 		<Plus styleTw="size-4" />
-		<p class="text-xs font-medium">Nuevo</p>
+		<p class="text-xs font-medium">Nueva</p>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="bg-alineados-gray-100">
 		<form

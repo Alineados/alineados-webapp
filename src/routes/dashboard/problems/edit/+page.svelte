@@ -68,12 +68,15 @@
 	<div class="flex w-full items-start">
 		<div class=" flex w-7/12 flex-col">
 			{#if $reportProblem !== 2}
-				<div bind:this={problemsFilterRef} class="sticky top-32 z-10 bg-white">
+				<div
+					bind:this={problemsFilterRef}
+					class="sticky  z-10 border-b border-alineados-gray-100 bg-white"
+				>
 					<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
 				</div>
 			{/if}
 
-			<div bind:this={accountabilityBodyRef}>
+			<div class="pl-4 md:pl-8 lg:pl-16" bind:this={accountabilityBodyRef}>
 				{#if $reportProblem === 2}
 					<AccountabilityBody />
 				{:else}
@@ -82,7 +85,10 @@
 			</div>
 		</div>
 
-		<div bind:this={asideProblemRef} class="sticky top-32 z-10 flex w-5/12 justify-end">
+		<div
+			bind:this={asideProblemRef}
+			class="sticky top-32 z-10 flex w-5/12 justify-end pr-4 md:pr-8 lg:pr-16"
+		>
 			<AsideProblem />
 		</div>
 	</div>

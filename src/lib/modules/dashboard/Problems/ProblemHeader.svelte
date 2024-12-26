@@ -37,32 +37,31 @@
 	});
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<a href="/dashboard/problems" class="text-alineados-gray-600 hover:underline"
-			>Situaciones por mejorar</a
+			>Situaciones por Mejorar</a
 		>
 		<span class="mx-1">/</span>
 		<span class="text-alineados-orange-900">{title}</span>
 	</p>
-	<div class="flex flex-col gap-5 pb-3 lg:flex-row lg:justify-between ">
-		<div class="gap-2 flex items-center">
+	<div class="flex flex-col items-start gap-5 pb-3 lg:flex-row lg:justify-between">
+		<div class="flex items-start gap-2">
 			<input
 				type="text"
+				maxlength="28"
 				bind:value={title}
 				class="border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
 			/>
-			<div class="ml-5 flex items-center gap-3">
+			<!-- Autosave and icons -->
+
+			<div class="ml-5 flex items-center gap-3 pl-5">
 				{#if $problemCard.security}
 					<Padlock class="size-5" />
 				{:else}
 					<UnPadlock class="size-5" />
 				{/if}
-				<StatusPill status={$problemCard.active} />
-			</div>
-			<!-- Autosave -->
-
-			<div class="pl-5">
+				<StatusPill status={$problemCard.active} bind:completed={$problemCard.completed_at} />
 				{#if $autosavingProblemCard || $autosavingProblemInfo}
 					<div class="h-6 w-6 animate-spin text-white">
 						<Loading />
@@ -73,7 +72,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-row gap-4 self-center py-6">
+		<div class="flex flex-row justify-start gap-4">
 			<AccountabilityButton />
 			{#if $reportProblem === 1}
 				<MoreButton />

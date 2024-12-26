@@ -27,7 +27,7 @@
 	} transition-colors duration-300 ease-in-out`}
 	onclick={selectItem}
 	class:ml-10={index === 0}
-	disabled={isDisabled}
+	disabled={!isDisabled}
 >
 	<span class="text-sm font-medium">{index !== 0 ? `Alternativa ${index} - ` : ''} {text}</span>
 </button>

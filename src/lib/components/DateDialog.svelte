@@ -3,6 +3,24 @@
 	import DatePicker from './DatePicker.svelte';
 
 	let { open = false, date = $bindable(), confirm } = $props();
+
+	let error = $state({
+		error: false,
+		message: ''
+	});
+
+	function handleConfirm() {
+
+		if (!date) {
+			error = {
+				error: true,
+				message: 'Por favor, selecciona una fecha.'
+			};
+			return;
+		}
+
+		confirm();
+	}
 </script>
 
 <AlertDialog.Root {open}>
@@ -16,11 +34,15 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 
-		<DatePicker bind:value={date} />
+		<DatePicker bind:value={date} bind:error />
+
+		{#if error.error}
+			<p class="text-sm text-red-500 pl-2">{error.message}</p>
+		{/if}
 
 		<AlertDialog.Footer class="pt-4">
 			<AlertDialog.Action
-				onclick={() => confirm()}
+				onclick={handleConfirm}
 				class="w-full rounded-xl bg-alineados-blue-900 text-sm font-normal text-white hover:bg-alineados-blue-900"
 				>Confirmar</AlertDialog.Action
 			>

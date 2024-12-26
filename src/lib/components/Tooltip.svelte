@@ -10,7 +10,7 @@
 		<Tooltip.Trigger>
 			{@render children?.()}
 		</Tooltip.Trigger>
-		<Tooltip.Content>
+		<Tooltip.Content class="bg-white">
 			<p class="text-xs text-alineados-blue-900">{message}</p>
 		</Tooltip.Content>
 	</Tooltip.Root>

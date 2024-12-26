@@ -121,7 +121,11 @@
 				{#snippet header()}
 					<div class="flex w-full flex-row items-center justify-between">
 						<div class="flex flex-row items-center gap-1">
-							<StatusPill classTw="px-2 py-1" bind:status={problem.active} />
+							<StatusPill
+								classTw="px-2 py-1"
+								bind:status={problem.active}
+								bind:completed={problem.completed_at}
+							/>
 
 							{#if problem.security}
 								<Padlock class="size-4" />
@@ -154,13 +158,14 @@
 				{#snippet footer()}
 					<p class="text-xs font-semibold text-alineados-gray-400">{problem.category_name}</p>
 					{#if problem.completed_at}
-						<p class="text-xs font-semibold text-alineados-green-700">Completado</p>
+						<p></p>
 					{:else}
 						<DaysLeft
 							targetDate={problem.milestone_date}
 							color={calculateDaysLeft(problem.milestone_date) <= 10
 								? 'red-500'
 								: 'alineados-gray-400'}
+							extendedText={!(calculateDaysLeft(problem.milestone_date) <= 10)}
 						/>
 					{/if}
 				{/snippet}

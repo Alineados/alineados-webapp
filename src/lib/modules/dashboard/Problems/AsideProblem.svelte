@@ -8,15 +8,15 @@
 	import Upload from '$lib/icons/Upload.svelte';
 
 	import { problemCard, problemProgress } from '$lib/stores';
+	import { calculateDaysLeft, calculateDaysBetween, formatDate } from '$lib/utils/dates';
+	import { onMount } from 'svelte';
 
-	// Function to format date
-	const formatDate = (date: string) => {
-		const d = new Date(date);
-		const year = d.getFullYear();
-		const month = d.getMonth() + 1;
-		const day = d.getDate();
-		return `${day}/${month}/${year}`;
-	};
+	let daysCompleted = $state(0);
+	onMount(() => {
+		if ($problemCard.completed_at) {
+			daysCompleted = calculateDaysBetween($problemCard.completed_at, $problemCard.milestone_date);
+		}
+	});
 </script>
 
 <div class="flex w-2/3 flex-col items-center justify-center gap-3">
@@ -33,16 +33,20 @@
 	<RectangularCard contentClass="w-full">
 		{#snippet leftContent()}
 			<div class="flex w-full flex-col items-center justify-center gap-1">
-				<p class="text-sm font-medium text-gray-900">Fecha meta</p>
-				<p class="text-xs font-medium text-gray-600">
+				<p class="text-sm font-medium text-alineados-gray-900">Fecha meta</p>
+				<p class="text-xs font-medium text-alineados-gray-600">
 					{formatDate($problemCard.milestone_date)}
 				</p>
-				<DaysLeft
-					bind:targetDate={$problemCard.milestone_date}
-					color="green-500"
-					textSize="sm"
-					extendedText
-				/>
+				{#if !$problemCard.completed_at}
+					<DaysLeft
+						targetDate={$problemCard.milestone_date}
+						color={calculateDaysLeft($problemCard.milestone_date) <= 10
+							? 'red-500'
+							: 'alineados-gray-400'}
+						textSize="sm"
+						extendedText={!(calculateDaysLeft($problemCard.milestone_date) <= 10)}
+					/>
+				{/if}
 			</div>
 		{/snippet}
 		{#snippet rightContent()}
@@ -51,4 +55,26 @@
 			</div>
 		{/snippet}
 	</RectangularCard>
+	{#if $problemCard.completed_at && $problemCard.progress === 100}
+		<RectangularCard contentClass="w-full">
+			{#snippet leftContent()}
+				<div class="flex w-full flex-col items-center justify-center gap-1">
+					<p class="text-sm font-medium text-alineados-gray-900">Fecha finalización</p>
+					<p class="text-xs font-medium text-alineados-gray-600">
+						{formatDate($problemCard.completed_at!)}
+					</p>
+				</div>
+			{/snippet}
+			{#snippet rightContent()}
+				<div class="flex w-full flex-col items-center justify-center">
+					<p class="text-xs font-medium text-alineados-gray-600">
+						Has completado este problema en
+						<span class="text-alineados-green-900"
+							>{daysCompleted} {daysCompleted === 1 ? 'día!' : 'días!'}</span
+						>
+					</p>
+				</div>
+			{/snippet}
+		</RectangularCard>
+	{/if}
 </div>

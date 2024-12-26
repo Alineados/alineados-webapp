@@ -21,6 +21,7 @@
 		isUnique = false,
 		isNew = false,
 		isDisabled = false,
+		onFocus,
 		onInput,
 		addItem,
 		deleteItem,
@@ -39,6 +40,7 @@
 		isDaily?: boolean;
 		isDone?: boolean;
 		isRepeated?: boolean;
+		onFocus?: () => void;
 		onInput?: () => void;
 		addItem?: () => void;
 		deleteItem?: () => void;
@@ -77,6 +79,12 @@
 			duration: 1000
 		});
 	}
+
+	function handleOnFocus(event: FocusEvent) {
+		console.log('handleOnFocus', event);
+
+		if (onFocus) onFocus();
+	}
 </script>
 
 <div
@@ -106,21 +114,36 @@
 	{/if}
 
 	<div
-		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 focus-within:bg-gray-100 hover:bg-gray-100"
+		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 {!isDone && !isRepeated
+			? 'focus-within:bg-alineados-gray-100 hover:bg-alineados-gray-50'
+			: ''}"
+		class:bg-alineados-green-50={isDone}
+		class:hover:bg-alineados-green-100={isDone}
+		class:bg-blue-200={isRepeated}
+		class:hover:bg-blue-300={isRepeated}
 	>
 		<button
 			aria-label="Copy"
 			onclick={copyClipboard}
-			class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
+			class="{isDone
+				? 'text-alineados-green-900  hover:text-alineados-green-800 focus:text-alineados-green-800'
+				: isRepeated
+					? 'text-blue-500 hover:text-blue-600 focus:text-blue-600'
+					: 'text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600'} "
 		>
 			<Copy styleTw="size-5" />
 		</button>
 
 		<textarea
-			class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-gray-600 focus:underline focus:outline-none group-hover:underline"
+			class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium {isDone
+				? 'text-alineados-green-900'
+				: isRepeated
+					? 'text-blue-900'
+					: 'text-alineados-gray-600'}  focus:outline-none group-hover:underline"
 			bind:value
 			placeholder="Agregar nuevo item"
 			oninput={autoResize}
+			onfocus={handleOnFocus}
 			onclick={handleTextareaClick}
 			onkeydown={handleKeyPress}
 			rows="1"
@@ -164,49 +187,47 @@
 					</button>
 				</Tooltip>
 			{:else}
-			<Tooltip message="Destacar">
-
-				<button
-					onclick={() => {
-						if (prominentItem) prominentItem();
-					}}
-					class:text-alineados-gray-400={!isStarred}
-					class:text-yellow-500={isStarred}
-					class:hover:text-yellow-500={!isDisabled}
-					aria-label="Star"
-					disabled={isDisabled}
-				>
-					<Star styleTw="size-4" />
-				</button>
-			</Tooltip>
-			<Tooltip message="Diario">
-
-				<button
-					onclick={() => {
-						if (dailyItem) dailyItem();
-					}}
-					class:text-alineados-gray-400={!isDaily}
-					class:text-alineados-green-500={isDaily}
-					class:hover:text-alineados-green-500={!isDisabled}
-					aria-label="Day"
-					disabled={isDisabled}
-				>
-					<Sun styleTw="size-4" />
-				</button>
-			</Tooltip>
-			<Tooltip message="Borrar">
-				<button
-					onclick={() => {
-						if (deleteItem) deleteItem();
-					}}
-					class="text-alineados-gray-400"
-					class:hover:text-red-500={!isDisabled}
-					aria-label="Delete"
-					disabled={isDisabled}
-				>
-					<TrashCan styleTw="size-4" />
-				</button>
-			</Tooltip>
+				<Tooltip message="Destacar">
+					<button
+						onclick={() => {
+							if (prominentItem) prominentItem();
+						}}
+						class:text-alineados-gray-400={!isStarred}
+						class:text-yellow-500={isStarred}
+						class:hover:text-yellow-500={!isDisabled}
+						aria-label="Star"
+						disabled={isDisabled}
+					>
+						<Star styleTw="size-4" />
+					</button>
+				</Tooltip>
+				<Tooltip message="Diario">
+					<button
+						onclick={() => {
+							if (dailyItem) dailyItem();
+						}}
+						class:text-alineados-gray-400={!isDaily}
+						class:text-alineados-green-500={isDaily}
+						class:hover:text-alineados-green-500={!isDisabled}
+						aria-label="Day"
+						disabled={isDisabled}
+					>
+						<Sun styleTw="size-4" />
+					</button>
+				</Tooltip>
+				<Tooltip message="Borrar">
+					<button
+						onclick={() => {
+							if (deleteItem) deleteItem();
+						}}
+						class="text-alineados-gray-400"
+						class:hover:text-red-500={!isDisabled}
+						aria-label="Delete"
+						disabled={isDisabled}
+					>
+						<TrashCan styleTw="size-4" />
+					</button>
+				</Tooltip>
 			{/if}
 		</div>
 	{/if}

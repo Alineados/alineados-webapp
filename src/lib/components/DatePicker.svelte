@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/shared/ui/select/index';
 
-	let { value = $bindable() } = $props();
+	let { value = $bindable(), error = $bindable() } = $props();
 
 	let day = $state('');
 	let month = $state('');
@@ -44,12 +44,19 @@
 			value = undefined;
 		}
 	});
+
+	function handleError() {
+		error = { error: false, message: '' };
+	}
 </script>
 
 <div class="flex">
 	<Select.Root type="single" name="day" bind:value={day}>
 		<Select.Trigger
-			class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+			onclick={handleError}
+			class="w-1/3 {error.error
+				? 'border border-red-500'
+				: 'border-alineados-gray-100'} justify-center  bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 			showIcon={false}
 		>
 			{day || 'DD'}
@@ -71,7 +78,10 @@
 	</Select.Root>
 	<Select.Root type="single" name="month" bind:value={month}>
 		<Select.Trigger
-			class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+			onclick={handleError}
+			class="w-1/3 {error.error
+				? 'border border-red-500'
+				: 'border-alineados-gray-100'} justify-center  bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 			showIcon={false}
 		>
 			{month || 'MM'}
@@ -93,7 +103,10 @@
 	</Select.Root>
 	<Select.Root type="single" name="year" bind:value={year}>
 		<Select.Trigger
-			class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+			onclick={handleError}
+			class="w-1/3 {error.error
+				? 'border border-red-500'
+				: 'border-alineados-gray-100'} justify-center  bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
 			showIcon={false}
 		>
 			{year || 'AAAA'}

@@ -17,15 +17,13 @@
 	$effect(() => {
 		initProblems({ ...data.problems });
 	});
-
-	
 </script>
 
-<div class="sticky top-0 z-10 w-full bg-white">
+<div class="sticky top-0 z-10 w-full bg-white px-4 md:px-8 lg:px-16">
 	<PillarHeader />
 </div>
 
-<div class="flex flex-col gap-12">
+<div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
 	<ProblemCard title="Salud" problems={$healthProblemsFiltered} />
 	<ProblemCard title="Relación" problems={$relationalProblemsFiltered} />
 	<ProblemCard title="Vocación" problems={$vocationalProblemsFiltered} />

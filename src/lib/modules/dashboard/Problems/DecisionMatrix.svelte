@@ -73,8 +73,8 @@
 				<div class="flex items-center justify-center text-xl font-medium text-alineados-gray-700">
 					7
 				</div>
-				<StarSolid styleTw="size-4 text-alineados-green-900" />
 				{#if result.winner}
+				<StarSolid styleTw="size-4 text-alineados-green-900" />
 				{/if}
 			</div>
 		{/each}

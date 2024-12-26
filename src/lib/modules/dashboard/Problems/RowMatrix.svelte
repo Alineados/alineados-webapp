@@ -26,7 +26,7 @@
 	</div>
 
 	<div class="flex w-1/3 flex-col items-center gap-1">
-		<input class="w-full text-center text-3xl outline-none {color}" value="#" />
-		<span class="text-xs font-medium {color}">unidades</span>
+		<!-- <input class="w-full text-center text-3xl outline-none {color}" value="#" /> -->
+		<span class="text-xs font-medium {color}">Unidad de Medida</span>
 	</div>
 </div>
