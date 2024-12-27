@@ -147,6 +147,7 @@
 				options={countriesCode}
 				bind:validation
 				bind:value={register.whatsappNumber}
+				bind:pastPhoneNumber={register.phoneNumber}
 			/>
 		</div>
 	</form>

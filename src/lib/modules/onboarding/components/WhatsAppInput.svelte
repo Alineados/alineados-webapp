@@ -22,12 +22,14 @@
 		label,
 		options = [],
 		value = $bindable(),
+		pastPhoneNumber = $bindable(),
 		validation = $bindable()
 	}: {
 		inputKey: string;
 		label: string;
 		options: { value: string; label: string; flag: string }[];
 		value: PhoneNumber;
+		pastPhoneNumber: PhoneNumber;
 		validation: OnboardingValidation;
 	} = $props();
 
@@ -61,6 +63,16 @@
 	}
 
 	// Update value object when either part changes
+	$effect(() => {
+		if (isChecked) {
+			countryCode = pastPhoneNumber.code;
+			phoneNumber = pastPhoneNumber.number;
+		} else {
+			countryCode = '';
+			phoneNumber = '';
+		}
+	});
+
 	$effect(() => {
 		value = {
 			code: countryCode,

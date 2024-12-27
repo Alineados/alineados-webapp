@@ -116,7 +116,7 @@
 						<Collapsible.Content>
 							{#each pilar.problems as problem}
 								<Select.Item
-									class="bg-white"
+									class="ml-6 bg-white"
 									value={problem.problem_card.id}
 									label={problem.problem_card.problem_name}
 									spellcheck="false"

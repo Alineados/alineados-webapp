@@ -59,7 +59,7 @@
 				<Hand styleTw="size-7 text-alineados-green-900" />
 			</div>
 			<div>
-				<p class="text-sm font-medium text-black">Total de Problemas</p>
+				<p class="text-sm font-medium text-black">Total de Situaciones por Mejorar</p>
 				<p class="-mt-1 text-xl font-semibold text-alineados-gray-800">{totalProblems}</p>
 			</div>
 		</div>
@@ -69,7 +69,7 @@
 	{#snippet content()}
 		<div class="flex w-full items-center justify-between gap-3 p-4">
 			<div class="flex flex-col gap-3">
-				<p class="text-sm font-medium text-black">Pilares con menos problemas</p>
+				<p class="text-sm font-medium text-black">Pilares con menos Situaciones por Mejorar</p>
 				<div class="flex items-center gap-2">
 					<div class="rounded-xl bg-alineados-green-50 p-2">
 						<Hand styleTw="size-7 text-alineados-green-900" />
@@ -94,7 +94,7 @@
 	{#snippet content()}
 		<div class="flex w-full items-center justify-between gap-3 p-4">
 			<div class="flex flex-col gap-3">
-				<p class="text-sm font-medium text-black">Pilares con más problemas</p>
+				<p class="text-sm font-medium text-black">Pilares con más Situaciones por Mejorar</p>
 				<div class="flex items-center gap-2">
 					<div class="rounded-xl bg-alineados-green-50 p-2">
 						<Hand styleTw="size-7 text-alineados-green-900" />

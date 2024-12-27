@@ -2,12 +2,12 @@ import type {
 	OnboardingData,
 	ValidationError,
 	RegisterValidation,
-	EmailValidation,
 	PasswordValidation
 } from '$lib/interfaces/onbarding';
 import { ValidationType } from '$lib/interfaces/onbarding';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
+import { AuthService } from '$lib/services/auth';
 
 export const actions = {
 	register: async (event) => {
@@ -141,6 +141,18 @@ export const actions = {
 		}
 
 		// TODO: API CALL
+		console.log('Enviando còdigo de verificación al correo electrónico: ', dataJSON.register.email);
+
+		// get problems grouped by pillar
+		const authService: AuthService = AuthService.getInstance('');
+
+		// Call the service
+		const result = await authService.sendEmailVerification({
+			userName: dataJSON.register.firstName,
+			email: dataJSON.register.email
+		});
+
+		console.log(result);
 
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/2');
@@ -181,6 +193,9 @@ export const actions = {
 			}
 		}
 
+		// TODO: API CALL
+		console.log('Verificando código de verificación: ', dataJSON.email.code);
+
 		// Return the error if there are any
 		if (invalidFields.length > 0) {
 			return {
@@ -190,8 +205,6 @@ export const actions = {
 				message: 'Check the fields'
 			};
 		}
-
-		// TODO: API CALL
 
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/3');
@@ -243,6 +256,7 @@ export const actions = {
 		}
 
 		// TODO: API CALL
+		console.log('Creando usuario con la contraseña: ', dataJSON.password.password);
 
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/4');
@@ -252,8 +266,6 @@ export const actions = {
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
 		console.log(dataJSON);
-
-		// TODO: Implement validations here
 
 		// Redirect to the login page
 		redirect(307, '/auth/login');
