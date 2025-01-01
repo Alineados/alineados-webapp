@@ -403,7 +403,13 @@
 				<MatrixInformation />
 			</InformationButton>
 		</div>
-		<DecisionMatrix />
+		{#if $matrix.rows.length > 0 && $matrix.cols.length > 0}
+			<DecisionMatrix />
+		{:else}
+			<p class="pl-2 pt-4 text-alineados-gray-400">
+				No hay objetivos ni alternativas para completar la matriz
+			</p>
+		{/if}
 	</div>
 
 	<div class="flex flex-col">
@@ -418,13 +424,19 @@
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
-		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
-				isOnlyText={false}
-				value={$matrix.results
-					? `Alternativa ${$matrix.results.winner + 1} - ${$problemInfo.alternatives[$matrix.results.winner].description}`
-					: 'Complete la matriz primero'}
-			/>
+		<div class=" mt-5 flex flex-col gap-2">
+			{#if $matrix.results && $matrix.results.winner !== -1}
+				<DecisionPill
+					index={$matrix.results.winner + 1}
+					selected={true}
+					isDisabled={true}
+					bind:text={$problemInfo.alternatives[$matrix.results.winner].description}
+				/>
+			{:else}
+				<p class="pl-2 text-alineados-gray-400">
+					Complete la matriz para obtener una decisión recomendada
+				</p>
+			{/if}
 		</div>
 	</div>
 

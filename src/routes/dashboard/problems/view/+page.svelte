@@ -65,7 +65,7 @@
 	$inspect({ selectedProblem });
 </script>
 
-<div class="relative h-full">
+<div class="relative h-full px-4 md:px-8 lg:px-16">
 	<div bind:this={headerRef} class="sticky top-0 z-10 w-full bg-white">
 		<ViewHeader />
 	</div>

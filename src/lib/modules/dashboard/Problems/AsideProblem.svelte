@@ -14,7 +14,7 @@
 	let daysCompleted = $state(0);
 	onMount(() => {
 		if ($problemCard.completed_at) {
-			daysCompleted = calculateDaysBetween($problemCard.completed_at, $problemCard.milestone_date);
+			daysCompleted = calculateDaysBetween($problemCard.created_at, $problemCard.completed_at);
 		}
 	});
 </script>

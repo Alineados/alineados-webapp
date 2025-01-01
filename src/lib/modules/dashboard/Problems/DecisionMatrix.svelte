@@ -62,7 +62,6 @@
 			bind:name={$matrix.rows[i].name}
 			bind:units={$matrix.rows[i].units}
 			bind:key={$matrix.rows[i].key}
-			index={i}
 			color={setColor(i)}
 		/>
 
@@ -85,6 +84,8 @@
 					$matrix = $matrix;
 				}}
 				color={setColor(i)}
+				index={j}
+				bind:cells={$matrix.rows[i].cells}
 				bind:reference_value={$matrix.rows[i].cells[j].reference_value}
 				bind:value={$matrix.rows[i].cells[j].value}
 			/>

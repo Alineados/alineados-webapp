@@ -1,13 +1,19 @@
 <script lang="ts">
+	import type { CellMatrix } from '$lib/interfaces';
+
 	let {
 		color = 'alineados-blue-900',
 		value = $bindable(),
 		reference_value = $bindable(),
+		cells = $bindable(),
+		index,
 		onInput
 	}: {
 		color?: string;
 		value: string;
 		reference_value: string;
+		cells: CellMatrix[];
+		index: number;
 		onInput?: () => void;
 	} = $props();
 
@@ -15,8 +21,19 @@
 
 	function handleOnInput() {
 		let number = parseInt(value);
-		if (number < 0 || number > 3) error = true;
-		else {
+
+		// evaluate if the value already exists on cells
+		if (cells.find((cell, i) => parseInt(cell.value) === number && i !== index)) {
+			error = true;
+			return;
+		}
+
+		error = false;
+
+		if (number < 0 || number > 3) {
+			error = true;
+			return;
+		} else {
 			error = false;
 			if (onInput) onInput();
 		}

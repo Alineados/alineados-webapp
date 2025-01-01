@@ -8,13 +8,11 @@
 		name = $bindable(),
 		key = $bindable(),
 		units = $bindable(),
-		index
 	}: {
 		color?: string;
 		name: string;
 		key: string;
 		units: string;
-		index: number;
 	} = $props();
 
 
@@ -27,6 +25,7 @@
 		</span>
 		<Select.Root type="single" name="importance" bind:value={key}>
 			<Select.Trigger
+			onselect={(e) => console.log('e', e)}
 				class="h-fit w-9/12 rounded-md border border-alineados-gray-200 bg-alineados-gray-50 px-1 py-1 text-left text-xs  text-alineados-gray-900"
 			>
 				{key === '' ? 'Importancia' : key}
@@ -43,6 +42,6 @@
 
 	<div class="flex w-1/3 flex-col items-center gap-1">
 		<input class=" text-center text-xs outline-none {color}" bind:value={units} />
-		<!-- <input class="text-xs font-medium outline-none {color}" bind:value={units} /> -->
+	
 	</div>
 </div>
