@@ -24,3 +24,9 @@ export enum FilterBy {
 	FINISHED = 'finished',
 }
 
+
+export interface Selector {
+	id: number;
+	key: string;
+	value: number;
+}

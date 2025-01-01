@@ -18,24 +18,43 @@
 		prominentItem,
 		changeFinalDecision,
 		markDailytItem,
-		problemCard
+		problemCard,
+		matrix
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Lines from '$lib/icons/Lines.svelte';
 	import Rocket from '$lib/icons/Rocket.svelte';
 	import Check from '$lib/icons/Check.svelte';
 	import Spotlight from '$lib/icons/Spotlight.svelte';
-	import Button from '$lib/shared/ui/button/button.svelte';
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { wrap } from 'comlink';
+	import MatrixInformation from './MatrixInformation.svelte';
 
-	let errorHandling = $state({
+	let errorHandling = writable({
 		alternative_max: false,
 		objective_max: false,
-		message: ''
+		messages: ''
 	});
+	let worker: Worker;
+	let api: any;
 
-	let editActionPlans = $state(false);
+	let actionPlanDivRef = writable<HTMLElement>();
+	function scrollToActionPlan() {
+		$actionPlanDivRef?.scrollIntoView({ behavior: 'smooth' });
+	}
+
+	onMount(() => {
+		if ($problemCard.completed_at === null) scrollToActionPlan();
+
+		// load worker
+		if (window.Worker) {
+			worker = new Worker(new URL('$lib/workers/matrix.ts', import.meta.url), { type: 'module' });
+			api = wrap(worker);
+		}
+	});
 </script>
 
 <div class="mt-9 flex flex-col gap-12">
@@ -43,7 +62,12 @@
 		<div class="flex items-center gap-2">
 			<Bolt styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
-			<Tooltip message="Información sobre el tomador de decisión">
+			<Tooltip
+				messages={[
+					'Solo puede haber 1 persona; no varios.',
+					'Sobre esta persona, gira el contexto - problema - objetivos - alternativas - decisión final y plan de acción'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
@@ -71,7 +95,12 @@
 		<div class="flex items-center gap-2">
 			<User styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
-			<Tooltip message="Información sobre involucrados">
+			<Tooltip
+				messages={[
+					'De 2 a 5 personas o instituciones que se ven involucradas de forma directa o indirecta en cualquiera de las alternativas presentadas.',
+					'Pueden aconsejar al tomador de decisión, pero no toman la decisión final.'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
@@ -79,7 +108,12 @@
 			{#each $problemInfo.involved as involded}
 				<Item
 					deleteItem={() => {
-						removeOrCleanItem(involded.id, ProblemType.involved);
+						if (
+							$problemInfo.involved[$problemInfo.involved.length - 1].id !== involded.id &&
+							involded.description !== ''
+						) {
+							removeOrCleanItem(involded.id, ProblemType.involved);
+						}
 					}}
 					addItem={() => {
 						addProblemItem(involded.id, ProblemType.involved);
@@ -112,7 +146,12 @@
 		<div class="flex items-center gap-2">
 			<Lines styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
-			<Tooltip message="Información sobre contexto">
+			<Tooltip
+				messages={[
+					'De 5-8 causa raíz (acción, pensamiento o palabra) que ayuden a entender las circunstancias que está pasando y están originando el problema.',
+					'Se recomienda oraciones cortas entre 3-8 palabras por cada contexto con el fin de no tener párrafos extensos.'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
@@ -120,7 +159,12 @@
 			{#each $problemInfo.contexts as context}
 				<Item
 					deleteItem={() => {
-						removeOrCleanItem(context.id, ProblemType.contexts);
+						if (
+							$problemInfo.contexts[$problemInfo.contexts.length - 1].id !== context.id &&
+							context.description !== ''
+						) {
+							removeOrCleanItem(context.id, ProblemType.contexts);
+						}
 					}}
 					addItem={() => {
 						addProblemItem(context.id, ProblemType.contexts);
@@ -153,7 +197,13 @@
 		<div class="flex items-center gap-2">
 			<CircleCross styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
-			<Tooltip message="Información sobre problema">
+			<Tooltip
+				messages={[
+					'Escribir 1 problema únicamente; no varios',
+					'Debe escribirse en formato de pregunta: ¿….?',
+					'Verificar que el problema no este como parte de los objetivos ni de las alternativas'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
@@ -183,28 +233,50 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
 			<!-- <p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.objective_max}>
 				{#if errorHandling.objective_max}
-					{errorHandling.message}
+					{errorHandling.messages}
 				{:else}
 					*Máximo de 5 objetivos
 				{/if}
 			</p> -->
-			<Tooltip message="Información sobre objetivos">
+			<Tooltip
+				messages={[
+					'De 2-5 objetivos que indiquen los INTERESES del tomador de decisión',
+					'Cada objetivo escribirlo con 2-3 palabras ',
+					'La primera palabra debe ser un verbo infinitivo (ar-er-ir)',
+					'Verificar que el objetivo no este como parte del problema ni de las alternativas'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.objectives as objective}
 				<Item
-					deleteItem={() => {
+					deleteItem={async () => {
+						// if (
+						// 	$problemInfo.objectives[$problemInfo.objectives.length - 1].id !== objective.id &&
+						// 	objective.description !== ''
+						// ) {
+						// }
 						removeOrCleanItem(objective.id, ProblemType.objectives);
-						errorHandling.objective_max = false;
+						$errorHandling.objective_max = false;
+
+						$matrix = await api.deleteObjective(objective.id, $matrix);
+						$matrix = $matrix;
 					}}
-					addItem={() => {
+					addItem={async () => {
 						if ($problemInfo.objectives.length === 5) {
-							errorHandling.objective_max = true;
-							errorHandling.message = '*No puedes agregar más de 5 objetivos';
+							$errorHandling.objective_max = true;
+							$errorHandling.messages = '*No puedes agregar más de 5 objetivos';
 						} else {
 							addProblemItem(objective.id, ProblemType.objectives);
+
+							$matrix = await api.addObjective(
+								$problemInfo.objectives,
+								$problemInfo.alternatives,
+								$matrix
+							);
+							$matrix = $matrix;
 						}
 					}}
 					prominentItem={() => {
@@ -213,7 +285,7 @@
 					dailyItem={() => {
 						markDailytItem(objective.id, ProblemType.objectives);
 					}}
-					onInput={() => {
+					onInput={async () => {
 						if ($problemInfo.objectives.length !== 5) {
 							if ($problemInfo.objectives[$problemInfo.objectives.length - 1].description !== '') {
 								addProblemItem(objective.id, ProblemType.objectives);
@@ -221,8 +293,18 @@
 
 							if (objective.description === '') {
 								removeOrCleanItem(objective.id, ProblemType.objectives);
+
+								$matrix = await api.deleteObjective(objective.id, $matrix);
+								$matrix = $matrix;
 							}
 						}
+
+						$matrix = await api.addObjective(
+							$problemInfo.objectives,
+							$problemInfo.alternatives,
+							$matrix
+						);
+						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
 					bind:isDaily={objective.daily}
@@ -237,31 +319,42 @@
 		<div class="flex items-center gap-2">
 			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
-			<!-- <p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.alternative_max}>
-				{#if errorHandling.alternative_max}
-					{errorHandling.message}
-				{:else}
-					*Máximo de 3 alternativas
-				{/if}
-			</p> -->
-			<Tooltip message="Información sobre alternativas">
+			<Tooltip
+				messages={[
+					'De 2-3 alternativas que indiquen las OPCIONES/SOLUCIONES del tomador de decisión. Estas deben competir; no complementarse.',
+					'Cada alterativa escribirla con 2-3 palabras',
+					'NO debe ir escrito en verbo infinitivo (ar-er-ir)',
+					'Verificar que la alternativa no este como parte del problema ni de los objetivos',
+					'Cada alternativa se debe diferenciar una de la otra….. no deben ser complementarias… para eso…. Tengan claro que acción hará cada alternativa sobre el objetivo'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.alternatives as alternative}
+			{#each $problemInfo.alternatives as alternative, i}
 				<Item
-					deleteItem={() => {
+					deleteItem={async () => {
 						removeOrCleanItem(alternative.id, ProblemType.alternatives);
-						errorHandling.alternative_max = false;
+						$errorHandling.alternative_max = false;
+
+						$matrix = await api.deleteAlternative(alternative.id, $matrix);
+						$matrix = $matrix;
 					}}
-					addItem={() => {
+					addItem={async () => {
 						if ($problemInfo.alternatives.length === 3) {
-							errorHandling.alternative_max = true;
-							errorHandling.message = '*No puedes agregar más de 3 alternativas';
+							$errorHandling.alternative_max = true;
+							$errorHandling.messages = '*No puedes agregar más de 3 alternativas';
 						} else {
 							addProblemItem(alternative.id, ProblemType.alternatives);
-							errorHandling.alternative_max = false;
+							$errorHandling.alternative_max = false;
+
+							$matrix = await api.addAlternative(
+								$problemInfo.objectives,
+								$problemInfo.alternatives,
+								$matrix
+							);
+							$matrix = $matrix;
 						}
 					}}
 					prominentItem={() => {
@@ -270,21 +363,33 @@
 					dailyItem={() => {
 						markDailytItem(alternative.id, ProblemType.alternatives);
 					}}
-					onInput={() => {
+					onInput={async () => {
 						if ($problemInfo.alternatives.length !== 3) {
 							if (
 								$problemInfo.alternatives[$problemInfo.alternatives.length - 1].description !== ''
 							)
 								addProblemItem(alternative.id, ProblemType.alternatives);
 
-							if (alternative.description === '')
+							if (alternative.description === '') {
 								removeOrCleanItem(alternative.id, ProblemType.alternatives);
+
+								$matrix = await api.deleteAlternative(alternative.id, $matrix);
+								$matrix = $matrix;
+							}
 						}
+
+						$matrix = await api.addAlternative(
+							$problemInfo.objectives,
+							$problemInfo.alternatives,
+							$matrix
+						);
+
+						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
-					bind:isDaily={alternative.daily}
-					bind:isStarred={alternative.prominent}
-					bind:value={alternative.description}
+					bind:isDaily={$problemInfo.alternatives[i].daily}
+					bind:isStarred={$problemInfo.alternatives[i].prominent}
+					bind:value={$problemInfo.alternatives[i].description}
 				/>
 			{/each}
 		</div>
@@ -294,10 +399,9 @@
 		<div class="flex items-center gap-2">
 			<Cube styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Matriz de Decisión</h2>
-			<InformationButton
-				tittle="Aquí deberá de ir el título"
-				description="Aquí deberá ir la explicación de la matríz"
-			/>
+			<InformationButton tittle="Pasos que debe realizar">
+				<MatrixInformation />
+			</InformationButton>
 		</div>
 		<DecisionMatrix />
 	</div>
@@ -306,14 +410,20 @@
 		<div class="flex items-center gap-2">
 			<Spotlight styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Recomendada</h2>
-			<Tooltip message="Información sobre la decisión recomendada">
+			<Tooltip
+				messages={[
+					'Decisión automática recomendada por el Alineados acorde el resultado de los puntos.'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			<Item
 				isOnlyText={false}
-				value="Lorem ipsum dolor sit amet consectetur. Pharetra tincidunt lacus magna egestas etiam et sagittis non. "
+				value={$matrix.results
+					? `Alternativa ${$matrix.results.winner + 1} - ${$problemInfo.alternatives[$matrix.results.winner].description}`
+					: 'Complete la matriz primero'}
 			/>
 		</div>
 	</div>
@@ -322,7 +432,12 @@
 		<div class="flex items-center gap-2">
 			<Check styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Mi Decisión Final</h2>
-			<Tooltip message="Información sobre la decisión final">
+			<Tooltip
+				messages={[
+					'Decisión final que el usuario elije acorde su criterio personal; no tiene que ser necesariamente la que Alineados le recomienda',
+					'Solo puede haber 1 decisión.'
+				]}
+			>
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
@@ -349,21 +464,32 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col">
+	<div class="flex flex-col" bind:this={$actionPlanDivRef} id="actionPlanDiv">
 		<div class="flex items-center justify-between">
 			<div class="flex flex-row items-center justify-center gap-2">
 				<Rocket styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
-				<Tooltip message="Información sobre plan de acción">
+				<Tooltip
+					messages={[
+						'El compromiso a la acción debe ser en base a la decisión final; no de todas las alternativas',
+						'De 4-6 planes de acción que ayuden a ejecutar la decisión final',
+						'Se recomienda oraciones cortas entre 3-8 palabras por cada contexto con el fin de no tener párrafos extensos'
+					]}
+				>
 					<InformationIcon styleTw="size-4" />
 				</Tooltip>
 			</div>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.action_plan as action}
+			{#each $problemInfo.action_plan as action, i}
 				<Item
 					deleteItem={() => {
-						removeOrCleanItem(action.id, ProblemType.action_plan);
+						if (
+							$problemInfo.action_plan[$problemInfo.action_plan.length - 1].id !== action.id &&
+							action.description !== ''
+						) {
+							removeOrCleanItem(action.id, ProblemType.action_plan);
+						}
 					}}
 					addItem={() => {
 						addProblemItem(action.id, ProblemType.action_plan);
@@ -384,11 +510,11 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
-					bind:isDaily={action.daily}
-					bind:isStarred={action.prominent}
-					bind:value={action.description}
-					bind:isDone={action.done}
-					bind:isRepeated={action.repeatable}
+					bind:isDaily={$problemInfo.action_plan[i].daily}
+					bind:isStarred={$problemInfo.action_plan[i].prominent}
+					bind:value={$problemInfo.action_plan[i].description}
+					bind:isDone={$problemInfo.action_plan[i].done}
+					bind:isRepeated={$problemInfo.action_plan[i].repeatable}
 				/>
 			{/each}
 		</div>
