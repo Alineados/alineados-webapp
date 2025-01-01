@@ -1,12 +1,11 @@
-import type { Matrix, ProblemInfo } from '$lib/interfaces';
+import type { ProblemInfo } from '$lib/interfaces';
 import { ProblemType } from '$lib/interfaces';
 import { derived, writable } from 'svelte/store';
-import { emptyGeneric, generateNewMatrixRow } from '../generic';
+import { emptyGeneric } from '../generic';
 
 // Problem info store
 export const pid = writable<string>(''); // Problem info ID
 export const problemInfo = writable<ProblemInfo>();
-export const matrix = writable<Matrix>();
 export const problemReadyToComplete = writable<boolean>(false);
 
 // function to check if the problem is ready to be completed
@@ -24,7 +23,7 @@ export const changeReportProblem = (report: number) => {
 	reportProblem.update((r) => {
 		if (r === report) return 1;
 		else return report;
-	})
+	});
 };
 
 // Function to initialize the store with the problem info
@@ -42,28 +41,6 @@ export const initProblemInfo = (info: ProblemInfo) => {
 		if (info.action_plan.length === 0) info.action_plan = [{ ...emptyGeneric() }];
 
 		problemInfo.set(info);
-	}
-};
-
-// Function to initialize the store with the matrix
-export const initMatrix = (matrixData: Matrix) => {
-	if (matrixData) {
-		// evaluate if the matrix is populated
-		if (matrixData.rows.length === 0 && matrixData.results === null) {
-
-			// rows of objectives
-			matrixData.rows = [
-				{ ...generateNewMatrixRow() },
-				{ ...generateNewMatrixRow() },
-				{ ...generateNewMatrixRow() }
-			];
-
-			matrixData.results = { ...generateNewMatrixRow() };
-		}
-
-		matrix.set(matrixData);
-
-		console.log('Matrix', matrixData);
 	}
 };
 
@@ -116,6 +93,8 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 		problemInfo.update((info) => {
 			const index = info.objectives.findIndex((inv) => inv.id === previous_id);
 			info.objectives.splice(index + 1, 0, { ...emptyGeneric() });
+
+
 			return info;
 		});
 	}

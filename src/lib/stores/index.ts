@@ -29,18 +29,24 @@ export {
 	prominentItem,
 	changeFinalDecision,
 	markDailytItem,
-	initMatrix,
 	markOnlyDoneOrRepeatedItems,
 	changeCompleteStatus,
 	changeReportProblem,
 	reportProblem,
 	problemReadyToComplete,
-	matrix,
 	autosavingProblemInfo,
 	pid,
 	problemInfo,
 	problemInfoJSON
 } from './problem/info';
 
+export {
+	initMatrix,
+	getSelectorList,
+	autosavingProblemMatrix,
+	matrixJSON,
+	matrix
+} from './problem/matrix';
+
 // Generics
-export { emptyGeneric, generateNewMatrixCell, generateNewMatrixRow } from './generic';
+export { emptyGeneric, listSelector } from './generic';

@@ -81,8 +81,6 @@
 	}
 
 	function handleOnFocus(event: FocusEvent) {
-		console.log('handleOnFocus', event);
-
 		if (onFocus) onFocus();
 	}
 </script>

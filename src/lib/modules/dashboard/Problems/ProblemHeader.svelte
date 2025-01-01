@@ -11,7 +11,9 @@
 		problemCardJSON,
 		problemInfoJSON,
 		problemCard,
-		reportProblem
+		reportProblem,
+		matrixJSON,
+		autosavingProblemMatrix
 	} from '$lib/stores';
 
 	import Cloud from '$lib/icons/Cloud.svelte';
@@ -27,6 +29,8 @@
 		if ($autosavingProblemCard) socket.push('autosave_pc', $problemCardJSON as string);
 
 		if ($autosavingProblemInfo) socket.push('autosave_pi', $problemInfoJSON as string);
+	
+		if ($autosavingProblemMatrix) socket.push('autosave_pm', $matrixJSON as string);
 	});
 
 	onMount(() => {
@@ -62,7 +66,7 @@
 					<UnPadlock class="size-5" />
 				{/if}
 				<StatusPill status={$problemCard.active} bind:completed={$problemCard.completed_at} />
-				{#if $autosavingProblemCard || $autosavingProblemInfo}
+				{#if $autosavingProblemCard || $autosavingProblemInfo || $autosavingProblemMatrix}
 					<div class="h-6 w-6 animate-spin text-white">
 						<Loading />
 					</div>

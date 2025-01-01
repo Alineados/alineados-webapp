@@ -2,18 +2,13 @@
 	import Item from '$lib/components/Item.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
 	import {
-		addProblemItem,
 		problemInfo,
-		removeOrCleanItem,
 		markOnlyDoneOrRepeatedItems,
 		problemCard,
 		changeCompleteStatus,
 		isCompleteProblem,
 
-		prominentItem,
-
-		markDailytItem
-
+		changeReportProblem
 
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
@@ -25,62 +20,20 @@
 		$problemCard.completed_at ? { alternative: 1 } : { alternative: 0 }
 	);
 
-	let changeToEdit = $derived.by(() => {
-		if (completed.alternative === 2) return false;
-		return true;
-	});
+
 </script>
 
 <div class="flex flex-col gap-12">
 	<div class="flex flex-col">
-		<div class="mr-10 flex items-center justify-between gap-2">
-			<div class="flex flex-row items-center">
-				<Rocket styleTw="size-6 text-alineados-gray-900" />
-				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
-			</div>
-			{#if !changeToEdit}
-				<button
-					class="focus group flex items-center rounded-lg bg-alineados-blue-900 px-2 py-1 text-xs text-alineados-blue-50 transition duration-300 ease-in-out hover:shadow-lg"
-					aria-label="Rendir Cuentas nuevamente"
-					onclick={() => {
-						completed = { alternative: 3 };
-						changeCompleteStatus(false);
-					}}
-				>
-					Rendir cuentas
-				</button>
-			{/if}
+		<div class="mr-10 flex items-center  gap-2">
+			<Rocket styleTw="size-6 text-alineados-gray-900" />
+
+			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#if changeToEdit}
-				{#each $problemInfo.action_plan as action}
-					{#if action.description !== ''}
-						<Item
-							doneItem={() => {
-								markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
-								completed = { alternative: 3 };
-								changeCompleteStatus(false);
-							}}
-							repeatItem={() => {
-								markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
-							}}
-							isOnlyText
-							isAccountability={changeToEdit}
-							bind:isRepeated={action.repeatable}
-							bind:isDone={action.done}
-							bind:value={action.description}
-						/>
-					{/if}
-				{/each}
-			{:else}
-				{#each $problemInfo.action_plan as action}
+			{#each $problemInfo.action_plan as action}
+				{#if action.description !== ''}
 					<Item
-						deleteItem={() => {
-							removeOrCleanItem(action.id, ProblemType.action_plan);
-						}}
-						addItem={() => {
-							addProblemItem(action.id, ProblemType.action_plan);
-						}}
 						doneItem={() => {
 							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, true);
 							completed = { alternative: 3 };
@@ -89,22 +42,14 @@
 						repeatItem={() => {
 							markOnlyDoneOrRepeatedItems(action.id, ProblemType.action_plan, false);
 						}}
-						prominentItem={() => {
-							prominentItem(action.id, ProblemType.action_plan);
-						}}
-						dailyItem={() => {
-							markDailytItem(action.id, ProblemType.action_plan);
-						}}
 						isOnlyText
-						isAccountability={changeToEdit}
-						bind:isDaily={action.daily}
-						bind:isStarred={action.prominent}
+						isAccountability={true}
 						bind:isRepeated={action.repeatable}
 						bind:isDone={action.done}
 						bind:value={action.description}
 					/>
-				{/each}
-			{/if}
+				{/if}
+			{/each}
 		</div>
 	</div>
 
@@ -125,11 +70,15 @@
 					isDisabled={true}
 				/>
 				<DecisionPill
-					text="Alternativa 2 - No resolví el problema. Editar plan de acción"
+					text="Alternativa 2 - No resolví el problema. Ir a editar planes de acción."
 					changeSelected={() => {
 						completed = { alternative: 2 };
 						changeCompleteStatus(false);
 						isCompleteProblem(false);
+
+						setTimeout(() => {
+							changeReportProblem(1);
+						}, 500);
 					}}
 					selected={completed.alternative === 2}
 					isDisabled={true}

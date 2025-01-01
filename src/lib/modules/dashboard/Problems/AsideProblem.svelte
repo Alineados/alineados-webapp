@@ -19,7 +19,7 @@
 	});
 </script>
 
-<div class="flex w-2/3 flex-col items-center justify-center gap-3">
+<div class="flex w-2/3 flex-col  gap-3">
 	<div class="flex w-full justify-between px-2">
 		<div class="flex w-full items-center gap-1">
 			<Image styleTw="size-5" />
@@ -43,7 +43,7 @@
 						color={calculateDaysLeft($problemCard.milestone_date) <= 10
 							? 'red-500'
 							: 'alineados-gray-400'}
-						textSize="sm"
+						textSize="xs"
 						extendedText={!(calculateDaysLeft($problemCard.milestone_date) <= 10)}
 					/>
 				{/if}

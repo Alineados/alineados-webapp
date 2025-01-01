@@ -3,19 +3,17 @@
 
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
 
-	let { tittle, description } = $props();
+	let { tittle, children } = $props();
 </script>
 
 <Dialog.Root>
 	<Dialog.Trigger>
-		<InformationIcon styleTw="size-4" />
+		<InformationIcon styleTw="size-6" />
 	</Dialog.Trigger>
 	<Dialog.Content class="bg-white">
 		<Dialog.Header>
 			<Dialog.Title>{tittle}</Dialog.Title>
-			<Dialog.Description>
-				{description}
-			</Dialog.Description>
+		  {@render children()}
 		</Dialog.Header>
 		<Dialog.Footer>
 			<Dialog.Close

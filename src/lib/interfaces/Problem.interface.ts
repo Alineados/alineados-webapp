@@ -44,26 +44,41 @@ export interface ProblemInfo {
 
 export interface Matrix {
 	id: string; // primitive.ObjectID in Go
-	pid : string; // problem id
+	pid: string; // problem id
 	pfd: string; // problem info id
 	uid: string; // user id
 	rows: MatrixRow[];
-	results: MatrixRow | null;
+	cols: MatrixColl[];
+	results: MatrixResult | null;
+	created_at: string;
+	updated_at: string | null;
+}
+
+export interface MatrixResult {
+	id: string; // id
+	name: string;
+	results: number[];
+	winner: number;
 }
 
 export interface MatrixRow {
-	id: string; // uuid
-	objective: string;
+	oid: string; // objective id
+	name: string;
 	percentage: number;
+	key: string;
 	units: string;
 	cells: CellMatrix[];
 }
 
+export interface MatrixColl {
+	aid: string; // alternative id
+	name: string;
+}
+
 export interface CellMatrix {
-	id: string; // uuid
+	oid: string; // objective id
 	value: string;
 	reference_value: string;
-	winner: boolean;
 }
 
 export enum ProblemType {

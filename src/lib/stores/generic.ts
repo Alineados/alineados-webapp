@@ -1,4 +1,4 @@
-import type { CellMatrix, Generic, MatrixRow } from '$lib/interfaces';
+import type { Generic, Selector } from '$lib/interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 export const emptyGeneric = (): Generic => {
@@ -14,25 +14,30 @@ export const emptyGeneric = (): Generic => {
 	};
 };
 
-export const generateNewMatrixRow = (): MatrixRow => {
-	return {
-		id: uuidv4(),
-		objective: '',
-		percentage: 0,
-		units: '#',
-		cells: [
-			{ ...generateNewMatrixCell() },
-			{ ...generateNewMatrixCell() },
-			{ ...generateNewMatrixCell() }
-		]
-	};
-};
-
-export const generateNewMatrixCell = (): CellMatrix => {
-	return {
-		id: uuidv4(),
-		value: 0,
-		reference_value: '##',
-		winner: false
-	};
-};
+export const listSelector: Selector[] = [
+	{
+		id: 1,
+		key: 'Muy Baja',
+		value: 0
+	},
+	{
+		id: 2,
+		key: 'Baja',
+		value: 0
+	},
+	{
+		id: 3,
+		key: 'Media',
+		value: 0
+	},
+	{
+		id: 4,
+		key: 'Alta',
+		value: 0
+	},
+	{
+		id: 5,
+		key: 'Muy Alta',
+		value: 0
+	}
+];
