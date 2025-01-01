@@ -30,6 +30,9 @@ export const calculateDaysBetween = (date1: string, date2: string) => {
 	const d1 = new Date(date1);
 	const d2 = new Date(date2);
 
+	console.log('d1', d1);
+	console.log('d2', d2);
+
 	const diffTime = d2.getTime() - d1.getTime();
 	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 

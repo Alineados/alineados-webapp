@@ -44,8 +44,9 @@ const api = {
 			}
 		}
 
-		// get the index of the max value in the array
-		results.winner = results.results.indexOf(Math.max(...results.results));
+		// if all values are 0, set -1 to the winner
+		if (results.results.every((value) => value === 0)) results.winner = -1;
+		else results.winner = results.results.indexOf(Math.max(...results.results)); // get the index of the max value in the array
 
 		matrix.results = results;
 
@@ -92,7 +93,8 @@ const api = {
 			row.cells = row.cells.filter((cell) => cell.oid !== id);
 		});
 
-		oldMatrix = this.calculateResults(oldMatrix);
+		if (oldMatrix.cols.length === 0) oldMatrix.results = null;
+		else oldMatrix = this.calculateResults(oldMatrix);
 
 		return oldMatrix;
 	},
@@ -119,7 +121,8 @@ const api = {
 	deleteObjective(id: string, oldMatrix: Matrix): Matrix {
 		oldMatrix.rows = oldMatrix.rows.filter((row) => row.oid !== id);
 
-		oldMatrix = this.calculateResults(oldMatrix);
+		if (oldMatrix.rows.length === 0) oldMatrix.results = null;
+		else oldMatrix = this.calculateResults(oldMatrix);
 
 		return oldMatrix;
 	},
