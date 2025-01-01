@@ -111,6 +111,15 @@
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
+							<Sidebar.MenuSubItem>
+								<Sidebar.MenuSubButton>
+									{#snippet child({ props })}
+										<a href={'#'} {...props}>
+											<span>Situaciones por Mejorar</span>
+										</a>
+									{/snippet}
+								</Sidebar.MenuSubButton>
+							</Sidebar.MenuSubItem>
 						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
@@ -123,16 +132,7 @@
 							{/snippet}
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
-					<Sidebar.MenuItem>
-						<Sidebar.MenuButton>
-							{#snippet child({ props })}
-								<a href={'/dashboard/problems'} {...props}>
-									<CircleFadingArrowUp />
-									<span>Situaciones por mejorar</span>
-								</a>
-							{/snippet}
-						</Sidebar.MenuButton>
-					</Sidebar.MenuItem>
+
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}

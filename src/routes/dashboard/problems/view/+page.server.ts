@@ -8,9 +8,11 @@ export const load: PageServerLoad = async () => {
 	const relational_id = '2';
 	const vocational_id = '3';
 	const spiritual_id = '4';
-	// get problems grouped by pillar
-	let problemService: ProblemService = ProblemService.getInstance('');
 
+	// get problems grouped by pillar
+	const problemService: ProblemService = ProblemService.getInstance('');
+
+	// Call the service
 	const result = await problemService.getAllProblems(
 		user_id,
 		health_id,
