@@ -11,7 +11,7 @@ export class ProblemService {
 		this._token = token;
 	}
 
-	public static getInstance(token: string): ProblemService {
+	static getInstance(token: string): ProblemService {
 		if (!ProblemService.instance) {
 			ProblemService.instance = new ProblemService(token);
 		}
@@ -20,12 +20,12 @@ export class ProblemService {
 		return ProblemService.instance;
 	}
 
-	public updateToken(token: string): void {
+	updateToken(token: string): void {
 		this._token = token;
 	}
 
 	// Methods
-	public async getGroupedProblems(
+	async getGroupedProblems(
 		uid: string,
 		health_id: string,
 		relational_id: string,
@@ -38,28 +38,28 @@ export class ProblemService {
 		return response;
 	}
 
-	public async getProblemInfo(pid: string): Promise<Response> {
+	async getProblemInfo(pid: string): Promise<Response> {
 		const url = `${this._url}/get-info?pid=${pid}`;
 		const response: Response = await request(url, 'GET', null, this._token);
 
 		return response;
 	}
 
-	public async createProblemInfo(body: any): Promise<Response> {
+	async createProblemInfo(body: any): Promise<Response> {
 		const url = `${this._url}/create`;
 		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
 
-	public async deleteProblemInfo(pid: string): Promise<Response> {
+	async deleteProblemInfo(pid: string): Promise<Response> {
 		const url = `${this._url}/delete?pid=${pid}`;
 		const response: Response = await request(url, 'DELETE', null, this._token);
 
 		return response;
 	}
 
-	public async getAllProblems(
+	async getAllProblems(
 		uid: string,
 		health_id: string,
 		relational_id: string,
@@ -70,5 +70,27 @@ export class ProblemService {
 		const response: Response = await request(url, 'GET', null, this._token);
 
 		return response;
+	}
+
+	async uploadImage(uid: string, pid: string, file: File) {
+		const form = new FormData();
+		form.append('uid', uid);
+		form.append('pid', pid);
+		form.append('file', file);
+
+		const options = {
+			method: 'POST',
+			headers: {
+				'Access-Control-Allow-Origin': '*',
+				Authorization: `Bearer ${this._token}`
+			},
+			body: form
+		};
+
+		const response = await fetch(`${this._url}/upload-image`, options);
+
+		const data = await response.json();
+
+		return data;
 	}
 }

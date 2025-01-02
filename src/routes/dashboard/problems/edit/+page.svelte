@@ -62,17 +62,14 @@
 {#if !$problemCard}
 	<p>Loading...</p>
 {:else}
-	<div bind:this={headerRef} class="sticky top-0 z-10 bg-white">
+	<div bind:this={headerRef} class="sticky top-0 z-20 bg-white">
 		<ProblemHeader bind:title={$problemCard.problem_name} />
 	</div>
 
 	<div class="flex w-full items-start">
-		<div class=" flex w-8/12 flex-col">
+		<div class=" flex w-8/12 flex-col ">
 			{#if $reportProblem !== 2}
-				<div
-					bind:this={problemsFilterRef}
-					class="sticky z-10 border-b border-alineados-gray-100 bg-white"
-				>
+				<div bind:this={problemsFilterRef} class="sticky z-20 bg-white">
 					<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
 				</div>
 			{/if}

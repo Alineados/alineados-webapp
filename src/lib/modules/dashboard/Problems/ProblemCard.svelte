@@ -107,6 +107,7 @@
 		{/if}
 		{#each problems as problem, i}
 			<CustomCard
+				padding="p-4"
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
 				isNew={problem.is_new}
 				state={calculateDaysLeft(problem.milestone_date) <= 10 && !problem.completed_at

@@ -5,12 +5,13 @@
 	let {
 		messages,
 		message,
+		open = $bindable(false),
 		children
-	}: { messages?: string[]; message?: string; children: Snippet } = $props();
+	}: { messages?: string[]; message?: string; open: boolean; children: Snippet } = $props();
 </script>
 
 <Tooltip.Provider>
-	<Tooltip.Root delayDuration={100}>
+	<Tooltip.Root delayDuration={100} bind:open>
 		<Tooltip.Trigger>
 			{@render children?.()}
 		</Tooltip.Trigger>
@@ -18,8 +19,8 @@
 			{#if message}
 				<p class="text-xs text-alineados-blue-900">{message}</p>
 			{:else if messages}
-				{#each messages as msg}
-					<p class="text-xs text-alineados-blue-900">{msg}</p>
+				{#each messages as msg,i}
+					<p class="text-xs text-alineados-blue-900 {i===0 ? 'font-semibold': ''}">{msg}</p>
 				{/each}
 			{/if}
 		</Tooltip.Content>

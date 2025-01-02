@@ -1,13 +1,89 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+
 	let { styleTw = 'size-6' } = $props();
 
 	let fileInput: HTMLInputElement;
+	let files: FileList | null = $state(null);
+	let formHtml: HTMLFormElement;
+
+	let error = $state({
+		show: false,
+		message: ''
+	});
 
 	function triggerFileInput() {
 		fileInput.click();
 	}
+
+	function handleOnChange(e: any) {
+		e.stopPropagation();
+
+		if (files && formHtml) formHtml.requestSubmit();
+	}
 </script>
 
+<form
+	class="hidden"
+	bind:this={formHtml}
+	method="POST"
+	action="?/upload"
+	enctype="multipart/form-data"
+	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+		return async ({ result, update }) => {
+			
+			console.log('result', result);
+
+			if (result.type === 'failure' && result.status === 400) {
+				error = {
+					show: true,
+					message:
+						typeof result.data?.message === 'string' ? result.data.message : 'Ocurrio un error'
+				};
+			} else if (result.type === 'failure' && result.status === 500) {
+				error = {
+					show: true,
+					message: 'Ocurrio un error'
+				};
+			} else if (result.type === 'success') {
+				// TODO: Add the path to the json
+				error = {
+					show: false,
+					message: ''
+				};
+
+				// update the files
+				files = null;
+			}
+		};
+	}}
+>
+	<input
+		bind:files
+		bind:this={fileInput}
+		onchange={handleOnChange}
+		name="fileToUpload"
+		class="hidden"
+		id="file"
+		type="file"
+		accept="image/*"
+	/>
+</form>
+
+<!-- {#if files}
+	<div class="flex flex-row w-2/3 justify-end items-center gap-2">
+		<p class="text-xs text-alineados-gray-600">
+			Nombre:
+			{files[0].name}
+		</p>
+		<button
+			class="rounded-lg text-xs bg-alineados-blue-900 px-2 py-1 text-white transition duration-300 ease-in-out hover:shadow-lg"
+		>
+			Subir
+		</button>
+	</div>
+{:else}
+{/if} -->
 <button aria-label="Upload" class="pt-3" onclick={triggerFileInput}>
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -24,12 +100,3 @@
 		/>
 	</svg>
 </button>
-
-<input
-	bind:this={fileInput}
-	name="fileToUpload"
-	class="hidden"
-	id="file"
-	type="file"
-	accept="image/*"
-/>

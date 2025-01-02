@@ -25,7 +25,7 @@ export class SocketService {
 			});
 
 		channel.on('autosave_success_problem', (resp) => {
-			console.log('Autosave success', resp);
+			// console.log('Autosave success', resp);
 		});
 
 		return channel;
