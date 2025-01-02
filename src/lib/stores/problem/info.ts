@@ -117,7 +117,7 @@ export const addProblemItem = (previous_id: string, problemType: ProblemType) =>
 };
 
 // Function to remove elements, if there is only one element, it will only clean the description value
-export const removeOrCleanItem = (id: string, problemType: ProblemType) => {
+export const removeOrCleanItem = (id: string, problemType: ProblemType, index?: number) => {
 	if (problemType === ProblemType.decision_taken) {
 		problemInfo.update((info) => {
 			info.decision_taken!.description = '';

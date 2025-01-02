@@ -24,7 +24,7 @@
 	class={`group inline-flex items-center rounded-3xl border px-2 py-1 transition-transform duration-300 ease-in-out hover:border-alineados-green-900 hover:bg-alineados-green-900 hover:text-white ${
 		selected
 			? 'border-alineados-green-900 bg-alineados-green-900 text-alineados-gray-50'
-			: 'border-[#E1E1E1] text-alineados-gray-800'
+			: 'border-alineados-blue-100 text-alineados-gray-800'
 	} transition-colors duration-300 ease-in-out`}
 	onclick={selectItem}
 >

@@ -36,8 +36,8 @@
 	let errorHandling = writable({
 		alternative_max: false,
 		objective_max: false,
-		messages: ''
 	});
+
 	let worker: Worker;
 	let api: any;
 
@@ -63,6 +63,7 @@
 			<Bolt styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Tomador de decisión</h2>
 			<Tooltip
+				open={false}
 				messages={[
 					'Solo puede haber 1 persona; no varios.',
 					'Sobre esta persona, gira el contexto - problema - objetivos - alternativas - decisión final y plan de acción'
@@ -96,6 +97,7 @@
 			<User styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
 			<Tooltip
+			open={false}
 				messages={[
 					'De 2 a 5 personas o instituciones que se ven involucradas de forma directa o indirecta en cualquiera de las alternativas presentadas.',
 					'Pueden aconsejar al tomador de decisión, pero no toman la decisión final.'
@@ -147,6 +149,7 @@
 			<Lines styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 			<Tooltip
+			open={false}
 				messages={[
 					'De 5-8 causa raíz (acción, pensamiento o palabra) que ayuden a entender las circunstancias que está pasando y están originando el problema.',
 					'Se recomienda oraciones cortas entre 3-8 palabras por cada contexto con el fin de no tener párrafos extensos.'
@@ -198,6 +201,7 @@
 			<CircleCross styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 			<Tooltip
+			open={false}
 				messages={[
 					'Escribir 1 problema únicamente; no varios',
 					'Debe escribirse en formato de pregunta: ¿….?',
@@ -231,14 +235,8 @@
 		<div class="flex items-center gap-2">
 			<Trophy styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
-			<!-- <p class="text-xs text-alineados-gray-400" class:text-red-500={errorHandling.objective_max}>
-				{#if errorHandling.objective_max}
-					{errorHandling.messages}
-				{:else}
-					*Máximo de 5 objetivos
-				{/if}
-			</p> -->
 			<Tooltip
+			bind:open={$errorHandling.objective_max}
 				messages={[
 					'De 2-5 objetivos que indiquen los INTERESES del tomador de decisión',
 					'Cada objetivo escribirlo con 2-3 palabras ',
@@ -253,11 +251,6 @@
 			{#each $problemInfo.objectives as objective}
 				<Item
 					deleteItem={async () => {
-						// if (
-						// 	$problemInfo.objectives[$problemInfo.objectives.length - 1].id !== objective.id &&
-						// 	objective.description !== ''
-						// ) {
-						// }
 						removeOrCleanItem(objective.id, ProblemType.objectives);
 						$errorHandling.objective_max = false;
 
@@ -267,7 +260,6 @@
 					addItem={async () => {
 						if ($problemInfo.objectives.length === 5) {
 							$errorHandling.objective_max = true;
-							$errorHandling.messages = '*No puedes agregar más de 5 objetivos';
 						} else {
 							addProblemItem(objective.id, ProblemType.objectives);
 
@@ -320,6 +312,7 @@
 			<PuzzlePiece styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Alternativas</h2>
 			<Tooltip
+				bind:open={$errorHandling.alternative_max}
 				messages={[
 					'De 2-3 alternativas que indiquen las OPCIONES/SOLUCIONES del tomador de decisión. Estas deben competir; no complementarse.',
 					'Cada alterativa escribirla con 2-3 palabras',
@@ -335,7 +328,7 @@
 			{#each $problemInfo.alternatives as alternative, i}
 				<Item
 					deleteItem={async () => {
-						removeOrCleanItem(alternative.id, ProblemType.alternatives);
+						removeOrCleanItem(alternative.id, ProblemType.alternatives, i);
 						$errorHandling.alternative_max = false;
 
 						$matrix = await api.deleteAlternative(alternative.id, $matrix);
@@ -344,7 +337,6 @@
 					addItem={async () => {
 						if ($problemInfo.alternatives.length === 3) {
 							$errorHandling.alternative_max = true;
-							$errorHandling.messages = '*No puedes agregar más de 3 alternativas';
 						} else {
 							addProblemItem(alternative.id, ProblemType.alternatives);
 							$errorHandling.alternative_max = false;
@@ -417,6 +409,7 @@
 			<Spotlight styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Recomendada</h2>
 			<Tooltip
+			open={false}
 				messages={[
 					'Decisión automática recomendada por el Alineados acorde el resultado de los puntos.'
 				]}
@@ -445,6 +438,7 @@
 			<Check styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Mi Decisión Final</h2>
 			<Tooltip
+			open={false}
 				messages={[
 					'Decisión final que el usuario elije acorde su criterio personal; no tiene que ser necesariamente la que Alineados le recomienda',
 					'Solo puede haber 1 decisión.'
@@ -482,6 +476,7 @@
 				<Rocket styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 				<Tooltip
+				open={false}
 					messages={[
 						'El compromiso a la acción debe ser en base a la decisión final; no de todas las alternativas',
 						'De 4-6 planes de acción que ayuden a ejecutar la decisión final',
