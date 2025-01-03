@@ -8,17 +8,19 @@ import { ValidationType } from '$lib/interfaces/onbarding';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AuthService } from '$lib/services/auth';
+import { getJSONFormsData } from '$lib/utils/getFormsData';
 
 export const actions = {
 	register: async (event) => {
-		const data = await event.request.formData();
-		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
+		const formData = await event.request.formData();
+		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as OnboardingData;
 		console.log(dataJSON);
 
 		// Regex
 		const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
 		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$/;
 		const phoneRegex = /^\d{0,}$/;
+		const usernameRegex = /^\S{1,20}$/;
 
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
@@ -27,10 +29,10 @@ export const actions = {
 		const basicFields: (keyof RegisterValidation)[] = [
 			'firstName',
 			'lastName',
-			'email',
 			'countryOfResidence',
 			'countryOfBirth',
-			'birthday'
+			'birthday',
+			'username'
 		];
 
 		// Check if the fields are empty
@@ -81,53 +83,72 @@ export const actions = {
 			}
 		}
 
-		// Email validation
-		const hasEmailRequiredError = invalidFields.some(
-			(error) => error.field === 'email' && error.errorType === ValidationType.REQUIRED
-		);
-
-		if (!hasEmailRequiredError && dataJSON.register.email) {
-			if (!emailRegex.test(dataJSON.register.email)) {
+		// Contact info validation
+		if (dataJSON.register.contactNotRequired === false) {
+			// Email validation
+			if (!dataJSON.register.email) {
 				invalidFields.push({
 					field: 'email',
-					errorType: ValidationType.INVALID_EMAIL
+					errorType: ValidationType.REQUIRED
+				});
+			} else if (dataJSON.register.email) {
+				if (!emailRegex.test(dataJSON.register.email)) {
+					invalidFields.push({
+						field: 'email',
+						errorType: ValidationType.INVALID_EMAIL
+					});
+				}
+			}
+
+			// Phone number validation
+			if (!dataJSON.register.phoneNumber.code) {
+				invalidFields.push({
+					field: 'phoneNumber',
+					errorType: ValidationType.REQUIRED_PHONE_CODE
+				});
+			} else if (!dataJSON.register.phoneNumber.number) {
+				invalidFields.push({
+					field: 'phoneNumber',
+					errorType: ValidationType.REQUIRED
+				});
+			} else if (!phoneRegex.test(dataJSON.register.phoneNumber.number)) {
+				invalidFields.push({
+					field: 'phoneNumber',
+					errorType: ValidationType.INVALID_PHONE_NUMBER
+				});
+			}
+
+			// WhatsApp validation
+			if (!dataJSON.register.whatsappNumber.code) {
+				invalidFields.push({
+					field: 'whatsappNumber',
+					errorType: ValidationType.REQUIRED_PHONE_CODE
+				});
+			} else if (!dataJSON.register.whatsappNumber.number) {
+				invalidFields.push({
+					field: 'whatsappNumber',
+					errorType: ValidationType.REQUIRED
+				});
+			} else if (!phoneRegex.test(dataJSON.register.whatsappNumber.number)) {
+				invalidFields.push({
+					field: 'whatsappNumber',
+					errorType: ValidationType.INVALID_PHONE_NUMBER
 				});
 			}
 		}
-		// Phone number validation
-		if (!dataJSON.register.phoneNumber.code) {
-			invalidFields.push({
-				field: 'phoneNumber',
-				errorType: ValidationType.REQUIRED_PHONE_CODE
-			});
-		} else if (!dataJSON.register.phoneNumber.number) {
-			invalidFields.push({
-				field: 'phoneNumber',
-				errorType: ValidationType.REQUIRED
-			});
-		} else if (!phoneRegex.test(dataJSON.register.phoneNumber.number)) {
-			invalidFields.push({
-				field: 'phoneNumber',
-				errorType: ValidationType.INVALID_PHONE_NUMBER
-			});
-		}
 
-		// WhatsApp validation
-		if (!dataJSON.register.whatsappNumber.code) {
-			invalidFields.push({
-				field: 'whatsappNumber',
-				errorType: ValidationType.REQUIRED_PHONE_CODE
-			});
-		} else if (!dataJSON.register.whatsappNumber.number) {
-			invalidFields.push({
-				field: 'whatsappNumber',
-				errorType: ValidationType.REQUIRED
-			});
-		} else if (!phoneRegex.test(dataJSON.register.whatsappNumber.number)) {
-			invalidFields.push({
-				field: 'whatsappNumber',
-				errorType: ValidationType.INVALID_PHONE_NUMBER
-			});
+		// Username validation
+		const hasUsernameRequiredError = invalidFields.some(
+			(error) => error.field === 'username' && error.errorType === ValidationType.REQUIRED
+		);
+
+		if (!hasUsernameRequiredError && dataJSON.register.username) {
+			if (!usernameRegex.test(dataJSON.register.username)) {
+				invalidFields.push({
+					field: 'username',
+					errorType: ValidationType.INVALID_NAME
+				});
+			}
 		}
 
 		// Return the error if there are any
@@ -140,22 +161,45 @@ export const actions = {
 			};
 		}
 
-		// TODO: API CALL
-		console.log('Enviando còdigo de verificación al correo electrónico: ', dataJSON.register.email);
+		const data = getJSONFormsData(formData);
 
-		// get problems grouped by pillar
+		const { register } = data;
+
+		console.log('data', register);
+
+		// Send the email verification
 		const authService: AuthService = AuthService.getInstance('');
 
+		/*
 		// Call the service
 		const result = await authService.sendEmailVerification({
 			userName: dataJSON.register.firstName,
 			email: dataJSON.register.email
 		});
+		*/
+
+		// Call the service
+		const result = await authService.registerUser({
+			firstName: dataJSON.register.firstName,
+			lastName: dataJSON.register.lastName,
+			email: dataJSON.register.email,
+			countryOfResidence: dataJSON.register.countryOfResidence,
+			countryOfBirth: dataJSON.register.countryOfBirth,
+			birthday: dataJSON.register.birthday,
+			phoneNumber: dataJSON.register.phoneNumber,
+			whatsappNumber: dataJSON.register.whatsappNumber,
+			username: dataJSON.register.username
+		});
 
 		console.log(result);
 
-		// Redirect to the next step
-		redirect(307, '/onboarding/steps/2');
+		if (dataJSON.register.contactNotRequired === false) {
+			// Redirect to the next step
+			redirect(307, '/onboarding/steps/2');
+		} else {
+			// Redirect to the next step
+			redirect(307, '/onboarding/steps/3');
+		}
 	},
 
 	email: async (event) => {

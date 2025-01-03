@@ -24,7 +24,8 @@
 				countryOfBirth: ValidationType.ALL_GOOD,
 				birthday: ValidationType.ALL_GOOD,
 				phoneNumber: ValidationType.ALL_GOOD,
-				whatsappNumber: ValidationType.ALL_GOOD
+				whatsappNumber: ValidationType.ALL_GOOD,
+				username: ValidationType.ALL_GOOD
 			},
 			email: {
 				code: ValidationType.ALL_GOOD
@@ -36,11 +37,12 @@
 		};
 		onboardingData = {
 			register: {
+				contactNotRequired: false,
+
 				firstName: '',
 				lastName: '',
 				email: '',
 				countryOfResidence: '',
-
 				countryOfBirth: '',
 				birthday: '',
 				phoneNumber: {
@@ -50,7 +52,8 @@
 				whatsappNumber: {
 					code: '',
 					number: ''
-				}
+				},
+				username: ''
 			},
 			email: {
 				code: ''

@@ -5,7 +5,8 @@
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';
 	import PhoneInput from '$lib/modules/onboarding/components/PhoneInput.svelte';
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
-	import Header from '$lib/modules/onboarding/components/Header.svelte';
+	import { Label } from '$lib/shared/ui/label/index.js';
+	import { Switch } from '$lib/shared/ui/switch/index.js';
 
 	// Props
 	let {
@@ -80,10 +81,20 @@
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
 	];
+
+	$inspect(register.contactNotRequired);
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
-	<Header title="Datos Personales" />
+	<div class="flex w-full justify-between border-b border-alineados-gray-200 pb-2">
+		<h2 class="text-3xl font-semibold text-alineados-gray-900">Datos Personales</h2>
+		<div class="flex items-center space-x-2">
+			<Label for="form-mode" class=" font-medium text-alineados-gray-800"
+				>No comparto contacto</Label
+			>
+			<Switch id="form-mode" bind:checked={register.contactNotRequired} />
+		</div>
+	</div>
 
 	<form class="mt-9 flex w-full flex-col gap-7">
 		<div class="flex gap-6">
@@ -94,6 +105,7 @@
 				type="text"
 				bind:validation
 				bind:value={register.firstName}
+				contactNotRequired={false}
 			/>
 			<RegisterInput
 				label="Apellidos"
@@ -102,6 +114,7 @@
 				type="text"
 				bind:validation
 				bind:value={register.lastName}
+				contactNotRequired={false}
 			/>
 		</div>
 		<div class="flex gap-6">
@@ -130,6 +143,7 @@
 				type="email"
 				bind:validation
 				bind:value={register.email}
+				contactNotRequired={register.contactNotRequired}
 			/>
 			<BirthdaySelect inputKey="birthday" bind:validation bind:value={register.birthday} />
 		</div>
@@ -140,6 +154,7 @@
 				options={countriesCode}
 				bind:validation
 				bind:value={register.phoneNumber}
+				contactNotRequired={register.contactNotRequired}
 			/>
 			<WhatsAppInput
 				label="WhatsApp"
@@ -148,6 +163,18 @@
 				bind:validation
 				bind:value={register.whatsappNumber}
 				bind:pastPhoneNumber={register.phoneNumber}
+				contactNotRequired={register.contactNotRequired}
+			/>
+		</div>
+		<div class="flex gap-6">
+			<RegisterInput
+				label="Usuario"
+				inputKey="firstName"
+				placeholder="Ingrese su nombre de usuario"
+				type="text"
+				bind:validation
+				bind:value={register.username}
+				contactNotRequired={false}
 			/>
 		</div>
 	</form>

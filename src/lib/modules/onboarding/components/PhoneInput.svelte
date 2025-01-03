@@ -21,13 +21,15 @@
 		label,
 		options = [],
 		value = $bindable(),
-		validation = $bindable()
+		validation = $bindable(),
+		contactNotRequired = false
 	}: {
 		inputKey: string;
 		label: string;
 		options: { value: string; label: string; flag: string }[];
 		value: PhoneNumber;
 		validation: OnboardingValidation;
+		contactNotRequired: boolean;
 	} = $props();
 
 	// Derived
@@ -93,13 +95,16 @@
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-2">
-	<Label class="text-lg font-semibold text-black" for={inputKey}>
+	<Label
+		class={`text-lg font-semibold ${contactNotRequired ? 'text-alineados-gray-300' : 'text-black'}`}
+		for={inputKey}
+	>
 		{label}
 	</Label>
 
 	<div class="flex">
 		<Popover.Root bind:open>
-			<Popover.Trigger bind:ref={triggerRef}>
+			<Popover.Trigger bind:ref={triggerRef} disabled={contactNotRequired}>
 				{#snippet child({ props })}
 					<Button
 						variant="outline"
@@ -162,6 +167,7 @@
 			autocorrect="off"
 			placeholder="+000"
 			oninput={validatePhoneNumber}
+			disabled={contactNotRequired}
 			bind:value={countryCode}
 		/>
 		<Input
@@ -172,6 +178,7 @@
 			autocapitalize="none"
 			autocorrect="off"
 			oninput={validatePhoneNumber}
+			disabled={contactNotRequired}
 			bind:value={phoneNumber}
 		/>
 	</div>

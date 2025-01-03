@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { OnboardingValidation, Password } from '$lib/interfaces/onbarding';
-	import Header from '$lib/modules/onboarding/components/Header.svelte';
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
 	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
@@ -87,7 +86,9 @@
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
-	<Header title="Creación de Contraseña" />
+	<div class="flex w-full border-b border-alineados-gray-200 pb-2">
+		<h2 class="text-3xl font-semibold text-alineados-gray-900">Datos Personales</h2>
+	</div>
 	<div class="mt-9 flex w-full flex-col gap-5">
 		<PasswordInput
 			label="Contraseña"

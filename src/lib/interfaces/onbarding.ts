@@ -20,6 +20,7 @@ export interface PhoneNumber {
 }
 
 export type Register = {
+	contactNotRequired: boolean;
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -28,6 +29,7 @@ export type Register = {
 	birthday: string;
 	phoneNumber: PhoneNumber;
 	whatsappNumber: PhoneNumber;
+	username: string;
 };
 
 // Email verification interface
@@ -58,6 +60,7 @@ export type RegisterValidation = {
 	birthday: ValidationType;
 	phoneNumber: ValidationType;
 	whatsappNumber: ValidationType;
+	username: ValidationType;
 };
 
 // Email verification validation interface
