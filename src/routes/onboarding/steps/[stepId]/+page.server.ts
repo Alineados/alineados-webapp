@@ -8,7 +8,6 @@ import { ValidationType } from '$lib/interfaces/onbarding';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AuthService } from '$lib/services/auth';
-import { getJSONFormsData } from '$lib/utils/getFormsData';
 
 export const actions = {
 	register: async (event) => {
@@ -83,6 +82,20 @@ export const actions = {
 			}
 		}
 
+		// Username validation
+		const hasUsernameRequiredError = invalidFields.some(
+			(error) => error.field === 'username' && error.errorType === ValidationType.REQUIRED
+		);
+
+		if (!hasUsernameRequiredError && dataJSON.register.username) {
+			if (!usernameRegex.test(dataJSON.register.username)) {
+				invalidFields.push({
+					field: 'username',
+					errorType: ValidationType.INVALID_NAME
+				});
+			}
+		}
+
 		// Contact info validation
 		if (dataJSON.register.contactNotRequired === false) {
 			// Email validation
@@ -137,20 +150,6 @@ export const actions = {
 			}
 		}
 
-		// Username validation
-		const hasUsernameRequiredError = invalidFields.some(
-			(error) => error.field === 'username' && error.errorType === ValidationType.REQUIRED
-		);
-
-		if (!hasUsernameRequiredError && dataJSON.register.username) {
-			if (!usernameRegex.test(dataJSON.register.username)) {
-				invalidFields.push({
-					field: 'username',
-					errorType: ValidationType.INVALID_NAME
-				});
-			}
-		}
-
 		// Return the error if there are any
 		if (invalidFields.length > 0) {
 			return {
@@ -161,22 +160,8 @@ export const actions = {
 			};
 		}
 
-		const data = getJSONFormsData(formData);
-
-		const { register } = data;
-
-		console.log('data', register);
-
 		// Send the email verification
 		const authService: AuthService = AuthService.getInstance('');
-
-		/*
-		// Call the service
-		const result = await authService.sendEmailVerification({
-			userName: dataJSON.register.firstName,
-			email: dataJSON.register.email
-		});
-		*/
 
 		// Call the service
 		const result = await authService.registerUser({
@@ -229,16 +214,8 @@ export const actions = {
 					field: 'code',
 					errorType: ValidationType.IS_TOO_SHORT
 				});
-			} else if (dataJSON.email.code !== '123456') {
-				invalidFields.push({
-					field: 'code',
-					errorType: ValidationType.INVALID_CODE
-				});
 			}
 		}
-
-		// TODO: API CALL
-		console.log('Verificando código de verificación: ', dataJSON.email.code);
 
 		// Return the error if there are any
 		if (invalidFields.length > 0) {
@@ -246,6 +223,31 @@ export const actions = {
 				type: 'error',
 				button: 'email',
 				validations: invalidFields,
+				message: 'Check the fields'
+			};
+		}
+
+		// Send the email verification
+		const authService: AuthService = AuthService.getInstance('');
+
+		// Call the service
+		const result = await authService.verifyEmailCode({
+			email: dataJSON.register.email,
+			code: dataJSON.email.code
+		});
+
+		console.log(result);
+
+		if (!result.data) {
+			return {
+				type: 'error',
+				button: 'email',
+				validations: [
+					{
+						field: 'code',
+						errorType: ValidationType.INVALID_CODE
+					}
+				],
 				message: 'Check the fields'
 			};
 		}

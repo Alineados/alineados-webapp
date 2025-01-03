@@ -38,9 +38,9 @@ export class AuthService {
 		return response;
 	}
 
-	public async sendEmailVerification(userData: UserEmailVerification): Promise<Response> {
-		const url = `${this._url}/send-email-verification`;
-		const response: Response = await request(url, 'POST', userData, this._token);
+	public async verifyEmailCode(body: any): Promise<Response> {
+		const url = `${this._url}/verify-email`;
+		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
