@@ -155,7 +155,7 @@
 			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
 		>
 			{#if isAccountability}
-				<Tooltip message="Completado">
+				<Tooltip open={false} message="Completado">
 					<button
 						onclick={() => {
 							if (doneItem) doneItem();
@@ -170,7 +170,7 @@
 					</button>
 				</Tooltip>
 
-				<Tooltip message="Repetir">
+				<Tooltip open={false} message="Repetir">
 					<button
 						onclick={() => {
 							if (repeatItem) repeatItem();
@@ -185,7 +185,7 @@
 					</button>
 				</Tooltip>
 			{:else}
-				<Tooltip message="Destacar">
+				<Tooltip open={false} message="Destacar">
 					<button
 						onclick={() => {
 							if (prominentItem) prominentItem();
@@ -199,7 +199,7 @@
 						<Star styleTw="size-4" />
 					</button>
 				</Tooltip>
-				<Tooltip message="Diario">
+				<Tooltip open={false} message="Diario">
 					<button
 						onclick={() => {
 							if (dailyItem) dailyItem();
@@ -213,7 +213,7 @@
 						<Sun styleTw="size-4" />
 					</button>
 				</Tooltip>
-				<Tooltip message="Borrar">
+				<Tooltip open={false} message="Borrar">
 					<button
 						onclick={() => {
 							if (deleteItem) deleteItem();

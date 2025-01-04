@@ -10,7 +10,7 @@
 	let colors = [
 		'text-alineados-green-900',
 		'text-alineados-orange-900',
-		'text-alineados-blue-900',
+		'text-cyan-900',
 		'text-red-500',
 		'text-yellow-500'
 	];
@@ -28,11 +28,11 @@
 		}
 	});
 
-	$: console.log('$matrix', $matrix);
+	// $: console.log('$matrix', $matrix);
 	$: gridColumns = `250px 50px ${$matrix.cols.map(() => '100px').join(' ')}`;
 </script>
 
-<div class="grid gap-4 p-4" style="grid-template-columns: {gridColumns}">
+<div class="grid gap-4 p-4 " style="grid-template-columns: {gridColumns}">
 	<!-- Header Row -->
 	<div></div>
 	<div></div>
@@ -59,9 +59,14 @@
 	<!-- Rows -->
 	{#each $matrix.rows as row, i}
 		<RowMatrix
+			onChange={async () => {
+				$matrix = await api.calculateResults($matrix);
+				$matrix = $matrix;
+			}}
 			bind:name={$matrix.rows[i].name}
 			bind:units={$matrix.rows[i].units}
 			bind:key={$matrix.rows[i].key}
+			bind:percentage={$matrix.rows[i].percentage}
 			color={setColor(i)}
 		/>
 

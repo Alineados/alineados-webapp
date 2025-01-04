@@ -31,7 +31,7 @@
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			{#each $problemInfo.action_plan as action}
+			{#each $problemInfo.action_plan as action, i}
 				{#if action.description !== ''}
 					<Item
 						doneItem={() => {
@@ -44,9 +44,9 @@
 						}}
 						isOnlyText
 						isAccountability={true}
-						bind:isRepeated={action.repeatable}
-						bind:isDone={action.done}
-						bind:value={action.description}
+						bind:isRepeated={$problemInfo.action_plan[i].repeatable}
+						bind:isDone={$problemInfo.action_plan[i].done}
+						bind:value={$problemInfo.action_plan[i].description}
 					/>
 				{/if}
 			{/each}
