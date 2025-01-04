@@ -53,7 +53,7 @@
 					code: '',
 					number: ''
 				},
-				username: ''
+				username: 'valvk'
 			},
 			email: {
 				code: ''

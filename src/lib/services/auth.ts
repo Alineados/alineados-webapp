@@ -44,4 +44,11 @@ export class AuthService {
 
 		return response;
 	}
+
+	public async confirmPassword(body: any): Promise<Response> {
+		const url = `${this._url}/confirm-password`;
+		const response: Response = await request(url, 'PATCH', body, this._token);
+
+		return response;
+	}
 }

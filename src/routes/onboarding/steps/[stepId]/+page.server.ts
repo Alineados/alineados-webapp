@@ -301,8 +301,16 @@ export const actions = {
 			};
 		}
 
-		// TODO: API CALL
-		console.log('Creando usuario con la contraseña: ', dataJSON.password.password);
+		// Send the password confirmation
+		const authService: AuthService = AuthService.getInstance('');
+
+		// Call the service
+		const result = await authService.confirmPassword({
+			username: dataJSON.register.username,
+			password: dataJSON.password.password
+		});
+
+		console.log(result);
 
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/4');
