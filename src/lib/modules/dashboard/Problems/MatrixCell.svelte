@@ -20,17 +20,26 @@
 	let error = $state(false);
 
 	function handleOnInput() {
+		if (value === '') {
+			error = true;
+			return;
+		}
+
 		let number = parseInt(value);
+
+		if (isNaN(number)) {
+			error = true;
+			return;
+		}
 
 		// evaluate if the value already exists on cells
 		if (cells.find((cell, i) => parseInt(cell.value) === number && i !== index)) {
 			error = true;
 			return;
 		}
+		else error = false;
 
-		error = false;
-
-		if (number < 0 || number > 3) {
+		if (number <= 0 || number > 3) {
 			error = true;
 			return;
 		} else {

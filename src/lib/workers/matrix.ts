@@ -37,7 +37,7 @@ const api = {
 
 					if (isNaN(number)) {
 						number = 0;
-					} else if (number < 0 || number > 3) {
+					} else if (number <= 0 || number > 3) {
 						number = 0;
 					} else results.results[c] += number;
 				}
@@ -46,6 +46,15 @@ const api = {
 
 		// if all values are 0, set -1 to the winner
 		if (results.results.every((value) => value === 0)) results.winner = -1;
+		// check if there is a tie
+		else if (results.results.every((value) => value === results.results[0])){
+			// get the object row with the highest percentage
+			const maxPercentage = Math.max(...matrix.rows.map((row) => row.percentage));
+			const maxPercentageRow = matrix.rows.find((row) => row.percentage === maxPercentage);
+
+			const cells = maxPercentageRow?.cells.map((cell) => parseInt(cell.value) || 0);
+			if(cells) results.winner = cells.indexOf(Math.max(...cells));
+		}
 		else results.winner = results.results.indexOf(Math.max(...results.results)); // get the index of the max value in the array
 
 		matrix.results = results;

@@ -78,7 +78,7 @@
 
 	<div class="flex flex-row gap-2 pb-2">
 		{#if cardFilter.health}
-			{#each $healthProblems as health}
+			{#each $healthProblems as health, i}
 				{#if health.id === pid}
 					<SelectablePill
 						pid={health.id}
@@ -87,7 +87,7 @@
 						bind:text={$problemCard.problem_name}
 					/>
 				{:else}
-					<SelectablePill pid={health.id} name="health" bind:text={health.problem_name} />
+					<SelectablePill pid={health.id} name="health" bind:text={$healthProblems[i].problem_name} />
 				{/if}
 			{/each}
 		{/if}

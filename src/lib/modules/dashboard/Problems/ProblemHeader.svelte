@@ -54,6 +54,7 @@
 	>
 		<div class="flex items-start gap-2">
 			<input
+			placeholder="Situación por mejorar"
 				type="text"
 				maxlength="28"
 				bind:value={title}

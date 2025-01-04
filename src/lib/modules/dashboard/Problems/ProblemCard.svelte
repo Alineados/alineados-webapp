@@ -10,13 +10,13 @@
 	import UnPadlock from '$lib/icons/UnPadlock.svelte';
 	import { type ProblemCard } from '$lib/interfaces';
 	import { Pillars } from '$lib/interfaces/data';
-	import { removeProblem } from '$lib/stores';
+	import { addProblem, removeProblem } from '$lib/stores';
 	import { calculateDaysLeft } from '$lib/utils/dates';
 	import MessageLength from './MessageLength.svelte';
 
 	let {
 		title,
-		problems
+		problems = $bindable([])
 	}: {
 		title: string;
 
@@ -94,9 +94,8 @@
 			return async ({ result, update }) => {
 				// `result` is an `ActionResult` object
 				console.log(result);
-				if (result.status === 200) {
-					if (problemSelected) removeProblem(problemSelected, Pillars);
-				}
+				if (result.status === 200) if (problemSelected) removeProblem(problemSelected, Pillars);
+
 				// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 			};
 		}}
@@ -109,7 +108,7 @@
 			<CustomCard
 				padding="p-4"
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
-				isNew={problem.is_new}
+				isNew={problem.is_new || !problem.active}
 				state={calculateDaysLeft(problem.milestone_date) <= 10 && !problem.completed_at
 					? 'danger'
 					: problem.active && problem.completed_at
@@ -124,8 +123,8 @@
 						<div class="flex flex-row items-center gap-1">
 							<StatusPill
 								classTw="px-2 py-1"
-								bind:status={problem.active}
-								bind:completed={problem.completed_at}
+								bind:status={problems[i].active}
+								bind:completed={problems[i].completed_at}
 							/>
 
 							{#if problem.security}

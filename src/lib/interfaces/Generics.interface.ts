@@ -29,4 +29,5 @@ export interface Selector {
 	id: number;
 	key: string;
 	value: number;
+	disabled: boolean;
 }

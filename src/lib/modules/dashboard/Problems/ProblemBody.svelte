@@ -32,10 +32,11 @@
 	import { writable } from 'svelte/store';
 	import { wrap } from 'comlink';
 	import MatrixInformation from './MatrixInformation.svelte';
+	import { debounce } from '$lib/utils/debounce';
 
 	let errorHandling = writable({
 		alternative_max: false,
-		objective_max: false,
+		objective_max: false
 	});
 
 	let worker: Worker;
@@ -45,6 +46,21 @@
 	function scrollToActionPlan() {
 		$actionPlanDivRef?.scrollIntoView({ behavior: 'smooth' });
 	}
+
+	const checkAndFormatQuestion = debounce(() => {
+		if ($problemInfo.problem!.description !== '') {
+			if ($problemInfo.problem!.description.charAt(0) !== '¿') {
+				$problemInfo.problem!.description = `¿${$problemInfo.problem!.description}`;
+			}
+
+			if (
+				$problemInfo.problem!.description.charAt($problemInfo.problem!.description.length - 1) !==
+				'?'
+			) {
+				$problemInfo.problem!.description = `${$problemInfo.problem!.description}?`;
+			}
+		}
+	}, 1000); // Will trigger 1 second after user stops typing
 
 	onMount(() => {
 		if ($problemCard.completed_at === null) scrollToActionPlan();
@@ -97,7 +113,7 @@
 			<User styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Involucrados</h2>
 			<Tooltip
-			open={false}
+				open={false}
 				messages={[
 					'De 2 a 5 personas o instituciones que se ven involucradas de forma directa o indirecta en cualquiera de las alternativas presentadas.',
 					'Pueden aconsejar al tomador de decisión, pero no toman la decisión final.'
@@ -149,7 +165,7 @@
 			<Lines styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Contexto</h2>
 			<Tooltip
-			open={false}
+				open={false}
 				messages={[
 					'De 5-8 causa raíz (acción, pensamiento o palabra) que ayuden a entender las circunstancias que está pasando y están originando el problema.',
 					'Se recomienda oraciones cortas entre 3-8 palabras por cada contexto con el fin de no tener párrafos extensos.'
@@ -201,7 +217,7 @@
 			<CircleCross styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Problema</h2>
 			<Tooltip
-			open={false}
+				open={false}
 				messages={[
 					'Escribir 1 problema únicamente; no varios',
 					'Debe escribirse en formato de pregunta: ¿….?',
@@ -222,6 +238,7 @@
 				dailyItem={() => {
 					markDailytItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
+				onInput={checkAndFormatQuestion}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
 				bind:isDaily={$problemInfo.problem!.daily}
@@ -236,7 +253,7 @@
 			<Trophy styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
 			<Tooltip
-			bind:open={$errorHandling.objective_max}
+				bind:open={$errorHandling.objective_max}
 				messages={[
 					'De 2-5 objetivos que indiquen los INTERESES del tomador de decisión',
 					'Cada objetivo escribirlo con 2-3 palabras ',
@@ -396,7 +413,13 @@
 			</InformationButton>
 		</div>
 		{#if $matrix.rows.length > 0 && $matrix.cols.length > 0}
-			<DecisionMatrix />
+			{#if !$problemCard.active}
+				<div class="pointer-events-none opacity-50">
+					<DecisionMatrix />
+				</div>
+			{:else}
+				<DecisionMatrix />
+			{/if}
 		{:else}
 			<p class="pl-2 pt-4 text-alineados-gray-400">
 				No hay objetivos ni alternativas para completar la matriz
@@ -409,7 +432,7 @@
 			<Spotlight styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Decisión Recomendada</h2>
 			<Tooltip
-			open={false}
+				open={false}
 				messages={[
 					'Decisión automática recomendada por el Alineados acorde el resultado de los puntos.'
 				]}
@@ -438,7 +461,7 @@
 			<Check styleTw="size-6 text-alineados-gray-900" />
 			<h2 class="text-2xl font-medium text-alineados-gray-900">Mi Decisión Final</h2>
 			<Tooltip
-			open={false}
+				open={false}
 				messages={[
 					'Decisión final que el usuario elije acorde su criterio personal; no tiene que ser necesariamente la que Alineados le recomienda',
 					'Solo puede haber 1 decisión.'
@@ -476,7 +499,7 @@
 				<Rocket styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">Plan de Acción</h2>
 				<Tooltip
-				open={false}
+					open={false}
 					messages={[
 						'El compromiso a la acción debe ser en base a la decisión final; no de todas las alternativas',
 						'De 4-6 planes de acción que ayuden a ejecutar la decisión final',
