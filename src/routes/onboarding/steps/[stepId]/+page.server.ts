@@ -3,11 +3,14 @@ import type {
 	ValidationError,
 	RegisterValidation,
 	PasswordValidation
-} from '$lib/interfaces/onbarding';
-import { ValidationType } from '$lib/interfaces/onbarding';
+} from '$lib/interfaces/Onboarding.interface';
+import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { AuthService } from '$lib/services/auth';
+import { OnboardingService } from '$lib/services/onboarding';
+
+// Create the service
+const authService: OnboardingService = OnboardingService.getInstance('');
 
 export const actions = {
 	register: async (event) => {
@@ -160,9 +163,6 @@ export const actions = {
 			};
 		}
 
-		// Send the email verification
-		const authService: AuthService = AuthService.getInstance('');
-
 		// Call the service
 		const result = await authService.registerUser({
 			firstName: dataJSON.register.firstName,
@@ -226,9 +226,6 @@ export const actions = {
 				message: 'Check the fields'
 			};
 		}
-
-		// Send the email verification
-		const authService: AuthService = AuthService.getInstance('');
 
 		// Call the service
 		const result = await authService.verifyEmailCode({
@@ -300,9 +297,6 @@ export const actions = {
 				message: 'Check the fields'
 			};
 		}
-
-		// Send the password confirmation
-		const authService: AuthService = AuthService.getInstance('');
 
 		// Call the service
 		const result = await authService.confirmPassword({

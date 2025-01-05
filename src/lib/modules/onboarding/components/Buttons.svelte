@@ -7,18 +7,18 @@
 		RegisterValidation,
 		EmailValidation,
 		PasswordValidation
-	} from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
-	import { ButtonAction } from '$lib/interfaces/onbarding';
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
+	import { ButtonAction } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {
+		data = $bindable(),
 		action,
-		validation = $bindable(),
-		data = $bindable()
+		validation = $bindable()
 	}: {
-		action: string;
 		data: string;
+		action: string;
 		validation: OnboardingValidation;
 	} = $props();
 
@@ -35,8 +35,6 @@
 
 		goto(`/onboarding/steps/${previousStep}`);
 	}
-
-	$inspect({ action });
 </script>
 
 <form

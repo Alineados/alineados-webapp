@@ -7,8 +7,11 @@
 	import * as Popover from '$lib/shared/ui/popover/index.js';
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import type {
+		OnboardingValidation,
+		RegisterValidation
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {

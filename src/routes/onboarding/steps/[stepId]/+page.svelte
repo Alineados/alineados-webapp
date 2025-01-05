@@ -6,8 +6,8 @@
 	import EmailVerification from '$lib/modules/onboarding/EmailVerification.svelte';
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
-	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/onbarding';
-	import { ButtonAction, ValidationType } from '$lib/interfaces/onbarding';
+	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/Onboarding.interface';
+	import { ButtonAction, ValidationType } from '$lib/interfaces/Onboarding.interface';
 	import { onMount } from 'svelte';
 
 	// Initial state

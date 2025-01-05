@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OnboardingValidation, Email } from '$lib/interfaces/onbarding';
+	import type { OnboardingValidation, Email } from '$lib/interfaces/Onboarding.interface';
 	import CodeVerification from '$lib/modules/onboarding/components/CodeVerification.svelte';
 
 	// Props

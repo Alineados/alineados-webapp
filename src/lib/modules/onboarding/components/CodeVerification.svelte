@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { OnboardingValidation, EmailValidation } from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import type { OnboardingValidation, EmailValidation } from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 	import * as InputOTP from '$lib/shared/ui/input-otp/index';
 	import { REGEXP_ONLY_DIGITS } from 'bits-ui';
 

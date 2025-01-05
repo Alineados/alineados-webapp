@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OnboardingValidation, Register } from '$lib/interfaces/onbarding';
+	import type { OnboardingValidation, Register } from '$lib/interfaces/Onboarding.interface';
 	import RegisterInput from '$lib/modules/onboarding/components/RegisterInput.svelte';
 	import RegisterCombobox from './components/RegisterCombobox.svelte';
 	import BirthdaySelect from '$lib/modules/onboarding/components/BirthdaySelect.svelte';

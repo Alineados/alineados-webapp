@@ -1,8 +1,11 @@
 <script lang="ts">
-	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
+	import type {
+		OnboardingValidation,
+		RegisterValidation
+	} from '$lib/interfaces/Onboarding.interface';
 	import { Label } from '$lib/shared/ui/label/index';
 	import * as Select from '$lib/shared/ui/select/index';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {

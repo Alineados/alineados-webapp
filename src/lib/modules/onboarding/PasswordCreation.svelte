@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { OnboardingValidation, Password } from '$lib/interfaces/onbarding';
+	import type { OnboardingValidation, Password } from '$lib/interfaces/Onboarding.interface';
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
 	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {

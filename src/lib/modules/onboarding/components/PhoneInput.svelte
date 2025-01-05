@@ -12,8 +12,8 @@
 		OnboardingValidation,
 		RegisterValidation,
 		PhoneNumber
-	} from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {
