@@ -34,13 +34,14 @@
 
 		cardFilter[filter] = true;
 	}
+	
 
 	onMount(() => {
 		cardFilter[pillar_name] = true;
 	});
 </script>
 
-<div class="flex flex-col gap-3 px-4 md:px-8 lg:px-16 mt-4">
+<div class="mt-4 flex flex-col gap-3 px-4 md:px-8 lg:px-16">
 	<div class="flex flex-row gap-2">
 		{#if $healthProblems.length > 0}
 			<CardFilter
@@ -81,13 +82,19 @@
 			{#each $healthProblems as health, i}
 				{#if health.id === pid}
 					<SelectablePill
+						isLink={true}
 						pid={health.id}
 						name="health"
 						selected
 						bind:text={$problemCard.problem_name}
 					/>
 				{:else}
-					<SelectablePill pid={health.id} name="health" bind:text={$healthProblems[i].problem_name} />
+					<SelectablePill
+						isLink={true}
+						pid={health.id}
+						name="health"
+						bind:text={$healthProblems[i].problem_name}
+					/>
 				{/if}
 			{/each}
 		{/if}
@@ -95,6 +102,7 @@
 			{#each $relationalProblems as relational}
 				{#if relational.id === pid}
 					<SelectablePill
+						isLink={true}
 						pid={relational.id}
 						name="relational"
 						selected
@@ -102,6 +110,7 @@
 					/>
 				{:else}
 					<SelectablePill
+						isLink={true}
 						pid={relational.id}
 						name="relational"
 						bind:text={relational.problem_name}
@@ -113,6 +122,7 @@
 			{#each $vocationalProblems as vocational}
 				{#if vocational.id === pid}
 					<SelectablePill
+						isLink={true}
 						pid={vocational.id}
 						name="vocational"
 						selected
@@ -120,6 +130,7 @@
 					/>
 				{:else}
 					<SelectablePill
+						isLink={true}
 						pid={vocational.id}
 						name="vocational"
 						bind:text={vocational.problem_name}
@@ -131,13 +142,19 @@
 			{#each $spiritualProblems as spiritual}
 				{#if spiritual.id === pid}
 					<SelectablePill
+						isLink={true}
 						pid={spiritual.id}
 						name="spiritual"
 						selected
 						bind:text={$problemCard.problem_name}
 					/>
 				{:else}
-					<SelectablePill pid={spiritual.id} name="spiritual" bind:text={spiritual.problem_name} />
+					<SelectablePill
+						isLink={true}
+						pid={spiritual.id}
+						name="spiritual"
+						bind:text={spiritual.problem_name}
+					/>
 				{/if}
 			{/each}
 		{/if}

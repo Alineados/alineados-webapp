@@ -4,11 +4,13 @@
 	let {
 		header,
 		statistics,
-		filter
+		filter,
+		simple = false
 	}: {
 		header: Snippet;
 		statistics: Snippet;
 		filter: Snippet;
+		simple?: boolean;
 	} = $props();
 
 	let headerRef = $state<HTMLElement>();
@@ -19,7 +21,6 @@
 		const problemsFilterHeight = filterRef ? filterRef.offsetHeight : 0;
 		if (filterRef) filterRef.style.top = `${headerHeight}px`;
 		if (cardContainerRef) cardContainerRef.style.top = `${headerHeight + problemsFilterHeight}px`;
-			
 	});
 </script>
 
@@ -27,12 +28,15 @@
 	{@render header()}
 </div>
 
-<div bind:this={cardContainerRef} class="sticky z-20 w-full bg-white pb-5">
-	<div class="mx-auto flex w-6/12 flex-row gap-8">
-		{@render statistics()}
+{#if !simple}
+	<div bind:this={cardContainerRef} class="sticky z-20 flex w-full flex-col gap-9 bg-white pb-5">
+		<div class="mx-auto flex w-6/12 flex-row gap-8">
+			{@render statistics()}
+		</div>
+		<div>
+			{@render filter()}
+		</div>
 	</div>
-</div>
-
-<div bind:this={filterRef} class="sticky z-20 bg-white">
-	{@render filter()}
-</div>
+{/if}
+<!-- 
+<div bind:this={filterRef} class="sticky z-20 w-full bg-white"></div> -->

@@ -72,10 +72,10 @@ export class ProblemService {
 		return response;
 	}
 
-	async uploadImage(uid: string, pid: string, file: File) {
+	async uploadImage(uid: string, pcid: string, file: File) {
 		const form = new FormData();
 		form.append('uid', uid);
-		form.append('pid', pid);
+		form.append('pcid', pcid);
 		form.append('file', file);
 
 		const options = {

@@ -3,7 +3,7 @@ import { Socket, type Channel } from 'phoenix';
 export class SocketService {
 	private socket: Socket;
 	private channel: Channel;
-	private api: string = 'ws://localhost:4000';
+	private api: string = 'ws://localhost:4001';
 
 	constructor(id: string) {
 		this.socket = new Socket(`${this.api}/socket`, {});
