@@ -28,6 +28,8 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 export const actions = {
 	upload: async ({ cookies, request }) => {
 		const formData = Object.fromEntries(await request.formData());
+
+		console.log('formData', formData);
 		if (
 			!(formData.fileToUpload as File).name ||
 			(formData.fileToUpload as File).name === 'undefined'
@@ -38,13 +40,22 @@ export const actions = {
 			});
 		}
 
-		// get data
-		const name = formData.name as string;
+		// get id's if they exist
+		let pcid: string = "";
+		if (formData.pcid) {
+			pcid = formData.pcid as string; // problem card id
+		}
+
+		// get file 
 		const file = formData.fileToUpload as File;
+
+		console.log('pcid', pcid);
+		console.log('file', file);
+
 
 		let problemService: ProblemService = ProblemService.getInstance('');
 
-		const result = await problemService.uploadImage('','', file);
+		const result = await problemService.uploadImage("1", pcid, file);
 
 		return result;
 	}

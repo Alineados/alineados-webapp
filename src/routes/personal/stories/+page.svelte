@@ -11,7 +11,7 @@
 
 <PersonalHeader>
 	{#snippet header()}
-		<StoryHeader />
+		<StoryHeader status="new" />
 	{/snippet}
 
 	{#snippet statistics()}
@@ -19,15 +19,15 @@
 	{/snippet}
 
 	{#snippet filter()}
-		<!-- <StoryFilter /> -->
+		<StoryFilter />
 	{/snippet}
 </PersonalHeader>
 
+<!-- Content scrollable in Y -->
 <div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
-
-	<div class="flex flex-col  gap-3">
+	<div class="flex flex-col gap-3">
 		<p class="text-xl font-semibold text-alineados-gray-700">Testimonio</p>
-	
+
 		<div class="flex flex-row gap-5">
 			{#each Array(2) as i}
 				<CustomCard
@@ -39,7 +39,7 @@
 					{#snippet header()}
 						<div class="relative h-24 w-full">
 							<img
-								src=""
+								src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VARoRKXUzQbegeeDDHADCUHMWzKVe7.png"
 								alt="Ocean wave"
 								class="h-full w-full rounded-t-lg bg-alineados-blue-300 object-cover"
 							/>
@@ -51,7 +51,7 @@
 							</button>
 						</div>
 					{/snippet}
-	
+
 					{#snippet content()}
 						<div class="flex flex-col gap-4 px-4 pb-3 pt-4">
 							<p class="h-14 text-base font-semibold text-alineados-blue-800">
@@ -59,7 +59,7 @@
 							</p>
 						</div>
 					{/snippet}
-	
+
 					{#snippet footer()}
 						<div class="flex w-full justify-between px-4 pb-4">
 							<div class="space-y-1">
@@ -80,9 +80,9 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col  gap-3">
+	<div class="flex flex-col gap-3">
 		<p class="text-xl font-semibold text-alineados-gray-700">Conversaciones</p>
-	
+
 		<div class="flex flex-row gap-5">
 			{#each Array(3) as i}
 				<CustomCard
@@ -92,11 +92,11 @@
 					headerClass="justify-between"
 				>
 					{#snippet header()}
-						<div class="relative h-24 w-full">
+						<div class="relative aspect-[5/1] h-24 w-full overflow-hidden" role="img">
 							<img
-								src=""
+								src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VARoRKXUzQbegeeDDHADCUHMWzKVe7.png"
 								alt="Ocean wave"
-								class="h-full w-full rounded-t-lg bg-alineados-blue-300 object-cover"
+								class="h-full w-full object-cover object-center"
 							/>
 							<button
 								class="absolute right-1 top-1 rounded-full p-1 transition-colors"
@@ -106,7 +106,7 @@
 							</button>
 						</div>
 					{/snippet}
-	
+
 					{#snippet content()}
 						<div class="flex flex-col gap-4 px-4 pb-3 pt-4">
 							<p class="h-14 text-base font-semibold text-alineados-blue-800">
@@ -114,7 +114,7 @@
 							</p>
 						</div>
 					{/snippet}
-	
+
 					{#snippet footer()}
 						<div class="flex w-full justify-between px-4 pb-4">
 							<div class="space-y-1">

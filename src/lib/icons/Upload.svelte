@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-
-	let { styleTw = 'size-6' } = $props();
+	import { pcid } from '$lib/stores';
+	import Pencil from './Pencil.svelte';
+	let {
+		styleTw = 'size-6',
+		styles = 'pt-3',
+		changeIcon = false
+	}: {
+		styleTw?: string;
+		styles?: string;
+		changeIcon?: boolean;
+	} = $props();
 
 	let fileInput: HTMLInputElement;
 	let files: FileList | null = $state(null);
@@ -31,7 +40,6 @@
 	enctype="multipart/form-data"
 	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 		return async ({ result, update }) => {
-			
 			console.log('result', result);
 
 			if (result.type === 'failure' && result.status === 400) {
@@ -58,6 +66,7 @@
 		};
 	}}
 >
+	<input type="hidden" name="pcid" value={$pcid} />
 	<input
 		bind:files
 		bind:this={fileInput}
@@ -70,33 +79,23 @@
 	/>
 </form>
 
-<!-- {#if files}
-	<div class="flex flex-row w-2/3 justify-end items-center gap-2">
-		<p class="text-xs text-alineados-gray-600">
-			Nombre:
-			{files[0].name}
-		</p>
-		<button
-			class="rounded-lg text-xs bg-alineados-blue-900 px-2 py-1 text-white transition duration-300 ease-in-out hover:shadow-lg"
+<button aria-label="Upload" class={styles} onclick={triggerFileInput}>
+	{#if changeIcon}
+		<Pencil {styleTw} simple={false} />
+	{:else}
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+			class={styleTw}
 		>
-			Subir
-		</button>
-	</div>
-{:else}
-{/if} -->
-<button aria-label="Upload" class="pt-3" onclick={triggerFileInput}>
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		fill="none"
-		viewBox="0 0 24 24"
-		stroke-width="1.5"
-		stroke="currentColor"
-		class={styleTw}
-	>
-		<path
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-		/>
-	</svg>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+			/>
+		</svg>
+	{/if}
 </button>

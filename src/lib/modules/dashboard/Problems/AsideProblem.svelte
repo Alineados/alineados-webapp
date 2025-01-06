@@ -19,14 +19,13 @@
 	});
 </script>
 
-<div class="flex w-2/3 flex-col  gap-3">
+<div class="flex w-2/3 flex-col gap-3">
 	<div class="flex w-full justify-between px-2">
-		<div class="flex  items-center gap-1">
+		<div class="flex items-center gap-1">
 			<Image styleTw="size-5" />
 			<p class="text-base font-medium text-alineados-gray-600">Recuerdos</p>
 		</div>
-		<Upload styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900" />
-
+		<Upload changeIcon={false} styleTw="size-6 text-alineados-gray-600 hover:text-alineados-gray-900" />
 	</div>
 	<ImagesCarousel />
 	<RectangularCard contentClass="w-full">
