@@ -1,10 +1,10 @@
 import type {
 	OnboardingData,
-	ValidationError,
 	RegisterValidation,
 	PasswordValidation
 } from '$lib/interfaces/Onboarding.interface';
-import { ValidationType } from '$lib/interfaces/Onboarding.interface';
+import { ValidationType } from '$lib/interfaces/Validations.interface';
+import type { ValidationError } from '$lib/interfaces/Validations.interface';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OnboardingService } from '$lib/services/onboarding';

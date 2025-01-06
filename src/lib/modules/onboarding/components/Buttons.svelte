@@ -3,12 +3,12 @@
 	import { goto } from '$app/navigation';
 	import type {
 		OnboardingValidation,
-		ValidationError,
 		RegisterValidation,
 		EmailValidation,
 		PasswordValidation
 	} from '$lib/interfaces/Onboarding.interface';
-	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import type { ValidationError } from '$lib/interfaces/Validations.interface';
 	import { ButtonAction } from '$lib/interfaces/Onboarding.interface';
 
 	// Props

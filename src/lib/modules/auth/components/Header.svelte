@@ -6,7 +6,7 @@
 	<h1 class="text-2xl font-medium text-black">
 		{title}
 	</h1>
-	<p class="text-xs font-medium text-alineados-gray-900">
+	<p class="text-xs font-medium text-alineados-gray-800">
 		{description}
 	</p>
 </div>

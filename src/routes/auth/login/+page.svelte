@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Aside from '$lib/modules/auth/components/Aside.svelte';
-	import CarouselContent from '$lib/modules/auth/components/CarouselContent.svelte';
+	import AsideContent from '$lib/modules/auth/components/AsideContent.svelte';
 	import ContentSide from '$lib/modules/auth/components/ContentSide.svelte';
 	import Header from '$lib/modules/auth/components/Header.svelte';
 	import LoginForm from '$lib/modules/auth/LoginForm.svelte';
@@ -37,5 +37,5 @@
 </ContentSide>
 
 <Aside>
-	<CarouselContent />
+	<AsideContent />
 </Aside>

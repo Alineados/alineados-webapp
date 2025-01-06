@@ -7,8 +7,9 @@
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
 	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/Onboarding.interface';
-	import { ButtonAction, ValidationType } from '$lib/interfaces/Onboarding.interface';
+	import { ButtonAction } from '$lib/interfaces/Onboarding.interface';
 	import { onMount } from 'svelte';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 
 	// Initial state
 	let onboardingData = $state<OnboardingData>();
@@ -53,7 +54,7 @@
 					code: '',
 					number: ''
 				},
-				username: 'valvk'
+				username: ''
 			},
 			email: {
 				code: ''

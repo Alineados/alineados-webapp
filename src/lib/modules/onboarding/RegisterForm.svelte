@@ -169,7 +169,7 @@
 		<div class="flex gap-6">
 			<RegisterInput
 				label="Usuario"
-				inputKey="firstName"
+				inputKey="username"
 				placeholder="Ingrese su nombre de usuario"
 				type="text"
 				bind:validation

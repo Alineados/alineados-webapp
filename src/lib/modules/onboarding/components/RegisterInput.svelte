@@ -5,7 +5,9 @@
 	} from '$lib/interfaces/Onboarding.interface';
 	import { Input } from '$lib/shared/ui/input/index';
 	import { Label } from '$lib/shared/ui/label/index';
-	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+	import { getValidationMessage } from '$lib/utils/validationsMessage';
 
 	// Props
 	let {
@@ -55,7 +57,7 @@
 				if (keyString !== 'username') {
 					if (!textRegex.test(value)) {
 						isInvalid = true;
-						errorMessage = '*solo se aceptan letras';
+						errorMessage = 'nombre inválido';
 					}
 				} else {
 					if (!usernameRegex.test(value)) {
@@ -94,18 +96,10 @@
 		disabled={contactNotRequired && type === 'email'}
 	/>
 	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
-		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.register[keyString] === ValidationType.REQUIRED}
-				*campo requerido
-			{:else if validation.register[keyString] === ValidationType.INVALID_NAME}
-				*solo se aceptan letras
-			{:else if validation.register[keyString] === ValidationType.IS_TOO_LONG}
-				*máximo 20 caracteres
-			{:else if validation.register[keyString] === ValidationType.INVALID_EMAIL}
-				*correo electrónico inválido
-			{:else}
-				{errorMessage}
-			{/if}
-		</span>
+		<ErrorMessage isError>
+			{#snippet erroMessage()}
+				{getValidationMessage(validation.register[keyString])}
+			{/snippet}
+		</ErrorMessage>
 	{/if}
 </div>

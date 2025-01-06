@@ -2,6 +2,7 @@
 	import Check from '$lib/icons/CircleCheckSolid.svelte';
 	import Cross from '$lib/icons/Cross.svelte';
 
+	// Props
 	let {
 		checked = false,
 		text = '',
@@ -17,7 +18,7 @@
 	{#if checked}
 		<Check width={18} height={18} fill={textColor} />
 	{:else}
-		<Cross width={18} height={18} />
+		<Cross styleTw="h-2" />
 	{/if}
 	<p class="text-sm font-semibold" style="color: {checked ? textColor : '#7E7E7E'};">
 		{text}

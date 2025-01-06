@@ -1,41 +1,66 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import type { LoginData } from '$lib/interfaces/Auth.interface';
+import type { LoginData, LoginValidation } from '$lib/interfaces/Auth.interface';
 import { AuthService } from '$lib/services/auth';
+import { ValidationType, type ValidationError } from '$lib/interfaces/Validations.interface';
 
 const authService: AuthService = AuthService.getInstance('');
 
 export const actions = {
 	login: async ({ request }) => {
-		try {
-			// Get form data
-			const formData = await request.formData();
-			const loginDataJSON = formData.get('data')?.toString();
+		// Get form data
+		const formData = await request.formData();
+		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as LoginData;
+		console.log('Received login data:', dataJSON);
 
-			if (!loginDataJSON) {
-				console.error('No login data provided');
-				return fail(400, { error: 'No login data provided' });
+		// Basic fields validation
+		const basicFields: (keyof LoginValidation)[] = ['identifier', 'password'];
+
+		//  Validate the data
+		const invalidFields: ValidationError[] = [];
+
+		// Check if the fields are empty
+		basicFields.forEach((field) => {
+			if (!dataJSON[field]) {
+				console.log('Field is empty:', field);
+				invalidFields.push({
+					field,
+					errorType: ValidationType.REQUIRED
+				});
 			}
+		});
 
-			// Parse the JSON data
-			const loginData: LoginData = JSON.parse(loginDataJSON);
-
-			// Log the received data
-			console.log('Received login data:', loginData);
-
-			// Call the service
-			const result = await authService.loginUsers({
-				identifier: loginData.identifier,
-				password: loginData.password
-			});
-
-			console.log('Login result:', result);
-
-			// For now, just redirect
-			throw redirect(307, '/dashboard');
-		} catch (error) {
-			console.error('Login error:', error);
-			return fail(500, { error: 'Internal server error' });
+		// Return the error if there are any
+		if (invalidFields.length > 0) {
+			console.log('Invalid fields:', invalidFields);
+			return {
+				type: 'error',
+				validation: ValidationType.REQUIRED,
+				message: 'Check the fields'
+			};
 		}
+
+		console.log('Fields are valid');
+
+		// Call the service
+		const result = await authService.loginUsers({
+			identifier: dataJSON.identifier,
+			password: dataJSON.password
+		});
+
+		console.log('Login result:', result);
+
+		if (!result.data) {
+			return {
+				type: 'error',
+				validation: ValidationType.INVALID_CREDENTIALS,
+				message: 'Invalid credentials'
+			};
+		}
+
+		console.log('Login successful');
+
+		// For now, just redirect
+		redirect(307, '/dashboard');
 	}
 } satisfies Actions;

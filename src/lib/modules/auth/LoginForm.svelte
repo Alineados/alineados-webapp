@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import type { LoginData } from '$lib/interfaces/Auth.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 	import { Button } from '$lib/shared/ui/button/index';
 	import { Input } from '$lib/shared/ui/input/index';
 	import { Label } from '$lib/shared/ui/label/index';
-	import { cn } from '$lib/utils.js';
+	import EyeOff from '$lib/icons/BlockEye.svelte';
+	import Eye from '$lib/icons/NoBlockEye.svelte';
 
 	// Props
 	let {
@@ -16,16 +19,14 @@
 		data: LoginData;
 	} = $props();
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
+	// States
+	let isErrorer = $state(false);
+	let errorMessage = $state('');
 
-	let isLoading = false;
-	async function onSubmit() {
-		isLoading = true;
+	let isPasswordVisible = $state(false);
 
-		setTimeout(() => {
-			isLoading = false;
-		}, 3000);
+	function togglePasswordVisibility() {
+		isPasswordVisible = !isPasswordVisible;
 	}
 
 	// JSON representation of the onboarding data
@@ -38,91 +39,116 @@
 	$inspect(data);
 </script>
 
-<div class={cn('grid gap-6', className)}>
-	<!-- svelte-ignore event_directive_deprecated -->
+<div class="grid gap-6">
 	<form
-		on:submit|preventDefault={onSubmit}
 		method="POST"
 		use:enhance={({}) => {
 			return async ({ result }) => {
-				/*
 				// If there is an error in the form
 				if (result.type === 'success' && result.data && result.data.type === 'error') {
-					const fields = result.data.validations as ValidationError[];
-					fields.forEach((error: ValidationError) => {
-						const { field, errorType } = error as {
-							field: keyof RegisterValidation | keyof EmailValidation | keyof PasswordValidation;
-							errorType: ValidationType;
-						};
-
-						if (result.data?.button === 'register') {
-							validation.register[field as keyof RegisterValidation] = errorType;
-						} else if (result.data?.button === 'email') {
-							validation.email[field as keyof EmailValidation] = errorType;
-						} else {
-							validation.password[field as keyof PasswordValidation] = errorType;
-						}
-					});
+					console.log('Error in the form');
+					if (result.data.validation === ValidationType.REQUIRED) {
+						isErrorer = true;
+						errorMessage = 'Ambas credenciales requeridas.';
+					} else if (result.data.validation === ValidationType.INVALID_CREDENTIALS) {
+						isErrorer = true;
+						errorMessage = 'Credenciales inválidas.';
+					} else {
+						isErrorer = false;
+						errorMessage = '';
+					}
 				}
-				// If there is a redirect
+				// If there is a redirect to dashboard
 				if (result.type === 'redirect') {
+					console.log('Redirecting to dashboard...');
 					goto(result.location);
 				}
-				*/
 			};
 		}}
 	>
 		<input type="hidden" name="data" value={loginDataJSON} />
 		<div class="grid gap-2">
-			<div class="grid gap-4 pb-4">
-				<div class="flex flex-col gap-2">
+			<div class="grid gap-8 pb-4">
+				<div class="relative flex flex-col gap-2">
 					<Label class="text-xs font-normal text-black" for="text"
-						>Correo electrónico / Teléfono</Label
+						>Correo electrónico / Teléfono / Usuario</Label
 					>
 					<Input
-						class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 "
+						class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
 						id="text"
-						placeholder=""
+						placeholder="Ingrese su correo electrónico, teléfono o usuario"
 						type="text"
 						autocapitalize="none"
 						autocorrect="off"
-						disabled={isLoading}
 						bind:value={data.identifier}
 					/>
+					{#if false}
+						<ErrorMessage message="campo requerido" isError />
+					{/if}
 				</div>
 				<div class="flex flex-col">
-					<div class="flex flex-col gap-2">
+					<div class="relative flex flex-col gap-2">
 						<Label class="text-xs font-normal text-black" for="password">Contraseña</Label>
-						<Input
-							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 "
-							id="password"
-							placeholder=""
-							type="password"
-							autocapitalize="none"
-							autocomplete="current-password"
-							autocorrect="off"
-							disabled={isLoading}
-							bind:value={data.password}
-						/>
+
+						<div class="relative w-full">
+							<Input
+								class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
+								id="password"
+								placeholder="Ingrese su contraseña"
+								type={isPasswordVisible ? 'text' : 'password'}
+								autocapitalize="none"
+								autocomplete="current-password"
+								autocorrect="off"
+								bind:value={data.password}
+							/>
+							<button
+								type="button"
+								class="absolute inset-y-0 right-0 flex items-center pr-3"
+								onclick={togglePasswordVisibility}
+							>
+								{#if isPasswordVisible}
+									<EyeOff class="h-5 w-5 text-alineados-gray-500" />
+								{:else}
+									<Eye class="h-5 w-5 text-alineados-gray-500" />
+								{/if}
+							</button>
+						</div>
+
+						{#if false}
+							<ErrorMessage message="campo requerido" isError />
+						{/if}
 					</div>
 					<Button
 						href="./change-password"
 						variant="ghost"
-						class="cursor-pointer self-end p-0 text-xs font-normal text-black hover:underline "
+						class="cursor-pointer self-end  p-0 text-xs font-normal text-black hover:underline"
 						>¿Olvidaste tu contraseña?</Button
 					>
+					{#if isErrorer}
+						<div class="flex items-center gap-2 rounded-md bg-red-50 p-3 text-sm text-red-500">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-5 w-5"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+							<span>{errorMessage}</span>
+						</div>
+					{/if}
 				</div>
 			</div>
+
 			<Button
 				type="submit"
-				disabled={isLoading}
-				class="bg-alineados_green rounded-lg text-sm font-normal  text-white hover:bg-green-600"
+				class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
 				formaction={`?/login`}
 			>
-				{#if isLoading}
-					<!-- <Icons.spinner class="mr-2 h-4 w-4 animate-spin" /> -->
-					Cargando...
-				{/if}
 				Ingresar
 			</Button>
 		</div>
@@ -144,12 +170,7 @@
 			class="border-none bg-alineados-gray-100 text-xs font-normal text-black hover:bg-alineados-gray-200"
 			disabled={true}
 		>
-			{#if isLoading}
-				<!-- <Icons.spinner class="mr-2 h-4 w-4 animate-spin" /> -->
-				Cargando...
-			{:else}
-				<Google class="mr-2 h-4 w-4" />
-			{/if}
+			<Google class="mr-2 h-4 w-4" />
 			Ingresa con Google
 		</Button>
 		<Button
@@ -158,12 +179,7 @@
 			class="border-none bg-alineados-gray-100 text-xs font-normal text-black hover:bg-alineados-gray-200"
 			disabled={true}
 		>
-			{#if isLoading}
-				<!-- <Icons.spinner class="mr-2 h-4 w-4 animate-spin" /> -->
-				Cargando...
-			{:else}
-				<Facebook class="mr-2 h-4 w-4" />
-			{/if}
+			<Facebook class="mr-2 h-4 w-4" />
 			Ingresa con Facebook
 		</Button>
 	</div>

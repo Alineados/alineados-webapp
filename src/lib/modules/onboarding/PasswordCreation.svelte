@@ -3,7 +3,7 @@
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
 	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
-	import { ValidationType } from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 
 	// Props
 	let {
