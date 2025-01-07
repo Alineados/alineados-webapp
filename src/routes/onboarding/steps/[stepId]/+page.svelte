@@ -32,8 +32,8 @@
 				code: ValidationType.ALL_GOOD
 			},
 			password: {
-				password: ValidationType.ALL_GOOD,
-				confirmPassword: ValidationType.ALL_GOOD
+				password: [],
+				confirmPassword: []
 			}
 		};
 		onboardingData = {

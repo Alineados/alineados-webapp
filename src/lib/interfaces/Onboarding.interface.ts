@@ -72,6 +72,6 @@ export type EmailValidation = {
 
 // Password verification validation interface
 export type PasswordValidation = {
-	password: ValidationType;
-	confirmPassword: ValidationType;
+	password: ValidationType[];
+	confirmPassword: ValidationType[];
 };

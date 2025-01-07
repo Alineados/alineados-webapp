@@ -1,22 +1,29 @@
 <script lang="ts">
 	import Check from '$lib/icons/CircleCheckSolid.svelte';
-	import Cross from '$lib/icons/Cross.svelte';
+	import Cross from '$lib/icons/CircleCrossSolid.svelte';
+	import type { ValidationType } from '$lib/interfaces/Validations.interface';
 
 	let {
-		strengthening = 1 // 1, 2, 3
+		strengthening = 1, // 1, 2, 3
+		validation = [] as ValidationType[]
 	}: {
 		strengthening?: number;
+		validation: ValidationType[];
 	} = $props();
+
+	let color = $derived(
+		validation.length !== 0 ? '#C90404' : strengthening === 3 ? '#7BB026' : '#7E7E7E'
+	);
 </script>
 
-<div class="flex items-center gap-2">
+<div class="flex items-center gap-2" style="color: {color}">
 	{#if strengthening !== 3}
-		<Cross width={18} height={18} />
+		<Cross styleTw="size-6" />
 	{:else}
-		<Check width={18} height={18} fill={'#7BB026'} />
+		<Check styleTw="size-6" />
 	{/if}
 
-	<p class="text-sm font-semibold" style="color: {strengthening === 3 ? '#7BB026' : '#7E7E7E'};">
+	<p class="text-sm font-semibold">
 		Fortaleza de la contraseña:
 		<span
 			class:text-[#D90D0D]={strengthening === 1 || strengthening === 0}

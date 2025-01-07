@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Cross from '$lib/icons/Cross.svelte';
+	import Cross from '$lib/icons/CircleCrossSolid.svelte';
 	import type { Snippet } from 'svelte';
 
 	// Props

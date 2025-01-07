@@ -35,9 +35,10 @@
 			.toLowerCase();
 	}
 
-	// Password evaluation
+	// Password evaluation in real time
 	function evaluatePassword() {
-		validation.password.password = ValidationType.ALL_GOOD;
+		validation.password.password = [];
+		validation.password.confirmPassword = [];
 
 		// Reset requirements and strengthening
 		if (passwordCreation.password.trim() === '') {
@@ -73,7 +74,7 @@
 
 	// Evaluate confirm password
 	function evaluateConfirmPassword() {
-		validation.password.confirmPassword = ValidationType.ALL_GOOD;
+		validation.password.confirmPassword = [];
 
 		if (passwordCreation.confirmPassword.trim() === '') return;
 
@@ -99,32 +100,33 @@
 		/>
 		<ul class="space-y-1">
 			<li>
-				<PasswordStrengthening {strengthening} />
+				<PasswordStrengthening {strengthening} validation={validation.password.password} />
 			</li>
 			<li>
 				<PasswordRequirement
 					checked={requirements.noNameOrEmail}
-					text="No puede contener tu nombre o dirección de correo electrónicos"
+					message="No puede contener tu nombre o dirección de correo electrónico."
+					type={ValidationType.IS_CONTAINS_NAME_EMAIL}
+					currentValidation={validation.password.password}
 				/>
 			</li>
 			<li>
-				<PasswordRequirement checked={requirements.minLength} text="Mínimo 8 caracteres" />
+				<PasswordRequirement
+					checked={requirements.minLength}
+					message="Mínimo 8 caracteres."
+					type={ValidationType.IS_TOO_SHORT}
+					currentValidation={validation.password.password}
+				/>
 			</li>
 			<li>
 				<PasswordRequirement
 					checked={requirements.hasNumberOrSymbol}
-					text="Contiene un número o símbolo"
+					message="Contiene un número o símbolo."
+					type={ValidationType.DONT_CONTAINS_SPECIAL_CHAR}
+					currentValidation={validation.password.password}
 				/>
 			</li>
 		</ul>
-
-		{#if validation.password.password !== ValidationType.ALL_GOOD}
-			<span class=" -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-				{#if validation.password.confirmPassword === ValidationType.REQUIRED}
-					*campo requerido
-				{/if}
-			</span>
-		{/if}
 	</div>
 
 	<div
@@ -140,18 +142,13 @@
 		/>
 		<ul class="space-y-1">
 			<li>
-				<PasswordRequirement checked={matchPasswords} text="Match de contraseñas" />
+				<PasswordRequirement
+					checked={matchPasswords}
+					message="Las contraseñas coinciden."
+					type={ValidationType.PASSWORDS_DONT_MATCH}
+					currentValidation={validation.password.confirmPassword}
+				/>
 			</li>
 		</ul>
-
-		{#if validation.password.confirmPassword !== ValidationType.ALL_GOOD}
-			<span class="-bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-				{#if validation.password.confirmPassword === ValidationType.REQUIRED}
-					*campo requerido
-				{:else if validation.password.confirmPassword === ValidationType.PASSWORDS_DONT_MATCH}
-					*las contraseñas no coinciden
-				{/if}
-			</span>
-		{/if}
 	</div>
 </div>

@@ -1,13 +1,17 @@
-import type {
-	OnboardingData,
-	RegisterValidation,
-	PasswordValidation
-} from '$lib/interfaces/Onboarding.interface';
+import type { OnboardingData, RegisterValidation } from '$lib/interfaces/Onboarding.interface';
 import { ValidationType } from '$lib/interfaces/Validations.interface';
 import type { ValidationError } from '$lib/interfaces/Validations.interface';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OnboardingService } from '$lib/services/onboarding';
+
+// Normalize string
+function normalizeString(str: string): string {
+	return str
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase();
+}
 
 // Create the service
 const authService: OnboardingService = OnboardingService.getInstance('');
@@ -261,31 +265,56 @@ export const actions = {
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
 
-		// Basic fields validation
-		const basicFields: (keyof PasswordValidation)[] = ['password', 'confirmPassword'];
+		// Check if password is empty
+		if (!dataJSON.password.password) {
+			invalidFields.push({
+				field: 'password',
+				errorType: ValidationType.IS_TOO_SHORT
+			});
+		} else if (dataJSON.password.password.length < 8) {
+			invalidFields.push({
+				field: 'password',
+				errorType: ValidationType.IS_TOO_SHORT
+			});
+		}
+
+		// Normalize password and user data
+		const normalizedPassword = normalizeString(dataJSON.password.password);
+
+		// Password validation for name and email
+		if (!dataJSON.password.password) {
+			invalidFields.push({
+				field: 'password',
+				errorType: ValidationType.IS_CONTAINS_NAME_EMAIL
+			});
+		} else if (
+			!normalizedPassword.includes(normalizeString(dataJSON.register.firstName)) &&
+			!normalizedPassword.includes(normalizeString(dataJSON.register.lastName)) &&
+			!normalizedPassword.includes(normalizeString(dataJSON.register?.email))
+		) {
+			invalidFields.push({
+				field: 'password',
+				errorType: ValidationType.IS_CONTAINS_NAME_EMAIL
+			});
+		}
+
+		// Password validation for special characters
+		if (!/[0-9!@#$%^&*]/.test(dataJSON.password.password)) {
+			invalidFields.push({
+				field: 'password',
+				errorType: ValidationType.DONT_CONTAINS_SPECIAL_CHAR
+			});
+		}
 
 		// Check if the fields are empty
-		basicFields.forEach((field) => {
-			if (!dataJSON.password[field]) {
-				invalidFields.push({
-					field,
-					errorType: ValidationType.REQUIRED
-				});
-			}
-		});
-
-		// Confirm password validation
-		const hasConfirmPasswordRequiredError = invalidFields.some(
-			(error) => error.field === 'confirmPassword' && error.errorType === ValidationType.REQUIRED
-		);
-
-		if (!hasConfirmPasswordRequiredError && dataJSON.password.confirmPassword) {
-			if (dataJSON.password.password !== dataJSON.password.confirmPassword) {
-				invalidFields.push({
-					field: 'confirmPassword',
-					errorType: ValidationType.PASSWORDS_DONT_MATCH
-				});
-			}
+		if (
+			!dataJSON.password.confirmPassword ||
+			dataJSON.password.password !== dataJSON.password.confirmPassword
+		) {
+			invalidFields.push({
+				field: 'confirmPassword',
+				errorType: ValidationType.PASSWORDS_DONT_MATCH
+			});
 		}
 
 		// Return the error if there are any

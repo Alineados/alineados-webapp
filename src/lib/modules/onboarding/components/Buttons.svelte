@@ -55,7 +55,11 @@
 					} else if (result.data?.button === 'email') {
 						validation.email[field as keyof EmailValidation] = errorType;
 					} else {
-						validation.password[field as keyof PasswordValidation] = errorType;
+						if (field === 'password') {
+							validation.password.password.push(errorType);
+						} else {
+							validation.password.confirmPassword.push(errorType);
+						}
 					}
 				});
 			}

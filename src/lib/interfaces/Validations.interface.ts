@@ -23,7 +23,8 @@ export enum ValidationType {
 	INVALID_CODE = 'isInvalidCode',
 
 	// Password validation
-	INVALID_PASSWORD = 'isInvalidPassword',
+	IS_CONTAINS_NAME_EMAIL = 'isContainsNameEmail',
+	DONT_CONTAINS_SPECIAL_CHAR = 'dontContainsSpecialChar',
 	PASSWORDS_DONT_MATCH = 'passwordsDontMatch',
 
 	// Login validation
