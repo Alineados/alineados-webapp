@@ -1,6 +1,7 @@
 <script lang="ts">
 	import NewButton from "../NewButton.svelte";
 
+	// import NewStoryButton from './NewStoryButton.svelte';
 
 	let {
 		status,
@@ -15,7 +16,7 @@
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<a href="/personal/stories" class="text-alineados-gray-600 hover:underline">Personal</a>
 		<span class="mx-1">/</span>
-		<span class="text-alineados-orange-900">Relatos</span>
+		<span class="text-alineados-orange-900">Pensamientos</span>
 		{#if status === 'edit'}
 			<span class="mx-1">/</span>
 			<span class="text-alineados-orange-900">{title}</span>
@@ -27,25 +28,23 @@
 		<div class="flex items-center gap-2 basis-3/4 ">
 			{#if status === 'edit'}
 				<input
-					placeholder="Ingresa el titulo del nuevo relato"
+					placeholder="Ingresa el titulo del nuevo pensamiento"
 					type="text"
 					maxlength="40"
 					bind:value={title}
 					class="border-none bg-transparent w-full text-5xl font-bold text-alineados-gray-900 focus:outline-none"
 				/>
 			{:else}
-				<p class="text-4xl font-bold text-alineados-gray-900">Relatos</p>
+				<p class="text-4xl font-bold text-alineados-gray-900">Pensamientos</p>
 				<div class="ml-5 flex items-center gap-3"></div>
 			{/if}
 		</div>
 
 		<div class="flex flex-row gap-4 self-start basis-1/4 justify-end pt-2">
 			{#if status === 'new'}
-				<NewButton status="new" title="Nuevo Relato" />
+				<NewButton status="new" title="Nuevo Pensamiento" />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Guardar" />
-			{:else if status === 'see'}
-				<NewButton status="see" title="Editar" />
 			{/if}
 		</div>
 	</div>

@@ -6,11 +6,13 @@
 		text,
 		type,
 		selected = $bindable(),
+		showRow = true,
 		triggerFunction
 	}: {
 		text: string;
 		type: 'simple' | 'complex';
 		selected?: boolean;
+		showRow?: boolean;
 		triggerFunction?: () => void;
 	} = $props();
 
@@ -29,20 +31,22 @@
 	onclick={selectItem}
 >
 	{#if type === 'complex'}
-		<div class="flex flex-row items-center justify-center gap-2">
+		<div class="flex flex-row items-center justify-center gap-2 px-2">
 			<span class="text-sm font-medium">{text}</span>
-			{#if selected}
-				<ChevronDown
-					styleTw={`size-4 group-hover:text-white ${
-						selected ? 'text-alineados-gray-50' : 'text-alineados-gray-800'
-					}`}
-				/>
-			{:else}
-				<ChevronRight
-					styleTw={`size-4 group-hover:text-white ${
-						selected ? 'text-alineados-gray-50' : 'text-alineados-gray-800'
-					}`}
-				/>
+			{#if showRow}
+				{#if selected}
+					<ChevronDown
+						styleTw={`size-4 group-hover:text-white ${
+							selected ? 'text-alineados-gray-50' : 'text-alineados-gray-800'
+						}`}
+					/>
+				{:else}
+					<ChevronRight
+						styleTw={`size-4 group-hover:text-white ${
+							selected ? 'text-alineados-gray-50' : 'text-alineados-gray-800'
+						}`}
+					/>
+				{/if}
 			{/if}
 		</div>
 	{:else}

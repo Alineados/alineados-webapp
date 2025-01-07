@@ -2,7 +2,7 @@
 	import Pencil from '$lib/icons/Pencil.svelte';
 	import Plus from '$lib/icons/Plus.svelte';
 	import Save from '$lib/icons/Save.svelte';
-	let { status }: { status: 'new' | 'edit' | 'see' } = $props();
+	let { status, title }: { status: 'new' | 'edit' | 'see'; title: string } = $props();
 </script>
 
 <button
@@ -11,12 +11,14 @@
 >
 	{#if status === 'new'}
 		<Plus styleTw="size-4" />
-		<p class="text-xs font-medium">Nuevo testimonio</p>
+		<p class="text-xs font-medium">
+			{title}
+		</p>
 	{:else if status === 'edit'}
 		<Save styleTw="size-4" />
-		<p class="text-xs font-medium">Guardar</p>
+		<p class="text-xs font-medium">{title}</p>
 	{:else if status === 'see'}
 		<Pencil styleTw="size-4" />
-		<p class="text-xs font-medium">Editar</p>
+		<p class="text-xs font-medium">{title}</p>
 	{/if}
 </button>
