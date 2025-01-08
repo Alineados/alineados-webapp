@@ -13,11 +13,13 @@ export interface PillarsAndCategories {
 export interface DataPillar {
 	id: string;
 	name: string;
+	label: string;
 	categories: Categories[];
 }
 
 export interface Categories {
 	id: string;
 	name: string;
+	label: string;
 	active: boolean;
 }

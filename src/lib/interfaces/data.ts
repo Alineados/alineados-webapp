@@ -4,94 +4,112 @@ import type { PillarsAndCategories } from "./Pillar.interface";
 export const Pillars: PillarsAndCategories = {
 	health: {
 		id: '1',
-		name: 'Salud',
+		name: 'health',
+		label: 'Salud',
 		categories: [
 			{
 				id: '1',
-				name: 'Física',
+				label: 'Física',
+				name: 'physical',
 				active: true
 			},
 			{
 				id: '2',
-				name: 'Mental',
+				label: 'Mental',
+				name: 'mental',
 				active: false
 			}
 		]
 	},
 	relational: {
 		id: '2',
-		name: 'Relaciones',
+		label: 'Relaciones',
+		name: 'relational',
 		categories: [
 			{
 				id: '1',
-				name: 'Propias',
+				label: 'Propias',
+				name: 'own',
 				active: true
 			},
 			{
 				id: '2',
-				name: 'Familiar',
+				label: 'Familiar',
+				name: 'family',
 				active: true
 			},
 			{
 				id: '3',
-				name: 'Amorosa',
+				label: 'Amorosa',
+				name: 'love',
 				active: true
 			},
 			{
 				id: '4',
-				name: 'Amigos',
+				label: 'Amigos',
+				name: 'friends',
 				active: false
 			},
 			{
 				id: '5',
-				name: 'Conocidos',
+				label: 'Conocidos',
+				name: 'acquaintances',
 				active: true
 			},
 			{
 				id: '6',
-				name: 'Desconocidos',
+				label: 'Desconocidos',
+				name: 'strangers',
 				active: true
 			}
 		]
 	},
 	vocational: {
 		id: '3',
-		name: 'Vocaciones',
+		label: 'Vocaciones',
+		name: 'vocational',
 		categories: [
 			{
 				id: '1',
-				name: 'Estudios',
+				label: 'Estudios',
+				name: 'studies',
 				active: true
 			},
 			{
 				id: '2',
-				name: 'Pasatiempos',
+				label: 'Pasatiempos',
+				name: 'hobbies',
 				active: true
 			},
 			{
 				id: '3',
-				name: 'Trabajo Propio',
+				label: 'Trabajo Propio',
+				name: 'ownWork',
 				active: true
 			},
 			{
 				id: '4',
-				name: 'Trabajo Terceros',
+				label: 'Trabajo Terceros',
+				name: 'thirdPartyWork',
 				active: false
 			},
 			{
 				id: '5',
-				name: 'Bienes Materiales',
+				label: 'Bienes Materiales',
+				name: 'materialGoods',
 				active: true
 			}
 		]
 	},
 	spiritual: {
 		id: '4',
-		name: 'Espiritual',
+		name: 'spiritual',
+		label: 'Espiritual',
 		categories: [
 			{
 				id: '1',
-				name: 'Espiritual',
+				label: 'Espiritual',
+				name: 'spiritual',
 				active: true
 			}
 		]
