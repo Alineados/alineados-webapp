@@ -1,5 +1,5 @@
 import { redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import type { LoginData, LoginValidation } from '$lib/interfaces/Auth.interface';
 import { AuthService } from '$lib/services/auth';
 import { ValidationType, type ValidationError } from '$lib/interfaces/Validations.interface';
@@ -64,3 +64,13 @@ export const actions = {
 		redirect(307, '/dashboard');
 	}
 } satisfies Actions;
+
+export const load: PageServerLoad = ({ url }) => {
+	const uid = url.searchParams.get('uid');
+
+	return {
+		post: {
+			uid
+		}
+	};
+};

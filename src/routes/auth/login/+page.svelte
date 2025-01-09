@@ -3,6 +3,9 @@
 	import type { LoginData } from '$lib/interfaces/Auth.interface';
 	import { onMount } from 'svelte';
 	import Header from '$lib/modules/auth/components/Header.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	// Initial state
 	let loginData = $state<LoginData>();
@@ -27,6 +30,6 @@
 	description="Hoy es un nuevo día, es tu día. 
 	Inicia sesión para comenzar a gestionar tu alineación"
 />
-{#if loginData}
-	<LoginForm bind:data={loginData} bind:dataJSON />
+{#if loginData && data.post.uid}
+	<LoginForm bind:data={loginData} bind:dataJSON bind:uid={data.post.uid} />
 {/if}

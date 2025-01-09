@@ -14,10 +14,12 @@
 	// Props
 	let {
 		data = $bindable(),
-		dataJSON = $bindable()
+		dataJSON = $bindable(),
+		uid = $bindable()
 	}: {
 		data: LoginData;
 		dataJSON: string;
+		uid: string;
 	} = $props();
 
 	// States
@@ -31,6 +33,46 @@
 	}
 
 	$inspect(data);
+
+	let loading = false;
+	let error = '';
+
+	async function post() {
+		if (!data.identifier || !data.password) {
+			error = 'Por favor, rellena todos los campos';
+			return;
+		}
+
+		loading = true;
+		//const res = await fetch("https://oidc.velticare.com/interaction/" +uid+ "/login"⁠, {
+		const res = await fetch(
+			'https://smw52p39-3000.use2.devtunnels.ms/interaction/' + uid + '/login',
+			{
+				method: 'POST',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					email: data.identifier,
+					password: data.password
+				})
+			}
+		);
+		console.log(res);
+
+		if (res.status == 200) {
+			const response = await res.json();
+			window.location.href = response.redirectTo;
+			loading = false;
+		} else if (res.status == 204) {
+			error = 'Credenciales incorrectas';
+		} else {
+			loading = false;
+			error = 'Ha ocurrido un error';
+		}
+		loading = false;
+	}
 </script>
 
 <div class="grid gap-6">
@@ -131,9 +173,9 @@
 			</div>
 
 			<Button
-				type="submit"
 				class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
-				formaction={`?/login`}
+				onclick={post}
+				type="button"
 			>
 				Ingresar
 			</Button>
