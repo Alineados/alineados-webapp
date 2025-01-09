@@ -1,3 +1,5 @@
+import type { ValidationType } from './Validations.interface';
+
 // Button actions
 export const ButtonAction = new Map([
 	['1', 'register'],
@@ -20,6 +22,7 @@ export interface PhoneNumber {
 }
 
 export type Register = {
+	contactNotRequired: boolean;
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -28,6 +31,7 @@ export type Register = {
 	birthday: string;
 	phoneNumber: PhoneNumber;
 	whatsappNumber: PhoneNumber;
+	username: string;
 };
 
 // Email verification interface
@@ -58,6 +62,7 @@ export type RegisterValidation = {
 	birthday: ValidationType;
 	phoneNumber: ValidationType;
 	whatsappNumber: ValidationType;
+	username: ValidationType;
 };
 
 // Email verification validation interface
@@ -67,34 +72,6 @@ export type EmailValidation = {
 
 // Password verification validation interface
 export type PasswordValidation = {
-	password: ValidationType;
-	confirmPassword: ValidationType;
-};
-
-// Enum for validation types
-export enum ValidationType {
-	// Default validation
-	ALL_GOOD = 'allGood',
-	REQUIRED = 'isRequired',
-
-	// Register validation
-	INVALID_NAME = 'isInvalidName',
-	IS_TOO_LONG = 'isTooLong',
-	INVALID_EMAIL = 'isInvalidEmail',
-	REQUIRED_PHONE_CODE = 'isRequiredPhoneCode',
-	INVALID_PHONE_NUMBER = 'isNumberInvalid',
-
-	// Email validation
-	IS_TOO_SHORT = 'isTooShort',
-	INVALID_CODE = 'isInvalidCode',
-
-	// Password validation
-	INVALID_PASSWORD = 'isInvalidPassword',
-	PASSWORDS_DONT_MATCH = 'passwordsDontMatch'
-}
-
-// Validation error for server response
-export type ValidationError = {
-	field: keyof RegisterValidation | keyof EmailValidation | keyof PasswordValidation;
-	errorType: ValidationType;
+	password: ValidationType[];
+	confirmPassword: ValidationType[];
 };

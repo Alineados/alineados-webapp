@@ -1,12 +1,6 @@
 import { endpoints } from './endpoints';
 import { request, type Response } from './http';
 
-// Interfaces
-interface UserEmailVerification {
-	userName: string;
-	email: string;
-}
-
 export class AuthService {
 	private static instance: AuthService;
 	private _host: string = endpoints.local.auth;
@@ -31,9 +25,9 @@ export class AuthService {
 	}
 
 	// Methods
-	public async sendEmailVerification(userData: UserEmailVerification): Promise<Response> {
-		const url = `${this._url}/send-email-verification`;
-		const response: Response = await request(url, 'POST', userData, this._token);
+	public async loginUsers(body: any): Promise<Response> {
+		const url = `${this._url}/login`;
+		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}

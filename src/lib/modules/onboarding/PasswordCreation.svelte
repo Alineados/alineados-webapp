@@ -1,16 +1,24 @@
 <script lang="ts">
-	import type { OnboardingValidation, Password } from '$lib/interfaces/onbarding';
-	import Header from '$lib/modules/onboarding/components/Header.svelte';
+	import type {
+		OnboardingValidation,
+		Password,
+		Register
+	} from '$lib/interfaces/Onboarding.interface';
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
 	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 
 	// Props
 	let {
 		passwordCreation = $bindable(),
+		registerData = $bindable(),
 		validation = $bindable()
-	}: { passwordCreation: Password; validation: OnboardingValidation } = $props();
+	}: {
+		passwordCreation: Password;
+		registerData: Register;
+		validation: OnboardingValidation;
+	} = $props();
 
 	// Mock data
 	let userFirstName = 'José';
@@ -36,9 +44,10 @@
 			.toLowerCase();
 	}
 
-	// Password evaluation
+	// Password evaluation in real time
 	function evaluatePassword() {
-		validation.password.password = ValidationType.ALL_GOOD;
+		validation.password.password = [];
+		validation.password.confirmPassword = [];
 
 		// Reset requirements and strengthening
 		if (passwordCreation.password.trim() === '') {
@@ -52,9 +61,9 @@
 		// Normalize password and user data
 		const normalizedPassword = normalizeString(passwordCreation.password);
 		requirements.noNameOrEmail =
-			!normalizedPassword.includes(normalizeString(userFirstName)) &&
-			!normalizedPassword.includes(normalizeString(userLastName)) &&
-			!normalizedPassword.includes(normalizeString(userEmail));
+			!normalizedPassword.includes(normalizeString(registerData.firstName)) &&
+			!normalizedPassword.includes(normalizeString(registerData.lastName)) &&
+			!normalizedPassword.includes(normalizeString(registerData?.email));
 		requirements.minLength = passwordCreation.password.length >= 8;
 		requirements.hasNumberOrSymbol = /[0-9!@#$%^&*]/.test(passwordCreation.password);
 
@@ -74,7 +83,7 @@
 
 	// Evaluate confirm password
 	function evaluateConfirmPassword() {
-		validation.password.confirmPassword = ValidationType.ALL_GOOD;
+		validation.password.confirmPassword = [];
 
 		if (passwordCreation.confirmPassword.trim() === '') return;
 
@@ -87,7 +96,9 @@
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
-	<Header title="Creación de Contraseña" />
+	<div class="flex w-full border-b border-alineados-gray-200 pb-2">
+		<h2 class="text-3xl font-semibold text-alineados-gray-900">Datos Personales</h2>
+	</div>
 	<div class="mt-9 flex w-full flex-col gap-5">
 		<PasswordInput
 			label="Contraseña"
@@ -98,32 +109,33 @@
 		/>
 		<ul class="space-y-1">
 			<li>
-				<PasswordStrengthening {strengthening} />
+				<PasswordStrengthening {strengthening} validation={validation.password.password} />
 			</li>
 			<li>
 				<PasswordRequirement
 					checked={requirements.noNameOrEmail}
-					text="No puede contener tu nombre o dirección de correo electrónicos"
+					message="No puede contener tu nombre o dirección de correo electrónico."
+					type={ValidationType.IS_CONTAINS_NAME_EMAIL}
+					currentValidation={validation.password.password}
 				/>
 			</li>
 			<li>
-				<PasswordRequirement checked={requirements.minLength} text="Mínimo 8 caracteres" />
+				<PasswordRequirement
+					checked={requirements.minLength}
+					message="Mínimo 8 caracteres."
+					type={ValidationType.IS_TOO_SHORT}
+					currentValidation={validation.password.password}
+				/>
 			</li>
 			<li>
 				<PasswordRequirement
 					checked={requirements.hasNumberOrSymbol}
-					text="Contiene un número o símbolo"
+					message="Contiene un número o símbolo."
+					type={ValidationType.DONT_CONTAINS_SPECIAL_CHAR}
+					currentValidation={validation.password.password}
 				/>
 			</li>
 		</ul>
-
-		{#if validation.password.password !== ValidationType.ALL_GOOD}
-			<span class=" -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-				{#if validation.password.confirmPassword === ValidationType.REQUIRED}
-					*campo requerido
-				{/if}
-			</span>
-		{/if}
 	</div>
 
 	<div
@@ -139,18 +151,13 @@
 		/>
 		<ul class="space-y-1">
 			<li>
-				<PasswordRequirement checked={matchPasswords} text="Match de contraseñas" />
+				<PasswordRequirement
+					checked={matchPasswords}
+					message="Las contraseñas coinciden."
+					type={ValidationType.PASSWORDS_DONT_MATCH}
+					currentValidation={validation.password.confirmPassword}
+				/>
 			</li>
 		</ul>
-
-		{#if validation.password.confirmPassword !== ValidationType.ALL_GOOD}
-			<span class="-bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-				{#if validation.password.confirmPassword === ValidationType.REQUIRED}
-					*campo requerido
-				{:else if validation.password.confirmPassword === ValidationType.PASSWORDS_DONT_MATCH}
-					*las contraseñas no coinciden
-				{/if}
-			</span>
-		{/if}
 	</div>
 </div>

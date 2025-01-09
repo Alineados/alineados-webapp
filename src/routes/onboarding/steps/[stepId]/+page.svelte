@@ -6,9 +6,10 @@
 	import EmailVerification from '$lib/modules/onboarding/EmailVerification.svelte';
 	import PasswordCreation from '$lib/modules/onboarding/PasswordCreation.svelte';
 	import Welcome from '$lib/modules/onboarding/Welcome.svelte';
-	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/onbarding';
-	import { ButtonAction, ValidationType } from '$lib/interfaces/onbarding';
+	import type { OnboardingData, OnboardingValidation } from '$lib/interfaces/Onboarding.interface';
+	import { ButtonAction } from '$lib/interfaces/Onboarding.interface';
 	import { onMount } from 'svelte';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 
 	// Initial state
 	let onboardingData = $state<OnboardingData>();
@@ -24,23 +25,25 @@
 				countryOfBirth: ValidationType.ALL_GOOD,
 				birthday: ValidationType.ALL_GOOD,
 				phoneNumber: ValidationType.ALL_GOOD,
-				whatsappNumber: ValidationType.ALL_GOOD
+				whatsappNumber: ValidationType.ALL_GOOD,
+				username: ValidationType.ALL_GOOD
 			},
 			email: {
 				code: ValidationType.ALL_GOOD
 			},
 			password: {
-				password: ValidationType.ALL_GOOD,
-				confirmPassword: ValidationType.ALL_GOOD
+				password: [],
+				confirmPassword: []
 			}
 		};
 		onboardingData = {
 			register: {
+				contactNotRequired: false,
+
 				firstName: '',
 				lastName: '',
 				email: '',
 				countryOfResidence: '',
-
 				countryOfBirth: '',
 				birthday: '',
 				phoneNumber: {
@@ -50,7 +53,8 @@
 				whatsappNumber: {
 					code: '',
 					number: ''
-				}
+				},
+				username: ''
 			},
 			email: {
 				code: ''
@@ -82,7 +86,11 @@
 		{:else if stepId === '2'}
 			<EmailVerification bind:validation bind:emailVerification={onboardingData.email} />
 		{:else if stepId === '3'}
-			<PasswordCreation bind:validation bind:passwordCreation={onboardingData.password} />
+			<PasswordCreation
+				bind:validation
+				bind:passwordCreation={onboardingData.password}
+				bind:registerData={onboardingData.register}
+			/>
 		{:else if stepId === '4'}
 			<Welcome />
 		{/if}
