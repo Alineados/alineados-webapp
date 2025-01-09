@@ -1,7 +1,9 @@
 <script lang="ts">
-	import type { OnboardingValidation, EmailValidation } from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+	import type { OnboardingValidation, EmailValidation } from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
 	import * as InputOTP from '$lib/shared/ui/input-otp/index';
+	import { getValidationMessage } from '$lib/utils/validationsMessage';
 	import { REGEXP_ONLY_DIGITS } from 'bits-ui';
 
 	// Props
@@ -45,14 +47,10 @@
 	</InputOTP.Root>
 
 	{#if validation.email[keyString] !== ValidationType.ALL_GOOD}
-		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.email[keyString] === ValidationType.REQUIRED}
-				*campo requerido
-			{:else if validation.email[keyString] === ValidationType.IS_TOO_SHORT}
-				*código incompleto
-			{:else if validation.email[keyString] === ValidationType.INVALID_CODE}
-				*código inválido
-			{/if}
-		</span>
+		<ErrorMessage isError>
+			{#snippet erroMessage()}
+				{getValidationMessage(validation.email[keyString])}
+			{/snippet}
+		</ErrorMessage>
 	{/if}
 </div>

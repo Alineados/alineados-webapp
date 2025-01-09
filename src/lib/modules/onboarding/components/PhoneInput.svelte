@@ -12,8 +12,10 @@
 		OnboardingValidation,
 		RegisterValidation,
 		PhoneNumber
-	} from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+	import { getValidationMessage } from '$lib/utils/validationsMessage';
 
 	// Props
 	let {
@@ -21,13 +23,15 @@
 		label,
 		options = [],
 		value = $bindable(),
-		validation = $bindable()
+		validation = $bindable(),
+		contactNotRequired = false
 	}: {
 		inputKey: string;
 		label: string;
 		options: { value: string; label: string; flag: string }[];
 		value: PhoneNumber;
 		validation: OnboardingValidation;
+		contactNotRequired: boolean;
 	} = $props();
 
 	// Derived
@@ -93,13 +97,16 @@
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-2">
-	<Label class="text-lg font-semibold text-black" for={inputKey}>
+	<Label
+		class={`text-lg font-semibold ${contactNotRequired ? 'text-alineados-gray-300' : 'text-black'}`}
+		for={inputKey}
+	>
 		{label}
 	</Label>
 
 	<div class="flex">
 		<Popover.Root bind:open>
-			<Popover.Trigger bind:ref={triggerRef}>
+			<Popover.Trigger bind:ref={triggerRef} disabled={contactNotRequired}>
 				{#snippet child({ props })}
 					<Button
 						variant="outline"
@@ -162,6 +169,7 @@
 			autocorrect="off"
 			placeholder="+000"
 			oninput={validatePhoneNumber}
+			disabled={contactNotRequired}
 			bind:value={countryCode}
 		/>
 		<Input
@@ -172,21 +180,22 @@
 			autocapitalize="none"
 			autocorrect="off"
 			oninput={validatePhoneNumber}
+			disabled={contactNotRequired}
 			bind:value={phoneNumber}
 		/>
 	</div>
 
-	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
-		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			{#if validation.register[keyString] === ValidationType.REQUIRED_PHONE_CODE}
-				*código de país requerido
-			{:else if validation.register[keyString] === ValidationType.REQUIRED}
-				*campo requerido
-			{:else if validation.register[keyString] === ValidationType.INVALID_PHONE_NUMBER}
-				*número inválido
-			{:else}
+	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
+		<ErrorMessage isError>
+			{#snippet erroMessage()}
+				{getValidationMessage(validation.register[keyString])}
+			{/snippet}
+		</ErrorMessage>
+	{:else if isInvalid}
+		<ErrorMessage
+			>{#snippet erroMessage()}
 				{errorMessage}
-			{/if}
-		</span>
+			{/snippet}</ErrorMessage
+		>
 	{/if}
 </div>

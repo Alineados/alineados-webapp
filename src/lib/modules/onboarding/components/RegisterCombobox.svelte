@@ -7,8 +7,13 @@
 	import * as Popover from '$lib/shared/ui/popover/index.js';
 	import { Button } from '$lib/shared/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import type {
+		OnboardingValidation,
+		RegisterValidation
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+	import { getValidationMessage } from '$lib/utils/validationsMessage';
 
 	// Props
 	let {
@@ -105,8 +110,10 @@
 	</Popover.Root>
 
 	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
-		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			*campo requerido
-		</span>
+		<ErrorMessage isError>
+			{#snippet erroMessage()}
+				{getValidationMessage(validation.register[keyString])}
+			{/snippet}
+		</ErrorMessage>
 	{/if}
 </div>

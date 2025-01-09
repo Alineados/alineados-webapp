@@ -1,8 +1,13 @@
 <script lang="ts">
-	import type { OnboardingValidation, RegisterValidation } from '$lib/interfaces/onbarding';
+	import type {
+		OnboardingValidation,
+		RegisterValidation
+	} from '$lib/interfaces/Onboarding.interface';
 	import { Label } from '$lib/shared/ui/label/index';
 	import * as Select from '$lib/shared/ui/select/index';
-	import { ValidationType } from '$lib/interfaces/onbarding';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
+	import { getValidationMessage } from '$lib/utils/validationsMessage';
 
 	// Props
 	let {
@@ -142,8 +147,10 @@
 	</div>
 
 	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
-		<span class="absolute -bottom-3 left-1 text-xs text-[#C90404]" style="opacity: 1; height: 1em;">
-			*campo requerido
-		</span>
+		<ErrorMessage isError>
+			{#snippet erroMessage()}
+				{getValidationMessage(validation.register[keyString])}
+			{/snippet}
+		</ErrorMessage>
 	{/if}
 </div>

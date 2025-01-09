@@ -3,22 +3,22 @@
 	import { goto } from '$app/navigation';
 	import type {
 		OnboardingValidation,
-		ValidationError,
 		RegisterValidation,
 		EmailValidation,
 		PasswordValidation
-	} from '$lib/interfaces/onbarding';
-	import { ValidationType } from '$lib/interfaces/onbarding';
-	import { ButtonAction } from '$lib/interfaces/onbarding';
+	} from '$lib/interfaces/Onboarding.interface';
+	import { ValidationType } from '$lib/interfaces/Validations.interface';
+	import type { ValidationError } from '$lib/interfaces/Validations.interface';
+	import { ButtonAction } from '$lib/interfaces/Onboarding.interface';
 
 	// Props
 	let {
+		data = $bindable(),
 		action,
-		validation = $bindable(),
-		data = $bindable()
+		validation = $bindable()
 	}: {
-		action: string;
 		data: string;
+		action: string;
 		validation: OnboardingValidation;
 	} = $props();
 
@@ -35,8 +35,6 @@
 
 		goto(`/onboarding/steps/${previousStep}`);
 	}
-
-	$inspect({ action });
 </script>
 
 <form
@@ -52,12 +50,16 @@
 						errorType: ValidationType;
 					};
 
-					if (result.data?.button === 'register') {
+					if (result.data?.step === 'register') {
 						validation.register[field as keyof RegisterValidation] = errorType;
-					} else if (result.data?.button === 'email') {
+					} else if (result.data?.step === 'email') {
 						validation.email[field as keyof EmailValidation] = errorType;
-					} else {
-						validation.password[field as keyof PasswordValidation] = errorType;
+					} else if (result.data?.step === 'password') {
+						if (field === 'password') {
+							validation.password.password.push(errorType);
+						} else {
+							validation.password.confirmPassword.push(errorType);
+						}
 					}
 				});
 			}

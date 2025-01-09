@@ -1,22 +1,35 @@
 <script lang="ts">
-	import Aside from '$lib/modules/auth/components/Aside.svelte';
-	import Carousel from '$lib/modules/auth/components/Carousel.svelte';
-	import CarouselContent from '$lib/modules/auth/components/CarouselContent.svelte';
-	import ContentSide from '$lib/modules/auth/components/ContentSide.svelte';
-	import Header from '$lib/modules/auth/components/Header.svelte';
 	import LoginForm from '$lib/modules/auth/LoginForm.svelte';
+	import type { LoginData } from '$lib/interfaces/Auth.interface';
+	import { onMount } from 'svelte';
+	import Header from '$lib/modules/auth/components/Header.svelte';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
+
+	// Initial state
+	let loginData = $state<LoginData>();
+
+	onMount(() => {
+		loginData = {
+			identifier: '',
+			password: ''
+		};
+	});
+
+	// JSON representation of the onboarding data
+	let dataJSON = $state('');
+
+	$effect(() => {
+		dataJSON = JSON.stringify(loginData);
+	});
 </script>
 
-<ContentSide>
-	<Header
-		title="Bienvenido de nuevo a tu propia herramienta de vida"
-		description="Hoy es un nuevo día. Es tu día. 
-		Inicia sesión para comenzar a gestionar tu alineación"
-	/>
-	<LoginForm />
-</ContentSide>
-
-<Aside>
-	<CarouselContent />
-	<Carousel />
-</Aside>
+<Header
+	title="Bienvenido de nuevo a tu propia herramienta de vida"
+	description="Hoy es un nuevo día, es tu día. 
+	Inicia sesión para comenzar a gestionar tu alineación"
+/>
+{#if loginData && data.post.uid}
+	<LoginForm bind:data={loginData} bind:dataJSON bind:uid={data.post.uid} />
+{/if}
