@@ -11,7 +11,7 @@
 
 <button
 	onclick={onClick}
-	class="flex h-24 w-24 flex-col items-center justify-center gap-2 rounded-2xl border border-alineados-blue-100 bg-alineados-gray-50"
+	class="flex h-24 w-24 flex-col items-center justify-center gap-2 rounded-2xl border border-alineados-gray-100 bg-alineados-gray-50"
 	class:border-alineados-green-900={isActive}
 	class:bg-alineados-green-50={isActive}
 >

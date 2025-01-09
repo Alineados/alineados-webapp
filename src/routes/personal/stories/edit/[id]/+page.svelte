@@ -29,6 +29,12 @@
 
 	<!-- Form -->
 	<div class="flex flex-row mb-10">
+		<div class=" flex flex-row">
+
+		</div>
+		<div class="">
+
+		</div>
 		<PersonalSelect
 			subCategory={false}
 			list={[

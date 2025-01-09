@@ -1,10 +1,14 @@
 <script lang="ts">
+	import '../../../global.css';
 	import Document from '$lib/icons/Document.svelte';
 	import Microphone from '$lib/icons/Microphone.svelte';
 
 	import EditableButton from './EditableButton.svelte';
 
 	import DocumentText from '$lib/icons/DocumentText.svelte';
+	import RichTextComposer from './RichTextComposer.svelte';
+	import AudioComposer from './AudioComposer.svelte';
+	import FileComposer from './FileComposer.svelte';
 
 	let editType = $state<{
 		text: boolean;
@@ -59,4 +63,11 @@
 		</EditableButton>
 	</div>
 	<!-- Content -->
+	{#if editType.text}
+		<RichTextComposer />
+	{:else if editType.audio}
+		<AudioComposer />
+	{:else if editType.document}
+		<FileComposer />
+	{/if}
 </div>
