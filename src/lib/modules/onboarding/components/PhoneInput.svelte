@@ -185,11 +185,17 @@
 		/>
 	</div>
 
-	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
+	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<ErrorMessage isError>
 			{#snippet erroMessage()}
 				{getValidationMessage(validation.register[keyString])}
 			{/snippet}
 		</ErrorMessage>
+	{:else if isInvalid}
+		<ErrorMessage
+			>{#snippet erroMessage()}
+				{errorMessage}
+			{/snippet}</ErrorMessage
+		>
 	{/if}
 </div>

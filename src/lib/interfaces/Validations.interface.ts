@@ -10,16 +10,17 @@ export enum ValidationType {
 	// Default validation
 	ALL_GOOD = 'allGood',
 	REQUIRED = 'isRequired',
+	IS_TOO_LONG = 'isTooLong',
+	IS_TOO_SHORT = 'isTooShort',
 
 	// Register validation
 	INVALID_NAME = 'isInvalidName',
-	IS_TOO_LONG = 'isTooLong',
 	INVALID_EMAIL = 'isInvalidEmail',
 	REQUIRED_PHONE_CODE = 'isRequiredPhoneCode',
 	INVALID_PHONE_NUMBER = 'isNumberInvalid',
+	INVALID_USERNAME = 'isInvalidUsername',
 
 	// Email validation
-	IS_TOO_SHORT = 'isTooShort',
 	INVALID_CODE = 'isInvalidCode',
 
 	// Password validation

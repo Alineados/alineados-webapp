@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import type { LoginData } from '$lib/interfaces/Auth.interface';
@@ -14,9 +13,11 @@
 
 	// Props
 	let {
-		data = $bindable()
+		data = $bindable(),
+		dataJSON = $bindable()
 	}: {
 		data: LoginData;
+		dataJSON: string;
 	} = $props();
 
 	// States
@@ -29,13 +30,6 @@
 		isPasswordVisible = !isPasswordVisible;
 	}
 
-	// JSON representation of the onboarding data
-	let loginDataJSON = $state('');
-
-	$effect(() => {
-		loginDataJSON = JSON.stringify(data);
-	});
-
 	$inspect(data);
 </script>
 
@@ -46,7 +40,6 @@
 			return async ({ result }) => {
 				// If there is an error in the form
 				if (result.type === 'success' && result.data && result.data.type === 'error') {
-					console.log('Error in the form');
 					if (result.data.validation === ValidationType.REQUIRED) {
 						isErrorer = true;
 						errorMessage = 'Ambas credenciales requeridas.';
@@ -66,7 +59,7 @@
 			};
 		}}
 	>
-		<input type="hidden" name="data" value={loginDataJSON} />
+		<input type="hidden" name="data" value={dataJSON} />
 		<div class="grid gap-2">
 			<div class="grid gap-8 pb-4">
 				<div class="relative flex flex-col gap-2">
@@ -82,9 +75,6 @@
 						autocorrect="off"
 						bind:value={data.identifier}
 					/>
-					{#if false}
-						<ErrorMessage message="campo requerido" isError />
-					{/if}
 				</div>
 				<div class="flex flex-col">
 					<div class="relative flex flex-col gap-2">
@@ -113,13 +103,9 @@
 								{/if}
 							</button>
 						</div>
-
-						{#if false}
-							<ErrorMessage message="campo requerido" isError />
-						{/if}
 					</div>
 					<Button
-						href="./change-password"
+						href="./change-password/1"
 						variant="ghost"
 						class="cursor-pointer self-end  p-0 text-xs font-normal text-black hover:underline"
 						>¿Olvidaste tu contraseña?</Button

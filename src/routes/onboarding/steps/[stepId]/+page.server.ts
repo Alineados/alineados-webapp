@@ -5,6 +5,9 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OnboardingService } from '$lib/services/onboarding';
 
+// Create the service
+const authService: OnboardingService = OnboardingService.getInstance('');
+
 // Normalize string
 function normalizeString(str: string): string {
 	return str
@@ -13,20 +16,17 @@ function normalizeString(str: string): string {
 		.toLowerCase();
 }
 
-// Create the service
-const authService: OnboardingService = OnboardingService.getInstance('');
+// Regex
+const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$/;
+const phoneRegex = /^\d{0,}$/;
+const usernameRegex = /^\S{1,20}$/;
 
 export const actions = {
 	register: async (event) => {
 		const formData = await event.request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as OnboardingData;
 		console.log(dataJSON);
-
-		// Regex
-		const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
-		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$/;
-		const phoneRegex = /^\d{0,}$/;
-		const usernameRegex = /^\S{1,20}$/;
 
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
@@ -161,7 +161,7 @@ export const actions = {
 		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
-				button: 'register',
+				step: 'register',
 				validations: invalidFields,
 				message: 'Check the fields'
 			};
@@ -225,7 +225,7 @@ export const actions = {
 		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
-				button: 'email',
+				step: 'email',
 				validations: invalidFields,
 				message: 'Check the fields'
 			};
@@ -242,7 +242,7 @@ export const actions = {
 		if (!result.data) {
 			return {
 				type: 'error',
-				button: 'email',
+				step: 'email',
 				validations: [
 					{
 						field: 'code',
@@ -306,7 +306,7 @@ export const actions = {
 			});
 		}
 
-		// Check if the fields are empty
+		// Password validation for passwords match
 		if (
 			!dataJSON.password.confirmPassword ||
 			dataJSON.password.password !== dataJSON.password.confirmPassword
@@ -321,7 +321,7 @@ export const actions = {
 		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
-				button: 'password',
+				step: 'password',
 				validations: invalidFields,
 				message: 'Check the fields'
 			};

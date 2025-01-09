@@ -50,11 +50,11 @@
 						errorType: ValidationType;
 					};
 
-					if (result.data?.button === 'register') {
+					if (result.data?.step === 'register') {
 						validation.register[field as keyof RegisterValidation] = errorType;
-					} else if (result.data?.button === 'email') {
+					} else if (result.data?.step === 'email') {
 						validation.email[field as keyof EmailValidation] = errorType;
-					} else {
+					} else if (result.data?.step === 'password') {
 						if (field === 'password') {
 							validation.password.password.push(errorType);
 						} else {

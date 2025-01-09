@@ -86,7 +86,11 @@
 		{:else if stepId === '2'}
 			<EmailVerification bind:validation bind:emailVerification={onboardingData.email} />
 		{:else if stepId === '3'}
-			<PasswordCreation bind:validation bind:passwordCreation={onboardingData.password} />
+			<PasswordCreation
+				bind:validation
+				bind:passwordCreation={onboardingData.password}
+				bind:registerData={onboardingData.register}
+			/>
 		{:else if stepId === '4'}
 			<Welcome />
 		{/if}

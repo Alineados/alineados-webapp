@@ -1,5 +1,9 @@
 <script lang="ts">
-	import type { OnboardingValidation, Password } from '$lib/interfaces/Onboarding.interface';
+	import type {
+		OnboardingValidation,
+		Password,
+		Register
+	} from '$lib/interfaces/Onboarding.interface';
 	import PasswordInput from '$lib/modules/onboarding/components/PasswordInput.svelte';
 	import PasswordRequirement from '$lib/modules/onboarding/components/PasswordRequirement.svelte';
 	import PasswordStrengthening from './components/PasswordStrengthening.svelte';
@@ -8,8 +12,13 @@
 	// Props
 	let {
 		passwordCreation = $bindable(),
+		registerData = $bindable(),
 		validation = $bindable()
-	}: { passwordCreation: Password; validation: OnboardingValidation } = $props();
+	}: {
+		passwordCreation: Password;
+		registerData: Register;
+		validation: OnboardingValidation;
+	} = $props();
 
 	// Mock data
 	let userFirstName = 'José';
@@ -52,9 +61,9 @@
 		// Normalize password and user data
 		const normalizedPassword = normalizeString(passwordCreation.password);
 		requirements.noNameOrEmail =
-			!normalizedPassword.includes(normalizeString(userFirstName)) &&
-			!normalizedPassword.includes(normalizeString(userLastName)) &&
-			!normalizedPassword.includes(normalizeString(userEmail));
+			!normalizedPassword.includes(normalizeString(registerData.firstName)) &&
+			!normalizedPassword.includes(normalizeString(registerData.lastName)) &&
+			!normalizedPassword.includes(normalizeString(registerData?.email));
 		requirements.minLength = passwordCreation.password.length >= 8;
 		requirements.hasNumberOrSymbol = /[0-9!@#$%^&*]/.test(passwordCreation.password);
 

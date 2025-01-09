@@ -57,25 +57,24 @@
 				if (keyString !== 'username') {
 					if (!textRegex.test(value)) {
 						isInvalid = true;
-						errorMessage = 'nombre inválido';
+						errorMessage = 'solo se aceptan letras';
 					}
 				} else {
 					if (!usernameRegex.test(value)) {
 						isInvalid = true;
-						errorMessage = '*solo se aceptan letras y números';
+						errorMessage = 'solo se aceptan letras o números';
 					}
 				}
 
 				if (value.length > 20) {
 					isInvalid = true;
-					errorMessage = '*máximo 20 caracteres';
-				} else {
-					isInvalid = false;
-					errorMessage = '';
+					errorMessage = 'máximo 20 carácteres';
 				}
 			}
 		}
 	}
+
+	$inspect(isInvalid, errorMessage);
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-1">
@@ -95,11 +94,17 @@
 		oninput={validateInput}
 		disabled={contactNotRequired && type === 'email'}
 	/>
-	{#if isInvalid || validation.register[keyString] !== ValidationType.ALL_GOOD}
+	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<ErrorMessage isError>
 			{#snippet erroMessage()}
 				{getValidationMessage(validation.register[keyString])}
 			{/snippet}
 		</ErrorMessage>
+	{:else if isInvalid}
+		<ErrorMessage
+			>{#snippet erroMessage()}
+				{errorMessage}
+			{/snippet}</ErrorMessage
+		>
 	{/if}
 </div>
