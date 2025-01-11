@@ -1,12 +1,18 @@
 <script lang="ts">
-	import type { OnboardingValidation, Email } from '$lib/interfaces/Onboarding.interface';
+	import type { OnboardingValidation, Email, Register } from '$lib/interfaces/Onboarding.interface';
 	import CodeVerification from '$lib/modules/onboarding/components/CodeVerification.svelte';
 
 	// Props
 	let {
+		registerData = $bindable(),
+
 		emailVerification = $bindable(),
 		validation = $bindable()
-	}: { emailVerification: Email; validation: OnboardingValidation } = $props();
+	}: {
+		registerData: Register;
+		emailVerification: Email;
+		validation: OnboardingValidation;
+	} = $props();
 </script>
 
 <div class="flex h-full w-full flex-col items-center justify-center">
@@ -16,7 +22,7 @@
 			<span class="text-[#000000]"> Correo Electrónico</span>
 		</h2>
 		<p class="w-[400px] text-pretty text-center text-base font-medium text-[#000000]">
-			Hemos enviado un código a tu correo electrónico <strong>jose.penagos@alineado.org</strong>,
+			Hemos enviado un código a tu correo electrónico <strong>{registerData.email}</strong>,
 			ingrésalo para verificarlo
 		</p>
 	</div>

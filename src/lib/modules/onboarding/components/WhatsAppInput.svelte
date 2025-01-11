@@ -26,7 +26,8 @@
 		value = $bindable(),
 		pastPhoneNumber = $bindable(),
 		validation = $bindable(),
-		contactNotRequired = false
+		contactNotRequired = false,
+		isChecked = $bindable()
 	}: {
 		inputKey: string;
 		label: string;
@@ -35,6 +36,7 @@
 		pastPhoneNumber: PhoneNumber;
 		validation: OnboardingValidation;
 		contactNotRequired: boolean;
+		isChecked: boolean;
 	} = $props();
 
 	// Derived
@@ -42,7 +44,6 @@
 
 	// States
 	let placeholder = 'País';
-	let isChecked = $state(false);
 
 	let countryCode = $state(value.code);
 	let phoneNumber = $state(value.number);
@@ -69,11 +70,15 @@
 	// Update value object when either part changes
 	$effect(() => {
 		if (isChecked) {
+			// Required validation
+			Object.keys(validation.register).forEach((key) => {
+				if (key === inputKey) {
+					validation.register[keyString] = ValidationType.ALL_GOOD;
+				}
+			});
+
 			countryCode = pastPhoneNumber.code;
 			phoneNumber = pastPhoneNumber.number;
-		} else {
-			countryCode = '';
-			phoneNumber = '';
 		}
 	});
 
@@ -89,6 +94,9 @@
 
 	// Validation function
 	function validatePhoneNumber() {
+		// Reset validation
+		isInvalid = false;
+
 		// Required validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
@@ -102,10 +110,24 @@
 			errorMessage = '';
 		} else if (!phoneRegex.test(phoneNumber)) {
 			isInvalid = true;
-			errorMessage = '*solo se aceptan números';
-		} else {
+			errorMessage = 'solo se aceptan números';
+		}
+	}
+
+	// Add effect for contactNotRequired
+	$effect(() => {
+		if (contactNotRequired) {
+			countryCode = '';
+			phoneNumber = '';
 			isInvalid = false;
 			errorMessage = '';
+			validation.register[keyString] = ValidationType.ALL_GOOD;
+		}
+	});
+
+	function handleTriggerClick() {
+		if (isChecked) {
+			open = true;
 		}
 	}
 </script>
@@ -139,7 +161,11 @@
 
 	<div class="flex">
 		<Popover.Root bind:open>
-			<Popover.Trigger bind:ref={triggerRef} disabled={contactNotRequired}>
+			<Popover.Trigger
+				bind:ref={triggerRef}
+				disabled={contactNotRequired}
+				onclick={handleTriggerClick}
+			>
 				{#snippet child({ props })}
 					<Button
 						variant="outline"
@@ -197,24 +223,26 @@
 		<!-- Input to the number -->
 		<Input
 			class="w-1/6 rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-center text-base placeholder:text-alineados-gray-500"
-			id={`${inputKey}-code`}
+			id={`${keyString}-code`}
 			type="tel"
 			autocapitalize="none"
 			autocorrect="off"
 			placeholder="+000"
 			oninput={validatePhoneNumber}
 			disabled={contactNotRequired}
+			readonly={isChecked}
 			bind:value={countryCode}
 		/>
 		<Input
 			class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 text-base placeholder:text-alineados-gray-500"
-			id={`${inputKey}-number`}
+			id={`${keyString}-number`}
 			type="tel"
 			placeholder="Ingrese su número de celular"
 			autocapitalize="none"
 			autocorrect="off"
 			oninput={validatePhoneNumber}
 			disabled={contactNotRequired}
+			readonly={isChecked}
 			bind:value={phoneNumber}
 		/>
 	</div>

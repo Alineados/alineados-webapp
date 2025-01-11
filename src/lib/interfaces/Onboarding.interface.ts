@@ -21,6 +21,13 @@ export interface PhoneNumber {
 	number: string;
 }
 
+// Birthday interface
+export interface Birthday {
+	day: string;
+	month: string;
+	year: string;
+}
+
 export type Register = {
 	contactNotRequired: boolean;
 	firstName: string;
@@ -28,7 +35,7 @@ export type Register = {
 	email: string;
 	countryOfResidence: string;
 	countryOfBirth: string;
-	birthday: string;
+	birthday: Birthday;
 	phoneNumber: PhoneNumber;
 	whatsappNumber: PhoneNumber;
 	username: string;

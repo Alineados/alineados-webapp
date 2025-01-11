@@ -26,14 +26,14 @@
 	let isErrorer = $state(false);
 	let errorMessage = $state('');
 
+	// Password visibility
 	let isPasswordVisible = $state(false);
 
 	function togglePasswordVisibility() {
 		isPasswordVisible = !isPasswordVisible;
 	}
 
-	$inspect(data);
-
+	// Fetching data
 	let loading = false;
 	let error = '';
 

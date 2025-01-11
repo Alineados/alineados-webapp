@@ -25,23 +25,23 @@ export class OnboardingService {
 	}
 
 	// Methods
-	public async registerUser(body: any): Promise<Response> {
-		const url = `${this._url}/create-user`;
+	public async sendVerificationEmail(body: any): Promise<Response> {
+		const url = `${this._url}/send-verification-email`;
 		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
 
-	public async verifyEmailCode(body: any): Promise<Response> {
+	public async verifyEmail(body: any): Promise<Response> {
 		const url = `${this._url}/verify-email`;
 		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
 
-	public async confirmPassword(body: any): Promise<Response> {
-		const url = `${this._url}/confirm-password`;
-		const response: Response = await request(url, 'PATCH', body, this._token);
+	public async createUser(body: any): Promise<Response> {
+		const url = `${this._url}/create-user`;
+		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
 	}
