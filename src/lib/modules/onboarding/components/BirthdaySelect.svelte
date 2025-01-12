@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type {
+		Birthday,
 		OnboardingValidation,
 		RegisterValidation
 	} from '$lib/interfaces/Onboarding.interface';
@@ -8,6 +9,7 @@
 	import { ValidationType } from '$lib/interfaces/Validations.interface';
 	import ErrorMessage from '$lib/components/ErrorMessage.svelte';
 	import { getValidationMessage } from '$lib/utils/validationsMessage';
+	import { text } from '@sveltejs/kit';
 
 	// Props
 	let {
@@ -16,7 +18,7 @@
 		validation = $bindable()
 	}: {
 		inputKey: string;
-		value: string;
+		value: Birthday;
 		validation: OnboardingValidation;
 	} = $props();
 
@@ -57,21 +59,31 @@
 		label: `${2023 - i}`
 	}));
 
+	// Initialize values from prop if they exist
+	$effect(() => {
+		if (value?.day) day = value.day;
+		if (value?.month) month = value.month;
+		if (value?.year) year = value.year;
+	});
+
 	// Create reactive statement for combined date
 	$effect(() => {
 		if (day && month && year) {
-			// Reguired validation
 			Object.keys(validation.register).forEach((key) => {
 				if (key === inputKey) {
 					validation.register[keyString] = ValidationType.ALL_GOOD;
 				}
 			});
 
-			value = `${year}-${month}-${day}`; // YYYY-MM-DD format
-		} else {
-			value = '';
+			value = {
+				day: day,
+				month: month,
+				year: year
+			};
 		}
 	});
+
+	$inspect(value);
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-1">
@@ -80,7 +92,7 @@
 	<div class="flex">
 		<Select.Root type="single" name="day" bind:value={day}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+				class={`w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base ${day ? 'text-black' : 'text-alineados-gray-500'} focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500`}
 				showIcon={false}
 			>
 				{day || 'DD'}
@@ -102,7 +114,7 @@
 		</Select.Root>
 		<Select.Root type="single" name="month" bind:value={month}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+				class={`w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base ${month ? 'text-black' : 'text-alineados-gray-500'} focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500`}
 				showIcon={false}
 			>
 				{month || 'MM'}
@@ -124,7 +136,7 @@
 		</Select.Root>
 		<Select.Root type="single" name="year" bind:value={year}>
 			<Select.Trigger
-				class="w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base text-alineados-gray-500 focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500"
+				class={`w-1/3 justify-center border-alineados-gray-100 bg-alineados-gray-50 text-base ${year ? 'text-black' : 'text-alineados-gray-500'} focus:outline-none focus:ring-2 focus:ring-alineados-gray-100 data-[placeholder]:text-alineados-gray-500`}
 				showIcon={false}
 			>
 				{year || 'AAAA'}

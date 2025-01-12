@@ -103,6 +103,19 @@ export const actions = {
 			}
 		}
 
+		if (
+			!dataJSON.register.birthday.day ||
+			!dataJSON.register.birthday.month ||
+			!dataJSON.register.birthday.year
+		) {
+			if (!usernameRegex.test(dataJSON.register.username)) {
+				invalidFields.push({
+					field: 'birthday',
+					errorType: ValidationType.REQUIRED
+				});
+			}
+		}
+
 		// Contact info validation
 		if (dataJSON.register.contactNotRequired === false) {
 			// Email validation
@@ -167,22 +180,15 @@ export const actions = {
 			};
 		}
 
-		// Call the service
-		const result = await authService.registerUser({
-			firstName: dataJSON.register.firstName,
-			lastName: dataJSON.register.lastName,
-			email: dataJSON.register.email,
-			countryOfResidence: dataJSON.register.countryOfResidence,
-			countryOfBirth: dataJSON.register.countryOfBirth,
-			birthday: dataJSON.register.birthday,
-			phoneNumber: dataJSON.register.phoneNumber,
-			whatsappNumber: dataJSON.register.whatsappNumber,
-			username: dataJSON.register.username
-		});
-
-		console.log(result);
-
 		if (dataJSON.register.contactNotRequired === false) {
+			// Call the service
+			const result = await authService.sendVerificationEmail({
+				email: dataJSON.register.email,
+				firstName: dataJSON.register.firstName
+			});
+
+			console.log(result);
+
 			// Redirect to the next step
 			redirect(307, '/onboarding/steps/2');
 		} else {
@@ -232,7 +238,7 @@ export const actions = {
 		}
 
 		// Call the service
-		const result = await authService.verifyEmailCode({
+		const result = await authService.verifyEmail({
 			email: dataJSON.register.email,
 			code: dataJSON.email.code
 		});
@@ -282,15 +288,11 @@ export const actions = {
 		const normalizedPassword = normalizeString(dataJSON.password.password);
 
 		// Password validation for name and email
-		if (!dataJSON.password.password) {
-			invalidFields.push({
-				field: 'password',
-				errorType: ValidationType.IS_CONTAINS_NAME_EMAIL
-			});
-		} else if (
-			!normalizedPassword.includes(normalizeString(dataJSON.register.firstName)) &&
-			!normalizedPassword.includes(normalizeString(dataJSON.register.lastName)) &&
-			!normalizedPassword.includes(normalizeString(dataJSON.register?.email))
+		if (
+			normalizedPassword.includes(normalizeString(dataJSON.register.firstName)) ||
+			normalizedPassword.includes(normalizeString(dataJSON.register.lastName)) ||
+			(dataJSON.register?.email &&
+				normalizedPassword.includes(normalizeString(dataJSON.register.email)))
 		) {
 			invalidFields.push({
 				field: 'password',
@@ -328,9 +330,17 @@ export const actions = {
 		}
 
 		// Call the service
-		const result = await authService.confirmPassword({
-			username: dataJSON.register.username,
-			password: dataJSON.password.password
+		const result = await authService.createUser({
+			firstName: dataJSON.register.firstName,
+			lastName: dataJSON.register.lastName,
+			email: dataJSON.register.email,
+			password: dataJSON.password.password,
+			phoneNumber: dataJSON.register.phoneNumber,
+			whatsappNumber: dataJSON.register.whatsappNumber,
+			countryOfResidence: dataJSON.register.countryOfResidence,
+			countryOfBirth: dataJSON.register.countryOfBirth,
+			birthday: `${dataJSON.register.birthday.year}-${dataJSON.register.birthday.month}-${dataJSON.register.birthday.day}`,
+			username: dataJSON.register.username
 		});
 
 		console.log(result);

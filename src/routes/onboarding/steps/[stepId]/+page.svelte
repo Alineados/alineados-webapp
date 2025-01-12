@@ -14,6 +14,7 @@
 	// Initial state
 	let onboardingData = $state<OnboardingData>();
 	let validation = $state<OnboardingValidation>();
+	let isChecked = $state(false); // fot whatsapp checkbox
 
 	onMount(() => {
 		validation = {
@@ -45,7 +46,11 @@
 				email: '',
 				countryOfResidence: '',
 				countryOfBirth: '',
-				birthday: '',
+				birthday: {
+					day: '',
+					month: '',
+					year: ''
+				},
 				phoneNumber: {
 					code: '',
 					number: ''
@@ -82,9 +87,13 @@
 <div class="h-4/5">
 	{#if onboardingData && validation}
 		{#if stepId === '1'}
-			<RegisterForm bind:validation bind:register={onboardingData.register} />
+			<RegisterForm bind:validation bind:register={onboardingData.register} bind:isChecked />
 		{:else if stepId === '2'}
-			<EmailVerification bind:validation bind:emailVerification={onboardingData.email} />
+			<EmailVerification
+				bind:validation
+				bind:emailVerification={onboardingData.email}
+				bind:registerData={onboardingData.register}
+			/>
 		{:else if stepId === '3'}
 			<PasswordCreation
 				bind:validation
@@ -92,7 +101,7 @@
 				bind:registerData={onboardingData.register}
 			/>
 		{:else if stepId === '4'}
-			<Welcome />
+			<Welcome bind:registerData={onboardingData.register} />
 		{/if}
 		<Buttons
 			action={ButtonAction.get(stepId) ?? '1'}

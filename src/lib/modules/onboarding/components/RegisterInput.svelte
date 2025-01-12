@@ -36,11 +36,24 @@
 	let keyString = $derived(inputKey) as keyof RegisterValidation;
 
 	// Regex
-	const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
+	const nameRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]{1,20}$/;
 	const usernameRegex = /^\S{1,20}$/;
+
+	// Add composition handling
+	let isComposing = false;
+
+	function handleComposition(event: CompositionEvent) {
+		isComposing = event.type === 'compositionstart';
+	}
 
 	// Validation function
 	function validateInput() {
+		// Reset validation
+		isInvalid = false;
+
+		// Skip validation if composing
+		if (isComposing) return;
+
 		// Reguired validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
@@ -55,7 +68,7 @@
 		} else {
 			if (type !== 'email') {
 				if (keyString !== 'username') {
-					if (!textRegex.test(value)) {
+					if (!nameRegex.test(value)) {
 						isInvalid = true;
 						errorMessage = 'solo se aceptan letras';
 					}
@@ -74,7 +87,15 @@
 		}
 	}
 
-	$inspect(isInvalid, errorMessage);
+	// Add effect for contactNotRequired
+	$effect(() => {
+		if (contactNotRequired && type === 'email') {
+			value = '';
+			isInvalid = false;
+			errorMessage = '';
+			validation.register[keyString] = ValidationType.ALL_GOOD;
+		}
+	});
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-1">
@@ -93,7 +114,10 @@
 		bind:value
 		oninput={validateInput}
 		disabled={contactNotRequired && type === 'email'}
+		oncompositionstart={handleComposition}
+		oncompositionend={handleComposition}
 	/>
+
 	{#if validation.register[keyString] !== ValidationType.ALL_GOOD}
 		<ErrorMessage isError>
 			{#snippet erroMessage()}
