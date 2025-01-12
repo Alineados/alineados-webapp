@@ -2,7 +2,21 @@
 export interface Documents {
 	id: string;
 	path: string;
-	description: string;
+	file_name: string;
+	type: string;
+	created_at: string;
+}
+
+export interface Images {
+	id: string;
+	path : string;
+	file_name: string;
+	created_at: string;
+}
+
+export interface Url {
+	id: string;
+	url: string;
 }
 
 export interface Generic {

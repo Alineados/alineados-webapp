@@ -55,7 +55,7 @@
 
 	function handleClickCard(e: any, pid: string, pillar: string) {
 		e.preventDefault();
-		console.log(pid, pillar);
+
 		// change pillar name
 		let name: string = '';
 		switch (pillar) {
@@ -93,7 +93,7 @@
 			}
 			return async ({ result, update }) => {
 				// `result` is an `ActionResult` object
-				console.log(result);
+		
 				if (result.status === 200) if (problemSelected) removeProblem(problemSelected, Pillars);
 
 				// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set

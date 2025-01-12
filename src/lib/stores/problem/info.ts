@@ -1,4 +1,4 @@
-import type { ProblemInfo } from '$lib/interfaces';
+import type { Images, ProblemInfo, Documents, Url } from '$lib/interfaces';
 import { ProblemType } from '$lib/interfaces';
 import { derived, writable } from 'svelte/store';
 import { emptyGeneric } from '../generic';
@@ -7,7 +7,7 @@ import { emptyGeneric } from '../generic';
 export const pid = writable<string>(''); // Problem info ID
 export const problemInfo = writable<ProblemInfo>();
 export const problemReadyToComplete = writable<boolean>(false);
-
+export const problemsImages = writable<Url[]>([]);
 // function to check if the problem is ready to be completed
 export const changeCompleteStatus = (ready: boolean) => {
 	problemReadyToComplete.set(ready);
@@ -42,6 +42,11 @@ export const initProblemInfo = (info: ProblemInfo) => {
 
 		problemInfo.set(info);
 	}
+};
+
+// Function to init the images array
+export const initImages = (images: Url[]) => {
+	if (images) problemsImages.set(images);
 };
 
 // Function to update the problem info (Autosave)
@@ -332,3 +337,33 @@ export const markOnlyDoneOrRepeatedItems = (
 		});
 	}
 };
+
+// Function to add a new item to the memories array
+export const addMemory = (memory: Documents, url?: string) => {
+	problemInfo.update((info) => {
+		info.memories.push(memory);
+		return info;
+	});
+
+	if (memory.type.startsWith('image'))
+		problemsImages.update((images) => {
+			images.push({ id: memory.id, url: url! });
+			return images;
+		});
+}
+
+// Function to delete a memory from the array
+export const removeMemory = (id: string, type: string) => {
+	problemInfo.update((info) => {
+		const index = info.memories.findIndex((mem) => mem.id === id);
+		info.memories.splice(index, 1);
+		return info;
+	});
+
+	if (type.startsWith('image'))
+		problemsImages.update((images) => {
+			const index = images.findIndex((img) => img.id === id);
+			images.splice(index, 1);
+			return images;
+		});
+}

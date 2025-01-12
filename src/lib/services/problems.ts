@@ -1,5 +1,6 @@
+import type { Documents } from '$lib/interfaces';
 import { endpoints } from './endpoints';
-import { request, type Response } from './http';
+import { request, uploadFile, type Response } from './http';
 
 export class ProblemService {
 	private static instance: ProblemService;
@@ -72,25 +73,29 @@ export class ProblemService {
 		return response;
 	}
 
-	async uploadImage(uid: string, pcid: string, file: File) {
+	async getImages(paths: Documents[]): Promise<Response> {
+		const url = `${this._url}/get-urls`;
+
+		const response: Response = await request(url, 'POST', { 'paths': paths }, this._token);
+
+		return response;
+	}
+
+	async uploadFile(uid: string, pcid: string, file: File) {
+
+		const fileType = file.type;
+
+
 		const form = new FormData();
 		form.append('uid', uid);
 		form.append('pcid', pcid);
 		form.append('file', file);
+		form.append('fileType', fileType);
 
-		const options = {
-			method: 'POST',
-			headers: {
-				'Access-Control-Allow-Origin': '*',
-				Authorization: `Bearer ${this._token}`
-			},
-			body: form
-		};
 
-		const response = await fetch(`${this._url}/upload-image`, options);
+		const response: Response = await uploadFile(`${this._url}/upload-file`, 'POST', form, this._token);
 
-		const data = await response.json();
+		return response;
 
-		return data;
 	}
 }

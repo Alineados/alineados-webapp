@@ -24,7 +24,7 @@
 		formHtml.requestSubmit();
 	}
 	function navigateToProblem(pid: string, pillar: string) {
-		console.log(pid, pillar);
+
 		// change pillar name
 		let name: string = '';
 		switch (pillar) {
@@ -68,8 +68,7 @@
 				formData.set('category_name', dataToSend.category_name);
 
 				return async ({ result, update }) => {
-					// `result` is an `ActionResult` object
-					console.log(result);
+			
 					if (result.status === 200) {
 						const { data }: { data: ProblemCard } = result.data;
 						// navigate to new problem

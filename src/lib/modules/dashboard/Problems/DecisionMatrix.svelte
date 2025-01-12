@@ -28,7 +28,7 @@
 		}
 	});
 
-	// $: console.log('$matrix', $matrix);
+
 	$: gridColumns = `250px 50px ${$matrix.cols.map(() => '100px').join(' ')}`;
 </script>
 

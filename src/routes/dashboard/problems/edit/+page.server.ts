@@ -1,9 +1,8 @@
 import { ProblemService } from '$lib/services/problems';
 import type { PageServerLoad } from './$types';
-import { getJSONFormsData } from '$lib/utils/getFormsData';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { message } from 'sveltekit-superforms';
+import type { Documents } from '$lib/interfaces';
 
 export const load: PageServerLoad = async ({ params, request, url }) => {
 	// get from params the pid
@@ -15,13 +14,28 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 	let problemService: ProblemService = ProblemService.getInstance('');
 	const result = await problemService.getProblemInfo(pid);
 
-	// console.log('result', result);
+
+	// get url images
+	let urlImages = [];
+	let pathsFiltered: Documents[] = result.data.problem_info.memories
+		.filter((memory: Documents) => memory.type.startsWith('image'))
+
+
+	if (pathsFiltered.length > 0) {
+		const data = await problemService.getImages(pathsFiltered);
+
+		if (data.status === 200) urlImages = data.data;
+	}
+
+
+	// console.log("urlImages", urlImages);
 
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,
 		problemMatrix: result.data.problem_matrix,
-		pillar_name: pillar_name
+		pillar_name: pillar_name,
+		urlImages: urlImages
 	};
 };
 
@@ -49,13 +63,15 @@ export const actions = {
 		// get file 
 		const file = formData.fileToUpload as File;
 
-		console.log('pcid', pcid);
-		console.log('file', file);
-
-
 		let problemService: ProblemService = ProblemService.getInstance('');
 
-		const result = await problemService.uploadImage("1", pcid, file);
+		const result = await problemService.uploadFile("1", pcid, file);
+
+		console.log('result', result);
+
+		if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
 
 		return result;
 	}

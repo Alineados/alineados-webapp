@@ -25,7 +25,7 @@
 	let showConfetti = $state(false);
 
 	function onCompleteProblem() {
-		console.log('completing problem');
+
 		showConfetti = true;
 		isCompleteProblem(true);
 		setTimeout(() => {
@@ -38,7 +38,7 @@
 	onclick={() => onChangeReportPage(2)}
 	disabled={!$problemCard.active}
 	class:bg-alineados-blue-500={!$problemCard.active}
-	class:bg-alineados-blue-800={$problemCard.active}
+	class:bg-alineados-blue-900={$problemCard.active}
 	class:hover:bg-alineados-blue-900={$problemCard.active}
 	class="focus group flex items-center gap-[6px] rounded-lg px-5 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg"
 	aria-label="Rendir Cuentas"

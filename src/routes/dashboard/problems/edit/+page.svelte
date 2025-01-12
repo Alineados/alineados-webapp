@@ -5,6 +5,7 @@
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
 	import AsideProblem from '$lib/modules/dashboard/Problems/AsideProblem.svelte';
 	import {
+	initImages,
 		initMatrix,
 		initProblemCard,
 		initProblemInfo,
@@ -22,6 +23,7 @@
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
 		initMatrix({ ...data.problemMatrix });
+		initImages(data.urlImages);
 	});
 
 	let headerRef = $state<HTMLElement>();
@@ -45,6 +47,7 @@
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
 		initMatrix({ ...data.problemMatrix });
+		initImages(data.urlImages);
 
 		$reportProblem = 1;
 
@@ -67,7 +70,7 @@
 	</div>
 
 	<div class="flex w-full items-start">
-		<div class=" flex w-8/12 flex-col ">
+		<div class=" flex w-8/12 flex-col">
 			{#if $reportProblem !== 2}
 				<div bind:this={problemsFilterRef} class="sticky z-20 bg-white">
 					<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
@@ -86,7 +89,8 @@
 			bind:this={asideProblemRef}
 			class="sticky z-10 flex w-6/12 justify-end pr-4 pt-4 md:pr-8 lg:pr-16"
 		>
-			<AsideProblem />
+			<AsideProblem  />
+		
 		</div>
 	</div>
 	<div class="flex">

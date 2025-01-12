@@ -1,4 +1,4 @@
-import type { Documents, Generic } from './index';
+import type { Documents, Generic, Images } from './index';
 
 export interface ProblemCard {
 	// ids

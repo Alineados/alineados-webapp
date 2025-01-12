@@ -2,7 +2,7 @@ export type { PillarItems, Categories, DataPillar, PillarsAndCategories } from '
 
 export type { ProblemCard, ProblemInfo, MatrixColl, CellMatrix, Matrix, MatrixRow, MatrixResult } from './Problem.interface';
 
-export type { Documents, Generic, Selector } from './Generics.interface';
+export type { Documents, Generic, Selector ,Images ,Url} from './Generics.interface';
 
 export { ProblemType } from './Problem.interface';
 

@@ -57,7 +57,7 @@
 			bind:value={key}
 		>
 			<Select.Trigger
-				onselect={(e) => console.log('e', e)}
+	
 				class="h-fit w-9/12 rounded-md border border-alineados-gray-200 bg-alineados-gray-50 px-1 py-1 text-left text-xs  text-alineados-gray-900"
 			>
 				{key === '' ? 'Importancia' : key}

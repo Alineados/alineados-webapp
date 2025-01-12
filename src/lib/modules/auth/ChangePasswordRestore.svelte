@@ -61,7 +61,7 @@
 					}
 					// If there is a redirect to dashboard
 					if (result.type === 'redirect') {
-						console.log('Redirecting to dashboard...');
+					
 						goto(result.location);
 					}
 				};

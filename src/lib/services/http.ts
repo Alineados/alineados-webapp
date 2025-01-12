@@ -2,13 +2,34 @@ interface Options {
 	method: string;
 	credentials?: RequestCredentials;
 	headers: { [key: string]: string };
-	body?: string;
+	body?: string | FormData;
 }
 
 export interface Response {
 	data: any;
 	message: string;
 	status?: number;
+}
+
+export async function uploadFile(
+	url: string,
+	method: string,
+	form: FormData,
+	apiKey: string
+): Promise<Response> {
+	const options: Options = {
+		method: method,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			AAuthorization: `Bearer ${apiKey}`
+		},
+		body: form
+	};
+
+	const response = await fetch(url, options);
+
+
+	return evaluateResponse(response);
 }
 
 export async function request(
@@ -30,6 +51,12 @@ export async function request(
 	if (body) options.body = JSON.stringify(body);
 	const response = await fetch(url, options);
 
+
+	return evaluateResponse(response);
+
+}
+
+async function evaluateResponse(response: globalThis.Response): Promise<Response> {
 	if (response.status === 401) {
 		return {
 			data: null,

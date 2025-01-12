@@ -1,17 +1,16 @@
 <script lang="ts">
 	import DaysLeft from '$lib/components/DaysLeft.svelte';
 	import ImagesCarousel from '$lib/components/ImagesCarousel.svelte';
+	import ListDocuments from '$lib/components/ListDocuments.svelte';
 	import ProgressCircle from '$lib/components/ProgressCircle.svelte';
 	import RectangularCard from '$lib/components/RectangularCard.svelte';
-
 	import Image from '$lib/icons/Image.svelte';
-	import Upload from '$lib/icons/Upload.svelte';
-
 	import { problemCard, problemProgress } from '$lib/stores';
 	import { calculateDaysLeft, calculateDaysBetween, formatDate } from '$lib/utils/dates';
 	import { onMount } from 'svelte';
 
 	let daysCompleted = $state(0);
+	
 	onMount(() => {
 		if ($problemCard.completed_at) {
 			daysCompleted = calculateDaysBetween($problemCard.created_at, $problemCard.completed_at);
@@ -25,7 +24,6 @@
 			<Image styleTw="size-5" />
 			<p class="text-base font-medium text-alineados-gray-600">Recuerdos</p>
 		</div>
-		<Upload changeIcon={false} styleTw="size-6 text-alineados-gray-600 hover:text-alineados-gray-900" />
 	</div>
 	<ImagesCarousel />
 	<RectangularCard contentClass="w-full">
@@ -75,4 +73,7 @@
 			{/snippet}
 		</RectangularCard>
 	{/if}
+
+	<!-- Documents -->
+	<ListDocuments />
 </div>
