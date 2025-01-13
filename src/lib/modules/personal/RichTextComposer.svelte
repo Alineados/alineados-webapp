@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import {
     Composer,
     ContentEditable,
@@ -27,7 +27,7 @@
   } from 'svelte-lexical';
 
   const initialConfig = {
-    namespace: 'RichTextComposer',
+    namespace: 'alineados-editor',
     theme: PlaygroundEditorTheme,
     nodes: [
       HeadingNode,
@@ -60,7 +60,7 @@
   };
 </script>
 
-<Composer  {initialConfig}>
+<Composer {initialConfig}>
   <div class="editor-shell">
     <ToolbarRichText />
     <div class="editor-container">
@@ -76,7 +76,7 @@
       <HorizontalRulePlugin />
       <ImagePlugin />
 
-      <!-- <ActionBar /> -->
+      <ActionBar />
     </div>
   </div>
-</Composer>
+</Composer> -->

@@ -22,7 +22,7 @@
 	}
 </script>
 
-<div class="relative w-full">
+<div class="relative max-w-full">
 	<div
 		class="relative aspect-[5/1] w-full overflow-hidden rounded-2xl"
 		onmouseenter={handleMouseEnter}
@@ -30,16 +30,7 @@
 		role="img"
 		aria-label={alt}
 	>
-		<img
-			src={imageURL}
-			{alt}
-			class="h-full w-full object-cover object-center transition-all duration-700 ease-in-out"
-			class:scale-105={isHovered}
-		/>
-		<div
-			class="absolute inset-0 bg-teal-900/10 mix-blend-overlay transition-opacity duration-300"
-			class:opacity-0={isHovered}
-		></div>
+		<img src={imageURL} {alt} class="h-full w-full object-cover object-center" />
 	</div>
 
 	{#if edit}

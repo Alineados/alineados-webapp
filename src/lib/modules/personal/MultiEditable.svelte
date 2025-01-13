@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '../../../global.css';
 	import Document from '$lib/icons/Document.svelte';
 	import Microphone from '$lib/icons/Microphone.svelte';
 
@@ -64,7 +63,7 @@
 	</div>
 	<!-- Content -->
 	{#if editType.text}
-		<RichTextComposer />
+		<!-- <RichTextComposer /> -->
 	{:else if editType.audio}
 		<AudioComposer />
 	{:else if editType.document}

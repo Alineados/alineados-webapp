@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../global.css';
 	import * as Sidebar from '$lib/shared/ui/sidebar/index.js';
 	import AppSidebar from '$lib/components/AppSidebar.svelte';
 

@@ -3,8 +3,9 @@
 	import { Button } from '$lib/shared/ui/button/index';
 	import Aside from '$lib/modules/auth/components/Aside.svelte';
 	import AsideContent from '$lib/modules/auth/components/AsideContent.svelte';
+	import type { Snippet } from 'svelte';
 
-	let { children } = $props();
+	let { children }: { children: Snippet } = $props();
 </script>
 
 <div
@@ -21,7 +22,7 @@
 
 	<div class="h-full lg:col-span-2 lg:px-16 lg:pb-20 lg:pt-32">
 		<div class="flex flex-col justify-center space-y-6 sm:w-[350px] lg:w-full">
-			{@render children()}
+			{@render children?.()}
 		</div>
 	</div>
 

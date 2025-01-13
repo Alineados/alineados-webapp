@@ -29,14 +29,14 @@
 </script>
 
 <Select.Root type="single" name="favoriteFruit" bind:value>
-	<Select.Trigger class="w-[180px] border-alineados-gray-100">
+	<Select.Trigger class="w-6/12 border-alineados-gray-100">
 		{triggerContent}
 	</Select.Trigger>
-	<Select.Content>
+	<Select.Content class="bg-white">
 		{#if subCategory}
 			{#each list as data}
 				<Select.Group>
-					<Select.GroupHeading class="text-sm font-semibold text-alineados-gray-900">
+					<Select.GroupHeading class="text-sm font-semibold  text-alineados-gray-900">
 						{data.label}</Select.GroupHeading
 					>
 					{#each data.categories as subdata}
