@@ -20,11 +20,6 @@
 		validation: OnboardingValidation;
 	} = $props();
 
-	// Mock data
-	let userFirstName = 'José';
-	let userLastName = 'Penagos';
-	let userEmail = 'jose.penados@gmail.com';
-
 	// Rules
 	let strengthening = $state(0);
 	let requirements = $state({
@@ -63,7 +58,9 @@
 		requirements.noNameOrEmail =
 			!normalizedPassword.includes(normalizeString(registerData.firstName)) &&
 			!normalizedPassword.includes(normalizeString(registerData.lastName)) &&
-			!normalizedPassword.includes(normalizeString(registerData?.email));
+			(registerData?.email
+				? !normalizedPassword.includes(normalizeString(registerData.email))
+				: true);
 		requirements.minLength = passwordCreation.password.length >= 8;
 		requirements.hasNumberOrSymbol = /[0-9!@#$%^&*]/.test(passwordCreation.password);
 

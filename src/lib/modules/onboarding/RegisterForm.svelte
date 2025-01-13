@@ -11,8 +11,9 @@
 	// Props
 	let {
 		register = $bindable(),
-		validation = $bindable()
-	}: { register: Register; validation: OnboardingValidation } = $props();
+		validation = $bindable(),
+		isChecked = $bindable()
+	}: { register: Register; validation: OnboardingValidation; isChecked: boolean } = $props();
 
 	// Countries
 	const countries = [
@@ -81,8 +82,6 @@
 			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
 		}
 	];
-
-	$inspect(register.contactNotRequired);
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
@@ -164,6 +163,7 @@
 				bind:value={register.whatsappNumber}
 				bind:pastPhoneNumber={register.phoneNumber}
 				contactNotRequired={register.contactNotRequired}
+				bind:isChecked
 			/>
 		</div>
 		<div class="flex gap-6">

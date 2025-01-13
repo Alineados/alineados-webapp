@@ -75,6 +75,9 @@
 
 	// Validation function
 	function validatePhoneNumber() {
+		// Reset validation
+		isInvalid = false;
+
 		// Required validation
 		Object.keys(validation.register).forEach((key) => {
 			if (key === inputKey) {
@@ -88,12 +91,20 @@
 			errorMessage = '';
 		} else if (!phoneRegex.test(phoneNumber)) {
 			isInvalid = true;
-			errorMessage = '*solo se aceptan números';
-		} else {
-			isInvalid = false;
-			errorMessage = '';
+			errorMessage = 'solo se aceptan números';
 		}
 	}
+
+	// Add effect for contactNotRequired
+	$effect(() => {
+		if (contactNotRequired) {
+			countryCode = '';
+			phoneNumber = '';
+			isInvalid = false;
+			errorMessage = '';
+			validation.register[keyString] = ValidationType.ALL_GOOD;
+		}
+	});
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-2">
