@@ -25,6 +25,13 @@ export class OnboardingService {
 	}
 
 	// Methods
+	public async verifyUserExists(body: any): Promise<Response> {
+		const url = `${this._url}/verify-user-exists`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
 	public async sendVerificationEmail(body: any): Promise<Response> {
 		const url = `${this._url}/send-verification-email`;
 		const response: Response = await request(url, 'POST', body, this._token);

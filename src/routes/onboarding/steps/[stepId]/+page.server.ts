@@ -5,6 +5,12 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OnboardingService } from '$lib/services/onboarding';
 
+// Add interface for response
+interface ExistingIdentifier {
+	type: 'username' | 'email' | 'phoneNumber';
+	value: string;
+}
+
 // Create the service
 const authService: OnboardingService = OnboardingService.getInstance('');
 
@@ -180,9 +186,59 @@ export const actions = {
 			};
 		}
 
+		/// Verify if the email or phone number exists
+		const verifyData: any = {
+			username: dataJSON.register.username
+		};
+
+		if (dataJSON.register.email) {
+			verifyData.email = dataJSON.register.email;
+		}
+
+		if (dataJSON.register.phoneNumber?.code) {
+			verifyData.phoneNumber = dataJSON.register.phoneNumber;
+		}
+
+		let result = await authService.verifyUserExists(verifyData);
+
+		console.log(result);
+
+		if (result.data.length > 0) {
+			const validations = result.data.map((identifier: ExistingIdentifier) => {
+				let errorType: ValidationType;
+
+				switch (identifier.type) {
+					case 'username':
+						errorType = ValidationType.USER_EXISTS;
+						break;
+					case 'email':
+						errorType = ValidationType.EMAIL_EXISTS;
+						break;
+					case 'phoneNumber':
+						errorType = ValidationType.PHONE_EXISTS;
+						break;
+					default:
+						errorType = ValidationType.USER_EXISTS;
+				}
+
+				return {
+					field: identifier.type as keyof RegisterValidation,
+					errorType
+				};
+			});
+
+			return {
+				type: 'error',
+				step: 'register',
+				validations,
+				message: 'Check the fields'
+			};
+		}
+
+		// Send the verification email
 		if (dataJSON.register.contactNotRequired === false) {
 			// Call the service
-			const result = await authService.sendVerificationEmail({
+			result = await authService.sendVerificationEmail({
 				email: dataJSON.register.email,
 				firstName: dataJSON.register.firstName
 			});
@@ -356,5 +412,19 @@ export const actions = {
 
 		// Redirect to the login page
 		redirect(307, '/auth/login');
+	},
+
+	resend: async (event) => {
+		const data = await event.request.formData();
+		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
+		console.log(dataJSON);
+
+		// Call the service
+		const result = await authService.sendVerificationEmail({
+			email: dataJSON.register.email,
+			firstName: dataJSON.register.firstName
+		});
+
+		console.log(result);
 	}
 } satisfies Actions;

@@ -15,6 +15,10 @@ export const getValidationMessage = (type: ValidationType): string => {
 		[ValidationType.INVALID_PHONE_NUMBER]: 'solo se aceptan números',
 		[ValidationType.INVALID_USERNAME]: 'solo se aceptan letras o números',
 
+		[ValidationType.USER_EXISTS]: 'el usuario ya existe',
+		[ValidationType.EMAIL_EXISTS]: 'el correo electrónico ya existe',
+		[ValidationType.PHONE_EXISTS]: 'el teléfono ya existe',
+
 		[ValidationType.INVALID_CODE]: 'código inválido',
 
 		[ValidationType.IS_CONTAINS_NAME_EMAIL]: 'no debe contener nombre o correo electrónico',
