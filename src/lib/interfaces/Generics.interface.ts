@@ -3,6 +3,7 @@ export interface Documents {
 	id: string;
 	path: string;
 	file_name: string;
+	content: string | null;
 	type: string;
 	created_at: string;
 }
