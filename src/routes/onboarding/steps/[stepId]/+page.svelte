@@ -93,6 +93,7 @@
 				bind:validation
 				bind:emailVerification={onboardingData.email}
 				bind:registerData={onboardingData.register}
+				bind:data={onboardingDataSJSON}
 			/>
 		{:else if stepId === '3'}
 			<PasswordCreation

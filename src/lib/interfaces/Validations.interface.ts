@@ -20,6 +20,10 @@ export enum ValidationType {
 	INVALID_PHONE_NUMBER = 'isNumberInvalid',
 	INVALID_USERNAME = 'isInvalidUsername',
 
+	USER_EXISTS = 'userExists',
+	EMAIL_EXISTS = 'emailExists',
+	PHONE_EXISTS = 'phoneExists',
+
 	// Email validation
 	INVALID_CODE = 'isInvalidCode',
 
