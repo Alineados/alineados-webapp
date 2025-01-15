@@ -1,15 +1,79 @@
 <script lang="ts">
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
-	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import PersonalSelect from '$lib/modules/personal/PersonalSelect.svelte';
 	import { Pillars } from '$lib/interfaces/data';
 	import MultiEditable from '$lib/modules/personal/MultiEditable.svelte';
-	
+	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
+
+	let checked = $state(false);
+
+	const Goals = {
+		attitude: {
+			id: '1',
+			name: 'attitude',
+			label: 'Actitud',
+			categories: []
+		},
+		love: {
+			id: '2',
+			name: 'love',
+			label: 'Amor',
+			categories: []
+		},
+		give: {
+			id: '3',
+			name: 'give',
+			label: 'Dar',
+			categories: []
+		},
+		understanding: {
+			id: '4',
+			name: 'understanding',
+			label: 'Entendimiento',
+			categories: []
+		},
+		succeed: {
+			id: '5',
+			name: 'succeed',
+			label: 'Éxito',
+			categories: []
+		},
+		relations: {
+			id: '6',
+			name: 'relations',
+			label: 'Relaciones',
+			categories: []
+		},
+		result: {
+			id: '7',
+			name: 'result',
+			label: 'Resultados',
+			categories: []
+		},
+		servet: {
+			id: '8',
+			name: 'servet',
+			label: 'Servir',
+			categories: []
+		},
+		solution: {
+			id: '9',
+			name: 'solution',
+			label: 'Solución',
+			categories: []
+		},
+		qualityTime: {
+			id: '10',
+			name: 'qualityTime',
+			label: 'Tiempo de calidad',
+			categories: []
+		}
+	};
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<StoryHeader status="edit" />
+		<ThoughtHeader status="edit" />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -38,15 +102,31 @@
 			<div class="flex flex-row items-center justify-between">
 				<p class="text-base font-bold text-alineados-gray-900">Fin</p>
 				<PersonalSelect
-					subCategory={true}
+					subCategory={false}
 					list={[
-						{ ...Pillars.health },
-						{ ...Pillars.relational },
-						{ ...Pillars.vocational },
-						{ ...Pillars.spiritual }
+						{ ...Goals.attitude },
+						{ ...Goals.love },
+						{ ...Goals.give },
+						{ ...Goals.understanding },
+						{ ...Goals.succeed },
+						{ ...Goals.relations },
+						{ ...Goals.result },
+						{ ...Goals.servet },
+						{ ...Goals.solution },
+						{ ...Goals.qualityTime }
 					]}
 				/>
 			</div>
+		</div>
+
+		<div class="flex items-center gap-2">
+			<span class="text-base font-bold text-alineados-gray-900">Destacar</span>
+			<label class="relative inline-flex cursor-pointer items-center">
+				<input type="checkbox" bind:checked class="peer sr-only" />
+				<div
+					class="peer h-6 w-11 rounded-full bg-alineados-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-alineados-green-800 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
+				></div>
+			</label>
 		</div>
 
 		<!-- Quality time -->

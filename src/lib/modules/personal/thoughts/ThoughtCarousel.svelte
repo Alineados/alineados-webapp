@@ -1,81 +1,102 @@
 <script lang="ts">
-	import * as Card from '$lib/shared/ui/card/index';
-	import * as Carousel from '$lib/shared/ui/carousel/index';
-	import type { CarouselAPI } from '$lib/shared/ui/carousel/context';
-	import ThoughtItem from './ThoughtItem.svelte';
+	import { onMount } from 'svelte';
 
-	let api = $state<CarouselAPI>();
-	const count = $derived(api ? api.scrollSnapList().length : 0);
-	let current = $state(0);
-	let selectedCard = $state<number | null>(null);
+	interface MenuItem {
+		id: number;
+		icon: string;
+		label: string;
+		color: string;
+	}
 
-	// Card data
-	const pillars = [
-		{ id: 1, title: 'Servicios', icon: '💼' },
-		{ id: 2, title: 'Emergencias', icon: '✚' },
-		{ id: 3, title: 'Historial', icon: '📋' },
-		{ id: 4, title: 'Pacientes', icon: '👥' },
-		{ id: 5, title: 'Consultas', icon: '💼' }
+	const menuItems: MenuItem[] = [
+		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
+		{ id: 2, icon: '✝️', label: 'Religión', color: '#4CAF50' },
+		{ id: 3, icon: '🏥', label: 'Salud', color: '#4CAF50' },
+		{ id: 4, icon: '👥', label: 'Social', color: '#4CAF50' },
+		{ id: 5, icon: '💼', label: 'Negocios', color: '#4CAF50' }
 	];
 
-    const fins = [
-        { id: 1, title: 'Actitud', icon: '💼' },
-        { id: 2, title: 'Amar', icon: '✚' },
-        { id: 3, title: 'Dar', icon: '📋' },
-        { id: 4, title: 'Entendimiento', icon: '👥' },
-        { id: 5, title: 'Éxito', icon: '💼' },
-        { id: 6, title: 'Relaciones', icon: '💼' },
-        { id: 7, title: 'Resultados', icon: '💼' },
-        { id: 8, title: 'Servir', icon: '💼' },
-        { id: 9, title: 'Solución', icon: '💼' },
-        { id: 10, title: 'Tiempo de calidad', icon: '💼' }
-    ]
+	let selectedId = $state(3);
+	let containerRef = $state<HTMLDivElement>();
+
+	function selectItem(id: number) {
+		selectedId = id;
+	}
 
 	$effect(() => {
-		if (api) {
-			current = api.selectedScrollSnap() + 1;
-			api.on('select', () => {
-				current = api!.selectedScrollSnap() + 1;
-			});
+		if (containerRef) {
+			const selectedElement = containerRef.querySelector(
+				`[data-id="${selectedId}"]`
+			) as HTMLElement;
+			if (selectedElement) {
+				const scrollLeft =
+					selectedElement.offsetLeft -
+					containerRef.offsetWidth / 2 +
+					selectedElement.offsetWidth / 2;
+
+				containerRef.scrollTo({
+					left: scrollLeft,
+					behavior: 'smooth'
+				});
+			}
 		}
 	});
-
-	function handleCardClick(id: number) {
-		selectedCard = id;
-		// You can add your navigation or action logic here
-		console.log(`Card ${id} clicked`);
-	}
 </script>
 
-<div class="mx-auto w-full max-w-6xl px-4">
-	<Carousel.Root setApi={(emblaApi) => (api = emblaApi)} class="w-full">
-		<Carousel.Content class="flex flex-row justify-center">
-			{#each pillars as card (card.id)}
-				<Carousel.Item class="px-4">
-					<ThoughtItem
-						onSelectedCard={() => handleCardClick(card.id)}
-						icon="✚"
-						title={card.title}
-						isActive={selectedCard === card.id}
-						id={card.id}
-					/>
-				</Carousel.Item>
-			{/each}
-		</Carousel.Content>
-		<div class="mt-8 flex items-center justify-center gap-2">
-			<Carousel.Previous class="relative left-0 right-auto" />
-			<div class="text-sm text-muted-foreground">
-				{current} / {count}
+<div class="mx-auto flex w-full max-w-4xl justify-center px-4 py-4">
+	<div
+		bind:this={containerRef}
+		class="no-scrollbar flex h-40 snap-x snap-mandatory items-center gap-8 overflow-x-auto px-8 py-4"
+		role="tablist"
+	>
+		{#each menuItems as item (item.id)}
+			<div class="relative flex h-32 items-center justify-center">
+				<button
+					data-id={item.id}
+					class="group flex flex-col items-center outline-none transition-all duration-300 ease-in-out focus:outline-none active:outline-none {selectedId ===
+					item.id
+						? 'selected'
+						: 'opacity-70 hover:opacity-100'}"
+					style="transform-origin: center center;"
+					role="tab"
+					aria-selected={selectedId === item.id}
+					aria-controls="tab-panel-{item.id}"
+					onclick={() => selectItem(item.id)}
+				>
+					<div
+						class="flex transform-gpu items-center justify-center rounded-full text-2xl transition-all duration-300 ease-in-out {selectedId ===
+						item.id
+							? 'h-20 w-20 scale-110 bg-green-100 text-3xl'
+							: 'h-16 w-16 bg-alineados-gray-50 group-hover:h-20 group-hover:w-20 group-hover:scale-110 group-hover:bg-green-100 group-hover:text-3xl'}"
+					>
+						{item.icon}
+					</div>
+					<span
+						class="absolute text-sm font-medium transition-all duration-300 ease-in-out {selectedId ===
+						item.id
+							? '-bottom-6 text-green-500 opacity-100'
+							: '-bottom-1 opacity-0 group-hover:text-green-500 group-hover:opacity-100'}"
+					>
+						{item.label}
+					</span>
+				</button>
 			</div>
-			<Carousel.Next class="relative left-auto right-0" />
-		</div>
-	</Carousel.Root>
+		{/each}
+	</div>
 </div>
 
 <style>
-	:global(.embla__slide) {
-		flex: 0 0 auto;
-		min-width: 0;
-		max-width: 50%;
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+
+	.selected {
+		transform: scale(1.3);
+		transition: transform 0.3s ease-in-out;
 	}
 </style>
