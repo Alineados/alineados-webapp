@@ -15,7 +15,7 @@
 	{/snippet}
 
 	{#snippet statistics()}
-		<PersonalStatistics />
+		<PersonalStatistics type="stories" />
 	{/snippet}
 
 	{#snippet filter()}

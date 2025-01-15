@@ -1,18 +1,18 @@
 <script lang="ts">
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalStatistics from '$lib/modules/personal/PersonalStatistics.svelte';
-	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import ThoughtCarousel from '$lib/modules/personal/thoughts/ThoughtCarousel.svelte';
 	import ThoughtFilter from '$lib/modules/personal/thoughts/ThoughtFilter.svelte';
+	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
 </script>
 
 <PersonalHeader>
 	{#snippet header()}
-		<StoryHeader status="new" />
+		<ThoughtHeader status="new" />
 	{/snippet}
 
 	{#snippet statistics()}
-		<PersonalStatistics />
+		<PersonalStatistics type="thoughts" />
 	{/snippet}
 
 	{#snippet filter()}
@@ -21,6 +21,6 @@
 </PersonalHeader>
 
 <!-- Content scrollable in Y -->
-<div class="flex flex-col justify-center items-center gap-12 px-4 md:px-8 lg:px-16 mt-9">
+<div class="flex flex-col items-center justify-center gap-12">
 	<ThoughtCarousel />
 </div>
