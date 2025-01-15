@@ -51,6 +51,4 @@
 			/>
 		</div>
 	</div>
-
-	<Toggle description="Destacado" />
 </div>
