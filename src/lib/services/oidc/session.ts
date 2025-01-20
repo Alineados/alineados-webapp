@@ -25,6 +25,8 @@ export class SessionManager {
 
     get authURL(): AuthorizationUrl {
         this._authURL = this.oidc.generateAuthorizationUrl();
+
+        console.log('authURL', this._authURL);
         return this._authURL;
     }
 
