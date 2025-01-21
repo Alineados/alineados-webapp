@@ -9,7 +9,7 @@ export const load:LayoutServerLoad  = async () => {
 	const relational_id = '2';
 	const vocational_id = '3';
 	const spiritual_id = '4';
-	console.log('user_id', user_id);
+
 	console.log('health_id', health_id);
 	console.log("jp;a")
 	// get problems grouped by pillar
