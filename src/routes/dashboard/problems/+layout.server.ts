@@ -11,6 +11,7 @@ export const load:LayoutServerLoad  = async () => {
 	const spiritual_id = '4';
 	console.log('user_id', user_id);
 	console.log('health_id', health_id);
+	console.log("jp;a")
 	// get problems grouped by pillar
 	let problemService: ProblemService = ProblemService.getInstance('');
 
