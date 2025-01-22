@@ -47,7 +47,7 @@
 		// https://smw52p39-3000.use2.devtunnels.ms // devtunnels local
 		// https://oidc.nexuzdb.com // devtunnels tavito
 		const res = await fetch(
-			'https://smw52p39-3000.use2.devtunnels.ms/interaction/' + uid + '/login',
+			'https://oidc.alineado.org/interaction/' + uid + '/login',
 			{
 				method: 'POST',
 				credentials: 'include',
