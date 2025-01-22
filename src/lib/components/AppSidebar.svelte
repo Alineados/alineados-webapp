@@ -40,7 +40,7 @@
 					class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 				>
 					{#snippet child({ props })}
-						<a href={'/dashboard'} {...props}>
+						<a href={'/personal/problems'} {...props}>
 							<div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
@@ -50,8 +50,8 @@
 								<span class="text-sm font-medium leading-none text-alineados-blue-50"
 									>Alineados</span
 								>
-								<span class="text-[10px] font-medium leading-none text-alineados-blue-300"
-									>Tu vida, tu alineación</span
+								<span class="text-[10px] font-medium leading-none text-alineados-green-500"
+									>No solo sueñes, toma acción</span
 								>
 							</div>
 						</a>
@@ -64,7 +64,7 @@
 		<Sidebar.Group>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					<Sidebar.MenuItem>
+					<!-- <Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'#'} {...props}>
@@ -73,7 +73,7 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem>
+					</Sidebar.MenuItem> -->
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
@@ -84,37 +84,37 @@
 							{/snippet}
 						</Sidebar.MenuButton>
 						<Sidebar.MenuSub>
-							<Sidebar.MenuSubItem>
-								<Sidebar.MenuSubButton>
+							<Sidebar.MenuSubItem >
+								<Sidebar.MenuSubButton >
 									{#snippet child({ props })}
-										<a href={'#'} {...props}>
-											<span>Acciones</span>
-										</a>
+										<p  {...props} class="opacity-50 pl-1.5">
+											<span>Acciones (proximanete)</span>
+										</p>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<a href={'#'} {...props}>
-											<span>Pensamientos</span>
-										</a>
+									<p  {...props} class="opacity-50 pl-1.5">
+										<span>Pensamientos (proximanete)</span>
+									</p>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<a href={'#'} {...props}>
-											<span>Relatos</span>
-										</a>
+									<p  {...props} class="opacity-50 pl-1.5">
+										<span>Relatos (proximanete)</span>
+									</p>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<a href={'#'} {...props}>
+										<a href={'/personal/problems'} {...props}>
 											<span>Situaciones por Mejorar</span>
 										</a>
 									{/snippet}
@@ -122,7 +122,7 @@
 							</Sidebar.MenuSubItem>
 						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
-					<Sidebar.MenuItem>
+					<!-- <Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'#'} {...props}>
@@ -131,8 +131,7 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem>
-
+					</Sidebar.MenuItem> -->
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
@@ -184,13 +183,13 @@
 						sideOffset={4}
 					>
 						<DropdownMenu.Group class="bg-alineados-gray-200">
-							<DropdownMenu.Item class="bg-white">
+							<DropdownMenu.Item class="bg-white" disabled>
 								<div class="flex items-center gap-1 text-black">
 									<CircleUserRound />
 									<span class="truncate text-sm">Cuenta</span>
 								</div>
 							</DropdownMenu.Item>
-							<DropdownMenu.Item class="bg-white">
+							<DropdownMenu.Item class="bg-white" disabled>
 								<div class="flex items-center gap-1 text-black">
 									<Settings />
 									<span class="truncate text-sm">Configuración</span>

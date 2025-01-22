@@ -82,14 +82,14 @@
 							pid={health.id}
 							name="health"
 							selected
-							bind:text={health.name}
+							bind:text={health.label}
 						/>
 					{:else}
 						<SelectablePill
 							onInput={handleOnCategoryChange}
 							pid={health.id}
 							name="health"
-							bind:text={health.name}
+							bind:text={health.label}
 						/>
 					{/if}
 				{/each}
@@ -103,14 +103,14 @@
 							pid={relational.id}
 							name="relational"
 							selected
-							bind:text={relational.name}
+							bind:text={relational.label}
 						/>
 					{:else}
 						<SelectablePill
 							onInput={handleOnCategoryChange}
 							pid={relational.id}
 							name="relational"
-							bind:text={relational.name}
+							bind:text={relational.label}
 						/>
 					{/if}
 				{/each}
@@ -124,14 +124,14 @@
 							pid={vocational.id}
 							name="vocational"
 							selected
-							bind:text={vocational.name}
+							bind:text={vocational.label}
 						/>
 					{:else}
 						<SelectablePill
 							onInput={handleOnCategoryChange}
 							pid={vocational.id}
 							name="vocational"
-							bind:text={vocational.name}
+							bind:text={vocational.label}
 						/>
 					{/if}
 				{/each}
@@ -145,14 +145,14 @@
 							pid={spiritual.id}
 							name="spiritual"
 							selected
-							bind:text={spiritual.name}
+							bind:text={spiritual.label}
 						/>
 					{:else}
 						<SelectablePill
 							onInput={handleOnCategoryChange}
 							pid={spiritual.id}
 							name="spiritual"
-							bind:text={spiritual.name}
+							bind:text={spiritual.label}
 						/>
 					{/if}
 				{/each}

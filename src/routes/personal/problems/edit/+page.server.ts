@@ -1,4 +1,4 @@
-import { ProblemService } from '$lib/services/problems';
+import { ProblemService } from '$lib/services/personal/problems';
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';

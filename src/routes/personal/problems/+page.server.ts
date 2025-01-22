@@ -1,4 +1,4 @@
-import { ProblemService } from '$lib/services/problems';
+import { ProblemService } from '$lib/services/personal/problems';
 import { getJSONFormsData } from '$lib/utils/getFormsData';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';

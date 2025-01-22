@@ -1,6 +1,6 @@
 import type { Documents } from '$lib/interfaces';
-import { endpoints } from './endpoints';
-import { request, uploadFile, type Response } from './http';
+import { endpoints } from '../endpoints';
+import { request, uploadFile, type Response } from '../http';
 
 export class ProblemService {
 	private static instance: ProblemService;

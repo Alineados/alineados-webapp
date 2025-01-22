@@ -1,5 +1,5 @@
 
-import { ProblemService } from '$lib/services/problems';
+import { ProblemService } from '$lib/services/personal/problems';
 import type { LayoutServerLoad } from './$types';
 
 export const load:LayoutServerLoad  = async () => {

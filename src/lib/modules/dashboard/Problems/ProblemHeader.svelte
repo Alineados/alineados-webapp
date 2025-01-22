@@ -43,7 +43,7 @@
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-		<a href="/dashboard/problems" class="text-alineados-gray-600 hover:underline"
+		<a href="/personal/problems" class="text-alineados-gray-600 hover:underline"
 			>Situaciones por Mejorar</a
 		>
 		<span class="mx-1">/</span>
