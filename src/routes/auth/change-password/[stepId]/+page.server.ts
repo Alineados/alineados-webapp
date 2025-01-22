@@ -12,7 +12,6 @@ const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$/;
 export const actions = {
 	email: async ({ request }) => {
 		// Get form data
-		console.log("jholaaaaaa")
 		const formData = await request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
 		console.log('Received recover data:', dataJSON);
