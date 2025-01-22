@@ -4,6 +4,29 @@
 	import ThoughtCarousel from '$lib/modules/personal/thoughts/ThoughtCarousel.svelte';
 	import ThoughtFilter from '$lib/modules/personal/thoughts/ThoughtFilter.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
+
+	const pillarItems = [
+		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
+		{ id: 2, icon: '✝️', label: 'Religión', color: '#4CAF50' },
+		{ id: 3, icon: '🏥', label: 'Salud', color: '#4CAF50' },
+		{ id: 4, icon: '👥', label: 'Social', color: '#4CAF50' },
+		{ id: 5, icon: '💼', label: 'Negocios', color: '#4CAF50' }
+	];
+
+	const purposeItems = [
+		{ id: 1, icon: '😊', label: 'Actitud', color: '#4CAF50' },
+		{ id: 2, icon: '❤️', label: 'Amor', color: '#4CAF50' },
+		{ id: 3, icon: '🎁', label: 'Dar', color: '#4CAF50' },
+		{ id: 4, icon: '🧠', label: 'Entendimiento', color: '#4CAF50' },
+		{ id: 5, icon: '🏆', label: 'Éxito', color: '#4CAF50' },
+		{ id: 6, icon: '🤝', label: 'Relaciones', color: '#4CAF50' },
+		{ id: 7, icon: '📈', label: 'Resultados', color: '#4CAF50' },
+		{ id: 8, icon: '🤲', label: 'Servir', color: '#4CAF50' },
+		{ id: 9, icon: '💡', label: 'Solución', color: '#4CAF50' },
+		{ id: 10, icon: '⏰', label: 'Tiempo de calidad', color: '#4CAF50' }
+	];
+
+	let selectedType = $state('pillar');
 </script>
 
 <PersonalHeader>
@@ -16,11 +39,11 @@
 	{/snippet}
 
 	{#snippet filter()}
-		<ThoughtFilter />
+		<ThoughtFilter bind:selectedType />
 	{/snippet}
 </PersonalHeader>
 
 <!-- Content scrollable in Y -->
 <div class="flex flex-col items-center justify-center gap-12">
-	<ThoughtCarousel />
+	<ThoughtCarousel items={selectedType === 'pillar' ? pillarItems : purposeItems} />
 </div>

@@ -7,7 +7,7 @@
 
 	let checked = $state(false);
 
-	const Goals = {
+	const Purposes = {
 		attitude: {
 			id: '1',
 			name: 'attitude',
@@ -104,16 +104,16 @@
 				<PersonalSelect
 					subCategory={false}
 					list={[
-						{ ...Goals.attitude },
-						{ ...Goals.love },
-						{ ...Goals.give },
-						{ ...Goals.understanding },
-						{ ...Goals.succeed },
-						{ ...Goals.relations },
-						{ ...Goals.result },
-						{ ...Goals.servet },
-						{ ...Goals.solution },
-						{ ...Goals.qualityTime }
+						{ ...Purposes.attitude },
+						{ ...Purposes.love },
+						{ ...Purposes.give },
+						{ ...Purposes.understanding },
+						{ ...Purposes.succeed },
+						{ ...Purposes.relations },
+						{ ...Purposes.result },
+						{ ...Purposes.servet },
+						{ ...Purposes.solution },
+						{ ...Purposes.qualityTime }
 					]}
 				/>
 			</div>
