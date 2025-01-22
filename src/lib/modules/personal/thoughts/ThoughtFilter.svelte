@@ -1,8 +1,14 @@
 <script lang="ts">
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
-
 	import { onMount } from 'svelte';
+
+	// Props
+	let {
+		selectedType = $bindable()
+	}: {
+		selectedType: string;
+	} = $props();
 
 	let pillar_name = $state<keyof typeof cardFilter>('pillar');
 	let subcategoryId = $state<string>('1');
@@ -19,11 +25,12 @@
 	function handleOnCategoryChange(pid: string, name: string) {
 		subcategoryId = pid;
 	}
+
 	function changeFilter(filter: keyof typeof cardFilter) {
 		cardFilter.pillar = false;
 		cardFilter.fin = false;
-
 		cardFilter[filter] = true;
+		selectedType = filter;
 	}
 
 	onMount(() => {
@@ -51,4 +58,5 @@
 			/>
 		</div>
 	</div>
+	<Toggle description="Destacado" />
 </div>
