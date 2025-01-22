@@ -7,6 +7,7 @@ export const load: PageServerLoad = async () => {
 	const health_id = '1';
 	const relational_id = '2';
 	const vocational_id = '3';
+
 	const spiritual_id = '4';
 
 	// get problems grouped by pillar

@@ -1,22 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	let { items = Array<{ id: number; icon?: string; label: string; color?: string }> } = $props();
 
-	interface MenuItem {
-		id: number;
-		icon: string;
-		label: string;
-		color: string;
-	}
-
-	const menuItems: MenuItem[] = [
-		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
-		{ id: 2, icon: '✝️', label: 'Religión', color: '#4CAF50' },
-		{ id: 3, icon: '🏥', label: 'Salud', color: '#4CAF50' },
-		{ id: 4, icon: '👥', label: 'Social', color: '#4CAF50' },
-		{ id: 5, icon: '💼', label: 'Negocios', color: '#4CAF50' }
-	];
-
-	let selectedId = $state(3);
+	let selectedId = $state<number | undefined>(undefined);
 	let containerRef = $state<HTMLDivElement>();
 
 	function selectItem(id: number) {
@@ -43,13 +28,13 @@
 	});
 </script>
 
-<div class="mx-auto flex w-full max-w-4xl justify-center px-4 py-4">
+<div class="mx-auto flex w-full justify-center px-4 py-4">
 	<div
 		bind:this={containerRef}
 		class="no-scrollbar flex h-40 snap-x snap-mandatory items-center gap-8 overflow-x-auto px-8 py-4"
 		role="tablist"
 	>
-		{#each menuItems as item (item.id)}
+		{#each items as item (item.id)}
 			<div class="relative flex h-32 items-center justify-center">
 				<button
 					data-id={item.id}
