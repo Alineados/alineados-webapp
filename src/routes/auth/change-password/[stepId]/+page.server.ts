@@ -13,7 +13,6 @@ export const actions = {
 	email: async ({ request }) => {
 		// Get form data
 		const formData = await request.formData();
-		console.log(formData)
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
 		console.log('Received recover data:', dataJSON);
 
