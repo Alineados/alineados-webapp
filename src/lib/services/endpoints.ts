@@ -1,7 +1,7 @@
 export const endpoints = {
 	sandbox: {
-		problems: 'https://sandbox-auth-service-808905282606.us-central1.run.app',
-		auth: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
+		auth: 'https://sandbox-auth-service-808905282606.us-central1.run.app',
+		problems: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
 		stories: '',
 	},
 	prod: {
