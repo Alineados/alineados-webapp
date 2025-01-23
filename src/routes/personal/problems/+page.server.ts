@@ -4,19 +4,19 @@ import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions = {
-	new: async ({ cookies, request }) => {
+	new: async ({ cookies, request, locals }) => {
 		const formData = await request.formData();
 		const data = getJSONFormsData(formData);
 
-		const { pfid, cid, pillar_name, category_name } = data;
+		const { pfid, cid, pillar_name, pillar_label, category_name, category_label } = data;
 
 		let problemService: ProblemService = ProblemService.getInstance('');
 		const result = await problemService.createProblemInfo({
-			uid: '1',
+			uid: locals.user._id!,
 			pfid,
 			cid,
-			pillar_name,
-			category_name
+			pillar_name: pillar_label,
+			category_name: category_label
 		});
 
 		if (result.status !== 200 && result.status !== 201) {
@@ -33,7 +33,7 @@ export const actions = {
 
 		let problemService: ProblemService = ProblemService.getInstance('');
 		const result = await problemService.deleteProblemInfo(pid);
-		console.log(result);
+
 
 		if (result.status !== 200 && result.status !== 201) {
 			return fail(result.data);

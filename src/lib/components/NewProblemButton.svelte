@@ -2,48 +2,44 @@
 	import Plus from '$lib/icons/Plus.svelte';
 	import * as DropdownMenu from '$lib/shared/ui/dropdown-menu/index';
 	import { enhance } from '$app/forms';
-	import { Pillars } from '$lib/interfaces/data';
+
 	import type { ProblemCard } from '$lib/interfaces';
 	import { goto } from '$app/navigation';
-	import { addProblem } from '$lib/stores';
+	import { addProblem, pillarState } from '$lib/stores';
 
 	let formHtml: HTMLFormElement;
 
 	let dataToSend = $state({
-		pfid: '',
-		cid: '',
-		pillar_name: '',
-		category_name: ''
+		pfid: '', // pillar id
+		cid: '', // category id
+		pillar_name: '', // pillar name
+		pillar_label: '', // pillar label
+		category_name: '', // category name
+		category_label: '' // category label
 	});
-	function submitForm(id1: string, id2: string, name1: string, name2: string) {
-		dataToSend.pfid = id1;
-		dataToSend.cid = id2;
-		dataToSend.pillar_name = name1;
-		dataToSend.category_name = name2;
 
+	function submitForm(
+		pfid: string,
+		cid: string,
+		pillar_name: string,
+		pillar_label: string,
+		category_name: string,
+		category_label: string
+	) {
+
+
+		dataToSend.pfid = pfid;
+		dataToSend.cid = cid;
+		dataToSend.pillar_name = pillar_name;
+		dataToSend.pillar_label = pillar_label;
+		dataToSend.category_name = category_name;
+		dataToSend.category_label = category_label;
 		formHtml.requestSubmit();
 	}
-	function navigateToProblem(pid: string, pillar: string) {
 
-		// change pillar name
-		let name: string = '';
-		switch (pillar) {
-			case 'Salud':
-				name = 'health';
-				break;
-			case 'Relaciones':
-				name = 'relational';
-				break;
-			case 'Vocaciones':
-				name = 'vocational';
-				break;
-			case 'Espiritual':
-				name = 'spiritual';
-				break;
-		}
-
+	function navigateToProblem(pid: string, pillar_label: string) {
 		// navigate to problem details
-		goto(`./problems/edit?pid=${pid}&pillar_name=${name}`);
+		goto(`./problems/edit?pid=${pid}&pillar_name=${pillar_label}`);
 	}
 </script>
 
@@ -65,18 +61,19 @@
 				formData.set('pfid', dataToSend.pfid);
 				formData.set('cid', dataToSend.cid);
 				formData.set('pillar_name', dataToSend.pillar_name);
+				formData.set('pillar_label', dataToSend.pillar_label);
 				formData.set('category_name', dataToSend.category_name);
+				formData.set('category_label', dataToSend.category_label);
 
 				return async ({ result, update }) => {
-			
 					if (result.status === 200) {
 						const { data }: { data: ProblemCard } = result.data;
 						// navigate to new problem
 						navigateToProblem(data.id, dataToSend.pillar_name);
 						// update stores
 						setTimeout(() => {
-							addProblem(data, Pillars);
-						}, 500);
+							addProblem(data, dataToSend.pillar_name);
+						}, 600);
 					}
 					// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 				};
@@ -85,79 +82,92 @@
 			<DropdownMenu.Group>
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger class="bg-white hover:bg-alineados-gray-100">
-						<span class="font-normal">{Pillars.health.name}</span>
+						<span class="font-normal">{pillarState.health.label}</span>
 					</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
-						{#each Pillars.health.categories as category}
+						{#each pillarState.health.categories as category}
 							<DropdownMenu.Item
 								onclick={() =>
-									submitForm(Pillars.health.id, category.id, Pillars.health.name, category.name)}
+									submitForm(
+										pillarState.health.id,
+										category.id,
+										pillarState.health.name,
+										pillarState.health.label,
+										category.name,
+										category.label
+									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
-								<span class="font-normal">{category.name}</span>
+								<span class="font-normal">{category.label}</span>
 							</DropdownMenu.Item>
 						{/each}
 					</DropdownMenu.SubContent>
 				</DropdownMenu.Sub>
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger class="bg-white hover:bg-alineados-gray-100">
-						<span class="font-normal">{Pillars.relational.name}</span>
+						<span class="font-normal">{pillarState.relational.label}</span>
 					</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
-						{#each Pillars.relational.categories as category}
+						{#each pillarState.relational.categories as category}
 							<DropdownMenu.Item
 								onclick={() =>
 									submitForm(
-										Pillars.relational.id,
+										pillarState.relational.id,
 										category.id,
-										Pillars.relational.name,
-										category.name
+										pillarState.relational.name,
+										pillarState.relational.label,
+										category.name,
+										category.label
 									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
-								<span class="font-normal">{category.name}</span>
+								<span class="font-normal">{category.label}</span>
 							</DropdownMenu.Item>
 						{/each}
 					</DropdownMenu.SubContent>
 				</DropdownMenu.Sub>
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger class="bg-white hover:bg-alineados-gray-100">
-						<span class="font-normal">{Pillars.vocational.name}</span>
+						<span class="font-normal">{pillarState.vocational.label}</span>
 					</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
-						{#each Pillars.vocational.categories as category}
+						{#each pillarState.vocational.categories as category}
 							<DropdownMenu.Item
 								onclick={() =>
 									submitForm(
-										Pillars.vocational.id,
+										pillarState.vocational.id,
 										category.id,
-										Pillars.vocational.name,
-										category.name
+										pillarState.vocational.name,
+										pillarState.vocational.label,
+										category.name,
+										category.label
 									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
-								<span class="font-normal">{category.name}</span>
+								<span class="font-normal">{category.label}</span>
 							</DropdownMenu.Item>
 						{/each}
 					</DropdownMenu.SubContent>
 				</DropdownMenu.Sub>
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger class="bg-white hover:bg-alineados-gray-100">
-						<span class="font-normal">{Pillars.spiritual.name}</span>
+						<span class="font-normal">{pillarState.spiritual.label}</span>
 					</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent class="bg-alineados-gray-100">
-						{#each Pillars.spiritual.categories as category}
+						{#each pillarState.spiritual.categories as category}
 							<DropdownMenu.Item
 								onclick={() =>
 									submitForm(
-										Pillars.spiritual.id,
+										pillarState.spiritual.id,
 										category.id,
-										Pillars.spiritual.name,
-										category.name
+										pillarState.spiritual.name,
+										pillarState.spiritual.label,
+										category.name,
+										category.label
 									)}
 								class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
 							>
-								<span class="font-normal">{category.name}</span>
+								<span class="font-normal">{category.label}</span>
 							</DropdownMenu.Item>
 						{/each}
 					</DropdownMenu.SubContent>

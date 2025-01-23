@@ -91,6 +91,8 @@ async function evaluateResponse(response: globalThis.Response): Promise<Response
 
 	const data: Response = await response.json();
 
+	// console.log('response https', data);
+
 	return {
 		data: data.data,
 		message: data.message,

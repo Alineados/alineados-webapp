@@ -52,5 +52,11 @@ export {
 	matrix
 } from './problem/matrix';
 
+// New type of stores
+export {userState} from './user/info.svelte';
+export {pillarState, PillarState} from './user/pillars.svelte';
+
 // Generics
 export { emptyGeneric, listSelector } from './generic';
+
+

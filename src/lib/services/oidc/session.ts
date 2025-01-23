@@ -84,7 +84,6 @@ export class SessionManager {
 
             if (this._sessionInfo && 'sub' in this._sessionInfo && !('profile' in this._sessionInfo)) {
                 // @ts-ignore
-                // TODO: to correct this problem its necesarry to call close session method on healthuser class
                 await this.closeSession(this._sessionInfo.sub);
                 console.log("closing session, just the sub was found in authserver response, likely auth server error...")
                 return this.oidc.generateAuthorizationUrl() as AuthorizationUrl;
@@ -97,9 +96,7 @@ export class SessionManager {
     }
 
     isAuthorizationUrl(url: string | any | null): url is AuthorizationUrl {
-        // if (typeof url !== 'string') return false;
         return typeof url === 'string';
-        // /^https:\/\/(.+?\.)?\velticare\.com(\/|$)/.test(url);
     }
 
     isSessionUserInfo(obj: any): obj is SessionUserInfo {
@@ -126,6 +123,6 @@ export class SessionManager {
         );
     }
     async closeSession(id: string) {
-        await this.oidc.logout(id, 'members');
+        await this.oidc.logout(id);
     }
 }

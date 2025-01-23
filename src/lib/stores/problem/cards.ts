@@ -2,6 +2,7 @@ import { FilterBy, type ProblemCard } from '$lib/interfaces';
 import type { PillarsAndCategories } from '$lib/interfaces/Pillar.interface';
 import { derived, writable } from 'svelte/store';
 import { problemInfo, problemReadyToComplete } from './info';
+import type { PillarState } from '$lib/stores';
 
 // list of info about problems
 export const healthProblems = writable<ProblemCard[]>();
@@ -99,11 +100,7 @@ export const updateSecurityAndActive = (kind: number) => {
 };
 
 // Function to add a problem to the store
-export const addProblem = (problem: ProblemCard, pillar: PillarsAndCategories) => {
-	// get the key name of the pillar
-	const key = Object.keys(pillar).find(
-		(key) => pillar[key as keyof PillarsAndCategories].id === problem.pfid
-	);
+export const addProblem = (problem: ProblemCard, key: string) => {
 
 	if (key === 'health') {
 		healthProblems.update((problems) => [...problems, problem]);
@@ -117,11 +114,7 @@ export const addProblem = (problem: ProblemCard, pillar: PillarsAndCategories) =
 };
 
 // Function to remove a problem from the store
-export const removeProblem = (problem: ProblemCard, pillar: PillarsAndCategories) => {
-	// get the key name of the pillar
-	const key = Object.keys(pillar).find(
-		(key) => pillar[key as keyof PillarsAndCategories].id === problem.pfid
-	);
+export const removeProblem = (problem: ProblemCard, key: string) => {
 
 	if (key === 'health') {
 		healthProblems.update((problems) => problems.filter((p) => p.id !== problem.id));
@@ -135,8 +128,8 @@ export const removeProblem = (problem: ProblemCard, pillar: PillarsAndCategories
 };
 
 // Function to update the problem info (Autosave)
-let timeoutId: number;
-let endTimeoutId: number;
+let timeoutId: ReturnType<typeof setTimeout>;
+let endTimeoutId: ReturnType<typeof setTimeout>;
 
 export const autosavingProblemCard = derived([problemCard], (_, set) => {
 	clearTimeout(timeoutId);

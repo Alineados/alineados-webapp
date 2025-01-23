@@ -9,9 +9,9 @@
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import UnPadlock from '$lib/icons/UnPadlock.svelte';
 	import { type ProblemCard } from '$lib/interfaces';
-	import { Pillars } from '$lib/interfaces/data';
-	import { addProblem, removeProblem } from '$lib/stores';
+	import { pillarState, removeProblem } from '$lib/stores';
 	import { calculateDaysLeft } from '$lib/utils/dates';
+	import { set } from 'zod';
 	import MessageLength from './MessageLength.svelte';
 
 	let {
@@ -24,6 +24,7 @@
 	} = $props();
 
 	let problemSelected: ProblemCard | null = $state(null);
+
 	let formHtml: HTMLFormElement;
 
 	function deleteCard(problem: ProblemCard, e: any) {
@@ -53,28 +54,31 @@
 		}
 	}
 
-	function handleClickCard(e: any, pid: string, pillar: string) {
-		e.preventDefault();
-
-		// change pillar name
-		let name: string = '';
-		switch (pillar) {
+	function getPillarName(pillar_label: string): string {
+		let pillar_name: string = '';
+		switch (pillar_label) {
 			case 'Salud':
-				name = 'health';
+				pillar_name = 'health';
 				break;
-			case 'Relación':
-				name = 'relational';
+			case 'Relaciones':
+				pillar_name = 'relational';
 				break;
-			case 'Vocación':
-				name = 'vocational';
+			case 'Vocaciones':
+				pillar_name = 'vocational';
 				break;
 			case 'Espiritual':
-				name = 'spiritual';
+				pillar_name = 'spiritual';
 				break;
 		}
 
+		return pillar_name;
+	}
+
+	function handleClickCard(e: any, pid: string, pillar_label: string) {
+		e.preventDefault();
+
 		// navigate to problem details
-		goto(`./problems/edit?pid=${pid}&pillar_name=${name}`);
+		goto(`./problems/edit?pid=${pid}&pillar_name=${getPillarName(pillar_label)}`);
 	}
 </script>
 
@@ -86,15 +90,15 @@
 		action="?/delete"
 		use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 			// set data
-			if (problemSelected?.id) {
-				formData.set('pid', problemSelected.id);
-			} else {
-				console.error('Problem ID is undefined');
-			}
+			if (problemSelected?.id) formData.set('pid', problemSelected.id);
+			else console.error('Problem ID is undefined');
+
 			return async ({ result, update }) => {
 				// `result` is an `ActionResult` object
-		
-				if (result.status === 200) if (problemSelected) removeProblem(problemSelected, Pillars);
+
+				if (result.status === 200)
+					if (problemSelected)
+						removeProblem(problemSelected, getPillarName(problemSelected.pillar_name));
 
 				// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
 			};

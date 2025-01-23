@@ -15,6 +15,9 @@
 	import { useSidebar } from '$lib/shared/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 
+	import { userState } from '$lib/stores';
+	import { applyAction, enhance } from '$app/forms';
+
 	const sidebar = useSidebar();
 
 	let {
@@ -84,10 +87,10 @@
 							{/snippet}
 						</Sidebar.MenuButton>
 						<Sidebar.MenuSub>
-							<Sidebar.MenuSubItem >
-								<Sidebar.MenuSubButton >
+							<Sidebar.MenuSubItem>
+								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p  {...props} class="opacity-50 pl-1.5">
+										<p {...props} class="pl-1.5 opacity-50">
 											<span>Acciones (proximanete)</span>
 										</p>
 									{/snippet}
@@ -96,18 +99,18 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-									<p  {...props} class="opacity-50 pl-1.5">
-										<span>Pensamientos (proximanete)</span>
-									</p>
+										<p {...props} class="pl-1.5 opacity-50">
+											<span>Pensamientos (proximanete)</span>
+										</p>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-									<p  {...props} class="opacity-50 pl-1.5">
-										<span>Relatos (proximanete)</span>
-									</p>
+										<p {...props} class="pl-1.5 opacity-50">
+											<span>Relatos (proximanete)</span>
+										</p>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
@@ -160,16 +163,16 @@
 								<Avatar.Root class="h-8 w-8 rounded-lg">
 									<Avatar.Image
 										src={'https://img2.wallspic.com/previews/3/0/5/7/5/157503/157503-rick_and_morty-rick_sanchez-morty_smith-jerry_smith-natacion_para_adultos-x750.jpg'}
-										alt={'José Penados'}
+										alt={userState.first_name}
 									/>
 									<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 								</Avatar.Root>
 								<div class="flex flex-col justify-center space-y-1">
-									<span class="text-xs font-medium leading-none text-alineados-blue-50"
-										>José Penagos</span
-									>
+									<span class="text-xs font-medium leading-none text-alineados-blue-50">
+										{`${userState.first_name} ${userState.last_name}`}
+									</span>
 									<span class="text-[10px] font-medium leading-none text-alineados-blue-300"
-										>jose_example@gmail.com</span
+										>{userState.email}</span
 									>
 								</div>
 							</Sidebar.MenuButton>
@@ -196,10 +199,26 @@
 								</div>
 							</DropdownMenu.Item>
 							<DropdownMenu.Item class="bg-white">
-								<div class="flex items-center gap-1 text-black">
-									<LogOut />
-									<span class="truncate text-sm">Cerrar Sesión</span>
-								</div>
+								<form
+									method="post"
+									action="/?/logout"
+									use:enhance={() => {
+										return async ({ result, update }) => {
+											console.log(result);
+											if (result.type === 'redirect') {
+												window.location.href = result.location;
+											} else {
+												await applyAction(result);
+											}
+										}; 
+									}}
+									class="flex items-center gap-1 text-black"
+								>
+									<button type="submit" class="flex items-center gap-1">
+										<LogOut />
+										<span class="truncate text-sm">Cerrar Sesión</span>
+									</button>
+								</form>
 							</DropdownMenu.Item>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>

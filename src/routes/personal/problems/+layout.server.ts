@@ -2,15 +2,14 @@
 import { ProblemService } from '$lib/services/personal/problems';
 import type { LayoutServerLoad } from './$types';
 
-export const load:LayoutServerLoad  = async () => {
+export const load:LayoutServerLoad  = async (event) => {
 	// use id
-	const user_id = '1';
-	const health_id = '1';
-	const relational_id = '2';
-	const vocational_id = '3';
-	const spiritual_id = '4';
-	console.log('health_id', health_id);
-	console.log("jp;a")
+	const user_id = event.locals.user._id!;
+	const health_id = event.locals.pillars.health.id;
+	const relational_id = event.locals.pillars.relational.id;
+	const vocational_id = event.locals.pillars.vocational.id;
+	const spiritual_id = event.locals.pillars.spiritual.id;
+
 	// get problems grouped by pillar
 	let problemService: ProblemService = ProblemService.getInstance('');
 

@@ -12,6 +12,8 @@ import {
     CODE_VERIFIER,
     CODE_CHALLENGE // @ts-ignore
 } from '$env/static/private';
+import type { PillarsAndCategories, UserInfo } from "$lib/interfaces";
+import { AuthService } from "$lib/services/auth";
 
 
 
@@ -21,7 +23,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     console.log('============================================');
 
 
-    if (event.url.pathname === '/auth/login') return resolve(event);
+    if (event.url.pathname.startsWith('/auth') || event.url.pathname.startsWith('/onboarding')) return resolve(event);
 
     // clean cookies
     event.cookies.delete('_session', { path: '/' });
@@ -84,13 +86,21 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 
     // logs
-    console.log('============================================');
-    console.log('session', session);
-    console.log('sessionUserInfo', sessionUserInfo);
-    console.log('============================================');
+    // console.log('============================================');
+    // console.log('session', session);
+    // console.log('sessionUserInfo', sessionUserInfo);
+    // console.log('============================================');
 
+    const user = sessionUserInfo.profile as unknown as UserInfo;
+
+    // get pillars
+    let authService: AuthService = AuthService.getInstance('');
+    const pillars = await authService.getPillars(user._id!);
+    
     // set locals
     event.locals.token = session.access_token;
+    event.locals.user = user;
+    event.locals.pillars = pillars.data as PillarsAndCategories;
 
 
     // Return resolve

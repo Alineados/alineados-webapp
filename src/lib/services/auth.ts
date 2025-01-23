@@ -25,9 +25,20 @@ export class AuthService {
 	}
 
 	// Methods
-	public async loginUsers(body: any): Promise<Response> {
-		const url = `${this._url}/login`;
-		const response: Response = await request(url, 'POST', body, this._token);
+	public async getPillars(uid: string): Promise<Response> {
+		const url = `${this._url}/get-pillars?uid=${uid}`;
+
+		const response: Response = await request(url, 'GET', null, this._token);
+
+		return response;
+	}
+
+
+	// logout
+	public async logout(uid: string): Promise<Response> {
+		const url = `${this._url}/logout?uid=${uid}`;
+
+		const response: Response = await request(url, 'GET', null, this._token);
 
 		return response;
 	}

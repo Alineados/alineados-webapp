@@ -411,7 +411,7 @@ export const actions = {
 		console.log(dataJSON);
 
 		// Redirect to the login page
-		redirect(307, '/auth/login');
+		redirect(307, 'http://localhost:5173');
 	},
 
 	resend: async (event) => {

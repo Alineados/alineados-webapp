@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 };
 
 export const actions = {
-	upload: async ({ cookies, request }) => {
+	upload: async ({ cookies, request, locals }) => {
 		const formData = Object.fromEntries(await request.formData());
 
 		console.log('formData', formData);
@@ -65,7 +65,7 @@ export const actions = {
 
 		let problemService: ProblemService = ProblemService.getInstance('');
 
-		const result = await problemService.uploadFile("1", pcid, file);
+		const result = await problemService.uploadFile(locals.user._id!, pcid, file);
 
 		console.log('result', result);
 

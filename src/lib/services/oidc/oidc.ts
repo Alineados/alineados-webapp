@@ -1,4 +1,5 @@
 import type { Config, ClientCredentialsToken } from '../../interfaces';
+import { AuthService } from '../auth';
 
 export class Oidc {
     config: Config;
@@ -121,77 +122,21 @@ export class Oidc {
         }
     }
 
-    async logout(id: string, userType: string = 'doctors') {
-        const res = await fetch(`${this.config.issuer}/users/logout`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: id,
-                org: userType
-            })
-        });
-        const data = await res.json();
-        return data;
+    async logout(id: string) {
+        let authService: AuthService = AuthService.getInstance('');
+
+        const result = await authService.logout(id);
+
+        return result;
     }
 
 
 
     async sendResetPassword(org: string, clientID: string, email: string) {
-        console.log(
-            JSON.stringify({
-                to: email,
-                org: org,
-                client_id: clientID
-            })
-        );
-        const res = await fetch(`${this.issuer}/users/reset-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                to: email,
-                org: org,
-                client_id: clientID
-            })
-        });
 
-        if (res.status == 200) {
-            const response = await res.json();
-            return { response, status: 200 };
-        } else {
-            // const response = await res.json();
-            // console.log(response);
-            // console.error(await res.text());
-            // return { response: await res.text(), status: 400 };
-
-            return {
-                response: JSON.stringify({ message: 'error in send reset passwords' }),
-                status: 400
-            };
-        }
     }
 
     async changePassword(org: string, uid: string, password: string) {
-        const res = await fetch(`${this.issuer}/users/change-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                org,
-                uid,
-                password
-            })
-        });
-        if (res.status == 200) {
-            const response = await res.json();
-            return { response, status: 200 };
-        } else {
-            console.error(await res.text());
-            throw new Error(await res.text());
-        }
+
     }
 }
