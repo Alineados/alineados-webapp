@@ -14,7 +14,7 @@ export const actions = {
 		// Get form data
 		const formData = await request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
-		console.log('Received recover data:', dataJSON);
+		
 
 		// Return the error if there are any
 		if (!dataJSON.email) {
