@@ -5,6 +5,7 @@ const endpoints = {
 		socket: 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
 		stories: '',
 		oidc: 'https://oidc.alineado.org',
+		web: 'https://sandbox.alineado.org',
 	},
 	prod: {
 		problems: '',
@@ -17,6 +18,7 @@ const endpoints = {
 		stories: 'ttp://127.0.0.1:8080',
 		socket: 'ws://localhost:4001',
 		oidc: 'https://oidc.alineado.org',
+		web: 'http://localhost:5173',
 	}
 };
 
