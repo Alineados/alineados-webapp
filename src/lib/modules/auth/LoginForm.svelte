@@ -52,7 +52,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					email: data.identifier,
+					identifier: data.identifier,
 					password: data.password
 				})
 			}

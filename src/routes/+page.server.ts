@@ -13,16 +13,10 @@ import { Oidc } from '$lib/services/oidc/oidc';
 import { AuthService } from '$lib/services/auth';
 import { fail } from 'assert';
 
-// export const load: PageServerLoad = async (event) => {
+export const load: PageServerLoad = async (event) => {
 
-//     // get from hooks de data
-//     console.log('============================================');
-//     console.log('event.locals');
-//     console.log(event.locals);
-//     console.log('============================================');
-
-//     // throw redirect(307, '/calendar');
-// }
+    throw redirect(307, '/personal/problems');
+}
 
 
 /** @type {import('./$types').Actions} */
