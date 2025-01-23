@@ -4,6 +4,7 @@ import type { ValidationError } from '$lib/interfaces/Validations.interface';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OnboardingService } from '$lib/services/onboarding';
+import { getEndpointByVenv } from '$lib/services/endpoints';
 
 // Add interface for response
 interface ExistingIdentifier {
@@ -411,7 +412,7 @@ export const actions = {
 		console.log(dataJSON);
 
 		// Redirect to the login page
-		redirect(307, 'http://localhost:5173');
+		redirect(307, getEndpointByVenv().web);
 	},
 
 	resend: async (event) => {
