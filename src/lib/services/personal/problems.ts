@@ -4,7 +4,7 @@ import { request, uploadFile, type Response } from '../http';
 
 export class ProblemService {
 	private static instance: ProblemService;
-	private _host: string = endpoints.local.problems;
+	private _host: string = endpoints.sandbox.problems;
 	private _token: string;
 	private _url: string = `${this._host}/api/v1/problems`;
 
