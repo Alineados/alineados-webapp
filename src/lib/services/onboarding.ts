@@ -3,7 +3,7 @@ import { request, type Response } from './http';
 
 export class OnboardingService {
 	private static instance: OnboardingService;
-	private _host: string = endpoints.local.auth;
+	private _host: string = endpoints.sandbox.auth;
 	private _token: string;
 	private _url: string = `${this._host}/api/v1/auth`;
 

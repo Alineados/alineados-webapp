@@ -3,7 +3,7 @@ import { request, type Response } from "../http";
 
 export class StoryService {
     private static instance: StoryService;
-    private _host: string = endpoints.local.problems;
+    private _host: string = endpoints.sandbox.problems;
     private _token: string;
     private _url: string = `${this._host}/api/v1/stories`;
 
