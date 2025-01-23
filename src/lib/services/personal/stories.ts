@@ -1,9 +1,9 @@
-import { endpoints } from "../endpoints";
+import { getEndpointByVenv } from "../endpoints";
 import { request, type Response } from "../http";
 
 export class StoryService {
     private static instance: StoryService;
-    private _host: string = endpoints.sandbox.problems;
+    private _host: string = getEndpointByVenv().problems;
     private _token: string;
     private _url: string = `${this._host}/api/v1/stories`;
 

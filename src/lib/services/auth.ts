@@ -1,9 +1,9 @@
-import { endpoints } from './endpoints';
+import {  getEndpointByVenv } from './endpoints';
 import { request, type Response } from './http';
 
 export class AuthService {
 	private static instance: AuthService;
-	private _host: string = endpoints.sandbox.auth;
+	private _host: string = getEndpointByVenv().auth;
 	private _token: string;
 	private _url: string = `${this._host}/api/v1/auth`;
 

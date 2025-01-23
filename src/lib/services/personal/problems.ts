@@ -1,10 +1,10 @@
 import type { Documents } from '$lib/interfaces';
-import { endpoints } from '../endpoints';
+import { getEndpointByVenv } from '../endpoints';
 import { request, uploadFile, type Response } from '../http';
 
 export class ProblemService {
 	private static instance: ProblemService;
-	private _host: string = endpoints.sandbox.problems;
+	private _host: string =getEndpointByVenv().problems;
 	private _token: string;
 	private _url: string = `${this._host}/api/v1/problems`;
 

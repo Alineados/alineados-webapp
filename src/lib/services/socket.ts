@@ -1,10 +1,11 @@
 import { Socket, type Channel } from 'phoenix';
-import { endpoints } from './endpoints';
+import { getEndpointByVenv } from './endpoints';
+
 
 export class SocketService {
 	private socket: Socket;
 	private channel: Channel;
-	private api: string = endpoints.sandbox.socket;
+	private api: string = getEndpointByVenv().socket;
 
 	constructor(id: string) {
 		this.socket = new Socket(`${this.api}/socket`, {});

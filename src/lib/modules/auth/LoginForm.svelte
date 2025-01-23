@@ -10,6 +10,7 @@
 	import { Label } from '$lib/shared/ui/label/index';
 	import EyeOff from '$lib/icons/BlockEye.svelte';
 	import Eye from '$lib/icons/NoBlockEye.svelte';
+	import { getEndpointByVenv } from '$lib/services/endpoints';
 
 	// Props
 	let {
@@ -43,20 +44,17 @@
 			return;
 		}
 		loading = true;
-		const res = await fetch(
-			'https://oidc.alineado.org/interaction/' + uid + '/login',
-			{
-				method: 'POST',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					identifier: data.identifier,
-					password: data.password
-				})
-			}
-		);
+		const res = await fetch(`${getEndpointByVenv().oidc}/interaction/` + uid + '/login', {
+			method: 'POST',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				identifier: data.identifier,
+				password: data.password
+			})
+		});
 		console.log(res);
 
 		if (res.status == 200) {
