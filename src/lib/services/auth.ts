@@ -30,6 +30,8 @@ export class AuthService {
 
 		const response: Response = await request(url, 'GET', null, this._token);
 
+		console.log('getPillars', response);
+
 		return response;
 	}
 

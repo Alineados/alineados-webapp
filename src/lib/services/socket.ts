@@ -1,9 +1,10 @@
 import { Socket, type Channel } from 'phoenix';
+import { endpoints } from './endpoints';
 
 export class SocketService {
 	private socket: Socket;
 	private channel: Channel;
-	private api: string = 'ws://localhost:4001';
+	private api: string = endpoints.sandbox.socket;
 
 	constructor(id: string) {
 		this.socket = new Socket(`${this.api}/socket`, {});
