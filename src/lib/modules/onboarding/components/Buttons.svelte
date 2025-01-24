@@ -74,7 +74,7 @@
 	<input name="data" type="text" class="hidden" bind:value={data} />
 	<button
 		class="flex items-center rounded-2xl border border-alineados-gray-600 px-8 py-4 text-sm font-semibold text-alineados-gray-600 transition duration-300 ease-in-out hover:border hover:border-[#F7F7F7] hover:bg-alineados-gray-600 hover:text-[#F7F7F7]"
-		style="visibility: {action === 'register' ? 'hidden' : 'visible'};"
+		style="visibility: {action === 'register' || action === 'finish' ? 'hidden' : 'visible'};"
 		onclick={handlePrevious}
 	>
 		<span class="mr-2">&larr;</span> Regresar
