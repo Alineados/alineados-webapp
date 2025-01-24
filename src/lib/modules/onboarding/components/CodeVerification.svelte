@@ -35,7 +35,7 @@
 	$inspect({ value });
 </script>
 
-<div class="relative mt-12">
+<div class="relative">
 	<InputOTP.Root {maxlength} {pattern} bind:value>
 		{#snippet children({ cells })}
 			<InputOTP.Group>
