@@ -27,7 +27,7 @@ export {
 	addProblemItem,
 	removeOrCleanItem,
 	prominentItem,
-	changeFinalDecision,
+	changeFinalDecisionAndRecommended,
 	markDailytItem,
 	markOnlyDoneOrRepeatedItems,
 	changeCompleteStatus,

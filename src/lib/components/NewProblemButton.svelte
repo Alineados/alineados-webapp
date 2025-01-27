@@ -45,7 +45,7 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		class="group flex items-center gap-2 rounded-lg bg-[#0F172A] px-5 py-2 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
+		class="group flex items-center gap-2 rounded-lg bg-[#0F172A] px-5 py-1 text-white transition duration-300 ease-in-out hover:bg-[#1A2642] hover:shadow-lg hover:shadow-[#0F172A]/30"
 		aria-label="Nuevo Problema"
 	>
 		<Plus styleTw="size-4" />

@@ -20,10 +20,14 @@
 	let error = $state(false);
 
 	function handleOnInput() {
+
 		if (value === '') {
 			error = true;
 			return;
 		}
+
+		value = value.trim();
+		value = value.replace('0', '');
 
 		let number = parseInt(value);
 

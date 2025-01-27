@@ -48,8 +48,8 @@ export function getSelectorList(rows: MatrixRow[]): Selector[] {
 }
 
 // autosave
-let timeoutId: number;
-let endTimeoutId: number;
+let timeoutId: ReturnType<typeof setTimeout>;
+let endTimeoutId: ReturnType<typeof setTimeout>;
 export const autosavingProblemMatrix = derived([matrix], (_, set) => {
 	clearTimeout(timeoutId);
 	timeoutId = setTimeout(() => {

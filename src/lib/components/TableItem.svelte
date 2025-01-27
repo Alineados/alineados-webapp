@@ -1,12 +1,16 @@
 <script lang="ts">
 	import Copy from '$lib/icons/Copy.svelte';
+	import { toast } from 'svelte-sonner';
 
 	let { value } = $props();
 
 	async function copyToClipboard() {
 		try {
 			await navigator.clipboard.writeText(value);
-			// Optional: Add toast/notification that text was copied
+
+			toast.success('Copiado al portapapeles', {
+				duration: 1000
+			});
 		} catch (err) {
 			console.error('Failed to copy text:', err);
 		}

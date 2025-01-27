@@ -13,6 +13,7 @@
 	import { calculateDaysLeft } from '$lib/utils/dates';
 	import { set } from 'zod';
 	import MessageLength from './MessageLength.svelte';
+	import AlertDialog from '$lib/components/AlertDialog.svelte';
 
 	let {
 		title,
@@ -24,17 +25,28 @@
 	} = $props();
 
 	let problemSelected: ProblemCard | null = $state(null);
-
+	let openModalDelete = $state(false);
+	let deleting = $state(false);
 	let formHtml: HTMLFormElement;
 
-	function deleteCard(problem: ProblemCard, e: any) {
+	function openModal(problem: ProblemCard, e: any) {
 		e.preventDefault();
 		e.stopPropagation();
-		problemSelected = problem;
+		openModalDelete = true;
 
-		if (problemSelected && formHtml) {
-			formHtml.requestSubmit();
-		}
+		problemSelected = problem;
+	}
+
+	function deleteCard(e: any) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (problemSelected && formHtml) formHtml.requestSubmit();
+
+		setTimeout(() => {
+			openModalDelete = false;
+		}, 500);
+
 		return;
 	}
 
@@ -61,9 +73,11 @@
 				pillar_name = 'health';
 				break;
 			case 'Relaciones':
+			case 'Relación':
 				pillar_name = 'relational';
 				break;
 			case 'Vocaciones':
+			case 'Vocación':
 				pillar_name = 'vocational';
 				break;
 			case 'Espiritual':
@@ -89,6 +103,7 @@
 		method="POST"
 		action="?/delete"
 		use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+			deleting = true;
 			// set data
 			if (problemSelected?.id) formData.set('pid', problemSelected.id);
 			else console.error('Problem ID is undefined');
@@ -101,6 +116,8 @@
 						removeProblem(problemSelected, getPillarName(problemSelected.pillar_name));
 
 				// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+
+				deleting = false;
 			};
 		}}
 		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
@@ -137,8 +154,9 @@
 								<UnPadlock class="size-4" />
 							{/if}
 						</div>
+						<!-- onclick={(e) => deleteCard(problem, e)} -->
 						<button
-							onclick={(e) => deleteCard(problem, e)}
+							onclick={(e) => openModal(problem, e)}
 							class="rounded-lg p-2 hover:bg-gray-100"
 							aria-label="delete-card"
 						>
@@ -177,3 +195,13 @@
 		{/each}
 	</form>
 </div>
+
+<AlertDialog
+	bind:open={openModalDelete}
+	title="Eliminar problema"
+	description="¿Estás seguro de que deseas eliminar este problema?"
+	cancel="Cancelar"
+	action="Eliminar"
+	handleCancel={() => (openModalDelete = false)}
+	handleAction={(e) => deleteCard(e)}
+/>

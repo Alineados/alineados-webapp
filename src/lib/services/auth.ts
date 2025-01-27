@@ -1,4 +1,4 @@
-import {  getEndpointByVenv } from './endpoints';
+import { getEndpointByVenv } from './endpoints';
 import { request, type Response } from './http';
 
 export class AuthService {
@@ -29,8 +29,6 @@ export class AuthService {
 		const url = `${this._url}/get-pillars?uid=${uid}`;
 
 		const response: Response = await request(url, 'GET', null, this._token);
-
-		console.log('getPillars', response);
 
 		return response;
 	}

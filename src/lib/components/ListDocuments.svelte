@@ -6,8 +6,9 @@
 
 	import { problemInfo, removeMemory } from '$lib/stores';
 
-	function getFileIcon(type: string) {
+	let { disabled = $bindable() }: { disabled: boolean } = $props();
 
+	function getFileIcon(type: string) {
 		return type.startsWith('image') ? 'image' : 'document';
 	}
 
@@ -24,6 +25,7 @@
 				<h2 class="text-base font-semibold text-alineados-gray-800">Archivos adjuntos</h2>
 			</div>
 			<Upload
+				bind:disabledBtn={disabled}
 				styles=""
 				changeIcon={false}
 				styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900"

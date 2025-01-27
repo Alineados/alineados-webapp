@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { problemsImages } from '$lib/stores';
-	import alineadosImage from '$lib/assets/alineados-check.jpeg';
+	import alineadosImage from '$lib/assets/check.png';
 
 	let currentIndex = $state(0);
 
@@ -9,7 +9,7 @@
 		currentIndex = index;
 	}
 
-	let interval: number;
+	let interval: any;
 
 	onMount(() => {
 		if ($problemsImages.length === 0) return;

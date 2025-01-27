@@ -16,7 +16,7 @@
 		addProblemItem,
 		removeOrCleanItem,
 		prominentItem,
-		changeFinalDecision,
+		changeFinalDecisionAndRecommended,
 		markDailytItem,
 		problemCard,
 		matrix
@@ -480,7 +480,7 @@
 					{#if alternative.description !== ''}
 						<DecisionPill
 							changeSelected={() => {
-								changeFinalDecision(alternative.id);
+								changeFinalDecisionAndRecommended(alternative.id, $matrix.results?.winner ?? null);
 							}}
 							index={i + 1}
 							selected={alternative.id === $problemInfo.final_decision}

@@ -25,13 +25,6 @@
 		collapsible = 'icon',
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> = $props();
-
-	let user = {
-		name: 'José Penagos',
-		email: 'jose_example@gmail.com',
-		avatar:
-			'https://img2.wallspic.com/previews/3/0/5/7/5/157503/157503-rick_and_morty-rick_sanchez-morty_smith-jerry_smith-natacion_para_adultos-x750.jpg'
-	};
 </script>
 
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
@@ -172,7 +165,7 @@
 										{`${userState.first_name} ${userState.last_name}`}
 									</span>
 									<span class="text-[10px] font-medium leading-none text-alineados-blue-300"
-										>{userState.email}</span
+										>{userState.email === '' ? userState.username : userState.email}</span
 									>
 								</div>
 							</Sidebar.MenuButton>
@@ -210,7 +203,7 @@
 											} else {
 												await applyAction(result);
 											}
-										}; 
+										};
 									}}
 									class="flex items-center gap-1 text-black"
 								>

@@ -19,8 +19,8 @@
 		{ value: '02', label: '02 - Febrero' },
 		{ value: '03', label: '03 - Marzo' },
 		{ value: '04', label: '04 - Abril' },
-		{ value: '05', label: '05 -Mayo' },
-		{ value: '06', label: '06 Junio' },
+		{ value: '05', label: '05 - Mayo' },
+		{ value: '06', label: '06 - Junio' },
 		{ value: '07', label: '07 - Julio' },
 		{ value: '08', label: '08 - Agosto' },
 		{ value: '09', label: '09 - Septiembre' },
@@ -40,10 +40,31 @@
 	$effect(() => {
 		if (day && month && year) {
 			value = `${year}-${month}-${day}`; // YYYY-MM-DD format
+
+			if (!validateDate(value)) {
+				error = {
+					error: true,
+					message: 'Por favor, selecciona una fecha futura.'
+				};
+			} else error = { error: false, message: '' };
 		} else {
 			value = undefined;
+			error = { error: false, message: '' };
 		}
 	});
+
+	function validateDate(dateString: string) {
+		// Parse the input date
+		const [year, month, day] = dateString.split('-').map(Number);
+		const selectedDate = new Date(year, month - 1, day); // month is 0-based
+
+		// Get today's date at midnight for accurate comparison
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		// Check if selected date is valid and after today
+		return selectedDate instanceof Date && !isNaN(selectedDate.getTime()) && selectedDate >= today;
+	}
 
 	function handleError() {
 		error = { error: false, message: '' };

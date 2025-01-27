@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Item from '$lib/components/Item.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
+	import { Confetti } from 'svelte-confetti';
 	import {
 		problemInfo,
 		markOnlyDoneOrRepeatedItems,
@@ -19,7 +20,15 @@
 	let completed = $state<{ alternative: number }>(
 		$problemCard.completed_at ? { alternative: 1 } : { alternative: 0 }
 	);
+	let showConfetti = $state(false);
 
+	function onCompleteProblem() {
+		showConfetti = true;
+		isCompleteProblem(true);
+		setTimeout(() => {
+			showConfetti = false;
+		}, 4000);
+	}
 
 </script>
 
@@ -65,6 +74,7 @@
 					changeSelected={() => {
 						completed = { alternative: 1 };
 						changeCompleteStatus(true);
+						onCompleteProblem();
 					}}
 					selected={completed.alternative === 1}
 					isDisabled={true}
@@ -86,4 +96,28 @@
 			</div>
 		{/if}
 	</div>
+</div>
+
+<div
+	style="
+ position: fixed;
+ top: -50px;
+ left: 0;
+ height: 100vh;
+ width: 100vw;
+ display: flex;
+ justify-content: center;
+ overflow: hidden;
+ pointer-events: none;"
+>
+	{#if showConfetti}
+		<Confetti
+			x={[-5, 5]}
+			y={[0, 0.1]}
+			delay={[500, 2000]}
+			infinite
+			amount={1000}
+			fallDistance="100vh"
+		/>
+	{/if}
 </div>

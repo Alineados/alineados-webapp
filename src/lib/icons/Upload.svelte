@@ -8,11 +8,13 @@
 	let {
 		styleTw = 'size-6',
 		styles = 'pt-3',
-		changeIcon = false
+		changeIcon = false,
+		disabledBtn = $bindable(false)
 	}: {
 		styleTw?: string;
 		styles?: string;
 		changeIcon?: boolean;
+		disabledBtn?: boolean;
 	} = $props();
 
 	let fileInput: HTMLInputElement;
@@ -80,6 +82,7 @@
 	<input
 		bind:files
 		bind:this={fileInput}
+		disabled={!disabledBtn}
 		onchange={handleOnChange}
 		name="fileToUpload"
 		class="hidden"

@@ -25,7 +25,6 @@
 	let showConfetti = $state(false);
 
 	function onCompleteProblem() {
-
 		showConfetti = true;
 		isCompleteProblem(true);
 		setTimeout(() => {
@@ -34,13 +33,36 @@
 	}
 </script>
 
+<a
+	href="https://forms.office.com/r/huDFV67VZB"
+	target="_blank"
+	class="flex flex-row items-center gap-2 rounded-lg border bg-alineados-orange-800 px-4 py-3 text-sm text-white transition duration-300 ease-in-out hover:shadow-lg"
+>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		fill="none"
+		viewBox="0 0 24 24"
+		stroke-width="1.5"
+		stroke="currentColor"
+		class="size-5"
+	>
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+		/>
+	</svg>
+
+	Reportar incidentes
+</a>
+
 <button
 	onclick={() => onChangeReportPage(2)}
 	disabled={!$problemCard.active}
 	class:bg-alineados-blue-500={!$problemCard.active}
 	class:bg-alineados-blue-900={$problemCard.active}
 	class:hover:bg-alineados-blue-900={$problemCard.active}
-	class="focus group flex items-center gap-[6px] rounded-lg px-5 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg"
+	class="focus group flex items-center gap-[6px] rounded-lg px-4 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg"
 	aria-label="Rendir Cuentas"
 >
 	<CircleCheck styleTw="size-4" />
@@ -53,7 +75,7 @@
 	</p>
 </button>
 
-{#if $reportProblem === 2}
+<!-- {#if $reportProblem === 2}
 	<button
 		onclick={onCompleteProblem}
 		disabled={!$problemReadyToComplete}
@@ -61,15 +83,15 @@
 		class:bg-alineados-green-800={$problemCard.active && $problemReadyToComplete}
 		class:bg-alineados-green-600={$problemCard.active && !$problemReadyToComplete}
 		class:hover:bg-alineados-green-700={$problemCard.active && $problemReadyToComplete}
-		class="focus group flex items-center gap-[6px] rounded-lg px-5 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg disabled:opacity-50"
+		class="focus group flex items-center gap-[6px] rounded-lg px-4 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg disabled:opacity-50"
 		aria-label="Confirmar"
 	>
 		<CircleCheck styleTw="size-4" />
 		<p class="text-sm font-medium">Confirmar</p>
 	</button>
-{/if}
+{/if} -->
 
-<div
+<!-- <div
 	style="
  position: fixed;
  top: -50px;
@@ -91,4 +113,4 @@
 			fallDistance="100vh"
 		/>
 	{/if}
-</div>
+</div> -->

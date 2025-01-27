@@ -32,6 +32,11 @@
 	let asideProblemRef = $state<HTMLElement>();
 	let date = $state('');
 	let closeDialog = $state(false);
+	let openDateModal = $state(false);
+
+	$effect(() => {
+		openDateModal = $problemCard.is_new && !closeDialog;
+	});
 
 	// function
 	function handleDate() {
@@ -89,11 +94,11 @@
 			bind:this={asideProblemRef}
 			class="sticky z-10 flex w-6/12 justify-end pr-4 pt-4 md:pr-8 lg:pr-16"
 		>
-			<AsideProblem  />
+			<AsideProblem bind:openDateModal />
 		
 		</div>
 	</div>
 	<div class="flex">
-		<DateDialog open={$problemCard.is_new && !closeDialog} bind:date confirm={handleDate} />
+		<DateDialog bind:open={openDateModal} bind:date confirm={handleDate} />
 	</div>
 {/if}

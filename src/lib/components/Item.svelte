@@ -199,7 +199,7 @@
 						<Star styleTw="size-4" />
 					</button>
 				</Tooltip>
-				<Tooltip open={false} message="Diario">
+				<!-- <Tooltip open={false} message="Diario">
 					<button
 						onclick={() => {
 							if (dailyItem) dailyItem();
@@ -212,7 +212,7 @@
 					>
 						<Sun styleTw="size-4" />
 					</button>
-				</Tooltip>
+				</Tooltip> -->
 				<Tooltip open={false} message="Borrar">
 					<button
 						onclick={() => {

@@ -1,4 +1,4 @@
-import type { Images, ProblemInfo, Documents, Url } from '$lib/interfaces';
+import type { Images, ProblemInfo, Documents, Url, Matrix } from '$lib/interfaces';
 import { ProblemType } from '$lib/interfaces';
 import { derived, writable } from 'svelte/store';
 import { emptyGeneric } from '../generic';
@@ -50,8 +50,8 @@ export const initImages = (images: Url[]) => {
 };
 
 // Function to update the problem info (Autosave)
-let timeoutId: number;
-let endTimeoutId: number;
+let timeoutId: ReturnType<typeof setTimeout>;
+let endTimeoutId: ReturnType<typeof setTimeout>;
 
 export const autosavingProblemInfo = derived([pid, problemInfo], (_, set) => {
 	clearTimeout(timeoutId);
@@ -69,12 +69,17 @@ export const problemInfoJSON = derived([problemInfo], ([$problemInfo], set) => {
 });
 
 // Function to change the id of the final decision taken
-export const changeFinalDecision = (id: string) => {
+export const changeFinalDecisionAndRecommended = (id: string, winner: number | null) => {
 	problemInfo.update((info) => {
 		info.final_decision = id;
+		if (winner)
+			info.recommended_decision = info.alternatives[winner].id
+
 		return info;
 	});
+
 };
+
 
 // Function to insert new elements in the problem info arrays
 export const addProblemItem = (previous_id: string, problemType: ProblemType) => {

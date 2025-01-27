@@ -50,6 +50,14 @@
 	let secondCriterion = $state('action_plan');
 
 	// Get labels for criteria
+	let criteriaOptionsFilteredFirst = $derived.by(() => {
+		return criteriaOptions.filter((opt) => opt.criterion !== firstCriterion);
+	});
+
+	let criteriaOptionsFilteredSecond = $derived.by(() => {
+		return criteriaOptions.filter((opt) => opt.criterion !== secondCriterion);
+	});
+
 	const firstCriterionLabel = $derived(
 		firstCriterion
 			? criteriaOptions.find((opt) => opt.criterion === firstCriterion)?.label || ''
@@ -61,8 +69,6 @@
 			? criteriaOptions.find((opt) => opt.criterion === secondCriterion)?.label || ''
 			: ''
 	);
-
-	$inspect({ selectedProblem });
 </script>
 
 <div class="relative h-full px-4 md:px-8 lg:px-16">
@@ -82,12 +88,12 @@
 		<ViewProblemsFilter name="problems" {...data.problems} bind:value={selectedProblem} />
 		<ViewCriteriaFilter
 			name="first_criterion"
-			criteria={criteriaOptions}
+			criteria={criteriaOptionsFilteredSecond}
 			bind:value={firstCriterion}
 		/>
 		<ViewCriteriaFilter
 			name="second_criterion"
-			criteria={criteriaOptions}
+			criteria={criteriaOptionsFilteredFirst}
 			bind:value={secondCriterion}
 		/>
 	</div>

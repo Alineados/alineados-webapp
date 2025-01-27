@@ -1,109 +1,26 @@
 <script lang="ts">
+	import type { ProblemInfo } from '$lib/interfaces';
 	import TableItem from '../../../components/TableItem.svelte';
-
-	interface ProblemType {
-		problem_card: {
-			id: string;
-			uid: string;
-			pfid: string;
-			cid: string;
-			problem_name: string;
-			category_name: string;
-			pillar_name: string;
-			milestone_date: string;
-			progress: number;
-			active: boolean;
-			security: boolean;
-			is_new: boolean;
-			created_at: string;
-			updated_at: string;
-			deleted_at: string | null;
-			completed_at: string | null;
-		};
-		problem_info: {
-			id: string;
-			pid: string;
-			decision_taken: {
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			};
-			problem: {
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			};
-			involved: Array<{
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			}>;
-			contexts: Array<{
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			}>;
-			objectives: Array<{
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			}>;
-			alternatives: Array<{
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			}>;
-			action_plan: Array<{
-				id: string;
-				created_at: string;
-				description: string;
-				deleted: boolean;
-				prominent: boolean;
-				repeatable: boolean;
-				daily: boolean;
-			}>;
-			memories: any[];
-			final_decision: null | any;
-			solved: boolean;
-			created_at: string;
-			updated_at: string;
-		};
-	}
 
 	// Props
 	let { pilars, selectedProblem, firstCriterion, secondCriterion } = $props();
 
 	// Helper function to get descriptions based on criterion
-	function getDescriptionsByCriterion(problemInfo: any, criterion: string) {
-		if (criterion === 'decision_taken' || criterion === 'problem') {
+	function getDescriptionsByCriterion(problemInfo: ProblemInfo, criterion: string) {
+		if (criterion === 'decision_taken' || criterion === 'problem')
 			return [problemInfo[criterion]?.description || ''];
+
+		if (criterion === 'recommended_decision' || criterion === 'final_decision') {
+			const id: string | null = problemInfo[criterion];
+
+			return id ? [problemInfo.alternatives.find((item: any) => item.id === id)?.description] : [];
 		}
 
-		return problemInfo[criterion]?.map((item: any) => item.description) || [];
+		return (
+			(problemInfo[criterion as keyof ProblemInfo] as any[])?.map(
+				(item: any) => item.description
+			) || []
+		);
 	}
 
 	// Filter and transform problems data

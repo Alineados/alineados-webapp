@@ -26,7 +26,7 @@
 <!-- md:w-5/12 lg:w-3/12 -->
 <Card.Root
 	onclick={onClickCard}
-	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 ${padding}  ${isNew ? 'opacity-70' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:cursor-pointer hover:shadow-xl md:w-[227px] ${
+	class={`h-4/12 w-full transform rounded-xl bg-gradient-to-br from-white to-gray-50 ${padding}  ${isNew ? 'opacity-50' : ''} shadow-lg transition-all duration-300 hover:scale-105 hover:cursor-pointer hover:shadow-xl md:w-[227px] ${
 		state === 'stable'
 			? 'border-alineados-blue-900'
 			: state === 'warning'
@@ -34,7 +34,7 @@
 				: state === 'danger'
 					? 'border-red-500'
 					: state === 'completed'
-						? 'border-green-500'
+						? 'border-blue-900'
 						: ''
 	}`}
 >
