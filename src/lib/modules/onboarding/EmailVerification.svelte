@@ -32,8 +32,6 @@
 
 		<CodeVerification bind:value={emailVerification.code} bind:validation />
 
-		<input name="data" type="text" class="hidden" bind:value={data} />
-
 		<div class="flex w-full items-center justify-center gap-1">
 			<p class="text-sm font-normal text-[#000000]">¿No recibiste el correo?</p>
 			<form
@@ -46,6 +44,7 @@
 					};
 				}}
 			>
+				<input name="data" type="text" class="hidden" bind:value={data} />
 				<button
 					type="submit"
 					formaction="?/resend"

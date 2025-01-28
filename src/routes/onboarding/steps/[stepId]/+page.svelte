@@ -108,6 +108,7 @@
 			action={ButtonAction.get(stepId) ?? '1'}
 			bind:data={onboardingDataSJSON}
 			bind:validation
+			bind:contactNotRequired={onboardingData.register.contactNotRequired}
 		/>
 	{/if}
 </div>

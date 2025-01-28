@@ -69,7 +69,7 @@
 						{placeholder}
 					{:else}
 						<div class="flex items-center gap-2">
-							<img class="size-5" src={selectedValue.flag} alt={selectedValue.label} />
+							<img class="size-5" src={selectedValue.flag} alt={`${selectedValue.label} flag`} />
 							<span class="text-base">{selectedValue.label}</span>
 						</div>
 					{/if}
@@ -98,7 +98,7 @@
 							>
 								<Check class={cn(value !== option.value && 'text-transparent')} />
 								<div class="flex items-center gap-2">
-									<img class="size-5" src={option.flag} alt={option.label} />
+									<img class="size-5" src={option.flag} alt={`${option.label} flag`} />
 									<span class="text-base">{option.label}</span>
 								</div>
 							</Command.Item>
