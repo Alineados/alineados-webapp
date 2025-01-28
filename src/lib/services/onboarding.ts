@@ -1,4 +1,4 @@
-import {getEndpointByVenv } from './endpoints';
+import { getEndpointByVenv } from './endpoints';
 import { request, type Response } from './http';
 
 export class OnboardingService {
@@ -34,6 +34,13 @@ export class OnboardingService {
 
 	public async sendVerificationEmail(body: any): Promise<Response> {
 		const url = `${this._url}/send-verification-email`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
+	public async resendVerificationEmail(body: any): Promise<Response> {
+		const url = `${this._url}/resend-verification-email`;
 		const response: Response = await request(url, 'POST', body, this._token);
 
 		return response;
