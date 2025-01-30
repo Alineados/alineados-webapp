@@ -32,7 +32,6 @@
 	let maxlength: number = 6;
 	let pattern: string = new RegExp(REGEXP_ONLY_DIGITS).source;
 
-	$inspect({ value });
 </script>
 
 <div class="relative">

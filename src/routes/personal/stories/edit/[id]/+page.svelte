@@ -1,20 +1,51 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import Banner from '$lib/modules/personal/Banner.svelte';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import PersonalSelect from '$lib/modules/personal/PersonalSelect.svelte';
 	import { Pillars } from '$lib/interfaces/data';
-	import { Pill } from 'lucide-svelte';
 	import MultiEditable from '$lib/modules/personal/MultiEditable.svelte';
-	import User from '$lib/icons/User.svelte';
+	import type { Categories, DataPillar, Story } from '$lib/interfaces';
+	import { storyState, pillarState } from '$lib/stores';
+	import Item from '$lib/components/Item.svelte';
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
-	import Item from '$lib/components/Item.svelte';
+
+	let { data }: PageProps = $props();
+
+	const { banner_url, story }: { banner_url: string; story: Story } = data;
+
+	// // init story state
+	storyState.init(story, banner_url);
+
+	// $inspect(storyState.pfid);
+	// $inspect(storyState.pillar_name);
+	// $inspect(storyState.cid);
+	// $inspect(storyState.category_name);
+
+	// $inspect(storyState.involved);
+
+	// Functions
+	function handleCategories(value: string) {
+		const [pillar_name, category_name, pfid, cid] = value.split('-');
+
+		const pillar: DataPillar = pillarState[pillar_name as keyof typeof Pillars];
+
+		const category: Categories = pillar.categories.find((c) => c.id === cid) as Categories;
+
+		storyState.setPillar(pillar);
+		storyState.setCategory(category);
+	}
+
+	function handleStoryType(value: string) {
+		storyState.setType(value);
+	}
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<StoryHeader status="edit" />
+		<StoryHeader status="edit" bind:title={storyState.story_name} />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -26,8 +57,8 @@
 <div class="flex flex-col px-4 md:px-8 lg:px-16">
 	<!-- Image upload -->
 	<Banner
-		imageURL="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-VARoRKXUzQbegeeDDHADCUHMWzKVe7.png"
-		alt="Prueba"
+		imageURL={banner_url}
+		alt={storyState.banner.file_name}
 		edit={true}
 	/>
 
@@ -38,6 +69,7 @@
 			<div class="flex flex-row items-center justify-between">
 				<p class="text-base font-bold text-alineados-gray-900">Relato:</p>
 				<PersonalSelect
+					handleSelect={(value: string) => handleStoryType(value)}
 					subCategory={false}
 					list={[
 						{
@@ -58,12 +90,13 @@
 			<div class="flex flex-row items-center justify-between">
 				<p class="text-base font-bold text-alineados-gray-900">Categoria:</p>
 				<PersonalSelect
+					handleSelect={(value: string) => handleCategories(value)}
 					subCategory={true}
 					list={[
-						{ ...Pillars.health },
-						{ ...Pillars.relational },
-						{ ...Pillars.vocational },
-						{ ...Pillars.spiritual }
+						{ ...pillarState.health },
+						{ ...pillarState.relational },
+						{ ...pillarState.vocational },
+						{ ...pillarState.spiritual }
 					]}
 				/>
 			</div>
@@ -73,7 +106,7 @@
 		<div class="flex flex-col">
 			<div class="flex items-center gap-2">
 				<p class="text-base font-bold text-alineados-gray-900">Involucrados</p>
-				<!-- <Tooltip
+				<Tooltip
 					open={false}
 					messages={[
 						'De 2 a 5 personas o instituciones que se ven involucradas de forma directa o indirecta en cualquiera de las alternativas presentadas.',
@@ -81,43 +114,32 @@
 					]}
 				>
 					<InformationIcon styleTw="size-4" />
-				</Tooltip> -->
+				</Tooltip>
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
-				<!-- {#each $problemInfo.involved as involded}
+				{#each storyState.involved as involded}
 					<Item
+					w_size="w-1/2"
 						deleteItem={() => {
 							if (
-								$problemInfo.involved[$problemInfo.involved.length - 1].id !== involded.id &&
+								storyState.involved[storyState.involved.length - 1].id !== involded.id &&
 								involded.description !== ''
-							) {
-								removeOrCleanItem(involded.id, ProblemType.involved);
-							}
+							)
+								storyState.removeOrClean(involded.id);
 						}}
 						addItem={() => {
-							addProblemItem(involded.id, ProblemType.involved);
-						}}
-						prominentItem={() => {
-							prominentItem(involded.id, ProblemType.involved);
-						}}
-						dailyItem={() => {
-							markDailytItem(involded.id, ProblemType.involved);
+							storyState.addInvolved(involded.id);
 						}}
 						onInput={() => {
-							if ($problemInfo.involved[$problemInfo.involved.length - 1].description !== '') {
-								addProblemItem(involded.id, ProblemType.involved);
-							}
-
-							if (involded.description === '') {
-								removeOrCleanItem(involded.id, ProblemType.involved);
-							}
+							if (storyState.involved[storyState.involved.length - 1].description !== '')
+								storyState.addInvolved(involded.id);
+							if (involded.description === '') storyState.removeOrClean(involded.id);
 						}}
-						bind:isOnlyText={$problemCard.active}
-						bind:isDaily={involded.daily}
-						bind:isStarred={involded.prominent}
+						isOnlyText={true}
+						showOnlyDelete={true}
 						bind:value={involded.description}
 					/>
-				{/each} -->
+				{/each}
 			</div>
 		</div>
 
@@ -131,7 +153,6 @@
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
 			<MultiEditable />
 		</div>
-
 	</div>
 </div>
 

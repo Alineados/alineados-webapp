@@ -81,7 +81,6 @@
 		onboardingDataSJSON = JSON.stringify(onboardingData);
 	});
 
-	$inspect(validation);
 </script>
 
 <div class="h-4/5">

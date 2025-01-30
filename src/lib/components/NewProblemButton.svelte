@@ -6,6 +6,7 @@
 	import type { ProblemCard } from '$lib/interfaces';
 	import { goto } from '$app/navigation';
 	import { addProblem, pillarState } from '$lib/stores';
+	import type { Response } from '$lib/services/http';
 
 	let formHtml: HTMLFormElement;
 
@@ -26,8 +27,6 @@
 		category_name: string,
 		category_label: string
 	) {
-
-
 		dataToSend.pfid = pfid;
 		dataToSend.cid = cid;
 		dataToSend.pillar_name = pillar_name;
@@ -66,8 +65,12 @@
 				formData.set('category_label', dataToSend.category_label);
 
 				return async ({ result, update }) => {
-					if (result.status === 200) {
-						const { data }: { data: ProblemCard } = result.data;
+					if (result.status === 200 && result.type === 'success') {
+						const {
+							data
+						}: {
+							data: ProblemCard;
+						} = result.data as unknown as Response;
 						// navigate to new problem
 						navigateToProblem(data.id, dataToSend.pillar_name);
 						// update stores

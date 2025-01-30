@@ -3,7 +3,7 @@ const endpoints = {
 		auth: 'https://sandbox-auth-service-808905282606.us-central1.run.app',
 		problems: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
 		socket: 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
-		stories: '',
+		stories: 'http://127.0.0.1:8080',
 		oidc: 'https://oidc.alineado.org',
 		web: 'https://sandbox.alineado.org',
 	},

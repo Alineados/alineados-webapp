@@ -46,3 +46,10 @@ export interface Selector {
 	value: number;
 	disabled: boolean;
 }
+
+export interface TypeEditable {
+	id: string;
+	text: string | null ;
+	audio: Documents | null;
+	documents: Documents[];
+}
