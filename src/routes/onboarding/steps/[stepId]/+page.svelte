@@ -81,7 +81,6 @@
 		onboardingDataSJSON = JSON.stringify(onboardingData);
 	});
 
-	$inspect(validation);
 </script>
 
 <div class="h-4/5">
@@ -108,6 +107,7 @@
 			action={ButtonAction.get(stepId) ?? '1'}
 			bind:data={onboardingDataSJSON}
 			bind:validation
+			bind:contactNotRequired={onboardingData.register.contactNotRequired}
 		/>
 	{/if}
 </div>

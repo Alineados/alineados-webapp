@@ -18,7 +18,7 @@
 		<span class="text-alineados-orange-900">Relatos</span>
 		{#if status === 'edit'}
 			<span class="mx-1">/</span>
-			<span class="text-alineados-orange-900">{title}</span>
+			<span class="text-alineados-gray-600">{title}</span>
 		{/if}
 	</p>
 	<div

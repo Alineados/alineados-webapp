@@ -31,7 +31,7 @@
 	}: {
 		inputKey: string;
 		label: string;
-		options: { value: string; label: string; flag: string }[];
+		options: { value: string; label: string; flag: string; code: string }[];
 		value: PhoneNumber;
 		pastPhoneNumber: PhoneNumber;
 		validation: OnboardingValidation;
@@ -55,7 +55,7 @@
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
-	const selectedValue = $derived(options.find((f) => f.value === countryCode));
+	const selectedValue = $derived(options.find((f) => f.code === countryCode));
 
 	// We want to refocus the trigger button when the user selects
 	// an item from the list so users can continue navigating the
@@ -196,7 +196,7 @@
 									value={option.label}
 									class="bg-alineados-gray-50"
 									onSelect={() => {
-										countryCode = option.value;
+										countryCode = option.code;
 
 										Object.keys(validation.register).forEach((key) => {
 											if (key === inputKey) {
@@ -210,7 +210,7 @@
 									<Check class={cn(countryCode !== option.value && 'text-transparent')} />
 									<div class="flex items-center gap-2">
 										<img class="size-5" src={option.flag} alt={option.label} />
-										<span class="text-base">{option.value}</span>
+										<span class="text-base">{option.code}</span>
 									</div>
 								</Command.Item>
 							{/each}

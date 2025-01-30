@@ -15,25 +15,30 @@
 	let {
 		data = $bindable(),
 		action,
-		validation = $bindable()
+		validation = $bindable(),
+		contactNotRequired = $bindable()
 	}: {
 		data: string;
 		action: string;
 		validation: OnboardingValidation;
+		contactNotRequired: boolean;
 	} = $props();
 
 	// Handle to go to the previous step
 	function handlePrevious(e: Event) {
 		e.preventDefault();
 
-		// Convert Map to array for easier indexing
 		const steps = Array.from(ButtonAction.entries());
-		// Find current step index
 		const currentIndex = steps.findIndex(([_, value]) => value === action);
-		// Get previous step number
-		const previousStep = steps[currentIndex - 1][0];
 
-		goto(`/onboarding/steps/${previousStep}`);
+		if (contactNotRequired && currentIndex === 2) {
+			// If contactNotRequired is true and we're on step 3, go to step 1
+			goto('/onboarding/steps/1');
+		} else {
+			// Normal behavior - go to previous step
+			const previousStep = steps[currentIndex - 1][0];
+			goto(`/onboarding/steps/${previousStep}`);
+		}
 	}
 </script>
 

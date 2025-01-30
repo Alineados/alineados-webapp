@@ -7,6 +7,7 @@
 	import WhatsAppInput from '$lib/modules/onboarding/components/WhatsAppInput.svelte';
 	import { Label } from '$lib/shared/ui/label/index.js';
 	import { Switch } from '$lib/shared/ui/switch/index.js';
+	import { Countries } from '$lib/interfaces/countries';
 
 	// Props
 	let {
@@ -14,74 +15,6 @@
 		validation = $bindable(),
 		isChecked = $bindable()
 	}: { register: Register; validation: OnboardingValidation; isChecked: boolean } = $props();
-
-	// Countries
-	const countries = [
-		{
-			value: 'Guatemala',
-			label: 'Guatemala',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
-		},
-		{
-			value: 'Honduras',
-			label: 'Honduras',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
-		},
-		{
-			value: 'El Salvador',
-			label: 'El Salvador',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
-		},
-		{
-			value: 'Nicaragua',
-			label: 'Nicaragua',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
-		},
-		{
-			value: 'Costa Rica',
-			label: 'Costa Rica',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
-		},
-		{
-			value: 'Panamá',
-			label: 'Panamá',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
-		}
-	];
-
-	// Countries code
-	const countriesCode = [
-		{
-			value: '+502',
-			label: 'Guatemala',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/GT.svg'
-		},
-		{
-			value: '+504',
-			label: 'Honduras',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/HN.svg'
-		},
-		{
-			value: '+503',
-			label: 'El Salvador',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/SV.svg'
-		},
-		{
-			value: '+505',
-			label: 'Nicaragua',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/NI.svg'
-		},
-		{
-			value: '+506',
-			label: 'Costa Rica',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/CR.svg'
-		},
-		{
-			value: '+507',
-			label: 'Panamá',
-			flag: 'http://purecatamphetamine.github.io/country-flag-icons/3x2/PA.svg'
-		}
-	];
 </script>
 
 <div class="flex h-full w-full flex-col items-start justify-center">
@@ -121,7 +54,7 @@
 				label="País de Residencia"
 				inputKey="countryOfResidence"
 				placeholder="Selecciona un país"
-				options={countries}
+				options={Countries}
 				bind:validation
 				bind:value={register.countryOfResidence}
 			/>
@@ -129,7 +62,7 @@
 				label="País de Nacimiento"
 				inputKey="countryOfBirth"
 				placeholder="Selecciona un país"
-				options={countries}
+				options={Countries}
 				bind:validation
 				bind:value={register.countryOfBirth}
 			/>
@@ -150,7 +83,7 @@
 			<PhoneInput
 				label="Celular"
 				inputKey="phoneNumber"
-				options={countriesCode}
+				options={Countries}
 				bind:validation
 				bind:value={register.phoneNumber}
 				contactNotRequired={register.contactNotRequired}
@@ -158,7 +91,7 @@
 			<WhatsAppInput
 				label="WhatsApp"
 				inputKey="whatsappNumber"
-				options={countriesCode}
+				options={Countries}
 				bind:validation
 				bind:value={register.whatsappNumber}
 				bind:pastPhoneNumber={register.phoneNumber}

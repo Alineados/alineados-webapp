@@ -83,7 +83,7 @@
 		}
 	});
 
-	$inspect(value);
+
 </script>
 
 <div class="relative flex w-1/2 flex-col gap-1">

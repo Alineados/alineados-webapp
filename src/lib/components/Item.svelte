@@ -17,6 +17,8 @@
 		isDaily = $bindable(),
 		isDone = $bindable(),
 		isRepeated = $bindable(),
+		showOnlyDelete = $bindable(),
+		w_size = '',
 		isAccountability = false,
 		isUnique = false,
 		isNew = false,
@@ -40,6 +42,8 @@
 		isDaily?: boolean;
 		isDone?: boolean;
 		isRepeated?: boolean;
+		showOnlyDelete?: boolean;
+		w_size?: string;
 		onFocus?: () => void;
 		onInput?: () => void;
 		addItem?: () => void;
@@ -86,7 +90,7 @@
 </script>
 
 <div
-	class="item-container group flex h-auto items-center justify-between"
+	class={`item-container group flex h-auto items-center ${w_size} justify-between`}
 	class:pl-8={isUnique || isNew || !isOnlyText}
 >
 	{#if !isUnique && !isNew && isOnlyText}
@@ -185,20 +189,22 @@
 					</button>
 				</Tooltip>
 			{:else}
-				<Tooltip open={false} message="Destacar">
-					<button
-						onclick={() => {
-							if (prominentItem) prominentItem();
-						}}
-						class:text-alineados-gray-400={!isStarred}
-						class:text-yellow-500={isStarred}
-						class:hover:text-yellow-500={!isDisabled}
-						aria-label="Star"
-						disabled={isDisabled}
-					>
-						<Star styleTw="size-4" />
-					</button>
-				</Tooltip>
+				{#if !showOnlyDelete}
+					<Tooltip open={false} message="Destacar">
+						<button
+							onclick={() => {
+								if (prominentItem) prominentItem();
+							}}
+							class:text-alineados-gray-400={!isStarred}
+							class:text-yellow-500={isStarred}
+							class:hover:text-yellow-500={!isDisabled}
+							aria-label="Star"
+							disabled={isDisabled}
+						>
+							<Star styleTw="size-4" />
+						</button>
+					</Tooltip>
+				{/if}
 				<!-- <Tooltip open={false} message="Diario">
 					<button
 						onclick={() => {

@@ -30,16 +30,6 @@ export class PillarState {
     get spiritual(): DataPillar {
         return this.#spiritual;
     }
-
-    getKey(pfid: string): string {
-
-        console.log('pfid', pfid);
-
-        return Object.keys(this).find(
-            
-            (key) => this[key as keyof PillarsAndCategories].id === pfid
-        ) || '';
-    }
 }
 
 export const pillarState = new PillarState();

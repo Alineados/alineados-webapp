@@ -19,8 +19,8 @@
 
 <div class="flex h-full w-full items-center justify-center">
 	<div class="flex flex-col items-center justify-center gap-8">
-		<div class="flex w-full flex-col items-center justify-center gap-10">
-			<h2 class="text-3xl font-semibold">
+		<div class="flex w-full flex-col items-center justify-center gap-8">
+			<h2 class="text-4xl font-semibold">
 				<span class="text-[#0FC917]">Verificación</span>
 				<span class="text-[#000000]"> Correo Electrónico</span>
 			</h2>
@@ -31,8 +31,6 @@
 		</div>
 
 		<CodeVerification bind:value={emailVerification.code} bind:validation />
-
-		<input name="data" type="text" class="hidden" bind:value={data} />
 
 		<div class="flex w-full items-center justify-center gap-1">
 			<p class="text-sm font-normal text-[#000000]">¿No recibiste el correo?</p>
@@ -46,6 +44,7 @@
 					};
 				}}
 			>
+				<input name="data" type="text" class="hidden" bind:value={data} />
 				<button
 					type="submit"
 					formaction="?/resend"

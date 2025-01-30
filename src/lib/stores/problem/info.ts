@@ -144,24 +144,23 @@ export const removeOrCleanItem = (id: string, problemType: ProblemType, index?: 
 
 	if (problemType === ProblemType.involved) {
 		problemInfo.update((info) => {
-			if (info.involved.length > 1) {
-				const index = info.involved.findIndex((inv) => inv.id === id);
+			const index = info.involved.findIndex((inv) => inv.id === id);
+			if (info.involved.length > 1)
 				info.involved.splice(index, 1);
-			} else {
-				const index = info.involved.findIndex((inv) => inv.id === id);
+			else
 				info.involved[index].description = '';
-			}
+
 			return info;
 		});
 	}
 
 	if (problemType === ProblemType.contexts) {
 		problemInfo.update((info) => {
+			const index = info.contexts.findIndex((inv) => inv.id === id);
 			if (info.contexts.length > 1) {
-				const index = info.contexts.findIndex((inv) => inv.id === id);
+
 				info.contexts.splice(index, 1);
 			} else {
-				const index = info.contexts.findIndex((inv) => inv.id === id);
 				info.contexts[index].description = '';
 			}
 			return info;
@@ -170,11 +169,10 @@ export const removeOrCleanItem = (id: string, problemType: ProblemType, index?: 
 
 	if (problemType === ProblemType.objectives) {
 		problemInfo.update((info) => {
+			const index = info.objectives.findIndex((inv) => inv.id === id);
 			if (info.objectives.length > 1) {
-				const index = info.objectives.findIndex((inv) => inv.id === id);
 				info.objectives.splice(index, 1);
 			} else {
-				const index = info.objectives.findIndex((inv) => inv.id === id);
 				info.objectives[index].description = '';
 			}
 			return info;
@@ -183,11 +181,11 @@ export const removeOrCleanItem = (id: string, problemType: ProblemType, index?: 
 
 	if (problemType === ProblemType.alternatives) {
 		problemInfo.update((info) => {
+			const index = info.alternatives.findIndex((inv) => inv.id === id);
 			if (info.alternatives.length > 1) {
-				const index = info.alternatives.findIndex((inv) => inv.id === id);
 				info.alternatives.splice(index, 1);
 			} else {
-				const index = info.alternatives.findIndex((inv) => inv.id === id);
+			
 				info.alternatives[index].description = '';
 			}
 			return info;
@@ -196,11 +194,11 @@ export const removeOrCleanItem = (id: string, problemType: ProblemType, index?: 
 
 	if (problemType === ProblemType.action_plan) {
 		problemInfo.update((info) => {
+			const index = info.action_plan.findIndex((inv) => inv.id === id);
 			if (info.action_plan.length > 1) {
-				const index = info.action_plan.findIndex((inv) => inv.id === id);
 				info.action_plan.splice(index, 1);
 			} else {
-				const index = info.action_plan.findIndex((inv) => inv.id === id);
+
 				info.action_plan[index].description = '';
 			}
 			return info;

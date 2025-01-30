@@ -6,10 +6,12 @@
 
 	let {
 		list,
-		subCategory = false
+		subCategory = false,
+		handleSelect
 	}: {
 		list: DataPillar[];
 		subCategory?: boolean;
+		handleSelect: (value: string) => void;
 	} = $props();
 
 	let value = $state('');
@@ -28,7 +30,7 @@
 
 </script>
 
-<Select.Root type="single" name="favoriteFruit" bind:value>
+<Select.Root type="single" name="favoriteFruit" bind:value onValueChange={handleSelect}>
 	<Select.Trigger class="w-6/12 border-alineados-gray-100">
 		{triggerContent}
 	</Select.Trigger>
@@ -42,7 +44,7 @@
 					{#each data.categories as subdata}
 						<Select.Item
 							class="text-xs font-medium text-alineados-gray-700 data-[highlighted]:text-alineados-green-900"
-							value={`${data.name}-${subdata.name}`}
+							value={`${data.name}-${subdata.name}-${data.id}-${subdata.id}`}
 							label={subdata.label}>{subdata.label}</Select.Item
 						>
 					{/each}

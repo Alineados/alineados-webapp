@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Upload from '$lib/icons/Upload.svelte';
-
+	import alineadosImage from '$lib/assets/banner.png';
 	let {
 		imageURL,
 		alt,
@@ -30,7 +30,11 @@
 		role="img"
 		aria-label={alt}
 	>
-		<img src={imageURL} {alt} class="h-full w-full object-cover object-center" />
+		<img
+			src={imageURL === '' ? alineadosImage : imageURL}
+			{alt}
+			class="h-full w-full object-cover object-center"
+		/>
 	</div>
 
 	{#if edit}

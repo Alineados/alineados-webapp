@@ -40,7 +40,6 @@
 	// Derived stores for the current step
 	const stepId = $derived($page.params.stepId);
 
-	$inspect(recoverPasswordDataJSON);
 </script>
 
 <div class="h-4/5">

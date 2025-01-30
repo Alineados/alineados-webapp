@@ -2,7 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import type { RecoverPasswordData } from '$lib/interfaces/Auth.interface';
 import { AuthService } from '$lib/services/auth';
-import { ValidationType, type ValidationError } from '$lib/interfaces/Validations.interface';
+import { ValidationType } from '$lib/interfaces/Validations.interface';
+import { getEndpointByVenv } from '$lib/services/endpoints';
 
 const authService: AuthService = AuthService.getInstance('');
 
@@ -34,23 +35,18 @@ export const actions = {
 			};
 		}
 
-		/* 
 		// Call the service
-		const result = await authService.loginUsers({
-			identifier: dataJSON.identifier,
-			password: dataJSON.password
+		const result = await authService.sendResetPasswordEmail({
+			email: dataJSON.email
 		});
-
-		console.log('Login result:', result);
 
 		if (!result.data) {
 			return {
 				type: 'error',
-				validation: ValidationType.INVALID_CREDENTIALS,
+				validation: ValidationType.USER_NOT_EXISTS,
 				message: 'Invalid credentials'
 			};
 		}
-        */
 
 		// For now, just redirect
 		redirect(307, '/auth/change-password/2');
@@ -78,30 +74,17 @@ export const actions = {
 			};
 		}
 
-		/* 
 		// Call the service
-		const result = await authService.loginUsers({
-			identifier: dataJSON.identifier,
-			password: dataJSON.password
+		const result = await authService.verifyResetPasswordToken({
+			email: dataJSON.email,
+			code: dataJSON.code
 		});
-
-		console.log('Login result:', result);
 
 		if (!result.data) {
 			return {
 				type: 'error',
-				validation: ValidationType.INVALID_CREDENTIALS,
-				message: 'Invalid credentials'
-			};
-		}
-        */
-
-		if (dataJSON.code !== '123456') {
-			return {
-				type: 'error',
-				step: 'code',
 				validation: ValidationType.INVALID_CODE,
-				message: 'Check the fields'
+				message: 'Invalid credentials'
 			};
 		}
 
@@ -109,72 +92,89 @@ export const actions = {
 		redirect(307, '/auth/change-password/3');
 	},
 	restore: async ({ request }) => {
-		// Get form data
 		const formData = await request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
-		console.log('Received recover data:', dataJSON);
-
-		//  Validate the data
-		const invalidFields: ValidationError[] = [];
 
 		// Check if password is empty
 		if (!dataJSON.password) {
-			invalidFields.push({
-				field: 'password',
-				errorType: ValidationType.IS_TOO_SHORT
-			});
-		} else if (dataJSON.password.length < 8) {
-			invalidFields.push({
-				field: 'password',
-				errorType: ValidationType.IS_TOO_SHORT
-			});
-		}
-
-		// Password validation for special characters
-		if (!/[0-9!@#$%^&*]/.test(dataJSON.password)) {
-			invalidFields.push({
-				field: 'password',
-				errorType: ValidationType.DONT_CONTAINS_SPECIAL_CHAR
-			});
-		}
-
-		// Password validation for passwords match
-		if (!dataJSON.confirmPassword || dataJSON.password !== dataJSON.confirmPassword) {
-			invalidFields.push({
-				field: 'confirmPassword',
-				errorType: ValidationType.PASSWORDS_DONT_MATCH
-			});
-		}
-
-		// Return the error if there are any
-		if (invalidFields.length > 0) {
 			return {
 				type: 'error',
 				step: 'restore',
-				validations: invalidFields,
+				validation: {
+					password: ValidationType.REQUIRED,
+					confirmPassword: ValidationType.ALL_GOOD
+				},
 				message: 'Check the fields'
 			};
 		}
 
-		/* 
+		// Password length validation
+		if (dataJSON.password.length < 8) {
+			return {
+				type: 'error',
+				step: 'restore',
+				validation: {
+					password: ValidationType.IS_TOO_SHORT,
+					confirmPassword: ValidationType.ALL_GOOD
+				},
+				message: 'Check the fields'
+			};
+		}
+
+		// Special characters validation
+		if (!/[0-9!@#$%^&*]/.test(dataJSON.password)) {
+			return {
+				type: 'error',
+				step: 'restore',
+				validation: {
+					password: ValidationType.DONT_CONTAINS_SPECIAL_CHAR,
+					confirmPassword: ValidationType.ALL_GOOD
+				},
+				message: 'Check the fields'
+			};
+		}
+
+		// Passwords match validation
+		if (!dataJSON.confirmPassword || dataJSON.password !== dataJSON.confirmPassword) {
+			return {
+				type: 'error',
+				step: 'restore',
+				validation: {
+					password: ValidationType.ALL_GOOD,
+					confirmPassword: ValidationType.PASSWORDS_DONT_MATCH
+				},
+				message: 'Check the fields'
+			};
+		}
+
 		// Call the service
-		const result = await authService.loginUsers({
-			identifier: dataJSON.identifier,
+		const result = await authService.resetPassword({
+			email: dataJSON.email,
 			password: dataJSON.password
 		});
-
-		console.log('Login result:', result);
 
 		if (!result.data) {
 			return {
 				type: 'error',
-				validation: ValidationType.INVALID_CREDENTIALS,
+				validation: ValidationType.USER_NOT_EXISTS,
 				message: 'Invalid credentials'
 			};
 		}
-        */
 
-		// For now, just redirect
-		redirect(307, '/auth/login');
+		redirect(307, getEndpointByVenv().web);
+	},
+	resend: async (event) => {
+		console.log('resend');
+
+		const data = await event.request.formData();
+		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as RecoverPasswordData;
+		console.log(dataJSON);
+
+		// Call the service
+		const result = await authService.resendResetPasswordEmail({
+			email: dataJSON.email
+		});
+
+		console.log(result);
 	}
 } satisfies Actions;

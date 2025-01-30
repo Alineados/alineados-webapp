@@ -24,7 +24,7 @@ function normalizeString(str: string): string {
 }
 
 // Regex
-const textRegex = /^[A-Za-zÀ-ÿ\u00f1\u00d1]{1,20}$/;
+const textRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]{1,20}$/;
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$/;
 const phoneRegex = /^\d{0,}$/;
 const usernameRegex = /^\S{1,20}$/;
@@ -416,12 +416,14 @@ export const actions = {
 	},
 
 	resend: async (event) => {
+		console.log('resend');
+
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
 		console.log(dataJSON);
 
 		// Call the service
-		const result = await authService.sendVerificationEmail({
+		const result = await authService.resendVerificationEmail({
 			email: dataJSON.register.email,
 			firstName: dataJSON.register.firstName
 		});
