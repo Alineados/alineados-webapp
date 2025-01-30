@@ -29,7 +29,9 @@
 	<Header
 		title="¿Olvidaste tu contraseña?"
 		description="No te preocupes, ingresa tu correo electrónico y coloca el código que te mandamos para recuperarla."
+		isBackButton
 	/>
+
 	<div class="grid gap-6">
 		<form
 			method="POST"
@@ -47,7 +49,7 @@
 			}}
 		>
 			<input type="hidden" name="data" value={dataJSON} />
-			<div class="grid gap-2">
+			<div class="grid gap-5">
 				<div class="grid gap-8 pb-4">
 					<div class="relative flex flex-col gap-2">
 						<Label class="text-xs font-normal text-black" for="text">Correo electrónico</Label>
@@ -59,6 +61,9 @@
 							autocapitalize="none"
 							autocorrect="off"
 							bind:value={data.email}
+							oninput={() => {
+								validation.email = ValidationType.ALL_GOOD;
+							}}
 						/>
 						{#if validation.email !== ValidationType.ALL_GOOD}
 							<ErrorMessage isError>
@@ -75,18 +80,19 @@
 					class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
 					formaction={`?/email`}
 				>
-					Ingresar
+					Enviar
 				</Button>
 			</div>
-		</form>
 
-		<Button
-			href="/onboarding/steps/1"
-			variant="ghost"
-			class="-mt-5 flex cursor-pointer flex-row gap-1
-	 text-xs font-normal text-black"
-			>¿No tienes una cuenta?
-			<span class="text-[#E67635] hover:underline">Regístrate</span>
-		</Button>
+			<div class="mt-5 flex items-center justify-center gap-1 text-xs">
+				<span class="font-normal text-black">¿No tienes una cuenta?</span>
+				<a
+					href="/onboarding/steps/1"
+					class="font-medium text-[#E67635] hover:text-[#e67635b4] hover:underline"
+				>
+					Regístrate
+				</a>
+			</div>
+		</form>
 	</div>
 </div>

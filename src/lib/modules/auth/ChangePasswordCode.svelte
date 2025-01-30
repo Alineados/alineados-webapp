@@ -25,11 +25,13 @@
 	} = $props();
 </script>
 
-<div>
+<div class="grid gap-6">
 	<Header
 		title="Código de verificación"
 		description="Ingresa el código de verificación que te enviamos a tu correo electrónico."
+		isBackButton
 	/>
+
 	<div class="grid gap-6">
 		<form
 			method="POST"
@@ -39,21 +41,19 @@
 					if (result.type === 'success' && result.data && result.data.type === 'error') {
 						validation.code = result.data.validation as ValidationType;
 					}
+
 					// If there is a redirect to dashboard
 					if (result.type === 'redirect') {
-		
 						goto(result.location);
 					}
 				};
 			}}
 		>
 			<input type="hidden" name="data" value={dataJSON} />
-			<div class="grid gap-2">
+			<div class="grid gap-5">
 				<div class="grid gap-8 pb-4">
 					<div class="relative flex flex-col gap-2">
-						<Label class="text-xs font-normal text-black" for="text"
-							>Correo electrónico / Teléfono / Usuario</Label
-						>
+						<Label class="text-xs font-normal text-black" for="text">Código de verificación</Label>
 						<Input
 							class="rounded-lg border-alineados-gray-100 bg-alineados-gray-50 placeholder:text-alineados-gray-200"
 							id="text"
@@ -64,6 +64,7 @@
 							inputmode="numeric"
 							oninput={(e) => {
 								e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '');
+								validation.code = ValidationType.ALL_GOOD;
 							}}
 							autocapitalize="none"
 							autocorrect="off"
@@ -84,8 +85,19 @@
 					class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
 					formaction={`?/code`}
 				>
-					Ingresar
+					Verificar
 				</Button>
+			</div>
+
+			<div class="mt-5 flex items-center justify-center gap-1 text-xs">
+				<span class="font-normal text-black">¿No recibiste el código?</span>
+				<button
+					type="submit"
+					formaction="?/resend"
+					class="font-medium text-[#E67635] hover:text-[#e67635b4] hover:underline"
+				>
+					Enviar de nuevo
+				</button>
 			</div>
 		</form>
 	</div>

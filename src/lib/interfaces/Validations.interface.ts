@@ -24,6 +24,8 @@ export enum ValidationType {
 	EMAIL_EXISTS = 'emailExists',
 	PHONE_EXISTS = 'phoneExists',
 
+	USER_NOT_EXISTS = 'userNotExists',
+
 	// Email validation
 	INVALID_CODE = 'isInvalidCode',
 

@@ -25,7 +25,7 @@ const endpoints = {
 type Venv = 'sandbox' | 'prod' | 'local';
 
 export const getEndpointByVenv = () => {
-	const env: Venv = 'local';
+	const env: Venv = 'sandbox';
 
 	return endpoints[env];
 };
