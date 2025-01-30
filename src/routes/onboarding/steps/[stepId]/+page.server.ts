@@ -423,7 +423,7 @@ export const actions = {
 		console.log(dataJSON);
 
 		// Call the service
-		const result = await authService.sendVerificationEmail({
+		const result = await authService.resendVerificationEmail({
 			email: dataJSON.register.email,
 			firstName: dataJSON.register.firstName
 		});

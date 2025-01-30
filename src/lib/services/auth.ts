@@ -25,6 +25,34 @@ export class AuthService {
 	}
 
 	// Methods
+	public async sendResetPasswordEmail(body: any): Promise<Response> {
+		const url = `${this._url}/send-password-reset-email`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
+	public async resendResetPasswordEmail(body: any): Promise<Response> {
+		const url = `${this._url}/resend-password-reset-email`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
+	public async verifyResetPasswordToken(body: any): Promise<Response> {
+		const url = `${this._url}/verify-password-reset-token`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
+	public async resetPassword(body: any): Promise<Response> {
+		const url = `${this._url}/reset-password`;
+		const response: Response = await request(url, 'POST', body, this._token);
+
+		return response;
+	}
+
 	public async getPillars(uid: string): Promise<Response> {
 		const url = `${this._url}/get-pillars?uid=${uid}`;
 
@@ -32,7 +60,6 @@ export class AuthService {
 
 		return response;
 	}
-
 
 	// logout
 	public async logout(uid: string): Promise<Response> {

@@ -14,6 +14,7 @@
 	import Header from './components/Header.svelte';
 	import EyeOff from '$lib/icons/BlockEye.svelte';
 	import Eye from '$lib/icons/NoBlockEye.svelte';
+	import Confirm from '$lib/icons/Confirm.svelte';
 
 	// Props
 	let {
@@ -34,46 +35,37 @@
 	}
 </script>
 
-<div>
+<div class="grid gap-6">
 	<Header
 		title="Restablecer contraseña"
 		description="Ingresa tu nueva contraseña para restablecer tu cuenta."
+		isBackButton
 	/>
 	<div class="grid gap-6">
 		<form
 			method="POST"
 			use:enhance={({}) => {
 				return async ({ result }) => {
-					validation.password = ValidationType.ALL_GOOD;
-					validation.confirmPassword = ValidationType.ALL_GOOD;
-
 					// If there is an error in the form
 					if (result.type === 'success' && result.data && result.data.type === 'error') {
-						const fields = result.data.validations as ValidationError[];
-						fields.forEach((error: ValidationError) => {
-							const { field, errorType } = error as {
-								field: keyof RecoverPasswordValidation;
-								errorType: ValidationType;
-							};
-
-							validation[field as keyof RecoverPasswordValidation] = errorType;
-						});
+						validation.password = (result.data.validation as RecoverPasswordValidation).password;
+						validation.confirmPassword = (
+							result.data.validation as RecoverPasswordValidation
+						).confirmPassword;
 					}
+
 					// If there is a redirect to dashboard
 					if (result.type === 'redirect') {
-					
 						goto(result.location);
 					}
 				};
 			}}
 		>
 			<input type="hidden" name="data" value={dataJSON} />
-			<div class="grid gap-2">
+			<div class="grid gap-5">
 				<div class="grid gap-8 pb-4">
 					<div class="relative flex flex-col gap-2">
-						<Label class="text-xs font-normal text-black" for="text"
-							>Correo electrónico / Teléfono / Usuario</Label
-						>
+						<Label class="text-xs font-normal text-black" for="text">Nueva contraseña</Label>
 						<div class="relative w-full">
 							<Input
 								class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
@@ -84,6 +76,9 @@
 								autocomplete="current-password"
 								autocorrect="off"
 								bind:value={data.password}
+								oninput={(e) => {
+									validation.password = ValidationType.ALL_GOOD;
+								}}
 							/>
 							<button
 								type="button"
@@ -106,9 +101,7 @@
 						{/if}
 					</div>
 					<div class="relative flex flex-col gap-2">
-						<Label class="text-xs font-normal text-black" for="text"
-							>Correo electrónico / Teléfono / Usuario</Label
-						>
+						<Label class="text-xs font-normal text-black" for="text">Confirmar contraseña</Label>
 						<div class="relative w-full">
 							<Input
 								class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
@@ -119,6 +112,9 @@
 								autocomplete="current-password"
 								autocorrect="off"
 								bind:value={data.confirmPassword}
+								oninput={(e) => {
+									validation.confirmPassword = ValidationType.ALL_GOOD;
+								}}
 							/>
 							<button
 								type="button"

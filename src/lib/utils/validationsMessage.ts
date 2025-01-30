@@ -19,6 +19,8 @@ export const getValidationMessage = (type: ValidationType): string => {
 		[ValidationType.EMAIL_EXISTS]: 'el correo electrónico ya existe',
 		[ValidationType.PHONE_EXISTS]: 'el teléfono ya existe',
 
+		[ValidationType.USER_NOT_EXISTS]: 'el usuario no existe',
+
 		[ValidationType.INVALID_CODE]: 'código inválido',
 
 		[ValidationType.IS_CONTAINS_NAME_EMAIL]: 'no debe contener nombre o correo electrónico',
