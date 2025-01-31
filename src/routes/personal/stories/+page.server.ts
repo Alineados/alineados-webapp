@@ -13,8 +13,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
     const result = await storyService.getStoriesGrouped(locals.user._id!);
 
 
-
-
     console.log('result', result.data);
 
 
