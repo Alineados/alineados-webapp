@@ -11,6 +11,7 @@
 	import Item from '$lib/components/Item.svelte';
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -34,6 +35,8 @@
 		storyState.setCategory(category);
 	}
 
+	$inspect(storyState.id);
+
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
@@ -52,11 +55,7 @@
 <!-- Content scrollable in Y -->
 <div class="flex flex-col px-4 md:px-8 lg:px-16">
 	<!-- Image upload -->
-	<Banner
-		imageURL={banner_url}
-		alt={storyState.banner.file_name}
-		edit={true}
-	/>
+	<Banner imageURL={banner_url} alt={storyState.banner.file_name} edit={true} />
 
 	<!-- Form -->
 	<div class="mb-10 flex w-full flex-col gap-8 pt-8">
@@ -98,6 +97,8 @@
 			</div>
 		</div>
 
+		<!-- Toogle -->
+		<Toggle spanStyle="text-base font-bold text-alineados-gray-900" description="Destacado" />
 		<!-- Involved -->
 		<div class="flex flex-col">
 			<div class="flex items-center gap-2">
@@ -113,9 +114,9 @@
 				</Tooltip>
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
-				{#each storyState.involved as involded}
-					<!-- <Item
-					w_size="w-1/2"
+				<!-- {#each storyState.involved as involded}
+					<Item
+						w_size="w-1/2"
 						deleteItem={() => {
 							if (
 								storyState.involved[storyState.involved.length - 1].id !== involded.id &&
@@ -134,8 +135,8 @@
 						isOnlyText={true}
 						showOnlyDelete={true}
 						bind:value={involded.description}
-					/> -->
-				{/each}
+					/>
+				{/each} -->
 			</div>
 		</div>
 
