@@ -28,7 +28,7 @@ export const actions = {
         // const formData = await request.formData();
         // const data = getJSONFormsData(formData);
 
-        console.log('new', locals.user._id);
+//        console.log('new', locals.user._id);
 
         let storiesService: StoryService = StoryService.getInstance(locals.token);
 
