@@ -19,12 +19,8 @@
 	// // init story state
 	storyState.init(story, banner_url);
 
-	// $inspect(storyState.pfid);
-	// $inspect(storyState.pillar_name);
-	// $inspect(storyState.cid);
-	// $inspect(storyState.category_name);
-
-	// $inspect(storyState.involved);
+	// variables
+	let isSave = $state(false);
 
 	// Functions
 	function handleCategories(value: string) {
@@ -45,7 +41,7 @@
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<StoryHeader status="edit" bind:title={storyState.story_name} />
+		<StoryHeader status="edit" bind:title={storyState.story_name} bind:isSave />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -118,7 +114,7 @@
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
 				{#each storyState.involved as involded}
-					<Item
+					<!-- <Item
 					w_size="w-1/2"
 						deleteItem={() => {
 							if (
@@ -138,7 +134,7 @@
 						isOnlyText={true}
 						showOnlyDelete={true}
 						bind:value={involded.description}
-					/>
+					/> -->
 				{/each}
 			</div>
 		</div>

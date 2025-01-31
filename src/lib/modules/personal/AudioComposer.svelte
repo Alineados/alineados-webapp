@@ -9,12 +9,12 @@
 
 <div class="w-full py-4">
 	<!-- Info -->
-	<div class="mb-3 flex items-center justify-between">
-		<button
+	<div class="mb-3 flex items-center justify-end">
+		<!-- <button
 			class="rounded-xl bg-alineados-green-900 px-6 py-2 text-white transition-colors hover:bg-alineados-green-800"
 		>
 			Grabar
-		</button>
+		</button> -->
 
 		<div class="flex flex-row gap-4">
 			<span

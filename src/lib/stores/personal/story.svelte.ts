@@ -113,6 +113,25 @@ export class StoryState {
         return this.#created_at;
     }
 
+    getJson(): Story {
+        return {
+            id: this.#id,
+            uid: this.#uid,
+            pfid: this.#pfid,
+            cid: this.#cid,
+            banner: this.#banner,
+            story_name: this.#story_name,
+            pillar_name: this.#pillar_name,
+            category_name: this.#category_name,
+            type: this.#type,
+            involved: this.#involved,
+            experience: this.#experience,
+            life_sesson: this.#life_sesson,
+            is_important: this.#is_important,
+            created_at: this.#created_at
+        }
+    }
+
     // setters
     set id(value: string) {
         this.#id = value;

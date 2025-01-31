@@ -1,4 +1,4 @@
-import type { Documents } from "$lib/interfaces";
+import type { Documents, StoryUpdate } from "$lib/interfaces";
 import { getEndpointByVenv } from "../endpoints";
 import { request, uploadFile, type Response } from "../http";
 
@@ -76,7 +76,7 @@ export class StoryService {
     }
 
     // PUT
-    async updateStoryInfo(sid: string, body: any): Promise<Response> {
+    async updateStoryInfo(sid: string, body: StoryUpdate): Promise<Response> {
         const url = `${this._url}/update-info?sid=${sid}`;
         const response: Response = await request(url, 'PUT', body, this._token);
 
