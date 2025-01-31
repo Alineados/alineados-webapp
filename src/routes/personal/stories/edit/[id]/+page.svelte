@@ -35,8 +35,6 @@
 		storyState.setCategory(category);
 	}
 
-	$inspect(storyState.id);
-
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
