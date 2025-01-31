@@ -7,13 +7,18 @@
 	import Save from '$lib/icons/Save.svelte';
 	import type { Story } from '$lib/interfaces';
 	import type { Response } from '$lib/services/http';
+	import { storyState } from '$lib/stores';
+	import { toast } from 'svelte-sonner';
 	let { status, title }: { status: 'new' | 'edit' | 'see'; title: string } = $props();
 
-	let formHtml: HTMLFormElement;
+	let formNewStory: HTMLFormElement;
+	let formUpdateStory: HTMLFormElement;
+
 	let loading = $state(false);
 
 	function handleOnClick() {
-		if (status === 'new') formHtml.requestSubmit();
+		if (status === 'new') formNewStory.requestSubmit();
+		else if (status === 'edit') formUpdateStory.requestSubmit();
 	}
 </script>
 
@@ -22,17 +27,15 @@
 	aria-label="Rendir Cuentas"
 	onclick={handleOnClick}
 >
-	{#if status === 'new'}
-		{#if loading}
-			<div class="h-6 w-6 animate-spin text-white">
-				<Loading />
-			</div>
-		{:else}
-			<Plus styleTw="size-4" />
-			<p class="text-xs font-medium">
-				{title}
-			</p>
-		{/if}
+	{#if loading}
+		<div class="h-6 w-6 animate-spin text-white">
+			<Loading />
+		</div>
+	{:else if status === 'new'}
+		<Plus styleTw="size-4" />
+		<p class="text-xs font-medium">
+			{title}
+		</p>
 	{:else if status === 'edit'}
 		<Save styleTw="size-4" />
 		<p class="text-xs font-medium">{title}</p>
@@ -46,7 +49,7 @@
 	class="hidden"
 	method="POST"
 	action="?/new"
-	bind:this={formHtml}
+	bind:this={formNewStory}
 	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 		loading = true;
 
@@ -58,6 +61,28 @@
 
 				loading = false;
 			}
+		};
+	}}
+></form>
+
+<form
+	class="hidden"
+	method="POST"
+	action="?/update"
+	bind:this={formUpdateStory}
+	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+		loading = true;
+
+		formData.set('story', JSON.stringify(storyState.getJson()));
+
+		return async ({ result, update }) => {
+			console.log(result);
+
+			if (result.status === 200 && result.type === 'success') {
+				toast.success('Relato actualizado correctamente' );
+			}
+
+			loading = false;
 		};
 	}}
 ></form>
