@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
+	import type { Categories, DataPillar, Story } from '$lib/interfaces';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalStatistics from '$lib/modules/personal/PersonalStatistics.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
@@ -7,6 +9,13 @@
 	import StarSolid from '$lib/icons/StarSolid.svelte';
 	import ThirdCube from '$lib/icons/ThirdCube.svelte';
 	import ThreePeople from '$lib/icons/ThreePeople.svelte';
+	import { storiesState } from '$lib/stores';
+
+	let { data }: PageProps = $props();
+
+	const { testimony, conversation }: { testimony: Story[]; conversation: Story[] } = data;
+
+	storiesState.init(testimony, conversation);
 </script>
 
 <PersonalHeader>
@@ -15,7 +24,11 @@
 	{/snippet}
 
 	{#snippet statistics()}
-		<PersonalStatistics type="stories" />
+		<PersonalStatistics
+			type="stories"
+			bind:first={storiesState.testimoniesCount}
+			bind:second={storiesState.conversationsCount}
+		/>
 	{/snippet}
 
 	{#snippet filter()}
@@ -29,7 +42,7 @@
 		<p class="text-xl font-semibold text-alineados-gray-700">Testimonio</p>
 
 		<div class="flex flex-row gap-5">
-			{#each Array(2) as i}
+			{#each storiesState.testimonies as testimony}
 				<CustomCard
 					onClickCard={(e) => console.log(e)}
 					isNew={false}
@@ -55,7 +68,7 @@
 					{#snippet content()}
 						<div class="flex flex-col gap-4 px-4 pb-3 pt-4">
 							<p class="h-14 text-base font-semibold text-alineados-blue-800">
-								Nombre del testimonio
+								{testimony.story_name}
 							</p>
 						</div>
 					{/snippet}
@@ -65,11 +78,15 @@
 							<div class="space-y-1">
 								<div class="flex items-center gap-2">
 									<ThirdCube styleTw="size-4" />
-									<span class="text-xs text-alineados-gray-700">Salud física</span>
+									<span class="text-xs text-alineados-gray-700"
+										>{testimony.pillar_name} {testimony.category_name}</span
+									>
 								</div>
 								<div class="flex items-center gap-2">
 									<ThreePeople styleTw="size-4" />
-									<span class="text-xs text-alineados-gray-700">3 involucrados</span>
+									<span class="text-xs text-alineados-gray-700"
+										>{testimony.involved.length} involucrados</span
+									>
 								</div>
 							</div>
 							<span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
@@ -84,7 +101,7 @@
 		<p class="text-xl font-semibold text-alineados-gray-700">Conversaciones</p>
 
 		<div class="flex flex-row gap-5">
-			{#each Array(3) as i}
+			{#each storiesState.conversations as conversation}
 				<CustomCard
 					onClickCard={(e) => console.log(e)}
 					isNew={false}
@@ -110,7 +127,7 @@
 					{#snippet content()}
 						<div class="flex flex-col gap-4 px-4 pb-3 pt-4">
 							<p class="h-14 text-base font-semibold text-alineados-blue-800">
-								Nombre del testimonio
+								{conversation.story_name}
 							</p>
 						</div>
 					{/snippet}
@@ -120,11 +137,16 @@
 							<div class="space-y-1">
 								<div class="flex items-center gap-2">
 									<ThirdCube styleTw="size-4" />
-									<span class="text-xs text-alineados-gray-700">Salud física</span>
+									<span class="text-xs text-alineados-gray-700">
+										{conversation.pillar_name}
+										{conversation.category_name}
+									</span>
 								</div>
 								<div class="flex items-center gap-2">
 									<ThreePeople styleTw="size-4" />
-									<span class="text-xs text-alineados-gray-700">3 involucrados</span>
+									<span class="text-xs text-alineados-gray-700"
+										>{conversation.involved.length} involucrados</span
+									>
 								</div>
 							</div>
 							<span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>

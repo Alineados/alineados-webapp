@@ -3,13 +3,16 @@
 	import Head from '$lib/icons/Head.svelte';
 
 	let {
-		type
+		type,
+		first = $bindable(0),
+		second = $bindable(0),
 	}: {
 		type: 'thoughts' | 'stories';
+		first: number;
+		second: number;
 	} = $props();
 	// Calcule the total of problems
-	let totalFirst = 342;
-	let totalSecond = 342;
+
 </script>
 
 <ViewCard contentClass="w-full">
@@ -26,7 +29,7 @@
 						Total De Testimonios
 					{/if}
 				</p>
-				<p class="-mt-1 text-xl font-semibold text-alineados-gray-800">{totalFirst}</p>
+				<p class="-mt-1 text-xl font-semibold text-alineados-gray-800">{first}</p>
 			</div>
 		</div>
 	{/snippet}
@@ -45,7 +48,7 @@
 						Total de conversaciones
 					{/if}
 				</p>
-				<p class="-mt-1 text-xl font-semibold text-alineados-gray-800">{totalSecond}</p>
+				<p class="-mt-1 text-xl font-semibold text-alineados-gray-800">{second}</p>
 			</div>
 		</div>
 	{/snippet}

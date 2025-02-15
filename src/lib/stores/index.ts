@@ -53,9 +53,10 @@ export {
 } from './problem/matrix';
 
 // New type of stores
-export {userState} from './user/info.svelte';
-export {pillarState, PillarState} from './user/pillars.svelte';
-export {storyState} from './personal/story.svelte';
+export { userState } from './user/info.svelte';
+export { pillarState, PillarState } from './user/pillars.svelte';
+export { storyState } from './personal/story/story.svelte';
+export { storiesState } from './personal/story/stories.svelte';
 // Generics
 export { emptyGeneric, listSelector } from './generic';
 

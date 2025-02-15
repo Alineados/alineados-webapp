@@ -1,5 +1,5 @@
 import type { Categories, DataPillar, Documents, Generic, Story, TypeEditable } from "$lib/interfaces";
-import { emptyGeneric } from "../generic";
+import { emptyGeneric } from "../../generic";
 
 export class StoryState {
     // ids
