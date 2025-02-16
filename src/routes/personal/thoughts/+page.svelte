@@ -1,9 +1,13 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalStatistics from '$lib/modules/personal/PersonalStatistics.svelte';
+	import ThoughtCard from '$lib/modules/personal/thoughts/ThoughtCard.svelte';
 	import ThoughtCarousel from '$lib/modules/personal/thoughts/ThoughtCarousel.svelte';
 	import ThoughtFilter from '$lib/modules/personal/thoughts/ThoughtFilter.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
+	import type { Thought } from '$lib/interfaces';
+	import { thoughtsState } from '$lib/stores/personal/thought/thoughts.svelte';
 
 	const pillarItems = [
 		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
@@ -27,6 +31,16 @@
 	];
 
 	let selectedType = $state('pillar');
+
+	let { data }: PageProps = $props();
+
+	console.log(data);
+
+	const { thoughts }: { thoughts: Thought[] } = data;
+
+	console.log(thoughts);
+
+	thoughtsState.init(thoughts);
 </script>
 
 <PersonalHeader>
@@ -43,7 +57,12 @@
 	{/snippet}
 </PersonalHeader>
 
-<!-- Content scrollable in Y -->
 <div class="flex flex-col items-center justify-center gap-12">
 	<ThoughtCarousel items={selectedType === 'pillar' ? pillarItems : purposeItems} />
+</div>
+
+<div class="flex flex-col items-center justify-center gap-4 px-24">
+	{#each thoughtsState.thoughts as thought}
+		<ThoughtCard {thought} />
+	{/each}
 </div>

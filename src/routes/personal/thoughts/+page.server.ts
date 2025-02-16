@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 	console.log('result', result.data);
 
 	return {
-		...result.data
+		thoughts: Array.isArray(result.data) ? [...result.data] : []
 	};
 };
 
