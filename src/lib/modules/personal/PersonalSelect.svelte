@@ -11,7 +11,7 @@
 	}: {
 		list: DataPillar[];
 		subCategory?: boolean;
-		handleSelect: (value: string) => void;
+		handleSelect?: (value: string) => void;
 	} = $props();
 
 	let value = $state('');
@@ -27,7 +27,6 @@
 			return list.find((f) => f.name === value)?.label ?? 'Seleccione una opción';
 		}
 	});
-
 </script>
 
 <Select.Root type="single" name="favoriteFruit" bind:value onValueChange={handleSelect}>

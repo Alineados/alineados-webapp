@@ -4,6 +4,9 @@
 	import { Pillars } from '$lib/interfaces/data';
 	import MultiEditable from '$lib/modules/personal/MultiEditable.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
+	import type { PageProps } from './$types';
+	import type { Thought } from '$lib/interfaces';
+	import { thoughtState } from '$lib/stores/personal/thought/thought.svelte';
 
 	let checked = $state(false);
 
@@ -69,11 +72,21 @@
 			categories: []
 		}
 	};
+
+	let { data }: PageProps = $props();
+	console.log('data xd', data);
+
+	const { thought }: { thought: Thought } = data;
+
+	console.log('data thought', thought);
+
+	// // init story state
+	thoughtState.init(thought);
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<ThoughtHeader status="edit" />
+		<ThoughtHeader status="edit" bind:title={thoughtState.thought_name} />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
