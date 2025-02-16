@@ -1,7 +1,5 @@
 <script lang="ts">
-	import NewButton from '../NewButton.svelte';
-
-	// import NewStoryButton from './NewStoryButton.svelte';
+	import NewButton from '../thoughts/NewButton.svelte';
 
 	let {
 		status,
