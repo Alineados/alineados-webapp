@@ -73,6 +73,9 @@ export const actions = {
 			return fail(result.data);
 		}
 
-		return result;
+		return {
+			...result ,
+			type:"problems"
+		}
 	}
 } satisfies Actions;

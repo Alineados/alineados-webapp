@@ -11,6 +11,7 @@
 	import Item from '$lib/components/Item.svelte';
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -37,6 +38,10 @@
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
+
+	$inspect(storyState.experience);
+	$inspect(storyState.life_sesson);
+	$inspect(storyState.is_important);
 </script>
 
 <PersonalHeader simple={true}>
@@ -52,11 +57,7 @@
 <!-- Content scrollable in Y -->
 <div class="flex flex-col px-4 md:px-8 lg:px-16">
 	<!-- Image upload -->
-	<Banner
-		imageURL={banner_url}
-		alt={storyState.banner.file_name}
-		edit={true}
-	/>
+	<Banner imageURL={banner_url} alt={storyState.banner.file_name} edit={true} />
 
 	<!-- Form -->
 	<div class="mb-10 flex w-full flex-col gap-8 pt-8">
@@ -67,6 +68,7 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleStoryType(value)}
 					subCategory={false}
+					alreadyValue={storyState.type === 1 ? 'Testimonio' : 'Conversación'}
 					list={[
 						{
 							id: '1',
@@ -88,6 +90,7 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleCategories(value)}
 					subCategory={true}
+					alreadyValue={storyState.category_name}
 					list={[
 						{ ...pillarState.health },
 						{ ...pillarState.relational },
@@ -139,15 +142,34 @@
 			</div>
 		</div>
 
+		<!-- Toggle -->
+		<Toggle
+			description="Destacar"
+			bind:checked={storyState.is_important}
+			titleStyle="text-base font-bold text-alineados-gray-900"
+		/>
+
 		<!-- Experience -->
 		<div class="flex flex-col gap-6 pb-9">
 			<p class="text-base font-bold text-alineados-gray-900">Experiencia</p>
-			<MultiEditable />
+			<MultiEditable
+				storyType="experience"
+				bind:files={storyState.experienceDocuments}
+				bind:richValue={storyState.experienceText}
+				bind:titleAudio={storyState.experienceAudio.file_name}
+				bind:contentAudio={storyState.experienceAudio.content!}
+			/>
 		</div>
 		<!-- Life lection -->
 		<div class="flex flex-col gap-6">
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
-			<MultiEditable />
+			<MultiEditable
+				storyType="life_sesson"
+				bind:files={storyState.life_sessonDocuments}
+				bind:richValue={storyState.life_sessonText}
+				bind:titleAudio={storyState.life_sessonAudio.file_name}
+				bind:contentAudio={storyState.life_sessonAudio.content!}
+			/>
 		</div>
 	</div>
 </div>

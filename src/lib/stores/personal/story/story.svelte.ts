@@ -38,8 +38,8 @@ export class StoryState {
         this.#pillar_name = story.pillar_name;
         this.#category_name = story.category_name;
         this.#type = story.type;
-        
-        if (story.involved.length === 0) 
+
+        if (story.involved.length === 0)
             this.#involved = [{ ...emptyGeneric() }];
         else
             this.#involved = story.involved;
@@ -101,8 +101,36 @@ export class StoryState {
         return this.#experience;
     }
 
+    get experienceText(): string {
+        return this.#experience.text ?? '';
+    }
+
+    get experienceAudioName(): string {
+        return this.#experience.audio?.file_name ?? 'Subir audio';
+    }
+
+    get experienceAudio(): Documents {
+        return this.#experience.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
+    }
+
+    get experienceDocuments(): Documents[] {
+        return this.#experience.documents
+    }
+
     get life_sesson(): TypeEditable {
         return this.#life_sesson;
+    }
+
+    get life_sessonText(): string {
+        return this.#life_sesson.text ?? '';
+    }
+
+    get life_sessonAudio(): Documents {
+        return this.#life_sesson.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
+    }
+
+    get life_sessonDocuments(): Documents[] {
+        return this.#life_sesson.documents;
     }
 
     get is_important(): boolean {
@@ -173,8 +201,25 @@ export class StoryState {
         this.#experience = value;
     }
 
+    set experienceText(value: string) {
+        this.#experience.text = value;
+    }
+
+    set experienceAudio(value: Documents) {
+        this.#experience.audio = value;
+
+    }
+
     set life_sesson(value: TypeEditable) {
         this.#life_sesson = value;
+    }
+
+    set life_sessonText(value: string) {
+        this.#life_sesson.text = value;
+    }
+
+    set life_sessonAudio(value: Documents) {
+        this.#life_sesson.audio = value;
     }
 
     set is_important(value: boolean) {
@@ -213,6 +258,27 @@ export class StoryState {
         else
             this.#involved[index].description = '';
     }
+
+    appendExperienceDocuments(docs: Documents[]) {
+
+        if (this.#experience.documents)
+
+            this.#experience.documents = [...this.#experience.documents, ...docs];
+        else
+            this.#experience.documents = docs;
+
+
+    }
+
+    appendLifeSessonDocuments(docs: Documents[]) {
+
+        if (this.#life_sesson.documents)
+
+            this.#life_sesson.documents = [...this.#life_sesson.documents, ...docs];
+        else
+            this.#life_sesson.documents = docs;
+    }
+
 }
 
 export const storyState = new StoryState();

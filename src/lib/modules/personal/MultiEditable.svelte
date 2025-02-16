@@ -8,6 +8,21 @@
 	import RichTextComposer from './RichTextComposer.svelte';
 	import AudioComposer from './AudioComposer.svelte';
 	import FileComposer from './FileComposer.svelte';
+	import type { Documents } from '$lib/interfaces';
+
+	let {
+		richValue = $bindable(''),
+		titleAudio = $bindable(''),
+		contentAudio = $bindable(''),
+		files = $bindable([]),
+		storyType = '',
+	}: {
+		richValue: string;
+		titleAudio: string;
+		contentAudio: string;
+		storyType: string;
+		files: Documents[];
+	} = $props();
 
 	let editType = $state<{
 		text: boolean;
@@ -63,10 +78,10 @@
 	</div>
 	<!-- Content -->
 	{#if editType.text}
-		<RichTextComposer />
+		<RichTextComposer bind:value={richValue} />
 	{:else if editType.audio}
-		<AudioComposer />
+		<AudioComposer {storyType} bind:title={titleAudio} bind:content={contentAudio} />
 	{:else if editType.document}
-		<FileComposer />
+		<FileComposer bind:filesList={files} {storyType}/>
 	{/if}
 </div>

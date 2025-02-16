@@ -1,16 +1,18 @@
 <script lang="ts">
 	import type { DataPillar } from '$lib/interfaces';
-	import { Pillars } from '$lib/interfaces/data';
 
 	import * as Select from '$lib/shared/ui/select/index';
+	import { onMount } from 'svelte';
 
 	let {
 		list,
 		subCategory = false,
+		alreadyValue = '',
 		handleSelect
 	}: {
 		list: DataPillar[];
 		subCategory?: boolean;
+		alreadyValue?: string;
 		handleSelect: (value: string) => void;
 	} = $props();
 
@@ -27,12 +29,11 @@
 			return list.find((f) => f.name === value)?.label ?? 'Seleccione una opción';
 		}
 	});
-
 </script>
 
 <Select.Root type="single" name="favoriteFruit" bind:value onValueChange={handleSelect}>
 	<Select.Trigger class="w-6/12 border-alineados-gray-100">
-		{triggerContent}
+		{alreadyValue !== '' ? alreadyValue : triggerContent}
 	</Select.Trigger>
 	<Select.Content class="bg-white">
 		{#if subCategory}

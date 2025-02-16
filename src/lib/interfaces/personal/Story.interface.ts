@@ -12,6 +12,7 @@ export interface StoryUpdate {
     involved: Generic[];
     experience: TypeEditable;
     life_sesson: TypeEditable;
+    is_important: boolean;
 }
 
 export interface StoriesGrouped {

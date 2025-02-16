@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Images, Documents } from '$lib/interfaces';
-	import { addMemory, pcid } from '$lib/stores';
+	import { addMemory, pcid, storyState } from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 	import Loading from './Loading.svelte';
 	import Pencil from './Pencil.svelte';
@@ -9,12 +9,16 @@
 		styleTw = 'size-6',
 		styles = 'pt-3',
 		changeIcon = false,
-		disabledBtn = $bindable(false)
+		disabledBtn = $bindable(false),
+		acceptable = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx',
+		storyType = ''
 	}: {
 		styleTw?: string;
 		styles?: string;
 		changeIcon?: boolean;
 		disabledBtn?: boolean;
+		acceptable?: string;
+		storyType?: string;
 	} = $props();
 
 	let fileInput: HTMLInputElement;
@@ -60,13 +64,25 @@
 
 				showToast('¡Ocurrio un error al subir el documento!', 'error');
 			} else if (result.type === 'success') {
-				const { data } = result.data ?? {};
+				const { data, message, status, type, storyType } = result.data ?? {};
 
-				const { document, url } = data as { document: Documents; url: string };
+				if (type === 'storyAudio') {
+					if (result.data) {
+						if (storyType === 'experience')
+							// add the audio to story
+							storyState.experienceAudio = data as unknown as Documents;
+						else
+							// add the audio to story
+							storyState.life_sessonAudio = data as unknown as Documents;
+					}
 
-				if (result.data) addMemory(document as unknown as Documents, url);
+					showToast('¡Audio subido correctamente!', 'success');
+				} else if (type === 'problems') {
+					const { document, url } = data as { document: Documents; url: string };
 
-				showToast('¡Documento subido correctamente!', 'success');
+					if (result.data) addMemory(document as unknown as Documents, url);
+					showToast('¡Documento subido correctamente!', 'success');
+				}
 
 				// update the files
 				files = null;
@@ -79,6 +95,9 @@
 	}}
 >
 	<input type="hidden" name="pcid" value={$pcid} />
+	<input type="hidden" name="sid" value={storyState.id} />
+	<input type="hidden" name="storyType" value={storyType} />
+
 	<input
 		bind:files
 		bind:this={fileInput}
@@ -88,7 +107,7 @@
 		class="hidden"
 		id="file"
 		type="file"
-		accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+		accept={acceptable}
 	/>
 </form>
 

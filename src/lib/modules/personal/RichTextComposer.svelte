@@ -1,5 +1,12 @@
 <script lang="ts">
+	import { storyState } from '$lib/stores';
 	import Editor from '@tinymce/tinymce-svelte';
+
+	let {
+		value = $bindable(''),
+	}: {
+		value?: string;
+	} = $props();
 
 	let apiKey = 'zvfap2kkclg3r9gzfbfmj45yq4wp820yxpn9r4e4vlbtbieo';
 	let conf = {
@@ -10,10 +17,10 @@
 		],
 		plugins: [
 			'advlist',
-			'advtable',
+			// 'advtable',
 			'autolink',
-			'checklist',
-			'export',
+			// 'checklist'
+			// 'export',
 			'lists',
 			'link',
 			'image',
@@ -22,9 +29,9 @@
 			'anchor',
 			'searchreplace',
 			'visualblocks',
-			'powerpaste',
+			// 'powerpaste',
 			'fullscreen',
-			'formatpainter',
+			// 'formatpainter',
 			'insertdatetime',
 			'media',
 			'table',
@@ -37,4 +44,4 @@
 	};
 </script>
 
-<Editor {apiKey} {conf} value="Welcome to TinyMCE Svelte" />
+<Editor {apiKey} {conf} bind:value />
