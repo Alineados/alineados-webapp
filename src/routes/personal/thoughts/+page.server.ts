@@ -1,8 +1,9 @@
-import { ProblemService } from '$lib/services/personal/problems';
 import { getJSONFormsData } from '$lib/utils/getFormsData';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { ThoughtService } from '$lib/services/personal/thoughts';
+import { ThoughtService } from '$lib/services/personal/thoughts';
+
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, request, url, locals }) => {
@@ -14,7 +15,7 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 	console.log('result', result.data);
 
 	return {
-		thoughts: Array.isArray(result.data) ? [...result.data] : []
+		...result.data
 	};
 };
 

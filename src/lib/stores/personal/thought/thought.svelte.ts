@@ -1,4 +1,4 @@
-import type { DataPillar, Thought, TypeEditable } from '$lib/interfaces';
+import type { DataPillar, DataPurpose, Documents, Thought, TypeEditable } from '$lib/interfaces';
 
 export class ThoughtState {
 	// ids
@@ -29,7 +29,7 @@ export class ThoughtState {
 		this.#pillar_name = thought.pillar_name;
 		this.#purpose_name = thought.purpose_name;
 
-		this.#quality_time = thought.quuality_time;
+		this.#quality_time = thought.quality_time;
 		this.#is_important = thought.is_important;
 		this.#created_at = thought.created_at;
 		this.#updated_at = thought.updated_at ?? null;
@@ -69,6 +69,31 @@ export class ThoughtState {
 		return this.#quality_time;
 	}
 
+	get quality_timeText(): string {
+		return this.#quality_time.text ?? '';
+	}
+
+	get quality_timeAudioName(): string {
+		return this.#quality_time.audio?.file_name ?? 'Subir audio';
+	}
+
+	get quality_timeAudio(): Documents {
+		return (
+			this.#quality_time.audio ?? {
+				id: '',
+				content: '',
+				type: '',
+				created_at: '',
+				file_name: 'Subir audio',
+				path: ''
+			}
+		);
+	}
+
+	get quality_timeDocuments(): Documents[] {
+		return this.#quality_time.documents;
+	}
+
 	get is_important(): boolean {
 		return this.#is_important;
 	}
@@ -86,7 +111,7 @@ export class ThoughtState {
 			thought_name: this.#thought_name,
 			pillar_name: this.#pillar_name,
 			purpose_name: this.#purpose_name,
-			quuality_time: this.#quality_time,
+			quality_time: this.#quality_time,
 			is_important: this.#is_important,
 			created_at: this.#created_at
 		};
@@ -125,6 +150,14 @@ export class ThoughtState {
 		this.#quality_time = value;
 	}
 
+	set quality_timeText(value: string) {
+		this.#quality_time.text = value;
+	}
+
+	set quality_timeAudio(value: Documents) {
+		this.#quality_time.audio = value;
+	}
+
 	set is_important(value: boolean) {
 		this.#is_important = value;
 	}
@@ -133,6 +166,18 @@ export class ThoughtState {
 	setPillar(pillar: DataPillar) {
 		this.#pfid = pillar.id;
 		this.#pillar_name = pillar.label;
+	}
+
+	// TODO: Chane to purpose
+	setPurpose(purpose: DataPurpose) {
+		this.#ppid = purpose.id;
+		this.#purpose_name = purpose.label;
+	}
+
+	appendQualityTimeDocuments(docs: Documents[]) {
+		if (this.#quality_time.documents)
+			this.#quality_time.documents = [...this.#quality_time.documents, ...docs];
+		else this.#quality_time.documents = docs;
 	}
 }
 

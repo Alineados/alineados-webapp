@@ -38,3 +38,5 @@ export type {
 } from './Oidc.interface';
 
 export type { Phone, UserInfo } from './User.interface';
+
+export type { DataPurpose, Purposes } from './Purpose.interface';

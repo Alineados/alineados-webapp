@@ -4,7 +4,7 @@
 	import File from '$lib/icons/File.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
 	import type { Documents } from '$lib/interfaces';
-	import { storyState } from '$lib/stores';
+	import { storyState, thoughtState } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -53,22 +53,21 @@
 		else if (type === 'error') toast.error(message, { duration: 2000 });
 	}
 
-
 	function getFileType(type: string): string {
-        const typeMap: { [key: string]: string } = {
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
-            'application/pdf': 'PDF',
-            'application/msword': 'Word',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
-            'application/vnd.ms-powerpoint': 'PowerPoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PowerPoint',
-            'image/jpeg': 'jpe',
-            'image/png': 'png',
-            'application/zip': 'ZIP Archive'
-        };
+		const typeMap: { [key: string]: string } = {
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
+			'application/pdf': 'PDF',
+			'application/msword': 'Word',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
+			'application/vnd.ms-powerpoint': 'PowerPoint',
+			'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PowerPoint',
+			'image/jpeg': 'jpe',
+			'image/png': 'png',
+			'application/zip': 'ZIP Archive'
+		};
 
-        return typeMap[type] || 'Unknown';
-    }
+		return typeMap[type] || 'Unknown';
+	}
 
 	onMount(() => {
 		const dropZone: HTMLElement | null = document.getElementById('drop-zone') as HTMLElement;
@@ -115,7 +114,13 @@
 						}
 
 						showToast('¡Documentos subidos correctamente!', 'success');
-					} else if (type === 'thoughts') {
+					} else if (type === 'thoughts')
+						if (result.data) {
+							thoughtState.appendQualityTimeDocuments(data as unknown as Documents[]);
+
+							showToast('¡Documentos subidos correctamente!', 'success');
+						}
+					{
 					}
 				}
 
@@ -126,10 +131,8 @@
 	>
 		<div class="flex flex-col items-center gap-4">
 			{#if uploading}
-				<p class="text-base font-medium text-alineados-green-900">
-					Subiendo archivos...
-				</p>
-				<div class="h-7 w-7  text-white">
+				<p class="text-base font-medium text-alineados-green-900">Subiendo archivos...</p>
+				<div class="h-7 w-7 text-white">
 					<Loading style="text-alineados-green-900" />
 				</div>
 			{:else}
@@ -176,6 +179,8 @@
 
 		<!-- Hidden -->
 		<input type="hidden" name="sid" value={storyState.id} />
+		<input type="hidden" name="tid" value={thoughtState.id} />
+		<input type="hidden" name="thoughtType" value="qualityTime" />
 		<input type="hidden" name="storyType" value={storyType} />
 	</form>
 
@@ -195,7 +200,9 @@
 					<div class="flex items-center gap-3">
 						<div class="relative">
 							<!-- File Icon -->
-							<div class="flex h-10 w-10 items-center justify-center rounded bg-alineados-orange-50">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded bg-alineados-orange-50"
+							>
 								<File class="size-6 text-alineados-orange-900" />
 							</div>
 							<!-- ZIP Badge -->
@@ -207,9 +214,7 @@
 						</div>
 						<div>
 							<p class="font-medium">{file.file_name}</p>
-							<p class="text-xs text-alineados-gray-500">
-								Click para descargar o ver
-							</p>
+							<p class="text-xs text-alineados-gray-500">Click para descargar o ver</p>
 						</div>
 					</div>
 

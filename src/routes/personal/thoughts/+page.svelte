@@ -2,12 +2,12 @@
 	import type { PageProps } from './$types';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalStatistics from '$lib/modules/personal/PersonalStatistics.svelte';
-	import ThoughtCard from '$lib/modules/personal/thoughts/ThoughtCard.svelte';
+	import ThoughtItem from '$lib/modules/personal/thoughts/ThoughtItem.svelte';
 	import ThoughtCarousel from '$lib/modules/personal/thoughts/ThoughtCarousel.svelte';
 	import ThoughtFilter from '$lib/modules/personal/thoughts/ThoughtFilter.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
-	import type { Thought } from '$lib/interfaces';
-	import { thoughtsState } from '$lib/stores/personal/thought/thoughts.svelte';
+	import type { DataPurpose, Thought } from '$lib/interfaces';
+	import { purposesState, thoughtsState } from '$lib/stores';
 
 	const pillarItems = [
 		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
@@ -34,13 +34,16 @@
 
 	let { data }: PageProps = $props();
 
-	console.log(data);
-
-	const { thoughts }: { thoughts: Thought[] } = data;
+	const { thoughts, purposes }: { thoughts: Thought[]; purposes: DataPurpose[] } = data;
 
 	console.log(thoughts);
+	console.log(purposes);
 
+	purposesState.init(purposes);
 	thoughtsState.init(thoughts);
+
+	console.log('p', purposesState.purposes);
+	console.log('t', thoughtsState.thoughts);
 </script>
 
 <PersonalHeader>
@@ -61,8 +64,8 @@
 	<ThoughtCarousel items={selectedType === 'pillar' ? pillarItems : purposeItems} />
 </div>
 
-<div class="flex flex-col items-center justify-center gap-4 px-24">
+<div class="flex flex-col items-center justify-center gap-4 px-32">
 	{#each thoughtsState.thoughts as thought}
-		<ThoughtCard {thought} />
+		<ThoughtItem {thought} w_size="w-full" />
 	{/each}
 </div>

@@ -3,7 +3,7 @@
 	import Editor from '@tinymce/tinymce-svelte';
 
 	let {
-		value = $bindable(''),
+		value = $bindable('')
 	}: {
 		value?: string;
 	} = $props();
@@ -13,7 +13,7 @@
 		height: 500,
 		content_langs: [
 			{ title: 'English', code: 'en' },
-			{ title: 'Spanish', code: 'es' },
+			{ title: 'Spanish', code: 'es' }
 		],
 		plugins: [
 			'advlist',
@@ -44,4 +44,4 @@
 	};
 </script>
 
-<Editor {apiKey} {conf} bind:value />
+<!-- <Editor {apiKey} {conf} bind:value /> -->

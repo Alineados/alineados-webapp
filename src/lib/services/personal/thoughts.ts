@@ -40,6 +40,14 @@ export class ThoughtService {
 		return response;
 	}
 
+	public async getPurposes(uid: string): Promise<Response> {
+		const url = `${this._url}/get-purposes?uid=${uid}`;
+
+		const response: Response = await request(url, 'GET', null, this._token);
+
+		return response;
+	}
+
 	// POST
 	async createDocumentUrl(doc: Documents): Promise<Response> {
 		const url = `${this._url}/generate-document-url`;
@@ -55,22 +63,47 @@ export class ThoughtService {
 		return response;
 	}
 
-	async uploadThoughtFile(
+	async uploadThoughtFileOrAudio(
 		uid: string,
-		sid: string,
-		category: string,
-		file: File
+		tid: string,
+		pilar: string,
+		file: File,
+		isFile: boolean = true
 	): Promise<Response> {
 		const fileType = file.type;
 
 		const form = new FormData();
 		form.append('uid', uid);
-		form.append('sid', sid);
-		form.append('category', category);
+		form.append('tid', tid);
+		form.append('pilar', pilar);
 		form.append('file', file);
 		form.append('fileType', fileType);
 
-		const url = `${this._url}/upload-file`;
+		let url: string;
+		if (isFile) url = `${this._url}/upload-file`;
+		else url = `${this._url}/upload-audio`;
+
+		const response: Response = await uploadFile(url, 'POST', form, this._token);
+
+		return response;
+	}
+
+	async uploadThoughtFiles(
+		uid: string,
+		tid: string,
+		files: File[],
+		filesType: string[]
+	): Promise<Response> {
+		const form = new FormData();
+
+		form.append('uid', uid);
+		form.append('tid', tid);
+		form.append('filesType', JSON.stringify(filesType));
+		files.forEach((files, index) => {
+			form.append(`file${index}`, files);
+		});
+
+		const url = `${this._url}/upload-files`;
 
 		const response: Response = await uploadFile(url, 'POST', form, this._token);
 
