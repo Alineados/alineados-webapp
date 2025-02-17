@@ -24,6 +24,24 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 };
 
 export const actions = {
+
+    getUrl: async ({ params, request, locals }) => {
+        const formData = await request.formData();
+        const data = getJSONFormsData(formData);
+
+        const file: Documents = JSON.parse(data.document);
+
+        let storyService: StoryService = StoryService.getInstance(locals.token);
+
+        const result = await storyService.createDocumentUrl(file);
+
+
+        if (result.status !== 200 && result.status !== 201) {
+            return fail(result.data);
+        }
+
+        return result;
+    },
     update: async ({ cookies, request, locals }) => {
         const formData = await request.formData();
         const data = getJSONFormsData(formData);
@@ -42,7 +60,7 @@ export const actions = {
             type: story.type,
             involved: story.involved,
             experience: story.experience,
-            life_sesson: story.life_sesson,
+            life_lesson: story.life_lesson,
             is_important: story.is_important
         }
 
@@ -51,8 +69,6 @@ export const actions = {
         if (result.status !== 200 && result.status !== 201) {
             return fail(result.data);
         }
-
-        console.log('result', result);
 
         return result;
     },
@@ -71,10 +87,12 @@ export const actions = {
 
         // get id's if they exist
         let sid: string = "";
+        let type: string = "";
         let storyType: string = "";
         if (formData.sid) {
             sid = formData.sid as string; // story id
-            storyType = formData.storyType as string; // experience | life_sesson
+            storyType = formData.storyType as string; // experience | life_lesson
+            type = formData.type as string; // story | ...
         }
 
         // get file 
@@ -82,14 +100,14 @@ export const actions = {
 
         let storyService: StoryService = StoryService.getInstance('');
 
-        const result = await storyService.uploadStoryFileOrAudio(locals.user._id!, sid, '', file, false);
+        const result = await storyService.uploadStoryFileOrAudio(locals.user._id!, sid, '', file, storyType === 'banner' ? true : false);
 
         if (result.status !== 200 && result.status !== 201)
             return fail(result.data);
 
         return {
             ...result,
-            type: "storyAudio",
+            type,
             storyType
         }
     },
@@ -111,18 +129,13 @@ export const actions = {
 
         const filesType = files.map(file => file.type);
 
-        console.log('sid', sid);
-        console.log('storyType', storyType);
-        console.log('files', files);
-        console.log('filesType', filesType);
-        
 
         let storyService: StoryService = StoryService.getInstance('');
 
         const result = await storyService.uploadStoryFiles(locals.user._id!, sid, files, filesType);
 
         console.log('result', result);
-        
+
         if (result.status !== 200 && result.status !== 201)
             return fail(result.data);
 

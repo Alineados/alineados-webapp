@@ -1,25 +1,33 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import AlertDialog from '$lib/components/AlertDialog.svelte';
 	import DirectoryUpload from '$lib/icons/DirectoryUpload.svelte';
 	import File from '$lib/icons/File.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
+	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import type { Documents } from '$lib/interfaces';
 	import { storyState, thoughtState } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import DocumentCard from './DocumentCard.svelte';
+	import { showToast } from '$lib/utils/toast';
 
 	let {
 		storyType = '',
+		type = '', // story | thoughts
 		filesList = $bindable([])
 	}: {
 		storyType: string;
+		type: string;
 		filesList: Documents[];
 	} = $props();
 
-	let fileInput: HTMLInputElement;
+	let fileInput: HTMLInputElement | null = $state(null);
 	let files: FileList | null = $state(null);
 	let formHtml: HTMLFormElement;
 	let uploading = $state(false);
+	let openModal = $state(false);
+	let documentToDelete: Documents | null = $state(null);
 
 	function handleFileSelect(event: any) {
 		event.preventDefault();
@@ -45,28 +53,17 @@
 		event.preventDefault();
 	}
 
-	function showToast(message: string, type: 'success' | 'error') {
-		if (type === 'success')
-			toast.success(message, {
-				duration: 2000
-			});
-		else if (type === 'error') toast.error(message, { duration: 2000 });
-	}
+	function handleDeleteDocument() {
+		if (type === 'story') {
+			if (documentToDelete) {
+				if (storyType === 'experience') storyState.deleteExperienceDocument(documentToDelete?.id);
+				else if (storyType === 'life_lesson')
+					storyState.deleteLifeLessonDocument(documentToDelete?.id);
+			} else showToast('¡Ocurrio un error al eliminar el documento!', 'error');
+		}
 
-	function getFileType(type: string): string {
-		const typeMap: { [key: string]: string } = {
-			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
-			'application/pdf': 'PDF',
-			'application/msword': 'Word',
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
-			'application/vnd.ms-powerpoint': 'PowerPoint',
-			'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PowerPoint',
-			'image/jpeg': 'jpe',
-			'image/png': 'png',
-			'application/zip': 'ZIP Archive'
-		};
-
-		return typeMap[type] || 'Unknown';
+		documentToDelete = null;
+		openModal = false;
 	}
 
 	onMount(() => {
@@ -104,7 +101,6 @@
 
 					if (type === 'story') {
 						if (result.data) {
-							console.log('experience', data);
 							if (storyType === 'experience')
 								// append the document list to story experience
 								storyState.appendExperienceDocuments(data as unknown as Documents[]);
@@ -240,3 +236,13 @@
 		</div>
 	</div>
 </div>
+
+<AlertDialog
+	bind:open={openModal}
+	title="Eliminar documento"
+	description="¿Estás seguro que deseas eliminar este documento? Se perderá de forma permanente."
+	cancel="Cancelar"
+	action="Eliminar"
+	handleCancel={() => ((openModal = false), (documentToDelete = null))}
+	handleAction={() => handleDeleteDocument()}
+/>

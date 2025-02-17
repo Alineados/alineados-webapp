@@ -12,7 +12,7 @@
 		footer,
 		onClickCard
 	}: {
-		state?: 'default' | 'stable' | 'warning' | 'danger' | 'completed';
+		state?: 'default' | 'stable' | 'warning' | 'danger' | 'completed' | 'important';
 		headerClass: string;
 		isNew?: boolean;
 		padding?: string;
@@ -35,7 +35,9 @@
 					? 'border-red-500'
 					: state === 'completed'
 						? 'border-blue-900'
-						: ''
+						: state === 'important'
+							? 'border-alineados-green-600'
+							: ''
 	}`}
 >
 	<Card.Header class="flex flex-row p-0 {headerClass}">

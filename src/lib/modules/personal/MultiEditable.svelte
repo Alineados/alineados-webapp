@@ -16,11 +16,13 @@
 		contentAudio = $bindable(''),
 		files = $bindable([]),
 		storyType = '',
+		type = '' // story | thoughts
 	}: {
 		richValue: string;
 		titleAudio: string;
 		contentAudio: string;
 		storyType: string;
+		type: string;
 		files: Documents[];
 	} = $props();
 
@@ -35,8 +37,6 @@
 	});
 
 	function handleOnChange(type: keyof typeof editType) {
-		console.log(type);
-
 		editType.text = false;
 		editType.audio = false;
 		editType.document = false;
@@ -78,10 +78,10 @@
 	</div>
 	<!-- Content -->
 	{#if editType.text}
-		<RichTextComposer bind:value={richValue} />
+		<RichTextComposer {type} bind:value={richValue} />
 	{:else if editType.audio}
-		<AudioComposer {storyType} bind:title={titleAudio} bind:content={contentAudio} />
+		<AudioComposer {type} {storyType} bind:title={titleAudio} bind:content={contentAudio} />
 	{:else if editType.document}
-		<FileComposer bind:filesList={files} {storyType}/>
+		<FileComposer {type} bind:filesList={files} {storyType} />
 	{/if}
 </div>

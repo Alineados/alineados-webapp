@@ -105,6 +105,14 @@ export class StoryService {
         return response;
     }
 
+    // DELETE
+    async deleteStory(sid: string): Promise<Response> {
+        const url = `${this._url}/delete?sid=${sid}`;
+        const response: Response = await request(url, 'DELETE', null, this._token);
+
+        return response;
+    }
+
     // async updateIsImportant(sid: string, isImportant: boolean): Promise<Response> {
     //     const url = `${this._url}/update-important?sid=${sid}&isImportant=${isImportant}`;
     //     const response: Response = await request(url, 'PUT', null, this._token);

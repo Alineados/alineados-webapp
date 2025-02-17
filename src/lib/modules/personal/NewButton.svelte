@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import Eye from '$lib/icons/Eye.svelte';
 	import Loading from '$lib/icons/Loading.svelte';
 	import Pencil from '$lib/icons/Pencil.svelte';
 	import Plus from '$lib/icons/Plus.svelte';
@@ -18,12 +19,14 @@
 
 	function handleOnClick() {
 		if (status === 'new') formNewStory.requestSubmit();
-		else if (status === 'edit') formUpdateStory.requestSubmit();
+		// TODO: Implementar autosave 
+		else if (status === 'edit') formUpdateStory.requestSubmit() // goto(`./stories/${storyState.id}`);
+		else if (status === 'see') goto(`./personal/stories/edit/${storyState.id}`);
 	}
 </script>
 
 <button
-	class="focus group flex items-center gap-[4px] rounded-lg bg-alineados-blue-900 px-5 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg"
+	class="focus group flex items-center gap-1 rounded-lg bg-alineados-blue-900 px-5 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg"
 	aria-label="Rendir Cuentas"
 	onclick={handleOnClick}
 >
@@ -37,7 +40,8 @@
 			{title}
 		</p>
 	{:else if status === 'edit'}
-		<Save styleTw="size-4" />
+		<!-- <Save styleTw="size-4" /> -->
+		<Eye styleTw="size-4" />
 		<p class="text-xs font-medium">{title}</p>
 	{:else if status === 'see'}
 		<Pencil styleTw="size-4" />
@@ -76,10 +80,8 @@
 		formData.set('story', JSON.stringify(storyState.getJson()));
 
 		return async ({ result, update }) => {
-			console.log(result);
-
 			if (result.status === 200 && result.type === 'success') {
-				toast.success('Relato actualizado correctamente' );
+				toast.success('Relato actualizado correctamente');
 			}
 
 			loading = false;

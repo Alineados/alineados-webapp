@@ -12,10 +12,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
     const result = await storyService.getStoriesGrouped(locals.user._id!);
 
-
-    console.log('result', result.data);
-
-
     return {
         ...result.data
     }
@@ -53,5 +49,21 @@ export const actions = {
                 message: 'update'
             }
         }
+    },
+    delete: async ({ params, request, locals }) => {
+		const formData = await request.formData();
+		const data = getJSONFormsData(formData);
+
+		const { sid } = data;
+
+        let storyService: StoryService = StoryService.getInstance(locals.token);
+
+        const result = await storyService.deleteStory(sid);
+
+
+        if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+		return result;
     }
 } satisfies Actions;
