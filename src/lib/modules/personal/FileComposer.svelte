@@ -11,6 +11,7 @@
 	import { toast } from 'svelte-sonner';
 	import DocumentCard from './DocumentCard.svelte';
 	import { showToast } from '$lib/utils/toast';
+	import { getFileType } from '$lib/utils/getFormsData';
 
 	let {
 		storyType = '',
