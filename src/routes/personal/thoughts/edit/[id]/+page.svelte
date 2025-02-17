@@ -36,14 +36,12 @@
 		}
 	}
 
-	console.log(purposesState.purposes);
-
 	$inspect(thoughtState.quality_time);
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<ThoughtHeader status="edit" bind:isSave />
+		<ThoughtHeader status="edit" />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -96,7 +94,8 @@
 		<div class="flex flex-col gap-6 pb-9">
 			<p class="text-base font-bold text-alineados-gray-900">Tiempo de Calidad</p>
 			<MultiEditable
-				storyType="life_sesson"
+				type="thought"
+				storyType="qualitiy_time"
 				bind:files={thoughtState.quality_timeDocuments}
 				bind:richValue={thoughtState.quality_timeText}
 				bind:titleAudio={thoughtState.quality_timeAudio.file_name}

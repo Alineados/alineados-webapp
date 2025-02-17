@@ -1,11 +1,12 @@
 <script lang="ts">
-	let { items = Array<{ id: number; icon?: string; label: string; color?: string }> } = $props();
+	let { items = Array<{ id: number; icon?: string; label: string }> } = $props();
 
 	let selectedId = $state<number | undefined>(undefined);
 	let containerRef = $state<HTMLDivElement>();
 
 	function selectItem(id: number) {
-		selectedId = id;
+		// Toggle selection: if clicking the same item, deselect it
+		selectedId = selectedId === id ? undefined : id;
 	}
 
 	$effect(() => {
