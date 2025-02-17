@@ -4,8 +4,10 @@
 
 	let {
 		value = $bindable(''),
+		type = '', // story | thoughts
 	}: {
 		value?: string;
+		type?: string;
 	} = $props();
 
 	let apiKey = 'zvfap2kkclg3r9gzfbfmj45yq4wp820yxpn9r4e4vlbtbieo';
@@ -44,4 +46,4 @@
 	};
 </script>
 
-<Editor {apiKey} {conf} bind:value />
+<!-- <Editor {apiKey} {conf} bind:value /> -->

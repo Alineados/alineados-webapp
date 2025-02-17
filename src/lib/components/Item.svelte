@@ -224,8 +224,7 @@
 						onclick={() => {
 							if (deleteItem) deleteItem();
 						}}
-						class="text-alineados-gray-400"
-						class:hover:text-red-500={!isDisabled}
+						class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''}`}
 						aria-label="Delete"
 						disabled={isDisabled}
 					>

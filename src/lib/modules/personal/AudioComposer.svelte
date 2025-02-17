@@ -7,11 +7,13 @@
 	let {
 		title = $bindable(''),
 		content = $bindable(''),
-		storyType = ''
+		storyType = '',
+		type = '', // story | thoughts
 	}: {
 		title?: string;
 		content?: string;
 		storyType?: string;
+		type?: string;
 	} = $props();
 
 	let isPlaying = $state(false);
@@ -33,6 +35,7 @@
 				{title || 'Subir archivo'}
 			</span>
 			<Upload
+				{type}
 				{storyType}
 				acceptable="audio/*"
 				disabledBtn={true}

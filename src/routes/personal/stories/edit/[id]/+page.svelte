@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import Banner from '$lib/modules/personal/Banner.svelte';
+	import Banner from '$lib/modules/personal/stories/Banner.svelte';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import PersonalSelect from '$lib/modules/personal/PersonalSelect.svelte';
@@ -20,9 +20,6 @@
 	// // init story state
 	storyState.init(story, banner_url);
 
-	// variables
-	let isSave = $state(false);
-
 	// Functions
 	function handleCategories(value: string) {
 		const [pillar_name, category_name, pfid, cid] = value.split('-');
@@ -38,15 +35,11 @@
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
-
-	$inspect(storyState.experience);
-	$inspect(storyState.life_sesson);
-	$inspect(storyState.is_important);
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<StoryHeader status="edit" bind:title={storyState.story_name} bind:isSave />
+		<StoryHeader status="edit" bind:title={storyState.story_name} />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -68,7 +61,7 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleStoryType(value)}
 					subCategory={false}
-					alreadyValue={storyState.type === 1 ? 'Testimonio' : 'Conversación'}
+					alreadyValue={storyState.type === 1 ? 'Testimonio' : storyState.type === 2 ? 'Conversación' : ''}
 					list={[
 						{
 							id: '1',
@@ -117,8 +110,8 @@
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
 				{#each storyState.involved as involded}
-					<!-- <Item
-					w_size="w-1/2"
+					<Item
+						w_size="w-1/2"
 						deleteItem={() => {
 							if (
 								storyState.involved[storyState.involved.length - 1].id !== involded.id &&
@@ -137,7 +130,7 @@
 						isOnlyText={true}
 						showOnlyDelete={true}
 						bind:value={involded.description}
-					/> -->
+					/>
 				{/each}
 			</div>
 		</div>
@@ -153,6 +146,7 @@
 		<div class="flex flex-col gap-6 pb-9">
 			<p class="text-base font-bold text-alineados-gray-900">Experiencia</p>
 			<MultiEditable
+				type="story"
 				storyType="experience"
 				bind:files={storyState.experienceDocuments}
 				bind:richValue={storyState.experienceText}
@@ -164,11 +158,12 @@
 		<div class="flex flex-col gap-6">
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
 			<MultiEditable
-				storyType="life_sesson"
-				bind:files={storyState.life_sessonDocuments}
-				bind:richValue={storyState.life_sessonText}
-				bind:titleAudio={storyState.life_sessonAudio.file_name}
-				bind:contentAudio={storyState.life_sessonAudio.content!}
+				type="story"
+				storyType="life_lesson"
+				bind:files={storyState.life_lessonDocuments}
+				bind:richValue={storyState.life_lessonText}
+				bind:titleAudio={storyState.life_lessonAudio.file_name}
+				bind:contentAudio={storyState.life_lessonAudio.content!}
 			/>
 		</div>
 	</div>

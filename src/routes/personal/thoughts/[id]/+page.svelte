@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Banner from '$lib/modules/personal/Banner.svelte';
+	import Banner from '$lib/modules/personal/stories/Banner.svelte';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 </script>

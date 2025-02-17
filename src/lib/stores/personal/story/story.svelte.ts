@@ -17,7 +17,7 @@ export class StoryState {
     #type: number = $state(0); // 1. testimony 2. conversation
     #involved: Generic[] = $state([]);
     #experience: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
-    #life_sesson: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
+    #life_lesson: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
 
     // secondary properties
     #is_important: boolean = $state(false);
@@ -45,7 +45,7 @@ export class StoryState {
             this.#involved = story.involved;
 
         this.#experience = story.experience;
-        this.#life_sesson = story.life_sesson;
+        this.#life_lesson = story.life_lesson;
         this.#is_important = story.is_important;
         this.#created_at = story.created_at;
         this.#updated_at = story.updated_at ?? null;
@@ -117,20 +117,20 @@ export class StoryState {
         return this.#experience.documents
     }
 
-    get life_sesson(): TypeEditable {
-        return this.#life_sesson;
+    get life_lesson(): TypeEditable {
+        return this.#life_lesson;
     }
 
-    get life_sessonText(): string {
-        return this.#life_sesson.text ?? '';
+    get life_lessonText(): string {
+        return this.#life_lesson.text ?? '';
     }
 
-    get life_sessonAudio(): Documents {
-        return this.#life_sesson.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
+    get life_lessonAudio(): Documents {
+        return this.#life_lesson.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
     }
 
-    get life_sessonDocuments(): Documents[] {
-        return this.#life_sesson.documents;
+    get life_lessonDocuments(): Documents[] {
+        return this.#life_lesson.documents;
     }
 
     get is_important(): boolean {
@@ -154,7 +154,7 @@ export class StoryState {
             type: this.#type,
             involved: this.#involved,
             experience: this.#experience,
-            life_sesson: this.#life_sesson,
+            life_lesson: this.#life_lesson,
             is_important: this.#is_important,
             created_at: this.#created_at
         }
@@ -179,6 +179,10 @@ export class StoryState {
 
     set banner(value: Documents) {
         this.#banner = value;
+    }
+
+    set bannerUrl(value: string) {
+        this.#bannerUrl = value;
     }
 
     set story_name(value: string) {
@@ -210,16 +214,16 @@ export class StoryState {
 
     }
 
-    set life_sesson(value: TypeEditable) {
-        this.#life_sesson = value;
+    set life_lesson(value: TypeEditable) {
+        this.#life_lesson = value;
     }
 
-    set life_sessonText(value: string) {
-        this.#life_sesson.text = value;
+    set life_lessonText(value: string) {
+        this.#life_lesson.text = value;
     }
 
-    set life_sessonAudio(value: Documents) {
-        this.#life_sesson.audio = value;
+    set life_lessonAudio(value: Documents) {
+        this.#life_lesson.audio = value;
     }
 
     set is_important(value: boolean) {
@@ -266,17 +270,23 @@ export class StoryState {
             this.#experience.documents = [...this.#experience.documents, ...docs];
         else
             this.#experience.documents = docs;
+    }
 
-
+    deleteExperienceDocument(id: string) {
+        this.#experience.documents = this.#experience.documents.filter(doc => doc.id !== id);
     }
 
     appendLifeSessonDocuments(docs: Documents[]) {
 
-        if (this.#life_sesson.documents)
+        if (this.#life_lesson.documents)
 
-            this.#life_sesson.documents = [...this.#life_sesson.documents, ...docs];
+            this.#life_lesson.documents = [...this.#life_lesson.documents, ...docs];
         else
-            this.#life_sesson.documents = docs;
+            this.#life_lesson.documents = docs;
+    }
+
+    deleteLifeLessonDocument(id: string) {
+        this.#life_lesson.documents = this.#life_lesson.documents.filter(doc => doc.id !== id);
     }
 
 }

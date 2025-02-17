@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import AlertDialog from '$lib/components/AlertDialog.svelte';
+	import BackArrow from '$lib/icons/BackArrow.svelte';
 	import NewButton from '../NewButton.svelte';
 
 	let {
@@ -22,13 +23,7 @@
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-		<button
-			onclick={() => {
-				if (!isSave) openModal = true;
-				else handleGoBack();
-			}}
-			class="text-alineados-gray-600 hover:underline"
-		>
+		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
 			Personal
 		</button>
 		<!-- <a href="/personal/stories" class="text-alineados-gray-600 hover:underline">Personal</a> -->
@@ -61,15 +56,26 @@
 			{#if status === 'new'}
 				<NewButton status="new" title="Nuevo Relato" />
 			{:else if status === 'edit'}
-				<NewButton status="edit" title="Guardar" />
+				<NewButton status="edit" title="Ver" />
 			{:else if status === 'see'}
 				<NewButton status="see" title="Editar" />
+			{/if}
+
+			{#if status !== 'new'}
+				<!-- return button -->
+				<a
+					href="/personal/stories"
+					class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-5 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+				>
+					<BackArrow class="size-4 font-bold text-alineados-blue-900" />
+					<p class="text-xs font-medium">Regresar</p>
+				</a>
 			{/if}
 		</div>
 	</div>
 </div>
 
-<AlertDialog
+<!-- <AlertDialog
 	bind:open={openModal}
 	title="Información sin guardar"
 	description="¿Estás seguro que deseas regresar? Se perderán los cambios realizados."
@@ -77,4 +83,4 @@
 	action="Regresar"
 	handleCancel={() => (openModal = false)}
 	handleAction={() => handleGoBack()}
-/>
+/> -->
