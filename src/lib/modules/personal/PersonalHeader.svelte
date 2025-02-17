@@ -24,7 +24,7 @@
 	});
 </script>
 
-<div bind:this={headerRef} class="sticky top-0 z-20 bg-white">
+<div bind:this={headerRef} class="sticky top-0 z-20 bg-white pb-7">
 	{@render header()}
 </div>
 

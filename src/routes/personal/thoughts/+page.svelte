@@ -7,28 +7,7 @@
 	import ThoughtFilter from '$lib/modules/personal/thoughts/ThoughtFilter.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
 	import type { DataPurpose, Thought } from '$lib/interfaces';
-	import { purposesState, thoughtsState } from '$lib/stores';
-
-	const pillarItems = [
-		{ id: 1, icon: '💼', label: 'Trabajo', color: '#4CAF50' },
-		{ id: 2, icon: '✝️', label: 'Religión', color: '#4CAF50' },
-		{ id: 3, icon: '🏥', label: 'Salud', color: '#4CAF50' },
-		{ id: 4, icon: '👥', label: 'Social', color: '#4CAF50' },
-		{ id: 5, icon: '💼', label: 'Negocios', color: '#4CAF50' }
-	];
-
-	const purposeItems = [
-		{ id: 1, icon: '😊', label: 'Actitud', color: '#4CAF50' },
-		{ id: 2, icon: '❤️', label: 'Amor', color: '#4CAF50' },
-		{ id: 3, icon: '🎁', label: 'Dar', color: '#4CAF50' },
-		{ id: 4, icon: '🧠', label: 'Entendimiento', color: '#4CAF50' },
-		{ id: 5, icon: '🏆', label: 'Éxito', color: '#4CAF50' },
-		{ id: 6, icon: '🤝', label: 'Relaciones', color: '#4CAF50' },
-		{ id: 7, icon: '📈', label: 'Resultados', color: '#4CAF50' },
-		{ id: 8, icon: '🤲', label: 'Servir', color: '#4CAF50' },
-		{ id: 9, icon: '💡', label: 'Solución', color: '#4CAF50' },
-		{ id: 10, icon: '⏰', label: 'Tiempo de calidad', color: '#4CAF50' }
-	];
+	import { pillarState, purposesState, thoughtsState } from '$lib/stores';
 
 	let selectedType = $state('pillar');
 
@@ -36,14 +15,55 @@
 
 	const { thoughts, purposes }: { thoughts: Thought[]; purposes: DataPurpose[] } = data;
 
-	console.log(thoughts);
-	console.log(purposes);
-
 	purposesState.init(purposes);
 	thoughtsState.init(thoughts);
 
-	console.log('p', purposesState.purposes);
-	console.log('t', thoughtsState.thoughts);
+	// Function to get icon based on pillar name
+	function getPillarIcon(name: string) {
+		switch (name) {
+			case 'health':
+				return '💪';
+			case 'relational':
+				return '👥';
+			case 'vocational':
+				return '💼';
+			case 'spiritual':
+				return '🙏';
+			default:
+				return '📌';
+		}
+	}
+
+	// Transform pillars into carousel items
+	const pillarItems = [
+		{
+			id: pillarState.health.id,
+			icon: getPillarIcon('health'),
+			label: pillarState.health.label
+		},
+		{
+			id: pillarState.relational.id,
+			icon: getPillarIcon('relational'),
+			label: pillarState.relational.label
+		},
+		{
+			id: pillarState.vocational.id,
+			icon: getPillarIcon('vocational'),
+			label: pillarState.vocational.label
+		},
+		{
+			id: pillarState.spiritual.id,
+			icon: getPillarIcon('spiritual'),
+			label: pillarState.spiritual.label
+		}
+	];
+
+	// Transform purposes into carousel items
+	const purposeItems = purposesState.purposes.map((purpose, index) => ({
+		id: purpose.id,
+		icon: '🎯', // You can customize this per purpose if needed
+		label: purpose.label
+	}));
 </script>
 
 <PersonalHeader>

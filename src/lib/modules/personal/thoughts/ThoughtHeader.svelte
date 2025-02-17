@@ -1,20 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import AlertDialog from '$lib/components/AlertDialog.svelte';
 	import NewButton from '../thoughts/NewButton.svelte';
 
 	let {
-		status,
-		isSave = $bindable()
+		status
 	}: {
 		status: 'new' | 'edit' | 'see';
 		isSave?: boolean;
 	} = $props();
 
-	let openModal = $state(false);
-
 	function handleGoBack() {
-		goto('/personal/stories');
+		goto('/personal/thoughts');
 	}
 </script>
 
@@ -22,8 +18,7 @@
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<button
 			onclick={() => {
-				if (!isSave) openModal = true;
-				else handleGoBack();
+				handleGoBack();
 			}}
 			class="text-alineados-gray-600 hover:underline"
 		>
