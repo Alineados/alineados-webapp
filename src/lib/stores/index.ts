@@ -56,8 +56,7 @@ export {
 export { userState } from './user/info.svelte';
 export { pillarState, PillarState } from './user/pillars.svelte';
 export { storyState } from './personal/story/story.svelte';
+export { thoughtState } from './personal/thought/thought.svelte';
 export { storiesState } from './personal/story/stories.svelte';
 // Generics
 export { emptyGeneric, listSelector } from './generic';
-
-

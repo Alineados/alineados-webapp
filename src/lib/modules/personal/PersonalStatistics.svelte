@@ -5,14 +5,13 @@
 	let {
 		type,
 		first = $bindable(0),
-		second = $bindable(0),
+		second = $bindable(0)
 	}: {
 		type: 'thoughts' | 'stories';
-		first: number;
-		second: number;
+		first?: number;
+		second?: number;
 	} = $props();
 	// Calcule the total of problems
-
 </script>
 
 <ViewCard contentClass="w-full">
