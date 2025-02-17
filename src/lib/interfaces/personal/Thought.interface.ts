@@ -31,7 +31,7 @@ export interface Thought {
 	thought_name: string;
 	pillar_name: string;
 	purpose_name: string;
-	quuality_time: TypeEditable;
+	quality_time: TypeEditable;
 
 	// secondary properties
 	is_important: boolean;

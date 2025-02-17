@@ -6,7 +6,7 @@
 	import Loading from '$lib/icons/Loading.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import type { Documents } from '$lib/interfaces';
-	import { storyState } from '$lib/stores';
+	import { storyState, thoughtState } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import DocumentCard from './DocumentCard.svelte';
@@ -52,7 +52,6 @@
 	function handleDragOver(event: any) {
 		event.preventDefault();
 	}
-
 
 	function handleDeleteDocument() {
 		if (type === 'story') {
@@ -111,7 +110,13 @@
 						}
 
 						showToast('¡Documentos subidos correctamente!', 'success');
-					} else if (type === 'thoughts') {
+					} else if (type === 'thoughts')
+						if (result.data) {
+							thoughtState.appendQualityTimeDocuments(data as unknown as Documents[]);
+
+							showToast('¡Documentos subidos correctamente!', 'success');
+						}
+					{
 					}
 				}
 
@@ -122,11 +127,9 @@
 	>
 		<div class="flex flex-col items-center gap-4">
 			{#if uploading}
-				<div class="flex flex-col items-center gap-4 py-16">
-					<p class="text-xl font-medium text-alineados-green-900">Subiendo archivos...</p>
-					<div class="h-7 w-7 text-white">
-						<Loading style="text-alineados-green-900" />
-					</div>
+				<p class="text-base font-medium text-alineados-green-900">Subiendo archivos...</p>
+				<div class="h-7 w-7 text-white">
+					<Loading style="text-alineados-green-900" />
 				</div>
 			{:else}
 				<!-- Upload Icon -->
@@ -172,6 +175,8 @@
 
 		<!-- Hidden -->
 		<input type="hidden" name="sid" value={storyState.id} />
+		<input type="hidden" name="tid" value={thoughtState.id} />
+		<input type="hidden" name="thoughtType" value="qualityTime" />
 		<input type="hidden" name="storyType" value={storyType} />
 	</form>
 
@@ -185,7 +190,48 @@
 		<!-- File List -->
 		<div class="space-y-3">
 			{#each filesList as file}
-				<DocumentCard {file} bind:openModal handleDelete={() => (documentToDelete = file)} />
+				<div
+					class="flex items-center justify-between rounded-xl border border-alineados-gray-100 bg-white p-4"
+				>
+					<div class="flex items-center gap-3">
+						<div class="relative">
+							<!-- File Icon -->
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded bg-alineados-orange-50"
+							>
+								<File class="size-6 text-alineados-orange-900" />
+							</div>
+							<!-- ZIP Badge -->
+							<span
+								class="absolute -bottom-1 -right-1 rounded bg-blue-500 px-1 text-[10px] text-white"
+							>
+								{getFileType(file.type)}
+							</span>
+						</div>
+						<div>
+							<p class="font-medium">{file.file_name}</p>
+							<p class="text-xs text-alineados-gray-500">Click para descargar o ver</p>
+						</div>
+					</div>
+
+					<!-- Remove Button -->
+					<button
+						class="rounded-full p-2 text-alineados-gray-400 transition-colors hover:bg-alineados-gray-100 hover:text-alineados-gray-600"
+						aria-label="Remove file"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<line x1="18" y1="6" x2="6" y2="18" />
+							<line x1="6" y1="6" x2="18" y2="18" />
+						</svg>
+					</button>
+				</div>
 			{/each}
 		</div>
 	</div>

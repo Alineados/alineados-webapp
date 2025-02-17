@@ -4,7 +4,7 @@
 
 	let {
 		value = $bindable(''),
-		type = '', // story | thoughts
+		type = '' // story | thoughts
 	}: {
 		value?: string;
 		type?: string;
@@ -15,7 +15,7 @@
 		height: 500,
 		content_langs: [
 			{ title: 'English', code: 'en' },
-			{ title: 'Spanish', code: 'es' },
+			{ title: 'Spanish', code: 'es' }
 		],
 		plugins: [
 			'advlist',
