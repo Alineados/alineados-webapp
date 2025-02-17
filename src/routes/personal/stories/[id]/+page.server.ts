@@ -24,6 +24,22 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 };
 
 export const actions = {
+    getUrl: async ({ params, request, locals }) => {
+        const formData = await request.formData();
+        const data = getJSONFormsData(formData);
 
+        const file: Documents = JSON.parse(data.document);
+
+        let storyService: StoryService = StoryService.getInstance(locals.token);
+
+        const result = await storyService.createDocumentUrl(file);
+
+
+        if (result.status !== 200 && result.status !== 201) {
+            return fail(result.data);
+        }
+
+        return result;
+    },
 
 } satisfies Actions;

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import alineadosImage from '$lib/assets/check-card.png';
-	import type { Categories, DataPillar, Story } from '$lib/interfaces';
+	import type { Story } from '$lib/interfaces';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalStatistics from '$lib/modules/personal/PersonalStatistics.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import StoryFilter from '$lib/modules/personal/stories/StoryFilter.svelte';
 	import CustomCard from '$lib/components/CustomCard.svelte';
-	import StarSolid from '$lib/icons/StarSolid.svelte';
+
 	import ThirdCube from '$lib/icons/ThirdCube.svelte';
 	import ThreePeople from '$lib/icons/ThreePeople.svelte';
 	import { storiesState } from '$lib/stores';

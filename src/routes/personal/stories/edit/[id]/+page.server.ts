@@ -9,7 +9,6 @@ import { getJSONFormsData } from '$lib/utils/getFormsData';
 export const load: PageServerLoad = async ({ params, request, url, locals }) => {
     // get params
     const { id } = params;
-
     // get story
     let storyService: StoryService = StoryService.getInstance(locals.token);
 
@@ -23,7 +22,7 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
     }
 };
 
-export const actions = {
+export const actions: Actions = {
 
     getUrl: async ({ params, request, locals }) => {
         const formData = await request.formData();

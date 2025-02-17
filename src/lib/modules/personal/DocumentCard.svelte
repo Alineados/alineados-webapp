@@ -9,22 +9,23 @@
 	let {
 		file,
 		openModal = $bindable(false),
+		showDelete = true,
 		handleDelete
 	}: {
 		file: Documents;
-		openModal: boolean;
-		handleDelete: () => void;
+		openModal?: boolean;
+		showDelete: boolean;
+		handleDelete?: () => void;
 	} = $props();
 
 	let formHtml: HTMLFormElement;
 	let loading: boolean = $state(false);
 
-
 	function onDeleteClick(e: any) {
 		e.preventDefault();
 		e.stopPropagation();
 		openModal = true;
-		handleDelete();
+		handleDelete && handleDelete();
 	}
 </script>
 
@@ -73,10 +74,8 @@
 		<div>
 			<p class="font-medium">{file.file_name}</p>
 			{#if loading}
-                <p class="text-xs text-alineados-gray-500 ">
-                    Procesando archivo...
-                </p>
-            {:else}
+				<p class="text-xs text-alineados-gray-500">Procesando archivo...</p>
+			{:else}
 				<button class="text-xs text-alineados-gray-500 hover:underline" type="submit"
 					>Click para descargar o ver</button
 				>
@@ -84,13 +83,15 @@
 		</div>
 	</div>
 	<!-- Remove Button -->
-	<button
-		class="rounded-full p-2 text-alineados-gray-400 transition-colors hover:bg-alineados-gray-100 hover:text-alineados-gray-600"
-		aria-label="Remove file"
-		onclick={(e) => onDeleteClick(e)}
-	>
-		<TrashCan styleTw="size-5" />
-	</button>
+	{#if showDelete}
+		<button
+			class="rounded-full p-2 text-alineados-gray-400 transition-colors hover:bg-alineados-gray-100 hover:text-alineados-gray-600"
+			aria-label="Remove file"
+			onclick={(e) => onDeleteClick(e)}
+		>
+			<TrashCan styleTw="size-5" />
+		</button>
+	{/if}
 
 	<!-- Input hidden -->
 	<input type="hidden" name="document" value={JSON.stringify(file)} />

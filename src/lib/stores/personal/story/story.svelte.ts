@@ -38,7 +38,7 @@ export class StoryState {
         this.#pillar_name = story.pillar_name;
         this.#category_name = story.category_name;
         this.#type = story.type;
-
+        
         if (story.involved.length === 0)
             this.#involved = [{ ...emptyGeneric() }];
         else

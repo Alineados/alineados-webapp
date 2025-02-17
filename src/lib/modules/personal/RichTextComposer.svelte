@@ -46,4 +46,4 @@
 	};
 </script>
 
-<!-- <Editor {apiKey} {conf} bind:value /> -->
+<Editor {apiKey} {conf} bind:value />
