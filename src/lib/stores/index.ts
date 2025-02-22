@@ -63,3 +63,6 @@ export { purposesState } from './user/purposes.svelte';
 
 // Generics
 export { emptyGeneric, listSelector } from './generic';
+
+export { infoState } from "./settings/info.svelte"
+
