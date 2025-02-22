@@ -2,7 +2,6 @@ import { getJSONFormsData } from '$lib/utils/getFormsData';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { ThoughtService } from '$lib/services/personal/thoughts';
-import { ThoughtService } from '$lib/services/personal/thoughts';
 
 import type { PageServerLoad } from './$types';
 
