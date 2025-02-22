@@ -12,8 +12,24 @@
 
 	const { thought }: { thought: Thought } = data;
 
-	// // init story state
+	// // init thought state
 	thoughtState.init(thought);
+
+	// Add thought type determination using $state
+	let thoughtType = $state('');
+
+	// Update thoughtType when quality_time changes
+	$effect(() => {
+		if (thoughtState.quality_time.text) {
+			thoughtType = 'text';
+		} else if (thoughtState.quality_time.audio) {
+			thoughtType = 'audio';
+		} else if (thoughtState.quality_time.documents?.length > 0) {
+			thoughtType = 'document';
+		} else {
+			thoughtType = '';
+		}
+	});
 
 	// variables
 	let isSave = $state(false);
@@ -36,7 +52,7 @@
 		}
 	}
 
-	$inspect(thoughtState.quality_time);
+	$inspect(thoughtState.quality_time.documents);
 </script>
 
 <PersonalHeader simple={true}>
@@ -95,7 +111,7 @@
 			<p class="text-base font-bold text-alineados-gray-900">Tiempo de Calidad</p>
 			<MultiEditable
 				type="thought"
-				storyType="qualitiy_time"
+				{thoughtType}
 				bind:files={thoughtState.quality_timeDocuments}
 				bind:richValue={thoughtState.quality_timeText}
 				bind:titleAudio={thoughtState.quality_timeAudio.file_name}

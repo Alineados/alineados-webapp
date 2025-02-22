@@ -6,7 +6,7 @@
 	import Loading from '$lib/icons/Loading.svelte';
 	import TrashCan from '$lib/icons/TrashCan.svelte';
 	import type { Documents } from '$lib/interfaces';
-	import { storyState } from '$lib/stores';
+	import { storyState, thoughtState } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import DocumentCard from './DocumentCard.svelte';
@@ -53,7 +53,6 @@
 		event.preventDefault();
 	}
 
-
 	function handleDeleteDocument() {
 		if (type === 'story') {
 			if (documentToDelete) {
@@ -72,6 +71,8 @@
 		dropZone.addEventListener('dragover', handleDragOver);
 		dropZone.addEventListener('drop', handleDrop);
 	});
+
+	$inspect({ filesList });
 </script>
 
 <div class="w-full px-6 py-2">
@@ -102,16 +103,20 @@
 
 					if (type === 'story') {
 						if (result.data) {
-							if (storyType === 'experience')
+							if (storyType === 'experience') {
 								// append the document list to story experience
 								storyState.appendExperienceDocuments(data as unknown as Documents[]);
-							else
+							} else {
 								// append the document list to story life session
 								storyState.appendLifeSessonDocuments(data as unknown as Documents[]);
+							}
+							showToast('¡Documentos subidos correctamente!', 'success');
 						}
-
-						showToast('¡Documentos subidos correctamente!', 'success');
-					} else if (type === 'thoughts') {
+					} else if (type === 'thought') {
+						if (result.data) {
+							thoughtState.appendQualityTimeDocuments(data as unknown as Documents[]);
+							showToast('¡Documentos subidos correctamente!', 'success');
+						}
 					}
 				}
 
@@ -172,6 +177,7 @@
 
 		<!-- Hidden -->
 		<input type="hidden" name="sid" value={storyState.id} />
+		<input type="hidden" name="tid" value={thoughtState.id} />
 		<input type="hidden" name="storyType" value={storyType} />
 	</form>
 
@@ -185,7 +191,12 @@
 		<!-- File List -->
 		<div class="space-y-3">
 			{#each filesList as file}
-				<DocumentCard showDelete={true} {file} bind:openModal handleDelete={() => (documentToDelete = file)} />
+				<DocumentCard
+					showDelete={true}
+					{file}
+					bind:openModal
+					handleDelete={() => (documentToDelete = file)}
+				/>
 			{/each}
 		</div>
 	</div>

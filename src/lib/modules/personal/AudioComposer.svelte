@@ -8,7 +8,7 @@
 		title = $bindable(''),
 		content = $bindable(''),
 		storyType = '',
-		type = '', // story | thoughts
+		type = '' // story | thought
 	}: {
 		title?: string;
 		content?: string;

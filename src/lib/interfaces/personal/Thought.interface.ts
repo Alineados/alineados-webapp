@@ -10,7 +10,7 @@ export interface ThoughtUpdate {
 	thought_name: string;
 	pillar_name: string;
 	purpose_name: string;
-	quuality_time: TypeEditable;
+	quality_time: TypeEditable;
 }
 
 export interface ThoughtDocumentWithUrl {

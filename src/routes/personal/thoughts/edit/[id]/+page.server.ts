@@ -38,7 +38,7 @@ export const actions = {
 			thought_name: thought.thought_name,
 			pillar_name: thought.pillar_name,
 			purpose_name: thought.purpose_name,
-			quuality_time: thought.quality_time
+			quality_time: thought.quality_time
 		};
 
 		console.log('thought.id = ', thought.id);
@@ -69,14 +69,18 @@ export const actions = {
 
 		// get id's if they exist
 		let tid: string = '';
+		let type: string = '';
 		let thoughtType: string = '';
 		if (formData.tid) {
 			tid = formData.tid as string; //thought id
 			thoughtType = formData.thoughtType as string; // quality_time
+			type = formData.type as string; // story | ...
 		}
 
 		// get file
 		const file = formData.fileToUpload as File;
+
+		console.log(tid, type, thoughtType, file);
 
 		const thoughtService: ThoughtService = ThoughtService.getInstance('');
 
@@ -92,7 +96,7 @@ export const actions = {
 
 		return {
 			...result,
-			type: 'thought',
+			type,
 			thoughtType
 		};
 	},

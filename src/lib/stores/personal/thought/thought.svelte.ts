@@ -168,7 +168,6 @@ export class ThoughtState {
 		this.#pillar_name = pillar.label;
 	}
 
-	// TODO: Chane to purpose
 	setPurpose(purpose: DataPurpose) {
 		this.#ppid = purpose.id;
 		this.#purpose_name = purpose.label;

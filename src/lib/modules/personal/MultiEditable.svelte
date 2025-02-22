@@ -16,12 +16,14 @@
 		contentAudio = $bindable(''),
 		files = $bindable([]),
 		storyType = '',
+		thoughtType = '',
 		type = '' // story | thoughts
 	}: {
 		richValue: string;
 		titleAudio: string;
 		contentAudio: string;
-		storyType: string;
+		storyType?: string;
+		thoughtType?: string;
 		type: string;
 		files: Documents[];
 	} = $props();
@@ -36,13 +38,37 @@
 		document: false
 	});
 
-	function handleOnChange(type: keyof typeof editType) {
-		editType.text = false;
-		editType.audio = false;
-		editType.document = false;
+	// Determine which editors should be disabled based on thoughtType
+	$effect(() => {
+		if (type === 'thought' && thoughtType !== '') {
+			// Lock the UI to the specific type that was used
+			if (thoughtType === 'text') {
+				editType.text = true;
+				editType.audio = false;
+				editType.document = false;
+			} else if (thoughtType === 'audio') {
+				editType.text = false;
+				editType.audio = true;
+				editType.document = false;
+			} else if (thoughtType === 'document') {
+				editType.text = false;
+				editType.audio = false;
+				editType.document = true;
+			}
+		}
+	});
 
-		editType[type] = true;
+	function handleOnChange(eType: keyof typeof editType) {
+		if (thoughtType === '') {
+			editType.text = false;
+			editType.audio = false;
+			editType.document = false;
+
+			editType[eType] = true;
+		}
 	}
+
+	$inspect(editType, thoughtType);
 </script>
 
 <div class="flex w-full flex-col gap-3">

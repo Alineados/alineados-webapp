@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Images, Documents } from '$lib/interfaces';
-	import { addMemory, pcid, storyState } from '$lib/stores';
+	import { addMemory, pcid, storyState, thoughtState } from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 	import Loading from './Loading.svelte';
 	import Pencil from './Pencil.svelte';
@@ -13,6 +13,7 @@
 		disabledBtn = $bindable(false),
 		acceptable = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx',
 		storyType = '',
+		thoughtType = '',
 		type = ''
 	}: {
 		styleTw?: string;
@@ -21,6 +22,7 @@
 		disabledBtn?: boolean;
 		acceptable?: string;
 		storyType?: string;
+		thoughtType?: string;
 		type?: string;
 	} = $props();
 
@@ -82,6 +84,12 @@
 							showToast('¡Banner subido correctamente!', 'success');
 						}
 					}
+				} else if (type === 'thought') {
+					if (result.data) {
+						// add the audio to thought
+						thoughtState.quality_timeAudio = data as unknown as Documents;
+						showToast('¡Audio subido correctamente!', 'success');
+					}
 				} else if (type === 'problems') {
 					const { document, url } = data as { document: Documents; url: string };
 
@@ -101,7 +109,9 @@
 >
 	<input type="hidden" name="pcid" value={$pcid} />
 	<input type="hidden" name="sid" value={storyState.id} />
+	<input type="hidden" name="tid" value={thoughtState.id} />
 	<input type="hidden" name="storyType" value={storyType} />
+	<input type="hidden" name="thoughtType" value={thoughtType} />
 	<input type="hidden" name="type" value={type} />
 
 	<input
