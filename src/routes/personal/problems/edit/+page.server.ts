@@ -27,9 +27,6 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 		if (data.status === 200) urlImages = data.data;
 	}
 
-
-	// console.log("urlImages", urlImages);
-
 	return {
 		problemInfo: result.data.problem_info,
 		problemCard: result.data.problem_card,
@@ -43,7 +40,6 @@ export const actions = {
 	upload: async ({ cookies, request, locals }) => {
 		const formData = Object.fromEntries(await request.formData());
 
-		console.log('formData', formData);
 		if (
 			!(formData.fileToUpload as File).name ||
 			(formData.fileToUpload as File).name === 'undefined'
@@ -66,8 +62,6 @@ export const actions = {
 		let problemService: ProblemService = ProblemService.getInstance('');
 
 		const result = await problemService.uploadFile(locals.user._id!, pcid, file);
-
-		console.log('result', result);
 
 		if (result.status !== 200 && result.status !== 201) {
 			return fail(result.data);

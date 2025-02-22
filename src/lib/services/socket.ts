@@ -30,6 +30,10 @@ export class SocketService {
 			// console.log('Autosave success', resp);
 		});
 
+		channel.on('autosave_success_story', (resp) => {
+			console.log("Autosave success", resp);
+		});
+
 		return channel;
 	}
 

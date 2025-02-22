@@ -2,6 +2,9 @@
 	import { goto } from '$app/navigation';
 	import AlertDialog from '$lib/components/AlertDialog.svelte';
 	import BackArrow from '$lib/icons/BackArrow.svelte';
+	import Cloud from '$lib/icons/Cloud.svelte';
+	import Loading from '$lib/icons/Loading.svelte';
+	import { storyState } from '$lib/stores';
 	import NewButton from '../NewButton.svelte';
 
 	let {
@@ -21,7 +24,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16 pb-8">
+<div class="flex flex-col gap-2 px-4 pb-8 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
 			Personal
@@ -53,6 +56,15 @@
 		</div>
 
 		<div class="flex basis-1/4 flex-row justify-end gap-4 self-start pt-2">
+			<!-- Autosave -->
+			{#if status !== 'new'}
+				{#if storyState.autosave}
+					<Loading style="h-7 w-7 animate-spin text-alineados-gray-400" />
+				{:else}
+					<Cloud styleTw="size-7 text-alineados-gray-400" />
+				{/if}
+			{/if}
+
 			{#if status === 'new'}
 				<NewButton status="new" title="Nuevo Relato" />
 			{:else if status === 'edit'}

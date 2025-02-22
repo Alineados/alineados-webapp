@@ -20,8 +20,8 @@
 	function handleOnClick() {
 		if (status === 'new') formNewStory.requestSubmit();
 		// TODO: Implementar autosave 
-		else if (status === 'edit') formUpdateStory.requestSubmit() // goto(`./stories/${storyState.id}`);
-		else if (status === 'see') goto(`./edit/${storyState.id}`);
+		else if (status === 'edit') goto(`./${storyState.id}`); // formUpdateStory.requestSubmit()
+		else if (status === 'see')  goto(`./edit/${storyState.id}`);
 	}
 </script>
 

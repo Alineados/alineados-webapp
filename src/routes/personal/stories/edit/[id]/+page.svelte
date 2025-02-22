@@ -12,6 +12,10 @@
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
+	import { set } from 'zod';
+	import { onMount } from 'svelte';
+	import { SocketService } from '$lib/services/socket';
+	import { browser } from '$app/environment';
 
 	let { data }: PageProps = $props();
 
@@ -19,6 +23,37 @@
 
 	// // init story state
 	storyState.init(story, banner_url);
+
+	let socket: SocketService;
+	// onmout
+	onMount(() => {
+		if (browser) {
+			socket = new SocketService(storyState.id);
+		}
+
+		return () => {
+			socket.disconnect();
+		};
+	});
+
+	let timeout: ReturnType<typeof setTimeout>;
+	let autosave: boolean = $state(false);
+
+	// autosave
+	$effect(() => {
+		if (storyState.storyChange) {
+			clearTimeout(timeout);
+			autosave = true;
+			storyState.autosave = true;
+			timeout = setTimeout(() => {
+				socket.push('autosave_story', storyState.storyChange as string);
+
+				console.log('autosave story');
+				autosave = false;
+				storyState.autosave = false;
+			}, 2000);
+		}
+	});
 
 	// Functions
 	function handleCategories(value: string) {
@@ -61,7 +96,11 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleStoryType(value)}
 					subCategory={false}
-					alreadyValue={storyState.type === 1 ? 'Testimonio' : storyState.type === 2 ? 'Conversación' : ''}
+					alreadyValue={storyState.type === 1
+						? 'Testimonio'
+						: storyState.type === 2
+							? 'Conversación'
+							: ''}
 					list={[
 						{
 							id: '1',

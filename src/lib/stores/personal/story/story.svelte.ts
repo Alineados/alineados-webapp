@@ -25,6 +25,31 @@ export class StoryState {
     #updated_at: string | null = $state(null);
     #deleted_at: string | null = $state(null);
 
+    // computed - autosave = if some of the properties change, save a true value for 4 seconds
+    #autosave: boolean  = $state(false);
+
+    #storyChange = $derived.by(() => {
+        return JSON.stringify({
+            id: this.#id,
+            pfid: this.#pfid,
+            cid: this.#cid,
+            banner: this.#banner,
+            story_name: this.#story_name,
+            pillar_name: this.#pillar_name,
+            category_name: this.#category_name,
+            type: this.#type,
+            involved: this.#involved,
+            experience: this.#experience,
+            life_lesson: this.#life_lesson,
+            is_important: this.#is_important,
+            // bannerUrl: this.#bannerUrl,
+            // uid: this.#uid,
+            // id: this.#id,
+            // created_at: this.#created_at,
+            // updated_at: this.#updated_at,
+            // deleted_at: this.#deleted_at
+        })
+    })
 
     // methods
     init(story: Story, bannerUrl: string) {
@@ -101,6 +126,10 @@ export class StoryState {
         return this.#experience;
     }
 
+    get autosave(): boolean {
+        return this.#autosave;
+    }
+
     get experienceText(): string {
         return this.#experience.text ?? '';
     }
@@ -141,6 +170,10 @@ export class StoryState {
         return this.#created_at;
     }
 
+    get storyChange(): string {
+        return this.#storyChange;
+    }
+
     getJson(): Story {
         return {
             id: this.#id,
@@ -148,6 +181,7 @@ export class StoryState {
             pfid: this.#pfid,
             cid: this.#cid,
             banner: this.#banner,
+            banner_url: this.#bannerUrl,
             story_name: this.#story_name,
             pillar_name: this.#pillar_name,
             category_name: this.#category_name,
@@ -179,6 +213,10 @@ export class StoryState {
 
     set banner(value: Documents) {
         this.#banner = value;
+    }
+
+    set autosave(value: boolean) {
+        this.#autosave = value;
     }
 
     set bannerUrl(value: string) {

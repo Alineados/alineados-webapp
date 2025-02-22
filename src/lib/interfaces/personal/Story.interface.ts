@@ -42,6 +42,7 @@ export interface Story {
 
     // properties
     banner: Documents;
+    banner_url: string;
     story_name: string;
     pillar_name: string;
     category_name: string;

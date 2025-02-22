@@ -116,7 +116,7 @@
 						{#snippet header()}
 							<div class="relative h-24 w-full">
 								<img
-									src={alineadosImage}
+									src={testimony.banner_url === '' ? alineadosImage : testimony.banner_url}
 									alt="Alineados check"
 									class="h-full w-full rounded-t-lg bg-alineados-blue-300 object-cover"
 								/>
@@ -180,7 +180,7 @@
 						{#snippet header()}
 							<div class="relative aspect-[5/1] h-24 w-full overflow-hidden" role="img">
 								<img
-									src={alineadosImage}
+									src={conversation.banner_url === '' ? alineadosImage : conversation.banner_url}
 									alt="Alineados check"
 									class="h-full w-full object-cover object-center"
 								/>

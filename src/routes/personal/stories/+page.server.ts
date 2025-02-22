@@ -19,10 +19,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
 export const actions = {
     new: async ({ cookies, request, locals }) => {
-        // const formData = await request.formData();
-        // const data = getJSONFormsData(formData);
-
-        console.log('new', locals.user._id);
 
         let storiesService: StoryService = StoryService.getInstance(locals.token);
 
@@ -32,15 +28,11 @@ export const actions = {
             return fail(result.data);
         }
 
-        console.log('result', result);
-
         return result;
     },
     update: async ({ cookies, request, locals }) => {
         const formData = await request.formData();
         const data = getJSONFormsData(formData);
-
-        console.log('update', data);
 
 
         return {

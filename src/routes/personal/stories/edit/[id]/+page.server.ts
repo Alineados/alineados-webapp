@@ -133,7 +133,6 @@ export const actions: Actions = {
 
         const result = await storyService.uploadStoryFiles(locals.user._id!, sid, files, filesType);
 
-        console.log('result', result);
 
         if (result.status !== 200 && result.status !== 201)
             return fail(result.data);
