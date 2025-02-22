@@ -6,18 +6,21 @@ const endpoints = {
 		stories: 'http://127.0.0.1:8080',
 		thoughts: 'http://127.0.0.1:8080',
 		oidc: 'https://oidc.alineado.org',
-		web: 'https://sandbox.alineado.org'
+		web: 'https://sandbox.alineado.org',
+		settings: 'http://127.0.0.1:8080',
 	},
 	prod: {
 		problems: '',
 		auth: '',
-		oidc: 'https://oidc.alineado.org'
+		oidc: 'https://oidc.alineado.org',
+		settings: 'http://127.0.0.1:8080',
 	},
 	local: {
 		auth: 'http://127.0.0.1:8080',
 		problems: 'http://127.0.0.1:8080',
 		stories: 'http://127.0.0.1:8080',
 		thoughts: 'http://127.0.0.1:8080',
+		settings: 'http://127.0.0.1:8080',
 		socket: 'ws://localhost:4001',
 		oidc: 'https://oidc.alineado.org',
 		web: 'http://localhost:5173'
