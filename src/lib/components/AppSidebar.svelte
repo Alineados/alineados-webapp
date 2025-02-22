@@ -101,9 +101,9 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Relatos (proximanete)</span>
-										</p>
+									<a href={'/personal/stories'} {...props}>
+										<span>Relatos</span>
+									</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>

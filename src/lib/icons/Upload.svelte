@@ -1,20 +1,29 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Images, Documents } from '$lib/interfaces';
-	import { addMemory, pcid } from '$lib/stores';
+	import { addMemory, pcid, storyState, thoughtState } from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 	import Loading from './Loading.svelte';
 	import Pencil from './Pencil.svelte';
+	import { showToast } from '$lib/utils/toast';
 	let {
 		styleTw = 'size-6',
 		styles = 'pt-3',
 		changeIcon = false,
-		disabledBtn = $bindable(false)
+		disabledBtn = $bindable(false),
+		acceptable = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx',
+		storyType = '',
+		thoughtType = '',
+		type = ''
 	}: {
 		styleTw?: string;
 		styles?: string;
 		changeIcon?: boolean;
 		disabledBtn?: boolean;
+		acceptable?: string;
+		storyType?: string;
+		thoughtType?: string;
+		type?: string;
 	} = $props();
 
 	let fileInput: HTMLInputElement;
@@ -30,14 +39,6 @@
 		e.stopPropagation();
 
 		if (files && formHtml) formHtml.requestSubmit();
-	}
-
-	function showToast(message: string, type: 'success' | 'error') {
-		if (type === 'success')
-			toast.success(message, {
-				duration: 2000
-			});
-		else if (type === 'error') toast.error(message, { duration: 2000 });
 	}
 </script>
 
@@ -60,13 +61,41 @@
 
 				showToast('¡Ocurrio un error al subir el documento!', 'error');
 			} else if (result.type === 'success') {
-				const { data } = result.data ?? {};
+				const { data, message, status } = result.data as {
+					data: { document: Documents; url: string };
+					message: string;
+					status: number;
+				};
 
-				const { document, url } = data as { document: Documents; url: string };
+				if (type === 'story') {
+					if (result.data) {
+						if (storyType === 'experience') {
+							// add the audio to story
+							storyState.experienceAudio = data as unknown as Documents;
+							showToast('¡Audio subido correctamente!', 'success');
+						} else if (storyType === 'life_lesson') {
+							// add the audio to story
+							storyState.life_lessonAudio = data as unknown as Documents;
+							showToast('¡Audio subido correctamente!', 'success');
+						} else if (storyType === 'banner') {
+							storyState.banner = data.document;
+							storyState.bannerUrl = data.url;
 
-				if (result.data) addMemory(document as unknown as Documents, url);
+							showToast('¡Banner subido correctamente!', 'success');
+						}
+					}
+				} else if (type === 'thought') {
+					if (result.data) {
+						// add the audio to thought
+						thoughtState.quality_timeAudio = data as unknown as Documents;
+						showToast('¡Audio subido correctamente!', 'success');
+					}
+				} else if (type === 'problems') {
+					const { document, url } = data as { document: Documents; url: string };
 
-				showToast('¡Documento subido correctamente!', 'success');
+					if (result.data) addMemory(document as unknown as Documents, url);
+					showToast('¡Documento subido correctamente!', 'success');
+				}
 
 				// update the files
 				files = null;
@@ -79,6 +108,12 @@
 	}}
 >
 	<input type="hidden" name="pcid" value={$pcid} />
+	<input type="hidden" name="sid" value={storyState.id} />
+	<input type="hidden" name="tid" value={thoughtState.id} />
+	<input type="hidden" name="storyType" value={storyType} />
+	<input type="hidden" name="thoughtType" value={thoughtType} />
+	<input type="hidden" name="type" value={type} />
+
 	<input
 		bind:files
 		bind:this={fileInput}
@@ -88,12 +123,12 @@
 		class="hidden"
 		id="file"
 		type="file"
-		accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+		accept={acceptable}
 	/>
 </form>
 
 {#if uploading}
-	<div class="h-6 w-6 animate-spin text-white">
+	<div class={styles}>
 		<Loading />
 	</div>
 {:else}

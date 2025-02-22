@@ -4,71 +4,55 @@
 	import { Pillars } from '$lib/interfaces/data';
 	import MultiEditable from '$lib/modules/personal/MultiEditable.svelte';
 	import ThoughtHeader from '$lib/modules/personal/thoughts/ThoughtHeader.svelte';
+	import type { PageProps } from './$types';
+	import type { DataPillar, Thought } from '$lib/interfaces';
+	import { thoughtState, pillarState, purposesState } from '$lib/stores';
 
+	let { data }: PageProps = $props();
+
+	const { thought }: { thought: Thought } = data;
+
+	// // init thought state
+	thoughtState.init(thought);
+
+	// Add thought type determination using $state
+	let thoughtType = $state('');
+
+	// Update thoughtType when quality_time changes
+	$effect(() => {
+		if (thoughtState.quality_time.text) {
+			thoughtType = 'text';
+		} else if (thoughtState.quality_time.audio) {
+			thoughtType = 'audio';
+		} else if (thoughtState.quality_time.documents?.length > 0) {
+			thoughtType = 'document';
+		} else {
+			thoughtType = '';
+		}
+	});
+
+	// variables
+	let isSave = $state(false);
 	let checked = $state(false);
 
-	const Purposes = {
-		attitude: {
-			id: '1',
-			name: 'attitude',
-			label: 'Actitud',
-			categories: []
-		},
-		love: {
-			id: '2',
-			name: 'love',
-			label: 'Amor',
-			categories: []
-		},
-		give: {
-			id: '3',
-			name: 'give',
-			label: 'Dar',
-			categories: []
-		},
-		understanding: {
-			id: '4',
-			name: 'understanding',
-			label: 'Entendimiento',
-			categories: []
-		},
-		succeed: {
-			id: '5',
-			name: 'succeed',
-			label: 'Éxito',
-			categories: []
-		},
-		relations: {
-			id: '6',
-			name: 'relations',
-			label: 'Relaciones',
-			categories: []
-		},
-		result: {
-			id: '7',
-			name: 'result',
-			label: 'Resultados',
-			categories: []
-		},
-		servet: {
-			id: '8',
-			name: 'servet',
-			label: 'Servir',
-			categories: []
-		},
-		solution: {
-			id: '9',
-			name: 'solution',
-			label: 'Solución',
-			categories: []
-		},
-		qualityTime: {
-			id: '10',
-			name: 'qualityTime',
-			label: 'Tiempo de calidad',
-			categories: []
+	// Functions
+	function handlePillars(value: string) {
+		const [pillar_name] = value.split('-');
+
+		const pillar: DataPillar = pillarState[pillar_name as keyof typeof Pillars];
+
+		thoughtState.setPillar(pillar);
+	}
+
+	function handlePurposes(value: string) {
+		const [purpose_name] = value.split('-');
+		const purpose = purposesState.getPurposeByName(purpose_name);
+		if (purpose) {
+			thoughtState.setPurpose(purpose);
 		}
-	};
+	}
+
+	$inspect(thoughtState.quality_time.documents);
 </script>
 
 <PersonalHeader simple={true}>
@@ -86,16 +70,18 @@
 	<!-- Form -->
 	<div class="mb-10 flex w-full flex-col gap-8 pt-4">
 		<!-- Selects -->
-		<div class="flex w-4/12 flex-col gap-6">
+		<div class="flex w-5/12 flex-col gap-6">
 			<div class="flex flex-row items-center justify-between">
 				<p class="text-base font-bold text-alineados-gray-900">Pilar</p>
 				<PersonalSelect
+					handleSelect={(value: string) => handlePillars(value)}
 					subCategory={false}
+					alreadyValue={thoughtState.pillar_name}
 					list={[
-						{ ...Pillars.health },
-						{ ...Pillars.relational },
-						{ ...Pillars.vocational },
-						{ ...Pillars.spiritual }
+						{ ...pillarState.health },
+						{ ...pillarState.relational },
+						{ ...pillarState.vocational },
+						{ ...pillarState.spiritual }
 					]}
 				/>
 			</div>
@@ -103,18 +89,9 @@
 				<p class="text-base font-bold text-alineados-gray-900">Fin</p>
 				<PersonalSelect
 					subCategory={false}
-					list={[
-						{ ...Purposes.attitude },
-						{ ...Purposes.love },
-						{ ...Purposes.give },
-						{ ...Purposes.understanding },
-						{ ...Purposes.succeed },
-						{ ...Purposes.relations },
-						{ ...Purposes.result },
-						{ ...Purposes.servet },
-						{ ...Purposes.solution },
-						{ ...Purposes.qualityTime }
-					]}
+					alreadyValue={thoughtState.purpose_name}
+					list={purposesState.purposes}
+					handleSelect={handlePurposes}
 				/>
 			</div>
 		</div>
@@ -131,8 +108,15 @@
 
 		<!-- Quality time -->
 		<div class="flex flex-col gap-6 pb-9">
-			<p class="text-base font-bold text-alineados-gray-900">Tiempo de calidad</p>
-			<MultiEditable />
+			<p class="text-base font-bold text-alineados-gray-900">Tiempo de Calidad</p>
+			<MultiEditable
+				type="thought"
+				{thoughtType}
+				bind:files={thoughtState.quality_timeDocuments}
+				bind:richValue={thoughtState.quality_timeText}
+				bind:titleAudio={thoughtState.quality_timeAudio.file_name}
+				bind:contentAudio={thoughtState.quality_timeAudio.content!}
+			/>
 		</div>
 	</div>
 </div>

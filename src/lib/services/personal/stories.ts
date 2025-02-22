@@ -57,9 +57,8 @@ export class StoryService {
         return response;
     }
 
-    async uploadStoryFile(uid: string, sid: string, category: string, file: File): Promise<Response> {
+    async uploadStoryFileOrAudio(uid: string, sid: string, category: string, file: File, isFile: boolean = true): Promise<Response> {
         const fileType = file.type;
-
 
         const form = new FormData();
         form.append('uid', uid);
@@ -68,12 +67,35 @@ export class StoryService {
         form.append('file', file);
         form.append('fileType', fileType);
 
-        const url = `${this._url}/upload-file`;
+        let url: string;
+        if (isFile) 
+            url = `${this._url}/upload-file`;
+        else
+            url = `${this._url}/upload-audio`;
 
         const response: Response = await uploadFile(url, 'POST', form, this._token);
 
         return response;
     }
+
+    async uploadStoryFiles(uid: string, sid: string, files: File[], filesType: string[]): Promise<Response> {
+        const form = new FormData();
+
+        form.append('uid', uid);
+        form.append('sid', sid);
+        form.append('filesType', JSON.stringify(filesType));
+        files.forEach( (files, index) => {
+            form.append(`file${index}`, files);
+        })
+
+        const url = `${this._url}/upload-files`;
+
+        const response: Response = await uploadFile(url, 'POST', form, this._token);
+
+        return response;
+    }
+
+
 
     // PUT
     async updateStoryInfo(sid: string, body: StoryUpdate): Promise<Response> {
@@ -83,10 +105,18 @@ export class StoryService {
         return response;
     }
 
-    async updateIsImportant(sid: string, isImportant: boolean): Promise<Response> {
-        const url = `${this._url}/update-important?sid=${sid}&isImportant=${isImportant}`;
-        const response: Response = await request(url, 'PUT', null, this._token);
+    // DELETE
+    async deleteStory(sid: string): Promise<Response> {
+        const url = `${this._url}/delete?sid=${sid}`;
+        const response: Response = await request(url, 'DELETE', null, this._token);
 
         return response;
     }
+
+    // async updateIsImportant(sid: string, isImportant: boolean): Promise<Response> {
+    //     const url = `${this._url}/update-important?sid=${sid}&isImportant=${isImportant}`;
+    //     const response: Response = await request(url, 'PUT', null, this._token);
+
+    //     return response;
+    // }
 }

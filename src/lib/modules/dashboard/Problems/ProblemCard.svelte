@@ -20,7 +20,6 @@
 		problems = $bindable([])
 	}: {
 		title: string;
-
 		problems: ProblemCard[];
 	} = $props();
 

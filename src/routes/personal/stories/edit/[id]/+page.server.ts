@@ -9,7 +9,6 @@ import { getJSONFormsData } from '$lib/utils/getFormsData';
 export const load: PageServerLoad = async ({ params, request, url, locals }) => {
     // get params
     const { id } = params;
-
     // get story
     let storyService: StoryService = StoryService.getInstance(locals.token);
 
@@ -23,7 +22,25 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
     }
 };
 
-export const actions = {
+export const actions: Actions = {
+
+    getUrl: async ({ params, request, locals }) => {
+        const formData = await request.formData();
+        const data = getJSONFormsData(formData);
+
+        const file: Documents = JSON.parse(data.document);
+
+        let storyService: StoryService = StoryService.getInstance(locals.token);
+
+        const result = await storyService.createDocumentUrl(file);
+
+
+        if (result.status !== 200 && result.status !== 201) {
+            return fail(result.data);
+        }
+
+        return result;
+    },
     update: async ({ cookies, request, locals }) => {
         const formData = await request.formData();
         const data = getJSONFormsData(formData);
@@ -42,7 +59,8 @@ export const actions = {
             type: story.type,
             involved: story.involved,
             experience: story.experience,
-            life_sesson: story.life_sesson
+            life_lesson: story.life_lesson,
+            is_important: story.is_important
         }
 
         const result = await storyService.updateStoryInfo(story.id, storyUpdate);
@@ -51,43 +69,79 @@ export const actions = {
             return fail(result.data);
         }
 
-        console.log('result', result);
-
         return result;
+    },
+    upload: async ({ cookies, request, locals }) => {
+        const formData = Object.fromEntries(await request.formData());
+
+        if (
+            !(formData.fileToUpload as File).name ||
+            (formData.fileToUpload as File).name === 'undefined'
+        ) {
+            return fail(400, {
+                error: true,
+                message: 'Debe subir un archivo'
+            });
+        }
+
+        // get id's if they exist
+        let sid: string = "";
+        let type: string = "";
+        let storyType: string = "";
+        if (formData.sid) {
+            sid = formData.sid as string; // story id
+            storyType = formData.storyType as string; // experience | life_lesson
+            type = formData.type as string; // story | ...
+        }
+
+        // get file 
+        const file = formData.fileToUpload as File;
+
+        let storyService: StoryService = StoryService.getInstance('');
+
+        const result = await storyService.uploadStoryFileOrAudio(locals.user._id!, sid, '', file, storyType === 'banner' ? true : false);
+
+        if (result.status !== 200 && result.status !== 201)
+            return fail(result.data);
+
+        return {
+            ...result,
+            type,
+            storyType
+        }
+    },
+    uploadMultiple: async ({ cookies, request, locals }) => {
+
+        const formData = await request.formData();
+
+        const files = formData.getAll('fileToUpload') as File[];
+        if (files.length === 0) {
+            return fail(400, {
+                error: true,
+                message: 'Debe subir un archivo'
+            });
+        }
+
+        const data = getJSONFormsData(formData);
+
+        const { sid, storyType } = data;
+
+        const filesType = files.map(file => file.type);
+
+
+        let storyService: StoryService = StoryService.getInstance('');
+
+        const result = await storyService.uploadStoryFiles(locals.user._id!, sid, files, filesType);
+
+
+        if (result.status !== 200 && result.status !== 201)
+            return fail(result.data);
+
+        return {
+            ...result,
+            type: "story",
+            storyType
+        }
+
     }
-    // upload: async ({ cookies, request, locals }) => {
-    //     const formData = Object.fromEntries(await request.formData());
-
-    //     console.log('formData', formData);
-    //     if (
-    //         !(formData.fileToUpload as File).name ||
-    //         (formData.fileToUpload as File).name === 'undefined'
-    //     ) {
-    //         return fail(400, {
-    //             error: true,
-    //             message: 'Debe subir un archivo'
-    //         });
-    //     }
-
-    //     // get id's if they exist
-    //     let pcid: string = "";
-    //     if (formData.pcid) {
-    //         pcid = formData.pcid as string; // problem card id
-    //     }
-
-    //     // get file 
-    //     const file = formData.fileToUpload as File;
-
-    //     let problemService: ProblemService = ProblemService.getInstance('');
-
-    //     const result = await problemService.uploadFile(locals.user._id!, pcid, file);
-
-    //     console.log('result', result);
-
-    //     if (result.status !== 200 && result.status !== 201) {
-    //         return fail(result.data);
-    //     }
-
-    //     return result;
-    // }
 } satisfies Actions;

@@ -1,25 +1,32 @@
 <script lang="ts">
-	import NewButton from '../NewButton.svelte';
-
-	// import NewStoryButton from './NewStoryButton.svelte';
+	import { goto } from '$app/navigation';
+	import NewButton from '../thoughts/NewButton.svelte';
 
 	let {
-		status,
-		title = $bindable()
+		status
 	}: {
 		status: 'new' | 'edit' | 'see';
-		title?: string;
+		isSave?: boolean;
 	} = $props();
+
+	function handleGoBack() {
+		goto('/personal/thoughts');
+	}
 </script>
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-		<a href="/personal/thoughts" class="text-alineados-gray-600 hover:underline">Personal</a>
-		<span class="mx-1">/</span>
-		<span class="text-alineados-orange-900">Pensamientos</span>
+		<button
+			onclick={() => {
+				handleGoBack();
+			}}
+			class="text-alineados-gray-600 hover:underline"
+		>
+			Pensamientos
+		</button>
 		{#if status === 'edit'}
 			<span class="mx-1">/</span>
-			<span class="text-alineados-orange-900">{title}</span>
+			<span class="text-alineados-orange-900">Nuevo pensamiento</span>
 		{/if}
 	</p>
 	<div
@@ -31,8 +38,9 @@
 					placeholder="Ingresa el titulo del nuevo pensamiento"
 					type="text"
 					maxlength="40"
-					bind:value={title}
+					value="Nuevo Pensamiento"
 					class="w-full border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
+					readonly
 				/>
 			{:else}
 				<p class="text-4xl font-bold text-alineados-gray-900">Pensamientos</p>

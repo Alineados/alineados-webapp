@@ -33,7 +33,7 @@ export const actions = {
 	register: async (event) => {
 		const formData = await event.request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as OnboardingData;
-		console.log(dataJSON);
+
 
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
@@ -202,7 +202,7 @@ export const actions = {
 
 		let result = await authService.verifyUserExists(verifyData);
 
-		console.log(result);
+
 
 		if (result.data.length > 0) {
 			const validations = result.data.map((identifier: ExistingIdentifier) => {
@@ -244,7 +244,7 @@ export const actions = {
 				firstName: dataJSON.register.firstName
 			});
 
-			console.log(result);
+
 
 			// Redirect to the next step
 			redirect(307, '/onboarding/steps/2');
@@ -257,7 +257,6 @@ export const actions = {
 	email: async (event) => {
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
-		console.log(dataJSON);
 
 		// Basic fields validation
 		const invalidFields: ValidationError[] = [];
@@ -300,7 +299,6 @@ export const actions = {
 			code: dataJSON.email.code
 		});
 
-		console.log(result);
 
 		if (!result.data) {
 			return {
@@ -323,7 +321,7 @@ export const actions = {
 	password: async (event) => {
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
-		console.log(dataJSON);
+
 
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
@@ -400,7 +398,7 @@ export const actions = {
 			username: dataJSON.register.username
 		});
 
-		console.log(result);
+
 
 		// Redirect to the next step
 		redirect(307, '/onboarding/steps/4');
@@ -409,18 +407,18 @@ export const actions = {
 	finish: async (event) => {
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
-		console.log(dataJSON);
+		
 
 		// Redirect to the login page
 		redirect(307, getEndpointByVenv().web);
 	},
 
 	resend: async (event) => {
-		console.log('resend');
+
 
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as OnboardingData;
-		console.log(dataJSON);
+	
 
 		// Call the service
 		const result = await authService.resendVerificationEmail({
@@ -428,6 +426,6 @@ export const actions = {
 			firstName: dataJSON.register.firstName
 		});
 
-		console.log(result);
+
 	}
 } satisfies Actions;

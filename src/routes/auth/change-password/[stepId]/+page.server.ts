@@ -15,11 +15,9 @@ export const actions = {
 		// Get form data
 		const formData = await request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
-		console.log("hola")
 
 		// Return the error if there are any
 		if (!dataJSON.email) {
-			console.log('Invalid fields:');
 			return {
 				type: 'error',
 				step: 'email',
@@ -55,7 +53,6 @@ export const actions = {
 		// Get form data
 		const formData = await request.formData();
 		const dataJSON = JSON.parse(formData.get('data')?.toString() ?? '{}') as RecoverPasswordData;
-		console.log('Received recover data:', dataJSON);
 
 		// Return the error if there are any
 		if (!dataJSON.code) {
@@ -164,17 +161,14 @@ export const actions = {
 		redirect(307, getEndpointByVenv().web);
 	},
 	resend: async (event) => {
-		console.log('resend');
-
 		const data = await event.request.formData();
 		const dataJSON = JSON.parse(data.get('data')?.toString() ?? '{}') as RecoverPasswordData;
-		console.log(dataJSON);
 
 		// Call the service
 		const result = await authService.resendResetPasswordEmail({
 			email: dataJSON.email
 		});
 
-		console.log(result);
+
 	}
 } satisfies Actions;

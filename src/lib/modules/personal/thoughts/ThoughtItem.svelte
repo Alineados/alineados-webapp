@@ -1,40 +1,129 @@
 <script lang="ts">
+	import Copy from '$lib/icons/Copy.svelte';
+	import Star from '$lib/icons/Star.svelte';
+	import TrashCan from '$lib/icons/TrashCan.svelte';
+	import { toast } from 'svelte-sonner';
+	import Tooltip from '$lib/components/Tooltip.svelte';
+	import { goto } from '$app/navigation';
+	import type { Thought } from '$lib/interfaces';
+	import DocumentCard from '../DocumentCard.svelte';
+
 	let {
-		icon,
-		title,
-		isActive = $bindable(),
-		id,
-		onSelectedCard
+		thought = $bindable(),
+		isOnlyText = $bindable(),
+		isStarred = $bindable(),
+		w_size = '',
+		onFocus,
+		onInput,
+		deleteItem,
+		prominentItem
 	}: {
-		icon: string;
-		title: string;
-		isActive: boolean;
-		id: number;
-		onSelectedCard: () => void;
+		thought?: Thought;
+		isOnlyText?: boolean;
+		isStarred?: boolean;
+		w_size?: string;
+		onFocus?: () => void;
+		onInput?: () => void;
+		deleteItem?: () => void;
+		prominentItem?: () => void;
 	} = $props();
+
+	function copyClipboard() {
+		// Copy the text content without HTML tags
+		const tempDiv = document.createElement('div');
+		tempDiv.innerHTML = thought?.quality_time.text || '';
+		navigator.clipboard.writeText(tempDiv.textContent || '');
+
+		toast.success('Copiado al portapapeles', {
+			duration: 1000
+		});
+	}
+
+	function handleClickThought(e: MouseEvent) {
+		e.preventDefault();
+		goto(`./thoughts/edit/${thought?.id}`);
+	}
+
+	console.log('thought', thought?.quality_time.text);
 </script>
 
-<button
-	onclick={() => onSelectedCard && onSelectedCard()}
-	onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelectedCard && onSelectedCard()}
-	class="flex flex-col items-center gap-2 transition-all duration-300 ease-in-out {isActive
-		? 'scale-90'
-		: 'scale-75'}"
-	aria-pressed={isActive}
->
+<div class={`item-container group flex h-auto items-center ${w_size} justify-between`}>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="relative flex aspect-square items-center justify-center rounded-full transition-all duration-300 {isActive
-			? 'bg-alineados-green-100 text-alineados-green-900'
-			: 'bg-alineados-gray-100 text-alineados-gray-800'}"
-		style="width: {isActive ? '120px' : '80px'}"
+		role="button"
+		tabindex="0"
+		class="ml-1 flex w-full cursor-pointer items-center gap-1 rounded-lg p-4 hover:bg-alineados-gray-50"
+		onclick={handleClickThought}
 	>
-		<div class="text-3xl">
-			{icon}
-		</div>
+		{#if !thought?.quality_time.documents?.length}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
+				onclick={(e) => {
+					e.stopPropagation();
+					copyClipboard();
+				}}
+			>
+				<Copy styleTw="size-5" />
+			</div>
+		{/if}
+
+		<!-- Text -->
+		{#if thought?.quality_time.text}
+			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+				{@html thought.quality_time.text}
+			</div>
+		{/if}
+
+		<!-- Transcription -->
+		{#if thought?.quality_time.audio}
+			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+				{@html thought?.quality_time.audio.content}
+			</div>
+		{/if}
+
+		<!-- List documents -->
+		{#if thought?.quality_time.documents}
+			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+				<div class="space-y-3">
+					{#each thought?.quality_time.documents as file}
+						<DocumentCard {file} showDelete={false} />
+					{/each}
+				</div>
+			</div>
+		{/if}
 	</div>
-	{#if isActive}
-		<span class="text-lg font-medium text-alineados-green-900 transition-opacity duration-300">
-			{title}
-		</span>
-	{/if}
-</button>
+
+	<div
+		class="invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible"
+	>
+		<Tooltip open={false} message="Destacar">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				onclick={(e) => {
+					e.stopPropagation();
+					if (prominentItem) prominentItem();
+				}}
+				class="cursor-pointer hover:text-yellow-500"
+				class:text-alineados-gray-400={!isStarred}
+				class:text-yellow-500={isStarred}
+			>
+				<Star styleTw="size-4" />
+			</div>
+		</Tooltip>
+		<Tooltip open={false} message="Borrar">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				onclick={(e) => {
+					e.stopPropagation();
+					if (deleteItem) deleteItem();
+				}}
+				class="cursor-pointer text-alineados-gray-400 hover:text-red-500"
+			>
+				<TrashCan styleTw="size-4" />
+			</div>
+		</Tooltip>
+	</div>
+</div>

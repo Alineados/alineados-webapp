@@ -21,6 +21,7 @@
 	import { onMount } from 'svelte';
 	import { SocketService } from '$lib/services/socket';
 	import UnPadlock from '$lib/icons/UnPadlock.svelte';
+	import { browser } from '$app/environment';
 
 	let socket: SocketService;
 	let { title = $bindable() } = $props();
@@ -34,6 +35,9 @@
 	});
 
 	onMount(() => {
+		if (browser) {
+			socket = new SocketService($pcid);
+		}
 		socket = new SocketService($pcid);
 		return () => {
 			socket.disconnect();

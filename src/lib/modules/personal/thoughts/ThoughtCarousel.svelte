@@ -1,11 +1,12 @@
 <script lang="ts">
-	let { items = Array<{ id: number; icon?: string; label: string; color?: string }> } = $props();
+	let { items = Array<{ id: number; icon?: string; label: string }> } = $props();
 
 	let selectedId = $state<number | undefined>(undefined);
 	let containerRef = $state<HTMLDivElement>();
 
 	function selectItem(id: number) {
-		selectedId = id;
+		// Toggle selection: if clicking the same item, deselect it
+		selectedId = selectedId === id ? undefined : id;
 	}
 
 	$effect(() => {
@@ -59,8 +60,8 @@
 					<span
 						class="absolute text-sm font-medium transition-all duration-300 ease-in-out {selectedId ===
 						item.id
-							? '-bottom-6 text-green-500 opacity-100'
-							: '-bottom-1 opacity-0 group-hover:text-green-500 group-hover:opacity-100'}"
+							? '-bottom-6 text-alineados-green-900 opacity-100'
+							: '-bottom-1 opacity-0 group-hover:text-alineados-green-900 group-hover:opacity-100'}"
 					>
 						{item.label}
 					</span>

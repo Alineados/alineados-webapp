@@ -219,19 +219,18 @@
 						<Sun styleTw="size-4" />
 					</button>
 				</Tooltip> -->
-				<Tooltip open={false} message="Borrar">
-					<button
-						onclick={() => {
-							if (deleteItem) deleteItem();
-						}}
-						class="text-alineados-gray-400"
-						class:hover:text-red-500={!isDisabled}
-						aria-label="Delete"
-						disabled={isDisabled}
-					>
-						<TrashCan styleTw="size-4" />
-					</button>
-				</Tooltip>
+				<button
+					onclick={() => {
+						if (deleteItem) deleteItem();
+					}}
+					class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''}`}
+					aria-label="Delete"
+					disabled={isDisabled}
+				>
+					<TrashCan styleTw="size-4" />
+				</button>
+				<!-- <Tooltip open={false} message="Borrar">
+				</Tooltip> -->
 			{/if}
 		</div>
 	{/if}
