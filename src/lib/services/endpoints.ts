@@ -2,8 +2,8 @@ const endpoints = {
 	sandbox: {
 		auth: 'https://sandbox-auth-service-808905282606.us-central1.run.app',
 		problems: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
-		socket: 'ws://localhost:4000', // 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
-		stories: 'http://127.0.0.1:8080',
+		socket: 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
+		stories: 'https://sandbox-stories-service-808905282606.us-central1.run.app',
 		thoughts: 'http://127.0.0.1:8080',
 		oidc: 'https://oidc.alineado.org',
 		web: 'https://sandbox.alineado.org',
