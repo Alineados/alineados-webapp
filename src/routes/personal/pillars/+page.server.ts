@@ -1,29 +1,18 @@
 // src/routes/personal/pillars/+page.server.ts
 import type { PageServerLoad } from './$types';
-import { AuthService } from '$lib/services/auth'; // Ajusta la ruta a tu AuthService
+import { PillarService } from '$lib/services/personal/pillars';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const user = locals.user;
+export const load: PageServerLoad = async (event) => {
+  // Obtenemos el id del usuario desde locals
+  const user_id = event.locals.user._id!;
 
-  // Verificamos que haya usuario
-  if (!user) {
-    // Puedes redirigir a login o manejar el error
-    // throw redirect(302, '/login');
-  }
+  // Instanciamos el servicio de pillars (similar al de problems)
+  let pillarService: PillarService = PillarService.getInstance('');
 
-  // Instanciamos AuthService y obtenemos los pilares
-  const authService = AuthService.getInstance('');
-  const pillarsResponse = await authService.getPillars(user._id!);
-
-  // Suponiendo que pillarsResponse.data tiene la estructura:
-  // {
-  //   health: { name: "Salud", categories: [...] },
-  //   relational: { name: "Relaciones", categories: [...] },
-  //   vocational: { name: "Vocación", categories: [...] },
-  //   spiritual: { name: "Espiritual", categories: [...] }
-  // }
+  // Llamamos al método para obtener todos los pilares para el usuario
+  const result = await pillarService.getAllPillars(user_id);
 
   return {
-    pillars: pillarsResponse.data
+    pillars: result.data
   };
 };
