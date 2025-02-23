@@ -36,10 +36,12 @@
   <PillarHeader />
 </div>
 
-<div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
+<div class="flex flex-col gap-8 px-4 md:px-8 lg:px-16">
+
   <!-- SALUD -->
   <h2 class="text-xl font-semibold">Salud</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"> -->
+  <div class="flex gap-12">
     {#each data.pillars.health.categories as cat}
       <PillarCard
         icon={getIconForCategory(cat.label)}
@@ -53,11 +55,11 @@
 
   <!-- RELACIONES -->
   <h2 class="text-xl font-semibold">Relaciones</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div class="flex flex-wrap w-full gap-12">
     {#each data.pillars.relational.categories as cat}
       <PillarCard
-        icon={getIconForCategory(cat.name)}
-        categoryName={cat.name}
+        icon={getIconForCategory(cat.label)}
+        categoryName={cat.label}
         isActive={cat.active}
       />
     {/each}
@@ -65,11 +67,11 @@
 
   <!-- VOCACIÓN -->
   <h2 class="text-xl font-semibold">Vocación</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div class="flex flex-wrap w-full gap-12">
     {#each data.pillars.vocational.categories as cat}
       <PillarCard
-        icon={getIconForCategory(cat.name)}
-        categoryName={cat.name}
+        icon={getIconForCategory(cat.label)}
+        categoryName={cat.label}
         isActive={cat.active}
       />
     {/each}
@@ -81,7 +83,7 @@
     {#each data.pillars.spiritual.categories as cat}
       <PillarCard
         icon={getIconForCategory(cat.name)}
-        categoryName={cat.name}
+        categoryName={cat.label}
         isActive={cat.active}
       />
     {/each}
