@@ -23,3 +23,14 @@ export interface Categories {
 	label: string;
 	active: boolean;
 }
+
+
+export interface PillarCategory {
+	id: string;
+	name: string;
+	label: string;
+	active: boolean;
+	state?: number;
+	priority?: number;
+	security?: boolean;
+}
