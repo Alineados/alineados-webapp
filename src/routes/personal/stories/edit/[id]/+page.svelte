@@ -133,6 +133,8 @@
 			</div>
 		</div>
 
+		<!-- Toogle -->
+		<Toggle titleStyle="text-base font-bold text-alineados-gray-900" description="Destacado" />
 		<!-- Involved -->
 		<div class="flex flex-col">
 			<div class="flex items-center gap-2">
