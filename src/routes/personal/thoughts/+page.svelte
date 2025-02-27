@@ -9,6 +9,13 @@
 	import type { DataPurpose, Thought } from '$lib/interfaces';
 	import { pillarState, purposesState, thoughtsState } from '$lib/stores';
 
+	import Health from '$lib/icons/Health.svelte';
+	import Relational from '$lib/icons/Relational.svelte';
+	import Vocacional from '$lib/icons/Vocacional.svelte';
+	import Spiritual from '$lib/icons/Spiritual.svelte';
+
+	import Purpose from '$lib/icons/Purpose.svelte';
+
 	let selectedType = $state('pillar');
 
 	let { data }: PageProps = $props();
@@ -18,42 +25,26 @@
 	purposesState.init(purposes);
 	thoughtsState.init(thoughts);
 
-	// Function to get icon based on pillar name
-	function getPillarIcon(name: string) {
-		switch (name) {
-			case 'health':
-				return '💪';
-			case 'relational':
-				return '👥';
-			case 'vocational':
-				return '💼';
-			case 'spiritual':
-				return '🙏';
-			default:
-				return '📌';
-		}
-	}
-
 	// Transform pillars into carousel items
 	const pillarItems = [
 		{
 			id: pillarState.health.id,
-			icon: getPillarIcon('health'),
+			icon: Health,
 			label: pillarState.health.label
 		},
 		{
 			id: pillarState.relational.id,
-			icon: getPillarIcon('relational'),
+			icon: Relational,
 			label: pillarState.relational.label
 		},
 		{
 			id: pillarState.vocational.id,
-			icon: getPillarIcon('vocational'),
+			icon: Vocacional,
 			label: pillarState.vocational.label
 		},
 		{
 			id: pillarState.spiritual.id,
-			icon: getPillarIcon('spiritual'),
+			icon: Spiritual,
 			label: pillarState.spiritual.label
 		}
 	];
@@ -61,7 +52,7 @@
 	// Transform purposes into carousel items
 	const purposeItems = purposesState.purposes.map((purpose, index) => ({
 		id: purpose.id,
-		icon: '🎯', // You can customize this per purpose if needed
+		icon: Purpose,
 		label: purpose.label
 	}));
 </script>
@@ -72,7 +63,11 @@
 	{/snippet}
 
 	{#snippet statistics()}
-		<PersonalStatistics type="thoughts" />
+		<PersonalStatistics
+			type="thoughts"
+			bind:first={thoughtsState.thoughtsCount}
+			bind:second={thoughtsState.importantCount}
+		/>
 	{/snippet}
 
 	{#snippet filter()}
@@ -80,12 +75,21 @@
 	{/snippet}
 </PersonalHeader>
 
-<div class="flex flex-col items-center justify-center gap-12">
-	<ThoughtCarousel items={selectedType === 'pillar' ? pillarItems : purposeItems} />
+<div class="sticky top-[300px] z-10 w-full bg-white pb-5">
+	<ThoughtCarousel
+		items={selectedType === 'pillar' ? pillarItems : purposeItems}
+		type={selectedType}
+	/>
 </div>
 
 <div class="flex flex-col items-center justify-center gap-4 px-32">
-	{#each thoughtsState.thoughts as thought}
-		<ThoughtItem {thought} w_size="w-full" />
-	{/each}
+	{#if thoughtsState.thoughtsFiltered.length === 0}
+		<p class="text-alineados-gray-400">
+			No hay pensamientos, haz clic en el botón de "Nuevo Pensamiento" para agregar uno.
+		</p>
+	{:else}
+		{#each thoughtsState.thoughtsFiltered as thought}
+			<ThoughtItem {thought} w_size="w-full" />
+		{/each}
+	{/if}
 </div>

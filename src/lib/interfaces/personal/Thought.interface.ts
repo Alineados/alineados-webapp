@@ -11,6 +11,7 @@ export interface ThoughtUpdate {
 	pillar_name: string;
 	purpose_name: string;
 	quality_time: TypeEditable;
+	is_important: boolean;
 }
 
 export interface ThoughtDocumentWithUrl {

@@ -10,8 +10,6 @@
 
 	let {
 		thought = $bindable(),
-		isOnlyText = $bindable(),
-		isStarred = $bindable(),
 		w_size = '',
 		onFocus,
 		onInput,
@@ -19,8 +17,6 @@
 		prominentItem
 	}: {
 		thought?: Thought;
-		isOnlyText?: boolean;
-		isStarred?: boolean;
 		w_size?: string;
 		onFocus?: () => void;
 		onInput?: () => void;
@@ -44,7 +40,7 @@
 		goto(`./thoughts/edit/${thought?.id}`);
 	}
 
-	console.log('thought', thought?.quality_time.text);
+	console.log('thought', thought?.is_important);
 </script>
 
 <div class={`item-container group flex h-auto items-center ${w_size} justify-between`}>
@@ -94,9 +90,7 @@
 		{/if}
 	</div>
 
-	<div
-		class="invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible"
-	>
+	<div class="ml-2 flex w-auto items-center justify-center gap-1">
 		<Tooltip open={false} message="Destacar">
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -105,9 +99,11 @@
 					e.stopPropagation();
 					if (prominentItem) prominentItem();
 				}}
-				class="cursor-pointer hover:text-yellow-500"
-				class:text-alineados-gray-400={!isStarred}
-				class:text-yellow-500={isStarred}
+				class={`cursor-pointer hover:text-yellow-500 ${
+					!thought?.is_important ? 'invisible group-focus-within:visible group-hover:visible' : ''
+				}`}
+				class:text-alineados-gray-400={!thought?.is_important}
+				class:text-yellow-500={thought?.is_important}
 			>
 				<Star styleTw="size-4" />
 			</div>
@@ -120,7 +116,7 @@
 					e.stopPropagation();
 					if (deleteItem) deleteItem();
 				}}
-				class="cursor-pointer text-alineados-gray-400 hover:text-red-500"
+				class="invisible cursor-pointer text-alineados-gray-400 hover:text-red-500 group-focus-within:visible group-hover:visible"
 			>
 				<TrashCan styleTw="size-4" />
 			</div>

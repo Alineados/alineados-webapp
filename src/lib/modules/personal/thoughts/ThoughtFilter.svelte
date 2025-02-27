@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CardFilter from '$lib/components/CardFilter.svelte';
 	import Toggle from '$lib/components/Toggle.svelte';
+	import { thoughtsState } from '$lib/stores';
 	import { onMount } from 'svelte';
 
 	// Props
@@ -11,24 +12,19 @@
 	} = $props();
 
 	let pillar_name = $state<keyof typeof cardFilter>('pillar');
-	let subcategoryId = $state<string>('1');
 
 	// Filter items object state
 	let cardFilter = $state<{
 		pillar: boolean;
-		fin: boolean;
+		purpose: boolean;
 	}>({
 		pillar: false,
-		fin: false
+		purpose: false
 	});
-
-	function handleOnCategoryChange(pid: string, name: string) {
-		subcategoryId = pid;
-	}
 
 	function changeFilter(filter: keyof typeof cardFilter) {
 		cardFilter.pillar = false;
-		cardFilter.fin = false;
+		cardFilter.purpose = false;
 		cardFilter[filter] = true;
 		selectedType = filter;
 	}
@@ -53,10 +49,10 @@
 				showRow={false}
 				type="complex"
 				text="Fin"
-				bind:selected={cardFilter.fin}
-				triggerFunction={() => changeFilter('fin')}
+				bind:selected={cardFilter.purpose}
+				triggerFunction={() => changeFilter('purpose')}
 			/>
 		</div>
 	</div>
-	<Toggle description="Destacado" />
+	<Toggle description="Destacado" bind:checked={thoughtsState.onlyImportant} />
 </div>

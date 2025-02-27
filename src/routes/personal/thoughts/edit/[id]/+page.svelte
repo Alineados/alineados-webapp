@@ -7,6 +7,7 @@
 	import type { PageProps } from './$types';
 	import type { DataPillar, Thought } from '$lib/interfaces';
 	import { thoughtState, pillarState, purposesState } from '$lib/stores';
+	import Toggle from '$lib/components/Toggle.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -96,15 +97,11 @@
 			</div>
 		</div>
 
-		<div class="flex items-center gap-2">
-			<span class="text-base font-bold text-alineados-gray-900">Destacar</span>
-			<label class="relative inline-flex cursor-pointer items-center">
-				<input type="checkbox" bind:checked class="peer sr-only" />
-				<div
-					class="peer h-6 w-11 rounded-full bg-alineados-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-alineados-green-800 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
-				></div>
-			</label>
-		</div>
+		<Toggle
+			description="Destacar"
+			bind:checked={thoughtState.is_important}
+			titleStyle="text-base font-bold text-alineados-gray-900"
+		/>
 
 		<!-- Quality time -->
 		<div class="flex flex-col gap-6 pb-9">

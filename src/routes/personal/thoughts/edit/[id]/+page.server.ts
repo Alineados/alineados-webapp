@@ -2,9 +2,11 @@ import { ProblemService } from '$lib/services/personal/problems';
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import type { Thought, ThoughtUpdate } from '$lib/interfaces';
+import type { Documents, Thought, ThoughtUpdate } from '$lib/interfaces';
 import { ThoughtService } from '$lib/services/personal/thoughts';
 import { getJSONFormsData } from '$lib/utils/getFormsData';
+import { thoughtState } from '$lib/stores';
+import type { ThoughtState } from '$lib/stores/personal/thought/thought.svelte';
 
 export const load: PageServerLoad = async ({ params, request, url, locals }) => {
 	// get params
@@ -20,6 +22,22 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 };
 
 export const actions = {
+	getUrl: async ({ params, request, locals }) => {
+		const formData = await request.formData();
+		const data = getJSONFormsData(formData);
+
+		const file: Documents = JSON.parse(data.document);
+
+		const thoughtService: ThoughtService = ThoughtService.getInstance(locals.token);
+
+		const result = await thoughtService.createDocumentUrl(file);
+
+		if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+
+		return result;
+	},
 	update: async ({ cookies, request, locals }) => {
 		const formData = await request.formData();
 		const data = getJSONFormsData(formData);
@@ -38,7 +56,8 @@ export const actions = {
 			thought_name: thought.thought_name,
 			pillar_name: thought.pillar_name,
 			purpose_name: thought.purpose_name,
-			quality_time: thought.quality_time
+			quality_time: thought.quality_time,
+			is_important: thought.is_important
 		};
 
 		console.log('thought.id = ', thought.id);
