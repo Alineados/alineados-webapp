@@ -98,9 +98,14 @@
 			loading = false;
 		}
 	}
+
+	function handleSubmit(e: Event) {
+		e.preventDefault();
+		post();
+	}
 </script>
 
-<div class="grid gap-6">
+<form onsubmit={handleSubmit} class="grid gap-6">
 	<div class="grid gap-2">
 		<div class="grid gap-8 pb-4">
 			<div class="relative flex flex-col gap-2">
@@ -174,7 +179,7 @@
 		<Button
 			class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
 			onclick={post}
-			type="button"
+			type="submit"
 			disabled={loading}
 		>
 			Ingresar
@@ -219,4 +224,4 @@
 		>¿No tienes una cuenta?
 		<span class="text-[#E67635] hover:underline">Regístrate</span>
 	</Button>
-</div>
+</form>

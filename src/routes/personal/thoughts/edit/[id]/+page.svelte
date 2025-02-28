@@ -8,13 +8,48 @@
 	import type { DataPillar, Thought } from '$lib/interfaces';
 	import { thoughtState, pillarState, purposesState } from '$lib/stores';
 	import Toggle from '$lib/components/Toggle.svelte';
+	import { onMount } from 'svelte';
+	import { SocketService } from '$lib/services/socket';
+	import { browser } from '$app/environment';
 
 	let { data }: PageProps = $props();
 
 	const { thought }: { thought: Thought } = data;
 
-	// // init thought state
+	// init thought state
 	thoughtState.init(thought);
+
+	// Autosalve
+	let socket: SocketService;
+	// onmout
+	onMount(() => {
+		if (browser) {
+			socket = new SocketService(thoughtState.id);
+		}
+
+		return () => {
+			socket.disconnect();
+		};
+	});
+
+	let timeout: ReturnType<typeof setTimeout>;
+	let autosave: boolean = $state(false);
+
+	// autosave
+	$effect(() => {
+		if (thoughtState.thoughtChanged) {
+			clearTimeout(timeout);
+			autosave = true;
+			thoughtState.autosave = true;
+			timeout = setTimeout(() => {
+				socket.push('autosave_thought', thoughtState.thoughtChanged as string);
+
+				console.log('autosave thought');
+				autosave = false;
+				thoughtState.autosave = false;
+			}, 2000);
+		}
+	});
 
 	// Add thought type determination using $state
 	let thoughtType = $state('');
@@ -48,8 +83,6 @@
 			thoughtState.setPurpose(purpose);
 		}
 	}
-
-	$inspect(thoughtState.quality_time.documents);
 </script>
 
 <PersonalHeader simple={true}>

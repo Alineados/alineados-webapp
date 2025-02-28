@@ -1,7 +1,6 @@
 import { Socket, type Channel } from 'phoenix';
 import { getEndpointByVenv } from './endpoints';
 
-
 export class SocketService {
 	private socket: Socket;
 	private channel: Channel;
@@ -31,7 +30,11 @@ export class SocketService {
 		});
 
 		channel.on('autosave_success_story', (resp) => {
-			console.log("Autosave success", resp);
+			console.log('Autosave success', resp);
+		});
+
+		channel.on('autosave_success_thought', (resp) => {
+			console.log('Autosave success', resp);
 		});
 
 		return channel;

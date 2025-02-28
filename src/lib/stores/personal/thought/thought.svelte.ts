@@ -19,6 +19,22 @@ export class ThoughtState {
 	#updated_at: string | null = $state(null);
 	#deleted_at: string | null = $state(null);
 
+	// computed - autosave = if some of the properties change, save a true value for 4 seconds
+	#autosave: boolean = $state(false);
+
+	#thoughtChanged = $derived.by(() => {
+		return JSON.stringify({
+			id: this.#id,
+			pfid: this.#pfid,
+			ppid: this.#ppid,
+			thought_name: this.#thought_name,
+			pillar_name: this.#pillar_name,
+			purpose_name: this.#purpose_name,
+			quality_time: this.#quality_time,
+			is_important: this.#is_important
+		});
+	});
+
 	// methods
 	init(thought: Thought) {
 		this.#id = thought.id;
@@ -69,6 +85,10 @@ export class ThoughtState {
 		return this.#quality_time;
 	}
 
+	get autosave(): boolean {
+		return this.#autosave;
+	}
+
 	get quality_timeText(): string {
 		return this.#quality_time.text ?? '';
 	}
@@ -102,6 +122,10 @@ export class ThoughtState {
 		return this.#created_at;
 	}
 
+	get thoughtChanged(): string {
+		return this.#thoughtChanged;
+	}
+
 	getJson(): Thought {
 		return {
 			id: this.#id,
@@ -132,6 +156,10 @@ export class ThoughtState {
 
 	set ppid(value: string) {
 		this.#ppid = value;
+	}
+
+	set autosave(value: boolean) {
+		this.#autosave = value;
 	}
 
 	set thought_name(value: string) {
