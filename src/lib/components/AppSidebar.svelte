@@ -92,18 +92,18 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Pensamientos (proximanete)</span>
-										</p>
+										<a href={'/personal/thoughts'} {...props}>
+											<span>Pensamientos</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-									<a href={'/personal/stories'} {...props}>
-										<span>Relatos</span>
-									</a>
+										<a href={'/personal/stories'} {...props}>
+											<span>Relatos</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>

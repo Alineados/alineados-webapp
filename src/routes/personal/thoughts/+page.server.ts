@@ -11,8 +11,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
 	const result = await thoughtService.getThoughtsGrouped(locals.user._id!);
 
-	console.log('result', result.data);
-
 	return {
 		...result.data
 	};
@@ -20,11 +18,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
 export const actions = {
 	new: async ({ cookies, request, locals }) => {
-		// const formData = await request.formData();
-		// const data = getJSONFormsData(formData);
-
-		console.log('new', locals.user._id);
-
 		const thoughtService: ThoughtService = ThoughtService.getInstance(locals.token);
 
 		const result = await thoughtService.createThought(locals.user._id!);
@@ -33,21 +26,36 @@ export const actions = {
 			return fail(result.data);
 		}
 
-		console.log('result', result);
-
 		return result;
 	},
-	update: async ({ cookies, request, locals }) => {
+	updateImportant: async ({ cookies, request, locals }) => {
 		const formData = await request.formData();
 		const data = getJSONFormsData(formData);
 
-		console.log('update', data);
+		const { tid, isImportant } = data;
 
-		return {
-			status: 200,
-			data: {
-				message: 'update'
-			}
-		};
+		const thoughtService: ThoughtService = ThoughtService.getInstance(locals.token);
+
+		const result = await thoughtService.updateIsImportant(tid, isImportant);
+
+		if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+		return result;
+	},
+	delete: async ({ params, request, locals }) => {
+		const formData = await request.formData();
+		const data = getJSONFormsData(formData);
+
+		const { tid } = data;
+
+		const thoughtService: ThoughtService = ThoughtService.getInstance(locals.token);
+
+		const result = await thoughtService.deleteThought(tid);
+
+		if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+		return result;
 	}
 } satisfies Actions;

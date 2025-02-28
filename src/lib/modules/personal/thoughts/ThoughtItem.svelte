@@ -11,15 +11,11 @@
 	let {
 		thought = $bindable(),
 		w_size = '',
-		onFocus,
-		onInput,
 		deleteItem,
 		prominentItem
 	}: {
 		thought?: Thought;
 		w_size?: string;
-		onFocus?: () => void;
-		onInput?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
 	} = $props();
@@ -40,7 +36,19 @@
 		goto(`./thoughts/edit/${thought?.id}`);
 	}
 
-	console.log('thought', thought?.is_important);
+	function handleDeleteClick(e: MouseEvent) {
+		e.stopPropagation();
+		if (deleteItem) {
+			deleteItem();
+		}
+	}
+
+	function handleProminentClick(e: MouseEvent) {
+		e.stopPropagation();
+		if (prominentItem) {
+			prominentItem();
+		}
+	}
 </script>
 
 <div class={`item-container group flex h-auto items-center ${w_size} justify-between`}>
@@ -95,12 +103,9 @@
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				onclick={(e) => {
-					e.stopPropagation();
-					if (prominentItem) prominentItem();
-				}}
-				class={`cursor-pointer hover:text-yellow-500 ${
-					!thought?.is_important ? 'invisible group-focus-within:visible group-hover:visible' : ''
+				onclick={handleProminentClick}
+				class={`cursor-pointer transition-colors duration-200 hover:text-yellow-500 ${
+					!thought?.is_important ? 'invisible group-hover:visible' : ''
 				}`}
 				class:text-alineados-gray-400={!thought?.is_important}
 				class:text-yellow-500={thought?.is_important}
@@ -112,11 +117,8 @@
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				onclick={(e) => {
-					e.stopPropagation();
-					if (deleteItem) deleteItem();
-				}}
-				class="invisible cursor-pointer text-alineados-gray-400 hover:text-red-500 group-focus-within:visible group-hover:visible"
+				onclick={handleDeleteClick}
+				class="invisible cursor-pointer text-alineados-gray-400 transition-colors duration-200 hover:text-red-500 group-hover:visible"
 			>
 				<TrashCan styleTw="size-4" />
 			</div>

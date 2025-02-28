@@ -68,6 +68,22 @@ export class ThoughtsState {
 			type === 'pillar' ? thought.pfid === id : thought.ppid === id
 		);
 	}
+
+	deleteThought(id: string) {
+		this.#thoughts = this.#thoughts.filter((thought) => thought.id !== id);
+		this.#thoughtsCount = this.#thoughts.length;
+		this.#thoughtsFiltered = this.#thoughts;
+	}
+
+	updateImportant(id: string, isImportant: boolean) {
+		this.#thoughts = this.#thoughts.map((thought) =>
+			thought.id === id ? { ...thought, is_important: isImportant } : thought
+		);
+		this.#thoughtsFiltered = this.#thoughtsFiltered.map((thought) =>
+			thought.id === id ? { ...thought, is_important: isImportant } : thought
+		);
+		this.#importantCount = this.#thoughts.filter((t) => t.is_important).length;
+	}
 }
 
 export const thoughtsState = new ThoughtsState();

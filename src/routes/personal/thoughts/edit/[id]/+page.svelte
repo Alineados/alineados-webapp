@@ -32,10 +32,6 @@
 		}
 	});
 
-	// variables
-	let isSave = $state(false);
-	let checked = $state(false);
-
 	// Functions
 	function handlePillars(value: string) {
 		const [pillar_name] = value.split('-');

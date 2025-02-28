@@ -119,8 +119,16 @@ export class ThoughtService {
 	}
 
 	async updateIsImportant(sid: string, isImportant: boolean): Promise<Response> {
-		const url = `${this._url}/update-important?sid=${sid}&isImportant=${isImportant}`;
+		const url = `${this._url}/update-important?tid=${sid}&isImportant=${isImportant}`;
 		const response: Response = await request(url, 'PUT', null, this._token);
+
+		return response;
+	}
+
+	// DELETE
+	async deleteThought(tid: string): Promise<Response> {
+		const url = `${this._url}/delete?tid=${tid}`;
+		const response: Response = await request(url, 'DELETE', null, this._token);
 
 		return response;
 	}
