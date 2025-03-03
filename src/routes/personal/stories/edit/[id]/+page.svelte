@@ -48,7 +48,6 @@
 			timeout = setTimeout(() => {
 				socket.push('autosave_story', storyState.storyChange as string);
 
-				console.log('autosave story');
 				autosave = false;
 				storyState.autosave = false;
 			}, 2000);

@@ -4,7 +4,7 @@ const endpoints = {
 		problems: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
 		socket: 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
 		stories: 'https://sandbox-stories-service-808905282606.us-central1.run.app',
-		thoughts: 'http://127.0.0.1:8080',
+		thoughts: 'https://sandbox-thoughts-service-808905282606.us-central1.run.app',
 		oidc: 'https://oidc.alineado.org',
 		web: 'https://sandbox.alineado.org',
 		settings: 'http://127.0.0.1:8080',

@@ -41,12 +41,7 @@ export const actions = {
 	update: async ({ cookies, request, locals }) => {
 		const formData = await request.formData();
 		const data = getJSONFormsData(formData);
-
-		console.log('DATA', data);
-
 		const thought: Thought = JSON.parse(data.thought);
-
-		console.log('thought', data.thought);
 
 		const thoughtService: ThoughtService = ThoughtService.getInstance(locals.token);
 
@@ -60,8 +55,7 @@ export const actions = {
 			is_important: thought.is_important
 		};
 
-		console.log('thought.id = ', thought.id);
-		console.log('thoughtUpdate', thoughtUpdate);
+
 
 		const result = await thoughtService.updateThoughtInfo(thought.id, thoughtUpdate);
 
@@ -69,7 +63,7 @@ export const actions = {
 			return fail(result.data);
 		}
 
-		console.log('result', result);
+
 
 		return result;
 	},
@@ -98,8 +92,6 @@ export const actions = {
 
 		// get file
 		const file = formData.fileToUpload as File;
-
-		console.log(tid, type, thoughtType, file);
 
 		const thoughtService: ThoughtService = ThoughtService.getInstance('');
 
@@ -136,15 +128,13 @@ export const actions = {
 
 		const filesType = files.map((file) => file.type);
 
-		console.log('tid', tid);
-		console.log('files', files);
-		console.log('filesType', filesType);
+
 
 		const thoughtService: ThoughtService = ThoughtService.getInstance('');
 
 		const result = await thoughtService.uploadThoughtFiles(locals.user._id!, tid, files, filesType);
 
-		console.log('result', result);
+	
 
 		if (result.status !== 200 && result.status !== 201) return fail(result.data);
 
