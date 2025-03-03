@@ -44,7 +44,6 @@
 			timeout = setTimeout(() => {
 				socket.push('autosave_thought', thoughtState.thoughtChanged as string);
 
-				console.log('autosave thought');
 				autosave = false;
 				thoughtState.autosave = false;
 			}, 2000);

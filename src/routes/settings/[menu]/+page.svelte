@@ -29,7 +29,6 @@
 	let timeout: NodeJS.Timeout;
 	// let autosave: boolean = $state(false);
 	$effect(() => {
-		console.log('init');
 		$state.snapshot(infoState.infoStr);
 		// autosave = true;
 		clearTimeout(timeout);

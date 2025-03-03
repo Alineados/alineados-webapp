@@ -75,7 +75,7 @@
 		formData.set('thought', JSON.stringify(thoughtState.getJson()));
 
 		return async ({ result, update }) => {
-			console.log(result);
+
 
 			if (result.status === 200 && result.type === 'success') {
 				toast.success('Relato actualizado correctamente');

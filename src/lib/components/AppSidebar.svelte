@@ -197,7 +197,7 @@
 									action="/?/logout"
 									use:enhance={() => {
 										return async ({ result, update }) => {
-											console.log(result);
+							
 											if (result.type === 'redirect') {
 												window.location.href = result.location;
 											} else {
