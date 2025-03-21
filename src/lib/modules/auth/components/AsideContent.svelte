@@ -6,9 +6,9 @@
 	<div class="flex flex-1 items-center justify-center">
 		<!-- <AsideImage size={1.3} /> -->
 		<img
-			src="/images/logo/INSTITUCIONAL LOGO - SLOGAN.webp"
+			src="/images/logo/VERDE IMAGEN.webp"
 			alt="Alineados Logo"
-			class="h-44 w-auto"
+			class="h-60 w-auto"
 		/>
 	</div>
 	<div class="mb-10 flex flex-col items-center justify-center gap-4">
