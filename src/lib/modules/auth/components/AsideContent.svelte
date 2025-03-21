@@ -4,7 +4,12 @@
 
 <div class="flex h-full flex-col items-center">
 	<div class="flex flex-1 items-center justify-center">
-		<AsideImage size={1.3} />
+		<!-- <AsideImage size={1.3} /> -->
+		<img
+			src="/images/logo/INSTITUCIONAL LOGO - SLOGAN.webp"
+			alt="Alineados Logo"
+			class="h-44 w-auto"
+		/>
 	</div>
 	<div class="mb-10 flex flex-col items-center justify-center gap-4">
 		<h1 class="text-xl font-bold text-white">¡Alinea cada área de tu vida con nosotros!</h1>
