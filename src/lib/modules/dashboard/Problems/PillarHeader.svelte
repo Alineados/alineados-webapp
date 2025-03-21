@@ -32,7 +32,7 @@
 		<p class="text-5xl font-bold text-alineados-blue-900">Situaciones por Mejorar</p>
 
 		<div class="flex flex-row gap-4 self-start">
-			<a
+			<!-- <a
 				href="https://forms.office.com/r/huDFV67VZB"
 				target="_blank"
 				class="flex flex-row items-center gap-2 rounded-lg border bg-alineados-orange-800 px-4 py-3 text-sm text-white transition duration-300 ease-in-out hover:shadow-lg"
@@ -53,7 +53,7 @@
 				</svg>
 
 				Reportar incidentes
-			</a>
+			</a> -->
 			<NewProblemButton />
 			<ViewButton />
 		</div>
