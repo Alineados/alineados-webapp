@@ -31,7 +31,7 @@
 		<img
 			src="/images/logo/INSTITUCIONAL LOGO - SLOGAN.webp"
 			alt="Alineados Logo"
-			class="h-12 w-auto"
+			class="h-16 w-auto"
 		/>
 	</Button>
 
