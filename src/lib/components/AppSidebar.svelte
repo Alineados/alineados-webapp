@@ -37,7 +37,7 @@
 				>
 					{#snippet child({ props })}
 						<a href={'/personal/problems'} {...props}>
-							<div
+							<!-- <div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
 								<AlineadosCheck />
@@ -49,7 +49,12 @@
 								<span class="text-[10px] font-medium leading-none text-alineados-green-500"
 									>No solo sueñes, toma acción</span
 								>
-							</div>
+							</div> -->
+							<img
+								src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO.webp"
+								alt="Alineados Logo"
+								class="h-12 w-auto"
+							/>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
