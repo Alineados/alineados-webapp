@@ -35,8 +35,8 @@
 					? 'border-red-500'
 					: state === 'completed'
 						? 'border-blue-900'
-						: state === 'important'
-							? 'border-alineados-green-600 shadow-alineados-green-100'
+						// :  state === 'important'
+						// 	? 'border-alineados-green-600 shadow-alineados-green-100'
 							: ''
 	}`}
 >

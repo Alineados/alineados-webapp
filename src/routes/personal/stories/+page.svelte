@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Star from '$lib/icons/Star.svelte';
 	import type { PageProps } from './$types';
 	import alineadosImage from '$lib/assets/check-card.png';
 	import type { Story } from '$lib/interfaces';
@@ -77,10 +78,10 @@
 <!-- Content scrollable in Y -->
 <div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
 	<div class="flex flex-col gap-3">
-		<p class="text-xl font-semibold text-alineados-gray-700">Testimonio</p>
+		<p class="text-xl font-semibold text-alineados-gray-700">Testimonios</p>
 
 		<form
-			class="flex flex-row gap-5"
+			class="flex flex-row flex-wrap gap-8"
 			bind:this={formHtml}
 			method="POST"
 			action="?/delete"
@@ -106,56 +107,120 @@
 					No hay testimonios, haz clic en el botón de "Nuevo relato" para agregar uno.
 				</p>
 			{:else}
-				{#each storiesState.testimoniesFiltered as testimony}
-					<CustomCard
-						state={testimony.is_important ? 'important' : 'default'}
-						onClickCard={(e) => handleClickCard(e, testimony.id)}
-						isNew={false}
-						headerClass="justify-between"
-					>
-						{#snippet header()}
-							<div class="relative h-24 w-full">
-								<img
-									src={testimony.banner_url === '' ? alineadosImage : testimony.banner_url}
-									alt="Alineados check"
-									class="h-full w-full rounded-t-lg bg-alineados-blue-300 object-cover"
-								/>
-								<button
-									class="absolute right-1 top-1 rounded-full p-1 transition-colors"
-									aria-label="Mark as favorite"
-									onclick={(e) => openModal(testimony, e)}
-								>
-									<TrashCan styleTw="size-5 text-alineados-gray-50" />
-								</button>
-							</div>
-						{/snippet}
+				{#each [...storiesState.testimoniesFiltered].reverse() as testimony}
+				    <CustomCard
+				        state={testimony.is_important ? 'important' : 'default'}
+				        onClickCard={(e) => handleClickCard(e, testimony.id)}
+				        isNew={false}
+				        headerClass="justify-between"
+				    >
+				        {#snippet header()}
+				            <div class="relative h-24 w-full">
+				                <img
+				                    src={testimony.banner_url === '' ? alineadosImage : testimony.banner_url}
+				                    alt="Alineados check"
+				                    class="h-full w-full rounded-t-lg bg-alineados-blue-300 object-cover"
+				                />
+								{#if testimony.is_important}
+									<Star styleTw="absolute left-1 top-1 size-5 text-yellow-400 drop-shadow-md" />
+								{/if}
+				                <button
+				                    class="absolute right-1 top-1 rounded-full p-1 transition-colors"
+				                    aria-label="Mark as favorite"
+				                    onclick={(e) => openModal(testimony, e)}
+				                >
+				                    <TrashCan styleTw="size-5 text-alineados-gray-50" />
+				                </button>
+				            </div>
+				        {/snippet}
+				
+				        {#snippet content()}
+				            <div class="flex flex-col gap-4 px-3 pb-3 pt-4">
+				                <p class="min-h-[3.5rem] text-base font-semibold text-alineados-blue-800 line-clamp-2 break-words truncate-ellipsis">
+				                    {testimony.story_name}
+				                </p>
+				            </div>
+				        {/snippet}
+				
+				        {#snippet footer()}
+				            <div class="flex w-full justify-between px-3 pb-4">
+				                <div class="space-y-1">
+				                    <div class="flex items-center gap-2">
+				                        <ThirdCube styleTw="size-4" />
+				                        <span class="text-xs text-alineados-gray-700">{testimony.category_name}</span>
+				                    </div>
+				                    <div class="flex items-center gap-2">
+				                        <ThreePeople styleTw="size-4" />
+				                        <span class="text-xs text-alineados-gray-700"
+				                            >{testimony.involved.length} involucrados</span
+				                        >
+				                    </div>
+				                </div>
+				                <span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
+				            </div>
+				        {/snippet}
+				    </CustomCard>
+				{/each}
+				
 
-						{#snippet content()}
-							<div class="flex flex-col gap-4 px-3 pb-3 pt-4">
-								<p class="h-14 text-base font-semibold text-alineados-blue-800">
-									{testimony.story_name}
-								</p>
-							</div>
-						{/snippet}
-
-						{#snippet footer()}
-							<div class="flex w-full justify-between px-3 pb-4">
-								<div class="space-y-1">
-									<div class="flex items-center gap-2">
-										<ThirdCube styleTw="size-4" />
-										<span class="text-xs text-alineados-gray-700">{testimony.category_name}</span>
-									</div>
-									<div class="flex items-center gap-2">
-										<ThreePeople styleTw="size-4" />
-										<span class="text-xs text-alineados-gray-700"
-											>{testimony.involved.length} involucrados</span
-										>
-									</div>
-								</div>
-								<span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
-							</div>
-						{/snippet}
-					</CustomCard>
+				{#each [...storiesState.conversationsFiltered].reverse() as conversation}
+				    <CustomCard
+				        state={conversation.is_important ? 'important' : 'default'}
+				        onClickCard={(e) => handleClickCard(e, conversation.id)}
+				        isNew={false}
+				        headerClass="justify-between"
+				    >
+				        {#snippet header()}
+				            <div class="relative aspect-[5/1] h-24 w-full overflow-hidden" role="img">
+				                <img
+				                    src={conversation.banner_url === '' ? alineadosImage : conversation.banner_url}
+				                    alt="Alineados check"
+				                    class="h-full w-full object-cover object-center"
+				                />
+								{#if conversation.is_important}
+									<Star styleTw="absolute left-1 top-1 size-5 text-yellow-400 drop-shadow-md" />
+								{/if}				
+				                <button
+				                    class="absolute right-1 top-1 rounded-full p-1 transition-colors"
+				                    aria-label="Mark as favorite"
+				                    onclick={(e) => openModal(conversation, e)}
+				                >
+				                    <TrashCan styleTw="size-5 text-alineados-gray-50" />
+				                </button>
+				            </div>
+				        {/snippet}
+				
+				        {#snippet content()}
+				            <div class="flex flex-col gap-4 px-4 pb-3 pt-4">
+				                <p class="min-h-[3.5rem] text-base font-semibold text-alineados-blue-800 line-clamp-2 break-words truncate-ellipsis">
+				                    {conversation.story_name}
+				                </p>
+				            </div>
+				        {/snippet}
+				
+				        {#snippet footer()}
+				            <div class="flex w-full justify-between px-4 pb-4">
+				                <div class="space-y-1">
+				                    <div class="flex items-center gap-2">
+				                        <ThirdCube styleTw="size-4" />
+				                        <span class="text-xs text-alineados-gray-700">
+				                            {conversation.category_name}
+				                        </span>
+				                    </div>
+				                    <div class="flex items-center gap-2">
+				                        <ThreePeople styleTw="size-4" />
+				                        <span class="text-xs text-alineados-gray-700"
+				                            >{conversation.involved.length === 1 &&
+				                            conversation.involved[0].description === ''
+				                                ? '0'
+				                                : conversation.involved.length} involucrados</span
+				                        >
+				                    </div>
+				                </div>
+				                <span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
+				            </div>
+				        {/snippet}
+				    </CustomCard>
 				{/each}
 			{/if}
 		</form>
@@ -164,7 +229,7 @@
 	<div class="flex flex-col gap-3">
 		<p class="text-xl font-semibold text-alineados-gray-700">Conversaciones</p>
 
-		<div class="flex flex-row gap-5">
+		<div class="flex flex-row flex-wrap gap-8">
 			{#if storiesState.conversationsFiltered.length === 0}
 				<p class="text-alineados-gray-400">
 					No hay conversaciones, haz clic en el botón de "Nuevo relato" para agregar uno.
@@ -184,6 +249,9 @@
 									alt="Alineados check"
 									class="h-full w-full object-cover object-center"
 								/>
+								{#if conversation.is_important}
+									<Star styleTw="absolute left-1 top-1 size-5 text-yellow-400 drop-shadow-md" />
+								{/if}
 								<button
 									class="absolute right-1 top-1 rounded-full p-1 transition-colors"
 									aria-label="Mark as favorite"
@@ -196,7 +264,7 @@
 
 						{#snippet content()}
 							<div class="flex flex-col gap-4 px-4 pb-3 pt-4">
-								<p class="h-14 text-base font-semibold text-alineados-blue-800">
+								<p class="min-h-[3.5rem] text-base font-semibold text-alineados-blue-800 line-clamp-2 break-words truncate-ellipsis">
 									{conversation.story_name}
 								</p>
 							</div>
