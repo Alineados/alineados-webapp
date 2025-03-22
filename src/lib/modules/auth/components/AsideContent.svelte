@@ -8,7 +8,7 @@
 		<img
 			src="/images/logo/VERDE IMAGEN.webp"
 			alt="Alineados Logo"
-			class="h-60 w-auto"
+			class="h-[40rem] w-auto"
 		/>
 	</div>
 	<div class="mb-10 flex flex-col items-center justify-center gap-4">
