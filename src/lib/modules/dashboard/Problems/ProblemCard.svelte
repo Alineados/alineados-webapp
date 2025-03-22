@@ -149,8 +149,8 @@
 
 							{#if problem.security}
 								<Padlock class="size-4" />
-							{:else}
-								<UnPadlock class="size-4" />
+								<!-- <UnPadlock class="size-4" /> -->
+							<!-- {:else} -->
 							{/if}
 						</div>
 						<!-- onclick={(e) => deleteCard(problem, e)} -->
@@ -165,7 +165,7 @@
 				{/snippet}
 				{#snippet content()}
 					<div class="flex flex-col gap-4 pb-3 pt-4">
-						<p class="h-14 text-xl font-semibold text-black">
+						<p class="h-14 text-xl font-semibold text-black line-clamp-2 break-words">
 							{problem.problem_name.length > 25
 								? `${problem.problem_name.slice(0, 25)}...`
 								: problem.problem_name}

@@ -126,15 +126,20 @@ const config: Config = {
 					from: { height: 'var(--bits-accordion-content-height)' },
 					to: { height: '0' }
 				},
-				'caret-blink': {
-					'0%,70%,100%': { opacity: '1' },
-					'20%,50%': { opacity: '0' }
-				}
+				'border-blink': {
+					'0%,70%,100%': { borderColor: 'rgb(249 115 22 / 1)' },
+					'20%,50%': { borderColor: 'rgb(249 115 22 / 0)' }
+				},
+				'border-cursor-blink': {
+					'0%, 100%': { borderColor: 'rgb(249 115 22)' },
+					'50%': { borderColor: 'transparent' }
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'caret-blink': 'caret-blink 1.25s ease-out infinite'
+				'border-blink': 'border-blink 1.25s ease-out infinite',
+				'border-cursor-blink': 'border-cursor-blink 1.3s steps(1) infinite',
 			}
 		}
 	},
