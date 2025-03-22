@@ -34,9 +34,12 @@
 		if ($autosavingProblemMatrix) socket.push('autosave_pm', $matrixJSON as string);
 	});
 
+	let titleInput: HTMLInputElement;
+
 	onMount(() => {
 		if (browser) {
 			socket = new SocketService($pcid);
+			titleInput?.focus();
 		}
 		socket = new SocketService($pcid);
 		return () => {
@@ -58,19 +61,23 @@
 	>
 		<div class="flex items-start gap-2">
 			<input
-			placeholder="Situación por mejorar"
+				bind:this={titleInput}
+				placeholder="Título de la Situación"
 				type="text"
 				maxlength="28"
 				bind:value={title}
-				class="border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
+				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none caret-alineados-orange-500 rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500"
 			/>
+			
+		</div>
+		
+		<div class="flex flex-row justify-start gap-4">
 			<!-- Autosave and icons -->
-
 			<div class="ml-5 flex items-center gap-3 pl-5">
 				{#if $problemCard.security}
 					<Padlock class="size-5" />
-				{:else}
-					<UnPadlock class="size-5" />
+				<!-- {:else}
+					<UnPadlock class="size-5" /> -->
 				{/if}
 				<StatusPill status={$problemCard.active} bind:completed={$problemCard.completed_at} />
 				{#if $autosavingProblemCard || $autosavingProblemInfo || $autosavingProblemMatrix}
@@ -81,9 +88,6 @@
 					<Cloud styleTw="size-6 text-alineados-gray-400" />
 				{/if}
 			</div>
-		</div>
-
-		<div class="flex flex-row justify-start gap-4">
 			<AccountabilityButton />
 			{#if $reportProblem === 1}
 				<MoreButton />
