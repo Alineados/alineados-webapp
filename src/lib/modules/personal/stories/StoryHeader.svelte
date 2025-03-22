@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="flex flex-col gap-2 px-4 pb-8 md:px-8 lg:px-16">
+<div class="flex flex-col gap-2 px-4 pb-6 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
 		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
 			Personal
