@@ -132,8 +132,13 @@
 			</div>
 		</div>
 
-		<!-- Toogle -->
-		<Toggle titleStyle="text-base font-bold text-alineados-gray-900" description="Destacado" />
+		<!-- Toggle -->
+		<Toggle
+			description="Destacar"
+			bind:checked={storyState.is_important}
+			titleStyle="text-base font-bold text-alineados-gray-900"
+		/>
+		
 		<!-- Involved -->
 		<div class="flex flex-col">
 			<div class="flex items-center gap-2">
@@ -175,12 +180,6 @@
 			</div>
 		</div>
 
-		<!-- Toggle -->
-		<Toggle
-			description="Destacar"
-			bind:checked={storyState.is_important}
-			titleStyle="text-base font-bold text-alineados-gray-900"
-		/>
 
 		<!-- Experience -->
 		<div class="flex flex-col gap-6 pb-9">
