@@ -124,7 +124,7 @@
 	{/snippet}
 </PersonalHeader>
 
-<div class="sticky top-[300px] z-10 w-full bg-white pb-5">
+<div class="top-[300px] w-full bg-white pb-4">
 	<ThoughtCarousel
 		items={selectedType === 'pillar' ? pillarItems : purposeItems}
 		type={selectedType}

@@ -20,11 +20,16 @@
 		prominentItem?: () => void;
 	} = $props();
 
-	function copyClipboard() {
-		// Copy the text content without HTML tags
-		const tempDiv = document.createElement('div');
-		tempDiv.innerHTML = thought?.quality_time.text || '';
-		navigator.clipboard.writeText(tempDiv.textContent || '');
+	function copyClipboard(content?: string) {
+		if (content) {
+			// For document names
+			navigator.clipboard.writeText(content);
+		} else {
+			// For text content
+			const tempDiv = document.createElement('div');
+			tempDiv.innerHTML = thought?.quality_time.text || '';
+			navigator.clipboard.writeText(tempDiv.textContent || '');
+		}
 
 		toast.success('Copiado al portapapeles', {
 			duration: 1000
@@ -74,27 +79,40 @@
 
 		<!-- Text -->
 		{#if thought?.quality_time.text}
-			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+			<div class="prose prose-sm max-w-none text-alineados-gray-600 [&_ul]:list-disc [&_ul]:ml-4 [&_ul_ul]:list-circle [&_ul_ul]:ml-4">
 				{@html thought.quality_time.text}
 			</div>
 		{/if}
 
 		<!-- Transcription -->
 		{#if thought?.quality_time.audio}
-			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+			<div class="prose prose-sm max-w-none text-alineados-gray-600 [&_ul]:list-disc [&_ul]:ml-4 [&_ul_ul]:list-circle [&_ul_ul]:ml-4">
 				{@html thought?.quality_time.audio.content}
 			</div>
 		{/if}
 
 		<!-- List documents -->
 		{#if thought?.quality_time.documents}
-			<div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
-				<div class="space-y-3">
-					{#each thought?.quality_time.documents as file}
-						<DocumentCard {file} showDelete={false} />
-					{/each}
-				</div>
-			</div>
+		    <div class="flex-grow text-sm font-medium text-alineados-gray-600 group-hover:underline">
+		        <div class="space-y-3">
+		            {#each thought?.quality_time.documents as file}
+		                <div class="flex items-center gap-2">
+		                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+		                    <!-- In the documents section -->
+		                    <div
+		                        class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
+		                        onclick={(e) => {
+		                            e.stopPropagation();
+		                            copyClipboard(file.file_name || file.path || 'Documento sin nombre');
+		                        }}
+		                    >
+		                        <Copy styleTw="size-5" />
+		                    </div>
+		                    <DocumentCard {file} showDelete={false} />
+		                </div>
+		            {/each}
+		        </div>
+		    </div>
 		{/if}
 	</div>
 
@@ -124,4 +142,16 @@
 			</div>
 		</Tooltip>
 	</div>
+</div>
+
+<div class="flex flex-col gap-2">
+    <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-alineados-blue-800">{thought.title}</h3>
+        <!-- ... other header content ... -->
+    </div>
+    
+    <!-- Replace regular text with HTML rendering -->
+    <div class="prose prose-sm max-w-none text-alineados-gray-600">
+        {@html thought.content}
+    </div>
 </div>
