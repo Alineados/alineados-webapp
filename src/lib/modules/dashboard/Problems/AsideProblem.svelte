@@ -20,7 +20,7 @@
 	});
 </script>
 
-<div class="flex w-2/3 flex-col gap-3">
+<div class="flex w-full flex-col gap-3">
 	<div class="flex w-full justify-between px-2">
 		<div class="flex items-center gap-1">
 			<Image styleTw="size-5" />

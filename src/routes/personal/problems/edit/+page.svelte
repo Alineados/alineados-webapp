@@ -68,37 +68,38 @@
 </script>
 
 {#if !$problemCard}
-	<p>Loading...</p>
+    <p>Loading...</p>
 {:else}
-	<div bind:this={headerRef} class="sticky top-0 z-20 bg-white">
-		<ProblemHeader bind:title={$problemCard.problem_name} />
-	</div>
+    <div class="flex min-h-screen flex-col overflow-x-hidden">
+        <div bind:this={headerRef} class="sticky top-0 z-30 w-full bg-white">
+            <ProblemHeader bind:title={$problemCard.problem_name} />
+        </div>
 
-	<div class="flex w-full items-start">
-		<div class=" flex w-8/12 flex-col">
-			{#if $reportProblem !== 2}
-				<div bind:this={problemsFilterRef} class="sticky z-20 bg-white">
-					<ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
-				</div>
-			{/if}
+        <div class="flex min-w-0">
+            <div class="flex w-3/4 flex-col overflow-x-auto">
+                {#if $reportProblem !== 2}
+                    <div bind:this={problemsFilterRef} class="sticky z-20 w-full bg-white">
+                        <ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
+                    </div>
+                {/if}
 
-			<div class="pl-4 md:pl-8 lg:pl-16" bind:this={accountabilityBodyRef}>
-				{#if $reportProblem === 2}
-					<AccountabilityBody />
-				{:else}
-					<ProblemBody />
-				{/if}
-			</div>
-		</div>
-		<div
-			bind:this={asideProblemRef}
-			class="sticky z-10 flex w-6/12 justify-end pr-4 pt-4 md:pr-8 lg:pr-16"
-		>
-			<AsideProblem bind:openDateModal />
-		
-		</div>
-	</div>
-	<div class="flex">
-		<DateDialog bind:open={openDateModal} bind:date confirm={handleDate} />
-	</div>
+                <div class="pl-4 pr-4 md:pl-8 lg:pl-16" bind:this={accountabilityBodyRef}>
+                    {#if $reportProblem === 2}
+                        <AccountabilityBody />
+                    {:else}
+                        <ProblemBody />
+                    {/if}
+                </div>
+            </div>
+            <div
+                bind:this={asideProblemRef}
+                class="sticky top-0 z-20 w-1/4 flex-shrink-0 pr-4 md:pr-8 lg:pr-16"
+            >
+                <AsideProblem bind:openDateModal />
+            </div>
+        </div>
+    </div>
+    <div class="flex">
+        <DateDialog bind:open={openDateModal} bind:date confirm={handleDate} />
+    </div>
 {/if}
