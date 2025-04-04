@@ -1,40 +1,48 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import AlertDialog from '$lib/components/AlertDialog.svelte';
-	import BackArrow from '$lib/icons/BackArrow.svelte';
-	import Cloud from '$lib/icons/Cloud.svelte';
-	import Loading from '$lib/icons/Loading.svelte';
-	import { storyState } from '$lib/stores';
-	import NewButton from '../NewButton.svelte';
+    import { goto } from '$app/navigation';
+    import AlertDialog from '$lib/components/AlertDialog.svelte';
+    import BackArrow from '$lib/icons/BackArrow.svelte';
+    import Cloud from '$lib/icons/Cloud.svelte';
+    import Loading from '$lib/icons/Loading.svelte';
+    import { storyState } from '$lib/stores';
+    import NewButton from '../NewButton.svelte';
+    import { page } from '$app/stores';
 
-	let {
-		status,
-		isSave = $bindable(),
-		title = $bindable()
-	}: {
-		status: 'new' | 'edit' | 'see';
-		isSave?: boolean;
-		title?: string;
-	} = $props();
+    let {
+        status,
+        isSave = $bindable(),
+        title = $bindable()
+    }: {
+        status: 'new' | 'edit' | 'see';
+        isSave?: boolean;
+        title?: string;
+    } = $props();
 
-	let openModal = $state(false);
+    // Initialize title if undefined in 'see' mode
+    $effect(() => {
+        if (status === 'see') {
+            title = $page.data.story.story_name;
+        }
+    });
 
-	function handleGoBack() {
-		goto('/personal/stories');
-	}
+    function handleGoBack() {
+        goto('/personal/stories');
+    }
 </script>
 
 <div class="flex flex-col gap-2 px-4 pb-6 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
+		<button class="text-alineados-gray-600 hover:underline">
 			Personal
 		</button>
 		<!-- <a href="/personal/stories" class="text-alineados-gray-600 hover:underline">Personal</a> -->
 		<span class="mx-1">/</span>
-		<span class="text-alineados-orange-900">Relatos</span>
-		{#if status === 'edit'}
+		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
+			Relatos
+		</button>
+		{#if title}
 			<span class="mx-1">/</span>
-			<span class="text-alineados-gray-600">{title}</span>
+			<span class="text-alineados-orange-900">{title}</span>
 		{/if}
 	</p>
 	<div
@@ -49,10 +57,12 @@
 					bind:value={title}
 					class="w-full border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
 				/>
+			{:else if status === 'see' && title}
+				<p class="text-4xl font-bold text-alineados-gray-900">{title}</p>
 			{:else}
 				<p class="text-4xl font-bold text-alineados-gray-900">Relatos</p>
-				<div class="ml-5 flex items-center gap-3"></div>
 			{/if}
+			<div class="ml-5 flex items-center gap-3"></div>
 		</div>
 
 		<div class="flex basis-1/4 flex-row justify-end gap-4 self-start pt-2">
