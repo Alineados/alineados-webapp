@@ -119,7 +119,7 @@
 				deleting = false;
 			};
 		}}
-		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
+		class="flex w-full flex-row flex-wrap justify-center gap-6 md:justify-start"
 	>
 		{#if problems.length === 0}
 			<MessageLength />
