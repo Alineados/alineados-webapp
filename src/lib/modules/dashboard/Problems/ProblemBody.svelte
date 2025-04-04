@@ -33,6 +33,7 @@
 	import { wrap } from 'comlink';
 	import MatrixInformation from './MatrixInformation.svelte';
 	import { debounce } from '$lib/utils/debounce';
+	import QuestionItem from '$lib/components/QuestionItem.svelte';
 
 	let errorHandling = writable({
 		alternative_max: false,
@@ -228,7 +229,7 @@
 			</Tooltip>
 		</div>
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
-			<Item
+			<QuestionItem
 				deleteItem={() => {
 					removeOrCleanItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
@@ -238,7 +239,6 @@
 				dailyItem={() => {
 					markDailytItem($problemInfo.problem!.id, ProblemType.problem);
 				}}
-				onInput={checkAndFormatQuestion}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
 				bind:isDaily={$problemInfo.problem!.daily}
