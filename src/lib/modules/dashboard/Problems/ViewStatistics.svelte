@@ -83,7 +83,7 @@
 			<div class="flex h-full items-end">
 				<ArrowNumber value={minPilarStats.count}>
 					{#snippet arrow()}
-						<ArrowUp styleTw="size-3 text-[#0FC917]" strokeWidth={2} />
+						<ArrowUp styleTw="size-3 text-[#0FC917]" strokeWidth={0} />
 					{/snippet}
 				</ArrowNumber>
 			</div>
@@ -108,7 +108,7 @@
 			<div class="flex h-full items-end">
 				<ArrowNumber value={maxPilarStats.count}>
 					{#snippet arrow()}
-						<ArrowDown styleTw="size-3 text-[#FB5B5B]" strokeWidth={2} />
+						<ArrowDown styleTw="size-3 text-[#FB5B5B]" strokeWidth={0} />
 					{/snippet}
 				</ArrowNumber>
 			</div>
