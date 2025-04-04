@@ -107,7 +107,7 @@
     <p>Loading...</p>
 {:else}
     <div class="flex min-h-screen flex-col overflow-x-hidden">
-        <div bind:this={headerRef} class="sticky top-0 z-50 w-full bg-white">
+        <div bind:this={headerRef} class="sticky top-0 z-40 w-full bg-white">
             <ProblemHeader bind:title={$problemCard.problem_name} />
         </div>
 
@@ -129,7 +129,7 @@
             </div>
             <div
                 bind:this={asideProblemRef}
-                class="sticky top-[64px] z-40 w-1/4 flex-shrink-0 pr-4 md:pr-8 lg:pr-16"
+                class="sticky top-[64px] z-40 w-1/4 flex-shrink-0 pr-4 md:pr-8 lg:pr-16 mt-3.5"
             >
                 <AsideProblem bind:openDateModal />
             </div>
