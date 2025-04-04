@@ -133,7 +133,7 @@
 
 		<!-- Quality time -->
 		<div class="flex flex-col gap-6 pb-9">
-			<p class="text-base font-bold text-alineados-gray-900">Tiempo de Calidad</p>
+			<p class="text-base font-bold text-alineados-gray-900">Pensamiento</p>
 			<MultiEditable
 				type="thought"
 				{thoughtType}

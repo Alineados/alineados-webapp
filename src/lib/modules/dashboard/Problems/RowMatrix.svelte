@@ -73,6 +73,6 @@
 	</div>
 
 	<div class="flex w-1/3 flex-col items-center gap-1">
-		<input class=" text-center text-xs outline-none {color}" bind:value={units} />
+		<input class=" text-center text-xs outline-none {color}" bind:value={units} placeholder="Unidad de medida"/>
 	</div>
 </div>

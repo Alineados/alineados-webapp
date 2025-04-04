@@ -144,7 +144,7 @@ const api = {
 			key: '',
 			percentage: 0,
 			cells: this.generateMatrixCell(cols),
-			units: 'unidades de medida'
+			units: '' 
 		};
 	},
 
