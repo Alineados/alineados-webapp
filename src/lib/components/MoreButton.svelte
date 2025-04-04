@@ -7,6 +7,11 @@
 	import { updateSecurityAndActive, problemCard } from '$lib/stores';
     import html2canvas from 'html2canvas';
     import { jsPDF } from 'jspdf';
+    import Copy from '$lib/icons/Copy2.svelte';
+    import { goto } from '$app/navigation';
+    import { problemInfo } from '$lib/stores';
+    import { ProblemService } from '$lib/services/personal/problems';
+    import { page } from '$app/stores';
 
 	// Function to update
 	// 1. active / inactive .....  2. security / non-security
@@ -82,6 +87,52 @@
             document.body.removeChild(container);
         }
     }
+
+    async function duplicateProblem() {
+        try {
+            // Get all necessary data from problemInfo
+            const currentProblem = {
+                uid: $page.data.user._id,
+                health_id: $page.data.pillars.health.id,
+                relational_id: $page.data.pillars.relational.id,
+                vocational_id: $page.data.pillars.vocational.id,
+                spiritual_id: $page.data.pillars.spiritual.id,
+                problem: {
+                    title: `${$page.data.problemCard.problem_name} (copia)`,
+                    description: $page.data.problemInfo.problem.description,
+                    active: true,
+                    security: false,
+                    decision_taken: $page.data.problemInfo.decision_taken.description,
+                    involved: $page.data.problemInfo.involved.map(i => i.description).filter(Boolean),
+                    contexts: $page.data.problemInfo.contexts.map(c => c.description).filter(Boolean),
+                    objectives: $page.data.problemInfo.objectives.map(o => o.description).filter(Boolean),
+                    alternatives: $page.data.problemInfo.alternatives.map(a => a.description).filter(Boolean),
+                    action_plan: $page.data.problemInfo.action_plan.map(a => a.description).filter(Boolean)
+                }
+            };
+
+            // Use server endpoint instead of direct API call
+            const response = await fetch('/api/problems/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(currentProblem)
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                console.log('Problem created successfully, navigating to:', result.id);
+                goto(`/personal/problems/${result.id}`);
+            } else {
+                throw new Error(`Error creating problem: ${response.status}`);
+            }
+            
+        } catch (error) {
+            console.error('Error duplicating problem:', error);
+        }
+    }
 </script>
 
 <DropdownMenu.Root>
@@ -122,6 +173,13 @@
 			</span>
 		</DropdownMenu.Item>
 		<DropdownMenu.Item
+            onclick={duplicateProblem}
+            class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
+        >
+            <Copy class="mt-0.5" />
+            <span class="font-normal">Duplicar</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item
             onclick={exportToPDF}
             class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
         >

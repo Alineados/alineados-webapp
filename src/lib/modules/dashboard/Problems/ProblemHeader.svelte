@@ -35,17 +35,18 @@
 	});
 
 	let titleInput: HTMLInputElement;
+    let isFocused = $state(false);
 
-	onMount(() => {
-		if (browser) {
-			socket = new SocketService($pcid);
-			titleInput?.focus();
-		}
-		socket = new SocketService($pcid);
-		return () => {
-			socket.disconnect();
-		};
-	});
+    onMount(() => {
+        if (browser) {
+            socket = new SocketService($pcid);
+            titleInput?.focus();
+        }
+        socket = new SocketService($pcid);
+        return () => {
+            socket.disconnect();
+        };
+    });
 </script>
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16">
@@ -62,13 +63,14 @@
 		<div class="flex items-start gap-2">
 			<input
 				bind:this={titleInput}
-				placeholder="Título de la Situación"
+				placeholder={isFocused ? "" : "Título de la Situación"}
 				type="text"
 				maxlength="28"
 				bind:value={title}
-				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none caret-alineados-orange-500 rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500"
+				on:focus={() => isFocused = true}
+				on:blur={() => isFocused = false}
+				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:#F97316]"
 			/>
-			
 		</div>
 		
 		<div class="flex flex-row justify-start gap-4">
