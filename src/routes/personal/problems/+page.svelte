@@ -32,11 +32,14 @@ const reversedSpiritual = $derived([...$spiritualProblemsFiltered].reverse());
     let cardContainerRef: HTMLElement;
 </script>
 
-<div class="sticky top-0 z-10 w-full bg-white px-4 md:px-8 lg:px-16">
-	<PillarHeader />
+<!-- Remove sticky from parent container -->
+<div class="w-full bg-white px-4 md:px-8 lg:px-16">
+    <div class="max-w-7xl">
+        <PillarHeader />
+    </div>
 </div>
 
-<div bind:this={cardContainerRef} class="sticky flex w-full gap-6 max-w-7xl bg-white pb-5 px-4 md:px-8 lg:px-16 ">
+<div bind:this={cardContainerRef} class="flex w-full gap-6 max-w-7xl bg-white pb-5 px-4 md:px-8 lg:px-16">
     <ViewStatistics 
         total={data.problems.total}
         health={data.problems.health}
