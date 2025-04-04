@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
 	import ProblemBody from '$lib/modules/dashboard/Problems/ProblemBody.svelte';
 	import ProblemHeader from '$lib/modules/dashboard/Problems/ProblemHeader.svelte';
 	import ProblemsFilter from '$lib/modules/dashboard/Problems/ProblemsFilter.svelte';
@@ -48,6 +49,17 @@
 		date = '';
 	}
 
+	// Add navigation guard
+	beforeNavigate((navigation) => {
+		// Skip warning if it's a page refresh
+		if (navigation.type === 'reload') return;
+
+		if (!$problemCard.problem_name?.trim()) {
+			alert('Debe de completar el título para poder salir');
+			navigation.cancel();
+		}
+	});
+
 	onMount(() => {
 		initProblemInfo({ ...data.problemInfo });
 		initProblemCard({ ...data.problemCard });
@@ -64,7 +76,20 @@
 
 		if (accountabilityBodyRef)
 			accountabilityBodyRef.style.top = `${headerHeight + problemsFilterHeight}px`;
-	});
+
+        // Handle browser events (close only)
+        window.addEventListener('beforeunload', (event) => {
+            if (!$problemCard.problem_name?.trim()) {
+                event.preventDefault();
+                event.returnValue = 'Debe de completar el título para poder salir';
+                return event.returnValue;
+            }
+        });
+
+        return () => {
+            window.removeEventListener('beforeunload', () => {});
+        };
+    });
 </script>
 
 {#if !$problemCard}
