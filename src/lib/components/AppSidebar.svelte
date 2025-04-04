@@ -27,7 +27,7 @@
 	}: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
-<Sidebar.Root bind:ref {collapsible} {...restProps} class="z-[100]">
+<Sidebar.Root bind:ref {collapsible} {...restProps} class="z-[50]">
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
