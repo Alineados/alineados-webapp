@@ -51,11 +51,11 @@
 
 	<!-- Data visualizer -->
 	<div class="flex flex-col gap-4 pb-16 pt-8">
-		<StoryText text={storyState.story_name}>
+		<!-- <StoryText text={storyState.story_name}>
 			{#snippet iconSnnipet()}
 				<MessageText class="size-6 text-alineados-gray-900" />
 			{/snippet}
-		</StoryText>
+		</StoryText> -->
 		<StoryText text={storyState.category_name}>
 			{#snippet iconSnnipet()}
 				<ThirdCube styleTw="size-6 text-alineados-gray-900" />

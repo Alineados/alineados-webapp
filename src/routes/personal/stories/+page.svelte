@@ -152,7 +152,7 @@
 				                    <div class="flex items-center gap-2">
 				                        <ThreePeople styleTw="size-4" />
 				                        <span class="text-xs text-alineados-gray-700"
-				                            >{testimony.involved.length} involucrados</span
+				                            >{testimony.involved.length - 1} involucrados</span
 				                        >
 				                    </div>
 				                </div>
@@ -213,7 +213,7 @@
 				                            >{conversation.involved.length === 1 &&
 				                            conversation.involved[0].description === ''
 				                                ? '0'
-				                                : conversation.involved.length} involucrados</span
+				                                : conversation.involved.length - 1} involucrados</span
 				                        >
 				                    </div>
 				                </div>
