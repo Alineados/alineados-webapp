@@ -17,18 +17,70 @@
 	}
 
     async function exportToPDF() {
-        const element = document.body; // or any specific element you want to capture
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL('image/png');
+        const titleInput = document.querySelector('input[placeholder="Título de la Situación"]');
+        const problemContent = document.querySelector('.mt-9.flex.flex-col.gap-12');
         
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
+        if (!titleInput || !problemContent) {
+            console.log('Elements not found:', { titleInput, problemContent });
+            return;
+        }
         
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save('alineados-export.pdf');
+        const container = document.createElement('div');
+        container.style.backgroundColor = '#ffffff';
+        container.style.padding = '40px';
+        container.style.width = '800px'; // Reduced width for better scale
+        container.style.fontFamily = 'Inter, system-ui, sans-serif';
+        
+        const titleDiv = document.createElement('h1');
+        titleDiv.textContent = (titleInput as HTMLInputElement).value;
+        titleDiv.style.fontSize = '2.25rem'; // Reduced from 3rem
+        titleDiv.style.fontWeight = 'bold';
+        titleDiv.style.marginBottom = '2rem';
+        titleDiv.style.color = '#111827';
+        container.appendChild(titleDiv);
+        
+        const contentClone = problemContent.cloneNode(true) as HTMLElement;
+        
+        // Apply styles to maintain visual hierarchy
+        const styles = document.createElement('style');
+        styles.textContent = `
+            h2 { font-size: 1.5rem; font-weight: 500; color: #111827; margin-bottom: 1rem; }
+            .flex { display: flex; }
+            .flex-col { flex-direction: column; }
+            .gap-12 { gap: 3rem; }
+            .gap-2 { gap: 0.5rem; }
+            .items-center { align-items: center; }
+            .text-alineados-gray-900 { color: #111827; }
+            .mt-5 { margin-top: 1.25rem; }
+        `;
+        container.appendChild(styles);
+        container.appendChild(contentClone);
+        
+        document.body.appendChild(container);
+        
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 1.5, // Reduced scale for better overall view
+                useCORS: true,
+                logging: true,
+                backgroundColor: '#ffffff',
+                width: 800,
+                windowWidth: 800
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [canvas.width, canvas.height]
+            });
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+            pdf.save('alineados-situacion.pdf');
+        } finally {
+            document.body.removeChild(container);
+        }
     }
 </script>
 
