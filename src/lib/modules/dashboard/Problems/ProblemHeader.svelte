@@ -22,16 +22,20 @@
 	import { SocketService } from '$lib/services/socket';
 	import UnPadlock from '$lib/icons/UnPadlock.svelte';
 	import { browser } from '$app/environment';
+	import { isEverythingEmpty, deleteEmptyProblem } from '$lib/utils/problem';
 
 	let socket: SocketService;
 	let { title = $bindable() } = $props();
 
 	$effect(() => {
-		if ($autosavingProblemCard) socket.push('autosave_pc', $problemCardJSON as string);
-
-		if ($autosavingProblemInfo) socket.push('autosave_pi', $problemInfoJSON as string);
-
-		if ($autosavingProblemMatrix) socket.push('autosave_pm', $matrixJSON as string);
+		// Only autosave if there's content to save
+		if ($autosavingProblemCard || $autosavingProblemInfo || $autosavingProblemMatrix) {
+			if ($problemCard.problem_name?.trim()) {
+				if ($autosavingProblemCard) socket.push('autosave_pc', $problemCardJSON as string);
+				if ($autosavingProblemInfo) socket.push('autosave_pi', $problemInfoJSON as string);
+				if ($autosavingProblemMatrix) socket.push('autosave_pm', $matrixJSON as string);
+			}
+		}
 	});
 
 	let titleInput: HTMLInputElement;
@@ -40,7 +44,6 @@
     onMount(() => {
         if (browser) {
             socket = new SocketService($pcid);
-            titleInput?.focus();
         }
         socket = new SocketService($pcid);
         return () => {

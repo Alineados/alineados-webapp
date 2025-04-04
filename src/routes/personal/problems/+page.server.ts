@@ -10,13 +10,14 @@ export const actions = {
 
 		const { pfid, cid, pillar_name, pillar_label, category_name, category_label } = data;
 
-		let problemService: ProblemService = ProblemService.getInstance('');
+		let problemService: ProblemService = ProblemService.getInstance(locals.token);
 		const result = await problemService.createProblemInfo({
 			uid: locals.user._id!,
 			pfid,
 			cid,
 			pillar_name: pillar_label,
-			category_name: category_label
+			category_name: category_label,
+			problem_name: '' // Inicialmente creamos con título vacío
 		});
 
 		if (result.status !== 200 && result.status !== 201) {
@@ -25,15 +26,14 @@ export const actions = {
 
 		return result;
 	},
-	delete: async ({ cookies, request }) => {
+	delete: async ({ cookies, request, locals }) => {
 		const formData = await request.formData();
 		const data = getJSONFormsData(formData);
 
 		const { pid } = data;
 
-		let problemService: ProblemService = ProblemService.getInstance('');
+		let problemService: ProblemService = ProblemService.getInstance(locals.token);
 		const result = await problemService.deleteProblemInfo(pid);
-
 
 		if (result.status !== 200 && result.status !== 201) {
 			return fail(result.data);

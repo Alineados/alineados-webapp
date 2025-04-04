@@ -4,26 +4,23 @@ import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import type { Documents } from '$lib/interfaces';
 
-export const load: PageServerLoad = async ({ params, request, url }) => {
+export const load: PageServerLoad = async ({ params, request, url, locals }) => {
 	// get from params the pid
 	const pid = url.searchParams.get('pid');
 	const pillar_name = url.searchParams.get('pillar_name');
 
 	if (!pid) return console.error('No pid provided');
 
-	let problemService: ProblemService = ProblemService.getInstance('');
+	let problemService: ProblemService = ProblemService.getInstance(locals.token || '');
 	const result = await problemService.getProblemInfo(pid);
-
 
 	// get url images
 	let urlImages = [];
 	let pathsFiltered: Documents[] = result.data.problem_info.memories
 		.filter((memory: Documents) => memory.type.startsWith('image'))
 
-
 	if (pathsFiltered.length > 0) {
 		const data = await problemService.getImages(pathsFiltered);
-
 		if (data.status === 200) urlImages = data.data;
 	}
 
@@ -32,7 +29,8 @@ export const load: PageServerLoad = async ({ params, request, url }) => {
 		problemCard: result.data.problem_card,
 		problemMatrix: result.data.problem_matrix,
 		pillar_name: pillar_name,
-		urlImages: urlImages
+		urlImages: urlImages,
+		token: locals.token
 	};
 };
 
