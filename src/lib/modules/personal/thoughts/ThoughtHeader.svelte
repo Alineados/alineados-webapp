@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import MoreButtonThoughts from '$lib/components/MoreButtonThoughts.svelte';
 	import NewButton from '../thoughts/NewButton.svelte';
 
 	let {
@@ -27,6 +28,7 @@
 		{#if status === 'edit'}
 			<span class="mx-1">/</span>
 			<span class="text-alineados-orange-900">Nuevo pensamiento</span>
+
 		{/if}
 	</p>
 	<div
@@ -51,6 +53,7 @@
 		<div class="flex basis-1/4 flex-row justify-end gap-4 self-start pt-2">
 			{#if status === 'new'}
 				<NewButton status="new" title="Nuevo Pensamiento" />
+				<MoreButtonThoughts />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Guardar" />
 			{/if}

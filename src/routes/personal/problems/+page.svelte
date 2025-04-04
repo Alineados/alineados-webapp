@@ -39,7 +39,7 @@ const reversedSpiritual = $derived([...$spiritualProblemsFiltered].reverse());
     </div>
 </div>
 
-<div bind:this={cardContainerRef} class="flex w-full gap-6 max-w-7xl bg-white pb-5 px-4 md:px-8 lg:px-16">
+<div bind:this={cardContainerRef} class="flex justify-center gap-6 bg-white pb-5 px-4 md:px-8 lg:px-16">
     <ViewStatistics 
         total={data.problems.total}
         health={data.problems.health}

@@ -7,6 +7,7 @@
     import { storyState } from '$lib/stores';
     import NewButton from '../NewButton.svelte';
     import { page } from '$app/stores';
+	import MoreButtonStories from '$lib/components/MoreButtonStories.svelte';
 
     let {
         status,
@@ -77,6 +78,7 @@
 
 			{#if status === 'new'}
 				<NewButton status="new" title="Nuevo Relato" />
+				<MoreButtonStories />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Ver" />
 			{:else if status === 'see'}
