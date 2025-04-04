@@ -68,7 +68,7 @@
 				<Question styleTw="size-6 text-alineados-gray-900" />
 				<h2 class="text-2xl font-medium text-alineados-gray-900">¿Resolviste el Problema?</h2>
 			</div>
-			<div class="-ml-10 mt-5 flex flex-col gap-2">
+			<div class="-ml-10 mt-5 flex flex-col gap-2 w-full">
 				<DecisionPill
 					text="Alternativa 1 - Sí resolví el problema"
 					changeSelected={() => {
