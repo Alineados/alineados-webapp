@@ -17,94 +17,98 @@
 	}: { register: Register; validation: OnboardingValidation; isChecked: boolean } = $props();
 </script>
 
-<!-- Contact sharing toggle -->
-<div class="mb-6">
-    <label class="flex items-center gap-2">
-        <input
-            type="checkbox"
-            bind:checked={register.contactNotRequired}
-            class="h-4 w-4 rounded border-gray-300"
-        />
-        <span>No compartir contacto</span>
-    </label>
-</div>
+<div class="flex h-full w-full flex-col items-start justify-center">
+	<div class="flex w-full justify-between border-b border-alineados-gray-200 pb-2">
+		<h2 class="text-3xl font-semibold text-alineados-gray-900">Datos Personales</h2>
+		<div class="flex items-center space-x-2">
+			<Label for="form-mode" class=" font-medium text-alineados-gray-800"
+				>No comparto contacto</Label
+			>
+			<Switch id="form-mode" bind:checked={register.contactNotRequired} />
+		</div>
+	</div>
 
-{#if !register.contactNotRequired}
-    <!-- Personal Information -->
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <!-- First Name -->
-        <Input
-            label="Nombres"
-            bind:value={register.firstName}
-            validation={validation.register.firstName}
-            required={true}
-        />
-
-        <!-- Last Name -->
-        <Input
-            label="Apellidos"
-            bind:value={register.lastName}
-            validation={validation.register.lastName}
-            required={true}
-        />
-
-        <!-- Email -->
-        <Input
-            label="Correo electrónico"
-            bind:value={register.email}
-            validation={validation.register.email}
-            required={true}
-        />
-
-        <!-- Birthday -->
-        <DateInput
-            label="Fecha de nacimiento"
-            bind:value={register.birthday}
-            validation={validation.register.birthday}
-            required={true}
-        />
-
-        <!-- Phone Number -->
-        <PhoneInput
-            label="Número de celular"
-            bind:value={register.phoneNumber}
-            validation={validation.register.phoneNumber}
-            required={true}
-        />
-
-        <!-- WhatsApp Number -->
-        <PhoneInput
-            label="Número de WhatsApp"
-            bind:value={register.whatsappNumber}
-            validation={validation.register.whatsappNumber}
-            required={true}
-        />
-    </div>
-{/if}
-
-<!-- Always visible fields -->
-<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-    <!-- Country of Residence -->
-    <CountrySelect
-        label="País de residencia"
-        bind:value={register.countryOfResidence}
-        validation={validation.register.countryOfResidence}
-        required={true}
-    />
-
-    <!-- Country of Birth -->
-    <CountrySelect
-        label="País de nacimiento"
-        bind:value={register.countryOfBirth}
-        validation={validation.register.countryOfBirth}
-        required={true}
-    />
-
-    <!-- Username -->
-    <Input
-        label="Nombre de usuario"
-        bind:value={register.username}
-        validation={validation.register.username}
-        required={true}
-    />
+	<form class="mt-9 flex w-full flex-col gap-7">
+		<div class="flex gap-6">
+			<RegisterInput
+				label="Nombres"
+				inputKey="firstName"
+				placeholder="Ingrese su nombre"
+				type="text"
+				bind:validation
+				bind:value={register.firstName}
+				contactNotRequired={false}
+			/>
+			<RegisterInput
+				label="Apellidos"
+				inputKey="lastName"
+				placeholder="Ingrese su apellido"
+				type="text"
+				bind:validation
+				bind:value={register.lastName}
+				contactNotRequired={false}
+			/>
+		</div>
+		<div class="flex gap-6">
+			<RegisterCombobox
+				label="País de Residencia"
+				inputKey="countryOfResidence"
+				placeholder="Selecciona un país"
+				options={Countries}
+				bind:validation
+				bind:value={register.countryOfResidence}
+			/>
+			<RegisterCombobox
+				label="País de Nacimiento"
+				inputKey="countryOfBirth"
+				placeholder="Selecciona un país"
+				options={Countries}
+				bind:validation
+				bind:value={register.countryOfBirth}
+			/>
+		</div>
+		<div class="flex gap-6">
+			<RegisterInput
+				label="Correo Electrónico"
+				inputKey="email"
+				placeholder="Ingrese su correo electrónico"
+				type="email"
+				bind:validation
+				bind:value={register.email}
+				contactNotRequired={register.contactNotRequired}
+			/>
+			<BirthdaySelect inputKey="birthday" bind:validation bind:value={register.birthday} />
+		</div>
+		<div class="flex gap-6">
+			<PhoneInput
+				label="Celular"
+				inputKey="phoneNumber"
+				options={Countries}
+				bind:validation
+				bind:value={register.phoneNumber}
+				contactNotRequired={register.contactNotRequired}
+			/>
+			<WhatsAppInput
+				label="WhatsApp"
+				inputKey="whatsappNumber"
+				options={Countries}
+				bind:validation
+				bind:value={register.whatsappNumber}
+				bind:pastPhoneNumber={register.phoneNumber}
+				contactNotRequired={register.contactNotRequired}
+				bind:isChecked
+			/>
+		</div>
+		<div class="flex gap-6">
+			<RegisterInput
+				label="Usuario"
+				inputKey="username"
+				placeholder="Ingrese su nombre de usuario"
+				type="text"
+				bind:validation
+				bind:value={register.username}
+				contactNotRequired={false}
+			/>
+		</div>
+	</form>
 </div>
