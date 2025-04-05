@@ -238,8 +238,12 @@
 				bind:richValue={storyState.experienceText}
 				bind:titleAudio={storyState.experienceAudio.file_name}
 				bind:contentAudio={storyState.experienceAudio.content!}
+				activeTab={storyState.experienceAudio.content ? 'audio' : 
+						  storyState.experienceDocuments.length > 0 ? 'documents' : 
+						  'text'}
 			/>
 		</div>
+		
 		<!-- Life lection -->
 		<div class="flex flex-col gap-6">
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
@@ -250,6 +254,9 @@
 				bind:richValue={storyState.life_lessonText}
 				bind:titleAudio={storyState.life_lessonAudio.file_name}
 				bind:contentAudio={storyState.life_lessonAudio.content!}
+				activeTab={storyState.life_lessonAudio.content ? 'audio' : 
+						  storyState.life_lessonDocuments.length > 0 ? 'documents' : 
+						  'text'}
 			/>
 		</div>
 	</div>
