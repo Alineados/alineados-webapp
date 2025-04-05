@@ -9,16 +9,26 @@
 	import type { Response } from '$lib/services/http';
 	import { thoughtState } from '$lib/stores';
 	import { toast } from 'svelte-sonner';
-	let { status, title }: { status: 'new' | 'edit' | 'see'; title: string } = $props();
+	let { 
+        status, 
+        title,
+        onClick = undefined 
+    }: { 
+        status: 'new' | 'edit' | 'see'; 
+        title: string;
+        onClick?: () => void;
+    } = $props();
 
 	let formNewStory: HTMLFormElement;
 	let formUpdateStory: HTMLFormElement;
-
 	let loading = $state(false);
 
 	function handleOnClick() {
 		if (status === 'new') formNewStory.requestSubmit();
-		else if (status === 'edit') formUpdateStory.requestSubmit();
+		else if (status === 'edit') {
+            formUpdateStory.requestSubmit();
+            onClick?.(); // Call onClick if provided
+        }
 	}
 </script>
 
