@@ -39,7 +39,7 @@ const reversedSpiritual = $derived([...$spiritualProblemsFiltered].reverse());
     </div>
 </div>
 
-<div bind:this={cardContainerRef} class="flex justify-center gap-6 bg-white pb-5 px-4 md:px-8 lg:px-16">
+<!-- <div bind:this={cardContainerRef} class="flex justify-center gap-6 bg-white pb-5 px-4 md:px-8 lg:px-16">
     <ViewStatistics 
         total={data.problems.total}
         health={data.problems.health}
@@ -53,7 +53,7 @@ const reversedSpiritual = $derived([...$spiritualProblemsFiltered].reverse());
             { pilar_name: 'Espiritual', key: 'spiritual', problems: reversedSpiritual }
         ]}
     />
-</div>
+</div> -->
 
 <div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
 	<ProblemCard title="Salud" problems={reversedHealth} />
