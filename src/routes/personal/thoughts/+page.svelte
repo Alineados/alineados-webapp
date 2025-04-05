@@ -298,7 +298,7 @@ function scroll(direction: 'left' | 'right') {
 	<div class="flex flex-col items-center justify-center gap-4 px-32">
 		{#if thoughtsState.thoughtsFiltered.length === 0}
 			<p class="text-alineados-gray-400">
-				No hay pensamientos, haz clic en el botón de "Nuevo Pensamiento" para agregar uno.
+				No hay pensamientos, haz clic en el botón de "Nuevo" para agregar uno.
 			</p>
 		{:else}
 			{#each thoughtsState.thoughtsFiltered as thought}
