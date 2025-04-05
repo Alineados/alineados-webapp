@@ -82,7 +82,7 @@
 			{/if}
 
 			{#if status === 'new'}
-				<NewButton status="new" title="Nuevo Relato" />
+				<NewButton status="new" title="Nuevo" />
 				<MoreButtonStories />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Ver" />

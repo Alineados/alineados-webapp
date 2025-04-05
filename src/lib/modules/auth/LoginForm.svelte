@@ -186,16 +186,16 @@
 		</Button>
 	</div>
 
-	<div class="relative">
+	<!-- <div class="relative">
 		<div class="absolute inset-0 flex items-center">
 			<span class="w-full border-t border-alineados-gray-200"></span>
 		</div>
 		<div class="relative flex justify-center text-sm uppercase text-alineados-gray-400">
 			<span class="bg-white px-2 text-alineados-gray-400"> O </span>
 		</div>
-	</div>
+	</div> -->
 
-	<div class="flex flex-col gap-4">
+	<!-- <div class="flex flex-col gap-4">
 		<Button
 			variant="outline"
 			type="button"
@@ -214,7 +214,7 @@
 			<Facebook class="mr-2 h-4 w-4" />
 			Ingresa con Facebook
 		</Button>
-	</div>
+	</div> -->
 
 	<Button
 		href="/onboarding/steps/1"

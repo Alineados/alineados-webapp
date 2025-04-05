@@ -110,7 +110,7 @@
 		>
 			{#if storiesState.testimoniesFiltered.length === 0}
 				<p class="text-alineados-gray-400">
-					No hay testimonios, haz clic en el botón de "Nuevo relato" para agregar uno.
+					No hay testimonios, haz clic en el botón de "Nuevo" para agregar uno.
 				</p>
 			{:else}
 				{#each [...storiesState.testimoniesFiltered].reverse() as testimony}
@@ -179,7 +179,7 @@
 		<div class="flex flex-row flex-wrap gap-8">
 			{#if storiesState.conversationsFiltered.length === 0}
 				<p class="text-alineados-gray-400">
-					No hay conversaciones, haz clic en el botón de "Nuevo relato" para agregar uno.
+					No hay conversaciones, haz clic en el botón de "Nuevo" para agregar uno.
 				</p>
 			{:else}
 				{#each [...storiesState.conversationsFiltered].reverse() as conversation}

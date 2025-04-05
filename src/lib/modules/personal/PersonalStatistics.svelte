@@ -1,6 +1,9 @@
 <script lang="ts">
 	import ViewCard from '$lib/components/ViewCard.svelte';
+	import Conversation from '$lib/icons/Conversation.svelte';
 	import Head from '$lib/icons/Head.svelte';
+	import StarThought from '$lib/icons/Star-Thought.svelte';
+	import Terstimony from '$lib/icons/Terstimony.svelte';
 
 	let {
 		type,
@@ -18,7 +21,11 @@
 	{#snippet content()}
 		<div class="flex w-full items-center gap-3 p-4">
 			<div class="rounded-xl bg-alineados-green-50 p-2">
-				<Head styleTw="size-7 text-alineados-green-900" />
+				{#if type === 'thoughts'}
+					<Head styleTw="size-7 text-alineados-orange-900" />	
+				{:else if type === 'stories'}
+					<Terstimony styleTw="size-7 text-alineados-green-900" />
+				{/if}
 			</div>
 			<div>
 				<p class="text-sm font-medium text-black">
@@ -37,7 +44,11 @@
 	{#snippet content()}
 		<div class="flex w-full items-center gap-3 p-4">
 			<div class="rounded-xl bg-alineados-green-50 p-2">
-				<Head styleTw="size-7 text-alineados-green-900" />
+				{#if type === 'thoughts'}
+						<StarThought styleTw="size-7 text-alineados-orange-900" />
+				{:else if type === 'stories'}
+					<Conversation styleTw="size-7 text-alineados-green-900" />
+				{/if}
 			</div>
 			<div>
 				<p class="text-sm font-medium text-black">

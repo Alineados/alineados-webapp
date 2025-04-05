@@ -54,7 +54,7 @@
 
 		<div class="flex basis-1/4 flex-row justify-end gap-4 self-start pt-2">
 			{#if status === 'new'}
-				<NewButton status="new" title="Nuevo Pensamiento" />
+				<NewButton status="new" title="Nuevo" />
 				<MoreButtonThoughts />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Guardar" onClick={handleGoBack}/>
