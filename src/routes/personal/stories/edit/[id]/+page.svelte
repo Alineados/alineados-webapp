@@ -16,6 +16,8 @@
 	import { onMount } from 'svelte';
 	import { SocketService } from '$lib/services/socket';
 	import { browser } from '$app/environment';
+	import { beforeNavigate } from '$app/navigation';
+	import AlertDialog from '$lib/components/AlertDialog.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -69,6 +71,51 @@
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
+
+    // Add new state variables
+    let showAlert = $state(false);
+    let pendingNavigation = $state<any>(null);
+
+    // Add navigation guard
+    beforeNavigate(async (navigation) => {
+        // Skip warning if it's a page refresh
+        if (navigation.type === 'leave') return;
+
+        // Check required fields
+        if (!storyState.story_name?.trim() || 
+            !storyState.type || 
+            !storyState.category_name || 
+            !storyState.involved.some(inv => inv.description?.trim())) {
+            showAlert = true;
+            pendingNavigation = navigation;
+            navigation.cancel();
+            return;
+        }
+    });
+
+    // Update onMount
+    onMount(() => {
+        if (browser) {
+            socket = new SocketService(storyState.id);
+        }
+
+        // Add beforeunload handler
+        window.addEventListener('beforeunload', (event) => {
+            if (!storyState.story_name?.trim() || 
+                !storyState.type || 
+                !storyState.category_name || 
+                !storyState.involved.some(inv => inv.description?.trim())) {
+                event.preventDefault();
+                event.returnValue = 'Debe completar los campos requeridos para poder salir';
+                return event.returnValue;
+            }
+        });
+
+        return () => {
+            socket.disconnect();
+            window.removeEventListener('beforeunload', () => {});
+        };
+    });
 </script>
 
 <PersonalHeader simple={true}>
@@ -191,8 +238,12 @@
 				bind:richValue={storyState.experienceText}
 				bind:titleAudio={storyState.experienceAudio.file_name}
 				bind:contentAudio={storyState.experienceAudio.content!}
+				activeTab={storyState.experienceAudio.content ? 'audio' : 
+						  storyState.experienceDocuments.length > 0 ? 'documents' : 
+						  'text'}
 			/>
 		</div>
+		
 		<!-- Life lection -->
 		<div class="flex flex-col gap-6">
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
@@ -203,6 +254,9 @@
 				bind:richValue={storyState.life_lessonText}
 				bind:titleAudio={storyState.life_lessonAudio.file_name}
 				bind:contentAudio={storyState.life_lessonAudio.content!}
+				activeTab={storyState.life_lessonAudio.content ? 'audio' : 
+						  storyState.life_lessonDocuments.length > 0 ? 'documents' : 
+						  'text'}
 			/>
 		</div>
 	</div>
@@ -217,3 +271,14 @@
 		{ ...Pillars.spiritual }
 	]}
 /> -->
+
+<!-- Add AlertDialog at the end of the template -->
+<AlertDialog
+    bind:open={showAlert}
+    title="Atención"
+    description="Debe completar los campos Título, Relato, Categoría e Involucrados antes de salir."
+    cancel="Aceptar"
+    action=""
+    handleAction={() => {}}
+    handleCancel={() => showAlert = false}
+/>
