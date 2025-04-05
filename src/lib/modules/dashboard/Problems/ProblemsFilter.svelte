@@ -36,8 +36,14 @@
         cardFilter.relational = false;
         cardFilter.vocational = false;
         cardFilter.spiritual = false;
-
+    
         cardFilter[filter] = true;
+        
+        // Reset scroll position when changing filters
+        if (scrollContainer) {
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+            checkScrollability();
+        }
     }
     
 
@@ -174,7 +180,7 @@
                 >
                     <div class="flex flex-nowrap gap-2">
                         {#if cardFilter.health}
-                            {#each $healthProblems as health, i}
+                            {#each [...$healthProblems].reverse() as health}
                                 <div class="flex-none">
                                     {#if health.id === pid}
                                         <SelectablePill
@@ -191,7 +197,7 @@
                                             pid={health.id}
                                             name="health"
                                             selected={false}
-                                            bind:text={$healthProblems[i].problem_name}
+                                            text={health.problem_name}
                                             maxWidth="200px"
                                         />
                                     {/if}
@@ -200,7 +206,7 @@
                         {/if}
 
                         {#if cardFilter.relational}
-                            {#each $relationalProblems as relational, i}
+                            {#each [...$relationalProblems].reverse() as relational}
                                 <div class="flex-none">
                                     {#if relational.id === pid}
                                         <SelectablePill
@@ -217,7 +223,7 @@
                                             pid={relational.id}
                                             name="relational"
                                             selected={false}
-                                            bind:text={$relationalProblems[i].problem_name}
+                                            text={relational.problem_name}
                                             maxWidth="200px"
                                         />
                                     {/if}
@@ -226,7 +232,7 @@
                         {/if}
 
                         {#if cardFilter.vocational}
-                            {#each $vocationalProblems as vocational, i}
+                            {#each [...$vocationalProblems].reverse() as vocational}
                                 <div class="flex-none">
                                     {#if vocational.id === pid}
                                         <SelectablePill
@@ -243,7 +249,7 @@
                                             pid={vocational.id}
                                             name="vocational"
                                             selected={false}
-                                            bind:text={$vocationalProblems[i].problem_name}
+                                            text={vocational.problem_name}
                                             maxWidth="200px"
                                         />
                                     {/if}
@@ -252,7 +258,7 @@
                         {/if}
 
                         {#if cardFilter.spiritual}
-                            {#each $spiritualProblems as spiritual, i}
+                            {#each [...$spiritualProblems].reverse() as spiritual}
                                 <div class="flex-none">
                                     {#if spiritual.id === pid}
                                         <SelectablePill
@@ -269,7 +275,7 @@
                                             pid={spiritual.id}
                                             name="spiritual"
                                             selected={false}
-                                            bind:text={$spiritualProblems[i].problem_name}
+                                            text={spiritual.problem_name}
                                             maxWidth="200px"
                                         />
                                     {/if}
