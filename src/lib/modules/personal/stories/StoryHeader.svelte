@@ -7,6 +7,8 @@
     import { storyState } from '$lib/stores';
     import NewButton from '../NewButton.svelte';
     import { page } from '$app/stores';
+	import MoreButtonStories from '$lib/components/MoreButtonStories.svelte';
+	import MoreButtonSingleStory from '$lib/components/MoreButtonSingleStory.svelte';
 
     let {
         status,
@@ -65,7 +67,7 @@
 			<div class="ml-5 flex items-center gap-3"></div>
 		</div>
 
-		<div class="flex basis-1/4 flex-row justify-end gap-4 self-start pt-2">
+		<div class="flex basis-1/4 flex-row justify-end gap-4 items-center self-start pt-2">
 			<!-- Autosave -->
 			{#if status !== 'new'}
 				{#if storyState.autosave}
@@ -77,6 +79,7 @@
 
 			{#if status === 'new'}
 				<NewButton status="new" title="Nuevo Relato" />
+				<MoreButtonStories />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Ver" />
 			{:else if status === 'see'}
@@ -92,6 +95,9 @@
 					<BackArrow class="size-4 font-bold text-alineados-blue-900" />
 					<p class="text-xs font-medium">Regresar</p>
 				</a>
+			{/if}
+			{#if status === 'see'}
+				<MoreButtonSingleStory />
 			{/if}
 		</div>
 	</div>

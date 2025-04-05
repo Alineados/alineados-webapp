@@ -38,18 +38,22 @@ export const actions = {
 		//  Validate the data
 		const invalidFields: ValidationError[] = [];
 
-		// Basic fields validation
-		const basicFields: (keyof RegisterValidation)[] = [
-			'firstName',
-			'lastName',
+		// Basic fields validation - only username and countries are always required
+		const alwaysRequiredFields: (keyof RegisterValidation)[] = [
+			'username',
 			'countryOfResidence',
-			'countryOfBirth',
-			'birthday',
-			'username'
+			'countryOfBirth'
 		];
 
-		// Check if the fields are empty
-		basicFields.forEach((field) => {
+		// Fields required only when contactNotRequired is false
+		const conditionalFields: (keyof RegisterValidation)[] = [
+			'firstName',
+			'lastName',
+			'birthday'
+		];
+
+		// Validate always required fields
+		alwaysRequiredFields.forEach((field) => {
 			if (!dataJSON.register[field]) {
 				invalidFields.push({
 					field,
@@ -58,40 +62,70 @@ export const actions = {
 			}
 		});
 
-		// FirstName validation
-		const hasFirstNameRequiredError = invalidFields.some(
-			(error) => error.field === 'firstName' && error.errorType === ValidationType.REQUIRED
-		);
+		// Validate conditional fields only if contact is required
+		if (!dataJSON.register.contactNotRequired) {
+			conditionalFields.forEach((field) => {
+				if (!dataJSON.register[field]) {
+					invalidFields.push({
+						field,
+						errorType: ValidationType.REQUIRED
+					});
+				}
+			});
+		}
 
-		if (!hasFirstNameRequiredError && dataJSON.register.firstName) {
-			if (dataJSON.register.firstName.length > 20) {
-				invalidFields.push({
-					field: 'firstName',
-					errorType: ValidationType.IS_TOO_LONG
-				});
-			} else if (!textRegex.test(dataJSON.register.firstName)) {
-				invalidFields.push({
-					field: 'firstName',
-					errorType: ValidationType.INVALID_NAME
-				});
+		// FirstName validation - only if contact is required
+		if (!dataJSON.register.contactNotRequired) {
+			const hasFirstNameRequiredError = invalidFields.some(
+				(error) => error.field === 'firstName' && error.errorType === ValidationType.REQUIRED
+			);
+
+			if (!hasFirstNameRequiredError && dataJSON.register.firstName) {
+				if (dataJSON.register.firstName.length > 20) {
+					invalidFields.push({
+						field: 'firstName',
+						errorType: ValidationType.IS_TOO_LONG
+					});
+				} else if (!textRegex.test(dataJSON.register.firstName)) {
+					invalidFields.push({
+						field: 'firstName',
+						errorType: ValidationType.INVALID_NAME
+					});
+				}
 			}
 		}
 
-		// LastName validation
-		const hasLastNameRequiredError = invalidFields.some(
-			(error) => error.field === 'lastName' && error.errorType === ValidationType.REQUIRED
-		);
+		// LastName validation - only if contact is required
+		if (!dataJSON.register.contactNotRequired) {
+			const hasLastNameRequiredError = invalidFields.some(
+				(error) => error.field === 'lastName' && error.errorType === ValidationType.REQUIRED
+			);
 
-		if (!hasLastNameRequiredError && dataJSON.register.lastName) {
-			if (dataJSON.register.lastName.length > 20) {
+			if (!hasLastNameRequiredError && dataJSON.register.lastName) {
+				if (dataJSON.register.lastName.length > 20) {
+					invalidFields.push({
+						field: 'lastName',
+						errorType: ValidationType.IS_TOO_LONG
+					});
+				} else if (!textRegex.test(dataJSON.register.lastName)) {
+					invalidFields.push({
+						field: 'lastName',
+						errorType: ValidationType.INVALID_NAME
+					});
+				}
+			}
+		}
+
+		// Birthday validation - only if provided or contact is required
+		if (!dataJSON.register.contactNotRequired) {
+			if (
+				!dataJSON.register.birthday.day ||
+				!dataJSON.register.birthday.month ||
+				!dataJSON.register.birthday.year
+			) {
 				invalidFields.push({
-					field: 'lastName',
-					errorType: ValidationType.IS_TOO_LONG
-				});
-			} else if (!textRegex.test(dataJSON.register.lastName)) {
-				invalidFields.push({
-					field: 'lastName',
-					errorType: ValidationType.INVALID_NAME
+					field: 'birthday',
+					errorType: ValidationType.REQUIRED
 				});
 			}
 		}

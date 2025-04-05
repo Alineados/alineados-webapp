@@ -20,10 +20,10 @@
 	<li class="flex items-center gap-2">
 		{#if stepId === '2'}
 			<Step2 fill="#0F172A" stroke="white" width={24} height={24} backgroundColor="white" />
-			<span class="text-xs font-medium text-white">Verificación de correo o celular</span>
+			<span class="text-xs font-medium text-white">Verificación de correo</span>
 		{:else}
 			<Step2 fill="#566994" stroke="#566994" width={24} height={24} backgroundColor="#0F172A" />
-			<span class="text-xs font-medium text-[#566994]">Verificación de correo o celular</span>
+			<span class="text-xs font-medium text-[#566994]">Verificación de correo</span>
 		{/if}
 	</li>
 	<li class="flex items-center gap-2">
