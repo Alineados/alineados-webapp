@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import MoreButtonSingleStory from '$lib/components/MoreButtonSingleStory.svelte';
 	import MoreButtonThoughts from '$lib/components/MoreButtonThoughts.svelte';
 	import BackArrow from '$lib/icons/BackArrow.svelte';
 	import NewButton from '../thoughts/NewButton.svelte';
@@ -64,6 +65,7 @@
 					<BackArrow class="size-4 font-bold text-alineados-blue-900" />
 					<p class="text-xs font-medium">Regresar</p>
 				</a>
+				<MoreButtonSingleStory />
 			{/if}
 		</div>
 	</div>
