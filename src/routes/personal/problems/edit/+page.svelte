@@ -129,7 +129,7 @@
             </div>
             <div
                 bind:this={asideProblemRef}
-                class="sticky top-[64px] z-40 w-1/4 flex-shrink-0 pr-4 md:pr-8 lg:pr-16 mt-3.5"
+                class="sticky top-[64px] w-1/4 flex-shrink-0 pr-4 md:pr-8 lg:pr-16 mt-3.5"
             >
                 <AsideProblem bind:openDateModal />
             </div>

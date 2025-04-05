@@ -55,6 +55,12 @@
 		// navigate to problem details
 		goto(`./stories/${sid}`);
 	}
+
+    function formatDate(dateString: string) {
+        const [fullDate] = dateString.split(' ');
+        const [year, month, day] = fullDate.split('-');
+        return `${day}/${month}/${year.slice(2)}`;
+    }
 </script>
 
 <PersonalHeader>
@@ -156,7 +162,9 @@
 				                        >
 				                    </div>
 				                </div>
-				                <span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
+				                <span class="self-end text-xs text-alineados-gray-400">
+				                    {formatDate(testimony.created_at)}
+				                </span>
 				            </div>
 				        {/snippet}
 				    </CustomCard>
@@ -217,7 +225,10 @@
 				                        >
 				                    </div>
 				                </div>
-				                <span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
+				                {console.log('Story Data:', testimony)}
+				                <span class="self-end text-xs text-alineados-gray-400">
+				                    {formatDate(conversation.created_at)}
+				                </span>
 				            </div>
 				        {/snippet}
 				    </CustomCard>
