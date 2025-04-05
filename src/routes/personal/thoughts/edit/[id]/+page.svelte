@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { beforeNavigate } from '$app/navigation';
+    import AlertDialog from '$lib/components/AlertDialog.svelte';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import PersonalSelect from '$lib/modules/personal/PersonalSelect.svelte';
 	import { Pillars } from '$lib/interfaces/data';
@@ -82,6 +84,53 @@
 			thoughtState.setPurpose(purpose);
 		}
 	}
+
+    // Add new state variables
+    let showAlert = $state(false);
+    let pendingNavigation = $state<any>(null);
+
+    // Add navigation guard
+    beforeNavigate(async (navigation) => {
+        // Skip warning if it's a page refresh
+        if (navigation.type === 'leave') return;
+
+        // Check required fields
+        if (!thoughtState.pillar_name || 
+            !thoughtState.purpose_name || 
+            (!thoughtState.quality_time.text && 
+             !thoughtState.quality_time.audio && 
+             !thoughtState.quality_time.documents?.length)) {
+            showAlert = true;
+            pendingNavigation = navigation;
+            navigation.cancel();
+            return;
+        }
+    });
+
+    // Add beforeunload handler in onMount
+    onMount(() => {
+        if (browser) {
+            socket = new SocketService(thoughtState.id);
+        }
+
+        // Add beforeunload handler
+        window.addEventListener('beforeunload', (event) => {
+            if (!thoughtState.pillar_name || 
+                !thoughtState.purpose_name || 
+                (!thoughtState.quality_time.text && 
+                 !thoughtState.quality_time.audio && 
+                 !thoughtState.quality_time.documents?.length)) {
+                event.preventDefault();
+                event.returnValue = 'Debe completar los campos requeridos para poder salir';
+                return event.returnValue;
+            }
+        });
+
+        return () => {
+            socket.disconnect();
+            window.removeEventListener('beforeunload', () => {});
+        };
+    });
 </script>
 
 <PersonalHeader simple={true}>
@@ -145,3 +194,14 @@
 		</div>
 	</div>
 </div>
+
+<!-- Add AlertDialog at the end of the template -->
+<AlertDialog
+    bind:open={showAlert}
+    title="Atención"
+    description="Debe completar los campos Pilar, Fin y Pensamiento antes de salir."
+    cancel="Aceptar"
+    action=""
+    handleAction={() => {}}
+    handleCancel={() => showAlert = false}
+/>

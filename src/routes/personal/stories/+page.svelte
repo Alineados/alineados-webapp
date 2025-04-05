@@ -300,7 +300,7 @@
 										>
 									</div>
 								</div>
-								<span class="self-end text-xs text-alineados-gray-400">Julio 2024</span>
+								<span class="self-end text-xs text-alineados-gray-400">{formatDate(conversation.created_at)}</span>
 							</div>
 						{/snippet}
 					</CustomCard>

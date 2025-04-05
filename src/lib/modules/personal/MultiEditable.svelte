@@ -18,24 +18,26 @@
 		storyType = '',
 		thoughtType = '',
 		type = '' // story | thoughts
-	}: {
-		richValue: string;
-		titleAudio: string;
-		contentAudio: string;
-		storyType?: string;
-		thoughtType?: string;
-		type: string;
-		files: Documents[];
 	} = $props();
 
-	let editType = $state<{
-		text: boolean;
-		audio: boolean;
-		document: boolean;
-	}>({
-		text: true,
+	// Initialize editType based on existing content
+	let editType = $state({
+		text: true,  // default to text
 		audio: false,
 		document: false
+	});
+
+	// Set initial state based on content
+	$effect(() => {
+		if (contentAudio) {
+			editType.text = false;
+			editType.audio = true;
+			editType.document = false;
+		} else if (files && files.length > 0) {
+			editType.text = false;
+			editType.audio = false;
+			editType.document = true;
+		}
 	});
 
 	// Determine which editors should be disabled based on thoughtType
