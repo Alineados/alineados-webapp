@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import MoreButtonThoughts from '$lib/components/MoreButtonThoughts.svelte';
+	import BackArrow from '$lib/icons/BackArrow.svelte';
 	import NewButton from '../thoughts/NewButton.svelte';
 
 	let {
@@ -56,6 +57,13 @@
 				<MoreButtonThoughts />
 			{:else if status === 'edit'}
 				<NewButton status="edit" title="Guardar" />
+				<a
+					href="/personal/thoughts"
+					class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-5 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+				>
+					<BackArrow class="size-4 font-bold text-alineados-blue-900" />
+					<p class="text-xs font-medium">Regresar</p>
+				</a>
 			{/if}
 		</div>
 	</div>
