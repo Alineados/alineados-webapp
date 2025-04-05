@@ -162,7 +162,7 @@
                     onclick={() => scroll('left')}
                     class="flex h-8 items-center justify-center hover:text-alineados-gray-600"
                 >
-                    <ChevronLeft styleTw="h-6 w-6 rotate-90 text-alineados-gray-400" />
+                    <ChevronLeft styleTw="h-6 w-6 text-alineados-gray-400" />
                 </button>
             {/if}
 
