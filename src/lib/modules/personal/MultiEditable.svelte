@@ -17,7 +17,8 @@
 		files = $bindable([]),
 		storyType = '',
 		thoughtType = '',
-		type = '' // story | thoughts
+		type = '', // story | thoughts
+		animate = false // Add this new prop
 	} = $props();
 
 	// Initialize editType based on existing content
@@ -106,10 +107,23 @@
 	</div>
 	<!-- Content -->
 	{#if editType.text}
-		<RichTextComposer {type} bind:value={richValue} />
+		<RichTextComposer 
+			{type} 
+			bind:value={richValue}
+			{animate}
+		/>
 	{:else if editType.audio}
-		<AudioComposer {type} {storyType} bind:title={titleAudio} bind:content={contentAudio} />
+		<AudioComposer 
+			{type} 
+			{storyType} 
+			bind:title={titleAudio} 
+			bind:content={contentAudio}
+		/>
 	{:else if editType.document}
-		<FileComposer {type} bind:filesList={files} {storyType} />
+		<FileComposer 
+			{type} 
+			bind:filesList={files} 
+			{storyType}
+		/>
 	{/if}
 </div>
