@@ -11,6 +11,8 @@
 	import MessageText from '$lib/icons/MessageText.svelte';
 	import DocumentCard from '$lib/modules/personal/DocumentCard.svelte';
 
+	import Calendar from '$lib/icons/Calendar.svelte';
+
 	let { data }: PageProps = $props();
 
 	const { banner_url, story }: { banner_url: string; story: Story } = data;
@@ -32,6 +34,13 @@
 
 	// // init story state
 	storyState.init(story, banner_url);
+
+
+	function formatDate(dateString: string) {
+        const [fullDate] = dateString.split(' ');
+        const [year, month, day] = fullDate.split('-');
+        return `${day}/${month}/${year.slice(2)}`;
+    }
 </script>
 
 <PersonalHeader simple={true}>
@@ -56,6 +65,11 @@
 				<MessageText class="size-6 text-alineados-gray-900" />
 			{/snippet}
 		</StoryText> -->
+		<StoryText text={formatDate(storyState.created_at)}>
+			{#snippet iconSnnipet()}
+				<Calendar styleTw="size-6 text-alineados-gray-900" />
+			{/snippet}
+		</StoryText>
 		<StoryText text={storyState.category_name}>
 			{#snippet iconSnnipet()}
 				<ThirdCube styleTw="size-6 text-alineados-gray-900" />
