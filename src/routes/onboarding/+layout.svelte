@@ -16,9 +16,16 @@
 	>
 		<div class="absolute inset-0 flex h-full flex-col justify-between bg-[#0F172A] px-6">
 			<div>
-				<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
+				<!-- <a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
 					<Check styleTw="size-6" />
 					<p class="text-lg font-bold text-alineados-gray-50">Alineados</p>
+				</a> -->
+				<a href="https://alineados.com" class="mt-8 flex flex-row gap-2">
+					<img
+						src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO.webp"
+						alt="Alineados Logo"
+						class="h-12 w-auto"
+					/>
 				</a>
 
 				<AsideSteps {stepId} />
