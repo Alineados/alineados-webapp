@@ -26,9 +26,8 @@
 </script>
 
 <Header
-	title="Bienvenido de nuevo a tu propia herramienta de vida"
-	description="Hoy es un nuevo día, es tu día. 
-	Inicia sesión para comenzar a gestionar tu alineación"
+	title="Bienvenido al espacio donde organizas tu vida y tomas decisiones."
+	description="Inicia sesión "
 />
 {#if loginData && data.post.uid}
 	<LoginForm bind:data={loginData} bind:dataJSON bind:uid={data.post.uid} />

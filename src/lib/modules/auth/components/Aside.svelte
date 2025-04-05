@@ -2,7 +2,7 @@
 </script>
 
 <div
-	class="relative hidden h-full flex-col bg-[#293855] text-white dark:border-r lg:col-span-3 lg:flex"
+	class="relative hidden h-full flex-col bg-alineados-blue-900 text-white dark:border-r lg:col-span-3 lg:flex"
 >
 	<div
 		class="from-alineados_blue_end to-alineados_blue_start absolute inset-0 bg-gradient-to-t"
