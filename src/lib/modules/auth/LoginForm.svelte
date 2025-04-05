@@ -177,7 +177,7 @@
 		</div>
 
 		<Button
-			class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
+			class="rounded-lg bg-alineados-green-900 text-sm  font-normal text-white hover:bg-alineados-green-700"
 			onclick={post}
 			type="submit"
 			disabled={loading}
@@ -222,6 +222,6 @@
 		class="-mt-5 flex cursor-pointer flex-row gap-1
 	 text-xs font-normal text-black"
 		>¿No tienes una cuenta?
-		<span class="text-[#E67635] hover:underline">Regístrate</span>
+		<span class="text-alineados-orange-900 hover:underline">Regístrate</span>
 	</Button>
 </form>

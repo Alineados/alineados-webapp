@@ -30,6 +30,8 @@
     function handleGoBack() {
         goto('/personal/stories');
     }
+
+	let isFocused = $state(false);
 </script>
 
 <div class="flex flex-col gap-2 px-4 pb-6 md:px-8 lg:px-16">
@@ -53,11 +55,13 @@
 		<div class="flex basis-3/4 items-center gap-2">
 			{#if status === 'edit'}
 				<input
-					placeholder="Ingresa el titulo del nuevo relato"
+					placeholder={isFocused ? "" : "Titulo del nuevo relato"}
 					type="text"
 					maxlength="40"
 					bind:value={title}
-					class="w-full border-none bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none"
+					onfocus={() => isFocused = true}
+    				onblur={() => isFocused = false}
+					class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:alineados-orange-900]"
 				/>
 			{:else if status === 'see' && title}
 				<p class="text-4xl font-bold text-alineados-gray-900">{title}</p>

@@ -116,6 +116,8 @@
             window.removeEventListener('beforeunload', () => {});
         };
     });
+
+    const hasAnyContent = $derived(storyState.involved.some(inv => inv.description?.trim()));
 </script>
 
 <PersonalHeader simple={true}>
@@ -161,6 +163,7 @@
 							categories: []
 						}
 					]}
+					animate={true}
 				/>
 			</div>
 			<div class="flex flex-row items-center justify-between">
@@ -175,6 +178,7 @@
 						{ ...pillarState.vocational },
 						{ ...pillarState.spiritual }
 					]}
+					animate={true}
 				/>
 			</div>
 		</div>
@@ -201,28 +205,29 @@
 				</Tooltip>
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
-				{#each storyState.involved as involded}
-					<Item
-						w_size="w-1/2"
-						deleteItem={() => {
-							if (
-								storyState.involved[storyState.involved.length - 1].id !== involded.id &&
-								involded.description !== ''
-							)
-								storyState.removeOrClean(involded.id);
-						}}
-						addItem={() => {
-							storyState.addInvolved(involded.id);
-						}}
-						onInput={() => {
-							if (storyState.involved[storyState.involved.length - 1].description !== '')
-								storyState.addInvolved(involded.id);
-							if (involded.description === '') storyState.removeOrClean(involded.id);
-						}}
-						isOnlyText={true}
-						showOnlyDelete={true}
-						bind:value={involded.description}
-					/>
+				{#each storyState.involved as involded, index}
+				<Item
+				w_size="w-1/2"
+				deleteItem={() => {
+				if (
+				storyState.involved[storyState.involved.length - 1].id !== involded.id &&
+				involded.description !== ''
+				)
+				storyState.removeOrClean(involded.id);
+				}}
+				addItem={() => {
+				storyState.addInvolved(involded.id);
+				}}
+				onInput={() => {
+				if (storyState.involved[storyState.involved.length - 1].description !== '')
+				storyState.addInvolved(involded.id);
+				if (involded.description === '') storyState.removeOrClean(involded.id);
+				}}
+				isOnlyText={true}
+				showOnlyDelete={true}
+				bind:value={involded.description}
+				animate={!hasAnyContent && index === storyState.involved.length - 1}
+				/>
 				{/each}
 			</div>
 		</div>

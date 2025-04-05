@@ -8,12 +8,16 @@
 		list,
 		subCategory = false,
 		alreadyValue = '',
-		handleSelect
+		handleSelect,
+		animate = false,  // Add this new prop
+		class: className = '' 
 	}: {
 		list: DataPillar[] | DataPurpose[];
 		subCategory?: boolean;
 		alreadyValue?: string;
 		handleSelect: (value: string) => void;
+		animate?: boolean;  // Add type
+		class?: string;
 	} = $props();
 
 	let value = $state('');
@@ -37,7 +41,7 @@
 </script>
 
 <Select.Root type="single" name="favoriteFruit" bind:value onValueChange={handleSelect}>
-	<Select.Trigger class="w-6/12 border-alineados-gray-100">
+	<Select.Trigger class="w-6/12 border-alineados-gray-100 {className} {animate && !alreadyValue ? 'animate-border-cursor-blink' : ''}">
 		{alreadyValue !== '' ? alreadyValue : triggerContent}
 	</Select.Trigger>
 	<Select.Content class="bg-white">

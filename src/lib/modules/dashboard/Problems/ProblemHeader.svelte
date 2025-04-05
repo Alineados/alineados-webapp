@@ -90,7 +90,7 @@
 				on:input={handleInput}
 				on:focus={() => isFocused = true}
 				on:blur={() => isFocused = false}
-				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:#F97316]"
+				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:alineados-orange-900]"
 			/>
 		</div>
 		
