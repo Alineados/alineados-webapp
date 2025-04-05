@@ -113,7 +113,7 @@
 					>Correo electrónico / Teléfono / Usuario</Label
 				>
 				<Input
-					class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
+					class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-700"
 					id="text"
 					placeholder="Ingrese su correo electrónico, teléfono o usuario"
 					type="text"
@@ -128,7 +128,7 @@
 
 					<div class="relative w-full">
 						<Input
-							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
+							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-700"
 							id="password"
 							placeholder="Ingrese su contraseña"
 							type={isPasswordVisible ? 'text' : 'password'}
