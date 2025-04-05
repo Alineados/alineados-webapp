@@ -32,10 +32,10 @@
 		</a>
 	{/if}
 
-	<h1 class="text-3xl font-medium text-alineados-gray-900">
+	<h1 class="text-3xl font-medium text-alineados-blue-900">
 		{title}
 	</h1>
-	<p class="font-regular text-sm text-alineados-gray-600">
+	<p class="font-regular text-sm text-alineados-blue-900">
 		{description}
 	</p>
 </div>
