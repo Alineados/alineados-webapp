@@ -150,7 +150,7 @@
 		<!-- Selects -->
 		<div class="flex w-5/12 flex-col gap-6">
 			<div class="flex flex-row items-center justify-between">
-				<p class="text-base font-bold text-alineados-gray-900">Pilar</p>
+				<p class="text-base font-bold text-alineados-gray-900 ">Pilar</p>
 				<PersonalSelect
 					handleSelect={(value: string) => handlePillars(value)}
 					subCategory={false}
@@ -161,6 +161,7 @@
 						{ ...pillarState.vocational },
 						{ ...pillarState.spiritual }
 					]}
+					animate={true}
 				/>
 			</div>
 			<div class="flex flex-row items-center justify-between">
@@ -170,6 +171,7 @@
 					alreadyValue={thoughtState.purpose_name}
 					list={purposesState.purposes}
 					handleSelect={handlePurposes}
+					animate={true}
 				/>
 			</div>
 		</div>
@@ -190,6 +192,7 @@
 				bind:richValue={thoughtState.quality_timeText}
 				bind:titleAudio={thoughtState.quality_timeAudio.file_name}
 				bind:contentAudio={thoughtState.quality_timeAudio.content!}
+				animate={true}
 			/>
 		</div>
 	</div>

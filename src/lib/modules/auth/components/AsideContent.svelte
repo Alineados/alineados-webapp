@@ -8,13 +8,13 @@
 		<img
 			src="/images/logo/VERDE IMAGEN.webp"
 			alt="Alineados Logo"
-			class="h-[40rem] w-auto"
+			class="h-[30rem] w-auto"
 		/>
 	</div>
 	<div class="mb-10 flex flex-col items-center justify-center gap-4">
-		<h1 class="text-xl font-bold text-white">¡Alinea cada área de tu vida con nosotros!</h1>
-		<p class="w-10/12 text-center text-xs font-medium text-[#8194C2]">
+		<h1 class="text-xl font-bold text-white">Vive tu propósito</h1>
+		<!-- <p class="w-10/12 text-center text-xs font-medium text-[#8194C2]">
 			Hoy es un nuevo día. Es tu día Inicia sesión para comenzar a gestionar tu alineación
-		</p>
+		</p> -->
 	</div>
 </div>

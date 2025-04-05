@@ -57,7 +57,7 @@
 				<NewButton status="new" title="Nuevo Pensamiento" />
 				<MoreButtonThoughts />
 			{:else if status === 'edit'}
-				<NewButton status="edit" title="Guardar" />
+				<NewButton status="edit" title="Guardar" onClick={handleGoBack}/>
 				<a
 					href="/personal/thoughts"
 					class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-5 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"

@@ -251,7 +251,7 @@ function scroll(direction: 'left' | 'right') {
 
 <!-- Remove the duplicate carousel and filter sections -->
 <!-- Spacing for fixed header -->
-<div class="h-24" />
+<div class="h-6" />
 
 <!-- <div class="top-[300px] w-full bg-white pb-4">
 	<ThoughtCarousel
