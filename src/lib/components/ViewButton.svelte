@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Document from '$lib/icons/Document.svelte';
+	import DocumentText from '$lib/icons/DocumentText.svelte';
 	import Eye from '$lib/icons/Eye.svelte';
 </script>
 
@@ -10,6 +12,8 @@
 		goto('/personal/problems/view');
 	}}
 >
-	<Eye styleTw="size-4" />
-	<p class="text-sm font-medium">Ver</p>
+	<!-- <Eye styleTw="size-4" /> -->
+	<DocumentText styleTw="size-4" />
+
+	<p class="text-sm font-medium">Resumen</p>
 </button>
