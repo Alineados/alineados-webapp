@@ -62,7 +62,8 @@
 	});
 
 	function handleOnChange(eType: keyof typeof editType) {
-		if (thoughtType === '') {
+		// Allow switching if thoughtType is empty OR if content is empty
+		if (thoughtType === '' || (!richValue && !contentAudio && (!files || files.length === 0))) {
 			editType.text = false;
 			editType.audio = false;
 			editType.document = false;
@@ -118,6 +119,7 @@
 			{storyType} 
 			bind:title={titleAudio} 
 			bind:content={contentAudio}
+			{animate}
 		/>
 	{:else if editType.document}
 		<FileComposer 
