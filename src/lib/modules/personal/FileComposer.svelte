@@ -15,12 +15,16 @@
 	let {
 		storyType = '',
 		type = '', // story | thoughts
-		filesList = $bindable([])
+		filesList = $bindable([]),
+		animate = false
 	}: {
 		storyType: string;
 		type: string;
 		filesList: Documents[];
+		animate?: boolean;
 	} = $props();
+
+	const hasContent = $derived(filesList && filesList.length > 0);
 
 	let fileInput: HTMLInputElement | null = $state(null);
 	let files: FileList | null = $state(null);
@@ -83,20 +87,16 @@
 		action="?/uploadMultiple"
 		enctype="multipart/form-data"
 		id="drop-zone"
-		class="rounded-lg border-2 border-dashed border-alineados-gray-300 p-8 text-center {uploading
-			? 'opacity-80'
-			: ''}"
+		class="rounded-lg border-2 border-dashed {animate && !hasContent ? 'animate-border-cursor-blink border-transparent' : 'border-alineados-gray-300'} p-8 text-center {uploading ? 'opacity-80' : ''}"
 		use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 			uploading = true;
 
 			return async ({ result, update }) => {
 				if (result.type === 'failure' && result.status === 400) {
 					uploading = false;
-
 					showToast('¡Ocurrio un error al subir los documentos!', 'error');
 				} else if (result.type === 'failure' && result.status === 500) {
 					uploading = false;
-
 					showToast('¡Ocurrio un error al subir los documentos!', 'error');
 				} else if (result.type === 'success') {
 					const { data, message, status, type, storyType } = result.data ?? {};
@@ -104,10 +104,8 @@
 					if (type === 'story') {
 						if (result.data) {
 							if (storyType === 'experience') {
-								// append the document list to story experience
 								storyState.appendExperienceDocuments(data as unknown as Documents[]);
 							} else {
-								// append the document list to story life session
 								storyState.appendLifeSessonDocuments(data as unknown as Documents[]);
 							}
 							showToast('¡Documentos subidos correctamente!', 'success');

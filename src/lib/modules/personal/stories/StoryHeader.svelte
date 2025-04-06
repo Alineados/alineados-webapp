@@ -35,13 +35,13 @@
 </script>
 
 <div class="flex flex-col gap-2 px-4 pb-6 md:px-8 lg:px-16">
-	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
+	<p class="flex flex-row text-sm font-medium">
 		<button class="text-alineados-gray-600 hover:underline">
 			Personal
 		</button>
 		<!-- <a href="/personal/stories" class="text-alineados-gray-600 hover:underline">Personal</a> -->
 		<span class="mx-1">/</span>
-		<button onclick={handleGoBack} class="text-alineados-gray-600 hover:underline">
+		<button onclick={handleGoBack} class={`hover:underline ${title ? 'text-alineados-gray-600' : 'text-alineados-orange-900'}`}>
 			Relatos
 		</button>
 		{#if title}
