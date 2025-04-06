@@ -5,6 +5,10 @@
 </script>
 <div class="flex flex-col gap-2 pb-4">
 	<p class="flex flex-row p-2 text-sm font-medium text-alineados-gray-600">
+		<button class="text-alineados-gray-600 hover:underline">
+			Personal
+		</button>
+		<span class="mx-1">/</span>
 		<a href="/personal/problems" class="text-alineados-gray-600 hover:underline"
 			>Situaciones por Mejorar</a
 		>

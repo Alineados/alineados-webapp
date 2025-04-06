@@ -84,7 +84,7 @@
 <!-- Content scrollable in Y -->
 <div class="flex flex-col gap-12 px-4 md:px-8 lg:px-16">
 	<div class="flex flex-col gap-3">
-		<p class="text-xl font-semibold text-alineados-gray-700">Testimonios</p>
+		<p class="text-3xl font-semibold text-alineados-orange-900">Testimonios</p>
 
 		<form
 			class="flex flex-row flex-wrap gap-8"
@@ -174,7 +174,7 @@
 	</div>
 
 	<div class="flex flex-col gap-3">
-		<p class="text-xl font-semibold text-alineados-gray-700">Conversaciones</p>
+		<p class="text-3xl font-semibold text-alineados-orange-900">Conversaciones</p>
 
 		<div class="flex flex-row flex-wrap gap-8">
 			{#if storiesState.conversationsFiltered.length === 0}

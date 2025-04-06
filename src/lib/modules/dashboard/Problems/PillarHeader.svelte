@@ -41,8 +41,24 @@
 </script>
 
 <div class="flex flex-col gap-6 pb-6">
-    <p class="flex flex-row text-sm font-medium text-alineados-gray-600">Situaciones por Mejorar</p>
+    <!-- <div>
+        <button class="text-alineados-gray-600 hover:underline">
+            Personal
+        </button>
+        <span class="mx-1">/</span>
+        <p class="flex flex-row text-sm font-medium text-alineados-gray-600">Situaciones por Mejorar</p>
+    </div> -->
+    <p class="flex flex-row text-sm font-medium text-alineados-gray-600">
+		<button class="text-alineados-gray-600 hover:underline">
+			Personal
+		</button>
+		<span class="mx-1">/</span>
+		<button class="text-alineados-orange-900 hover:underline ">
+			Situaciones por Mejorar
+		</button>
+	</p>
     <div class="flex flex-col gap-5 border-b border-alineados-gray-200 pb-6 lg:flex-row lg:justify-between">
+        
         <p class="text-5xl font-bold text-alineados-blue-900">Situaciones por Mejorar</p>
         <div class="flex flex-row gap-4 self-start">
             <NewProblemButton />

@@ -6,8 +6,8 @@
 
 	function downloadTemplate() {
 		const link = document.createElement('a');
-		link.href = '/templates/situacion-template.xlsx';
-		link.download = 'plantilla-situacion.xlsx';
+		link.href = '/templates/Plantilla - Persona - Situaciones por Mejorar.pdf';
+		link.download = 'Plantilla - Persona - Situaciones por Mejorar.pdf';
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
