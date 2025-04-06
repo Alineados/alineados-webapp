@@ -6,8 +6,8 @@
 
 	function downloadTemplate() {
 		const link = document.createElement('a');
-		link.href = '/templates/relato-template.xlsx';
-		link.download = 'plantilla-relato.xlsx';
+		link.href = '/templates/Plantilla - Persona - Relato.pdf';
+		link.download = 'Plantilla - Persona - Relato.pdf';
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);

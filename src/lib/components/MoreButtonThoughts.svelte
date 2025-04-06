@@ -6,8 +6,8 @@
 
 	function downloadTemplate() {
 		const link = document.createElement('a');
-		link.href = '/templates/pensamiento-template.xlsx';
-		link.download = 'plantilla-pensamiento.xlsx';
+		link.href = '/templates/Plantilla - Persona - Pensamiento.pdf';
+		link.download = 'Plantilla - Persona - Pensamiento.pdf';
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
