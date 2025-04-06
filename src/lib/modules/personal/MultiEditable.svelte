@@ -126,6 +126,7 @@
 			{type} 
 			bind:filesList={files} 
 			{storyType}
+			{animate}
 		/>
 	{/if}
 </div>
