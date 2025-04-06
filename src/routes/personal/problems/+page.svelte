@@ -18,7 +18,7 @@
 </script>
 
 <div class="w-full bg-white px-4 md:px-8 lg:px-16">
-    <div class="max-w-7xl">
+    <div>
         <PillarHeader {data} />
     </div>
 </div>
