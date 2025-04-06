@@ -19,11 +19,15 @@
 
 <div class="flex flex-col gap-2 px-4 pb-4 md:px-8 lg:px-16">
 	<p class="flex flex-row text-sm font-medium text-alineados-gray-600">
+		<button class="text-alineados-gray-600 hover:underline">
+			Personal
+		</button>
+		<span class="mx-1">/</span>
 		<button
 			onclick={() => {
 				handleGoBack();
 			}}
-			class="text-alineados-gray-600 hover:underline"
+			class={`hover:underline ${status === 'edit' ? 'text-alineados-gray-600' : 'text-alineados-orange-900'}`}
 		>
 			Pensamientos
 		</button>
