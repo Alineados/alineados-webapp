@@ -59,7 +59,7 @@
 		: 'border-alineados-gray-100 text-alineados-blue-600 '} bg-alineados-gray-50 text-3xl font-medium"
 >
 	<input
-		class="absolute left-1 top-1 w-auto border-none bg-transparent text-left text-sm font-normal {color} outline-none"
+		class="absolute left-1 top-1 w-[90px] truncate border-none bg-transparent text-left text-sm font-normal {color} outline-none"
 		bind:value={reference_value}
 	/>
 	<div class="flex h-full w-full items-center justify-center">
