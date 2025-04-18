@@ -23,6 +23,7 @@
 	// Rules
 	let strengthening = $state(0);
 	let requirements = $state({
+		noNameOrEmail: false,
 		minLength: false,
 		hasNumberOrSymbol: false
 	});
@@ -45,12 +46,21 @@
 
 		// Reset requirements and strengthening
 		if (passwordCreation.password.trim() === '') {
+			requirements.noNameOrEmail = false;
 			requirements.minLength = false;
 			requirements.hasNumberOrSymbol = false;
 			strengthening = 0;
 			return;
 		}
 
+		// Normalize password and user data
+		const normalizedPassword = normalizeString(passwordCreation.password);
+		requirements.noNameOrEmail =
+			!normalizedPassword.includes(normalizeString(registerData.firstName)) &&
+			!normalizedPassword.includes(normalizeString(registerData.lastName)) &&
+			(registerData?.email
+				? !normalizedPassword.includes(normalizeString(registerData.email))
+				: true);
 		requirements.minLength = passwordCreation.password.length >= 8;
 		requirements.hasNumberOrSymbol = /[0-9!@#$%^&*]/.test(passwordCreation.password);
 
@@ -58,7 +68,7 @@
 		strengthening = Object.values(requirements).filter(Boolean).length;
 
 		// Show confirm password input if password is strong
-		if (strengthening === 2) {
+		if (strengthening === 3) {
 			showConfirmPassword = true;
 		} else {
 			showConfirmPassword = false;
@@ -97,6 +107,14 @@
 		<ul class="space-y-1">
 			<li>
 				<PasswordStrengthening {strengthening} validation={validation.password.password} />
+			</li>
+			<li>
+				<PasswordRequirement
+					checked={requirements.noNameOrEmail}
+					message="No puede contener tu nombre o dirección de correo electrónico."
+					type={ValidationType.IS_CONTAINS_NAME_EMAIL}
+					currentValidation={validation.password.password}
+				/>
 			</li>
 			<li>
 				<PasswordRequirement
