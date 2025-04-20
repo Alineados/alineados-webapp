@@ -14,8 +14,10 @@
 	} = $props();
 
 	function selectItem() {
-		selected = !selected;
-		changeSelected && changeSelected();
+		if (!selected) { // Only allow selection, not deselection
+			selected = true;
+			changeSelected && changeSelected();
+		}
 	}
 </script>
 
