@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ProblemInfo } from '$lib/interfaces';
 	import TableItem from '../../../components/TableItem.svelte';
+	import { goto } from '$app/navigation';
 
 	// Props
 	let { pilars, selectedProblem, firstCriterion, secondCriterion } = $props();
@@ -33,10 +34,16 @@
 
 		return allProblems.map((problem: any) => ({
 			problemName: problem.problem_card.problem_name,
+			problemId: problem.problem_card.id,
+			pillarName: problem.problem_card.pillar_name,
 			firstCriterionData: getDescriptionsByCriterion(problem.problem_info, firstCriterion),
 			secondCriterionData: getDescriptionsByCriterion(problem.problem_info, secondCriterion)
 		}));
 	});
+
+function handleProblemClick(problemId: string, pillarName: string) {
+    goto(`/personal/problems/edit?pid=${problemId}&pillar_name=${pillarName}`);
+}
 </script>
 
 {#each problems as problem, i}
@@ -47,7 +54,12 @@
 		style="grid-template-columns: 2fr 3fr 3fr;"
 	>
 		<div class="whitespace-nowrap px-6 py-3 text-left align-top text-base font-medium text-black">
-			{problem.problemName}
+			<button 
+				class="hover:text-alineados-primary-600 hover:underline text-left"
+				on:click={() => handleProblemClick(problem.problemId, problem.pillarName)}
+			>
+				{problem.problemName}
+			</button>
 		</div>
 		<div>
 			<div class="flex flex-col gap-y-4 px-6 py-3">
