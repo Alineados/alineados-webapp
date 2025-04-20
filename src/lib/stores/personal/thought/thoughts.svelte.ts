@@ -46,28 +46,22 @@ export class ThoughtsState {
 
 	// methods
 	filter(type: string, id: string = '') {
-		// Case 1: No id filter - show all thoughts
-		if (id === '') {
-			this.#thoughtsFiltered = this.#onlyImportant
-				? this.#thoughts.filter((thought) => thought.is_important)
-				: this.#thoughts;
-			return;
-		}
+        // First apply type/id filter
+        let filtered = [...this.#thoughts];
+        
+        if (id) {
+            filtered = filtered.filter(thought =>
+                type === 'pillar' ? thought.pfid === id : thought.ppid === id
+            );
+        }
 
-		// Case 2: Filter by type and id
-		if (this.#onlyImportant) {
-			this.#thoughtsFiltered = this.#thoughts.filter(
-				(thought) =>
-					(type === 'pillar' ? thought.pfid === id : thought.ppid === id) && thought.is_important
-			);
-			return;
-		}
+        // Then apply important filter if needed
+        if (this.#onlyImportant) {
+            filtered = filtered.filter(thought => thought.is_important);
+        }
 
-		// Case 3: Filter only by type and id without important flag
-		this.#thoughtsFiltered = this.#thoughts.filter((thought) =>
-			type === 'pillar' ? thought.pfid === id : thought.ppid === id
-		);
-	}
+        this.#thoughtsFiltered = filtered;
+    }
 
 	deleteThought(id: string) {
 		this.#thoughts = this.#thoughts.filter((thought) => thought.id !== id);

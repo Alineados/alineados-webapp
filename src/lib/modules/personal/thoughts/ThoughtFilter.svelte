@@ -4,21 +4,18 @@
 	import { thoughtsState } from '$lib/stores';
 	import { onMount } from 'svelte';
 
-	// Props
 	let {
-		selectedType = $bindable()
-	}: {
-		selectedType: string;
+		selectedType = $bindable(),
+		purposes = $bindable([])
 	} = $props();
 
 	let pillar_name = $state<keyof typeof cardFilter>('pillar');
 
-	// Filter items object state
 	let cardFilter = $state<{
 		pillar: boolean;
 		purpose: boolean;
 	}>({
-		pillar: false,
+		pillar: true,  // Set default to true
 		purpose: false
 	});
 
@@ -27,10 +24,19 @@
 		cardFilter.purpose = false;
 		cardFilter[filter] = true;
 		selectedType = filter;
+		// Trigger refiltering when filter type changes
+		thoughtsState.filter(selectedType);
 	}
+
+	// Watch for changes in onlyImportant
+	$effect(() => {
+		thoughtsState.filter(selectedType);
+	});
 
 	onMount(() => {
 		cardFilter[pillar_name] = true;
+		// Initial filter
+		thoughtsState.filter(selectedType);
 	});
 </script>
 
@@ -51,8 +57,12 @@
 				text="Fin"
 				bind:selected={cardFilter.purpose}
 				triggerFunction={() => changeFilter('purpose')}
+				disabled={!purposes || purposes.length === 0}
 			/>
 		</div>
 	</div>
-	<Toggle description="Destacado" bind:checked={thoughtsState.onlyImportant} />
+	<Toggle 
+		description="Destacado" 
+		bind:checked={thoughtsState.onlyImportant} 
+	/>
 </div>
