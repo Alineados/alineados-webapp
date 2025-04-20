@@ -171,7 +171,7 @@ function scroll(direction: 'left' | 'right') {
 	{/snippet}
 
 	{#snippet filter()}
-		<!-- <ThoughtFilter bind:selectedType /> -->
+		<ThoughtFilter bind:selectedType />
 	{/snippet}
 </PersonalHeader>
 
