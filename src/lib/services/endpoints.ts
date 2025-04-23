@@ -2,6 +2,7 @@ const endpoints = {
 	sandbox: {
 		auth: 'https://sandbox-auth-service-808905282606.us-central1.run.app',
 		problems: 'https://sandbox-problems-service-808905282606.us-central1.run.app',
+		pillars: ' ', // TODO
 		socket: 'wss://sandbox-socket-service-808905282606.us-central1.run.app',
 		stories: 'https://sandbox-stories-service-808905282606.us-central1.run.app',
 		thoughts: 'https://sandbox-thoughts-service-808905282606.us-central1.run.app',
@@ -11,12 +12,14 @@ const endpoints = {
 	},
 	prod: {
 		problems: '',
+		pillars: ' ', // TODO
 		auth: '',
 		oidc: 'https://oidc.alineado.org',
 		settings: 'http://127.0.0.1:8080',
 	},
 	local: {
 		auth: 'http://127.0.0.1:8080',
+		pillars: 'http://127.0.0.1:3001',
 		problems: 'http://127.0.0.1:8080',
 		stories: 'http://127.0.0.1:8080',
 		thoughts: 'http://127.0.0.1:8080',
@@ -30,7 +33,7 @@ const endpoints = {
 type Venv = 'sandbox' | 'prod' | 'local';
 
 export const getEndpointByVenv = () => {
-	const env: Venv = 'sandbox';
+	const env: Venv = 'local';
 
 	return endpoints[env];
 };

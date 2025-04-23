@@ -88,9 +88,9 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Acciones (proximanete)</span>
-										</p>
+										<a href={'/personal/pillars'} {...props}>
+											<span>Acciones</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
