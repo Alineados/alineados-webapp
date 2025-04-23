@@ -16,20 +16,32 @@
 	}
 
 	beforeNavigate(({ cancel, from, to }) => {
-		// Don't show loader if navigation was prevented
-		if (from?.url.pathname.includes('/thoughts') || from?.url.pathname.includes('/stories')) {
-			const hasPreventedNavigation = window.confirm;
-			if (hasPreventedNavigation) {
+		if (!from || !to) {
+			isNavigating = true;
+			return;
+		}
+
+		// Check if navigation is between edit pages
+		const isEditPage = from.url.pathname.includes('/thoughts/edit') || 
+		from.url.pathname.includes('/stories/edit');
+		
+		if (isEditPage) {
+			const hasUnsavedChanges = window.confirm('¿Deseas salir? Los cambios no guardados se perderán.');
+			if (!hasUnsavedChanges) {
 				isPreventedNavigation = true;
+				cancel();
 				return;
 			}
 		}
+
 		isNavigating = true;
 	});
 
 	afterNavigate(() => {
-		isNavigating = false;
-		isPreventedNavigation = false;
+		setTimeout(() => {
+			isNavigating = false;
+			isPreventedNavigation = false;
+		}, 100);
 	});
 </script>
 
