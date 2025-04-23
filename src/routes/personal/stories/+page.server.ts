@@ -12,12 +12,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
     const result = await storyService.getStoriesGrouped(locals.user._id!);
 
-
-
-
-    console.log('result', result.data);
-
-
     return {
         ...result.data
     }
@@ -25,10 +19,6 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 
 export const actions = {
     new: async ({ cookies, request, locals }) => {
-        // const formData = await request.formData();
-        // const data = getJSONFormsData(formData);
-
-        console.log('new', locals.user._id);
 
         let storiesService: StoryService = StoryService.getInstance(locals.token);
 
@@ -38,15 +28,11 @@ export const actions = {
             return fail(result.data);
         }
 
-        console.log('result', result);
-
         return result;
     },
     update: async ({ cookies, request, locals }) => {
         const formData = await request.formData();
         const data = getJSONFormsData(formData);
-
-        console.log('update', data);
 
 
         return {
@@ -55,5 +41,21 @@ export const actions = {
                 message: 'update'
             }
         }
+    },
+    delete: async ({ params, request, locals }) => {
+		const formData = await request.formData();
+		const data = getJSONFormsData(formData);
+
+		const { sid } = data;
+
+        let storyService: StoryService = StoryService.getInstance(locals.token);
+
+        const result = await storyService.deleteStory(sid);
+
+
+        if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+		return result;
     }
 } satisfies Actions;

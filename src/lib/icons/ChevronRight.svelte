@@ -8,7 +8,8 @@
 	viewBox="0 0 24 24"
 	stroke-width="2"
 	stroke="currentColor"
-	class={styleTw}
+	aria-hidden="true"
+	class={`${styleTw} current-color`}
 >
 	<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
 </svg>

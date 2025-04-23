@@ -27,7 +27,7 @@
 	}: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
 
-<Sidebar.Root bind:ref {collapsible} {...restProps}>
+<Sidebar.Root bind:ref {collapsible} {...restProps} class="z-[50]">
 	<Sidebar.Header>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
@@ -37,7 +37,7 @@
 				>
 					{#snippet child({ props })}
 						<a href={'/personal/problems'} {...props}>
-							<div
+							<!-- <div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
 								<AlineadosCheck />
@@ -49,7 +49,12 @@
 								<span class="text-[10px] font-medium leading-none text-alineados-green-500"
 									>No solo sueñes, toma acción</span
 								>
-							</div>
+							</div> -->
+							<img
+								src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO.webp"
+								alt="Alineados Logo"
+								class="h-12 w-auto"
+							/>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
@@ -73,7 +78,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/personal'} {...props}>
 									<User />
 									<span>Personal</span>
 								</a>
@@ -92,18 +97,18 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Pensamientos (proximanete)</span>
-										</p>
+										<a href={'/personal/thoughts'} {...props}>
+											<span>Pensamientos</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Relatos (proximanete)</span>
-										</p>
+										<a href={'/personal/stories'} {...props}>
+											<span>Relatos</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
@@ -118,7 +123,7 @@
 							</Sidebar.MenuSubItem>
 						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
-					<!-- <Sidebar.MenuItem>
+					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'#'} {...props}>
@@ -127,7 +132,7 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem> -->
+					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
@@ -197,7 +202,7 @@
 									action="/?/logout"
 									use:enhance={() => {
 										return async ({ result, update }) => {
-											console.log(result);
+							
 											if (result.type === 'redirect') {
 												window.location.href = result.location;
 											} else {

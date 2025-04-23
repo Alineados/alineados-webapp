@@ -1,5 +1,5 @@
 import type { Categories, DataPillar, Documents, Generic, Story, TypeEditable } from "$lib/interfaces";
-import { emptyGeneric } from "../generic";
+import { emptyGeneric } from "../../generic";
 
 export class StoryState {
     // ids
@@ -17,7 +17,7 @@ export class StoryState {
     #type: number = $state(0); // 1. testimony 2. conversation
     #involved: Generic[] = $state([]);
     #experience: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
-    #life_sesson: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
+    #life_lesson: TypeEditable = $state({ id: '', text: '', audio: null, documents: [] });
 
     // secondary properties
     #is_important: boolean = $state(false);
@@ -25,6 +25,31 @@ export class StoryState {
     #updated_at: string | null = $state(null);
     #deleted_at: string | null = $state(null);
 
+    // computed - autosave = if some of the properties change, save a true value for 4 seconds
+    #autosave: boolean  = $state(false);
+
+    #storyChange = $derived.by(() => {
+        return JSON.stringify({
+            id: this.#id,
+            pfid: this.#pfid,
+            cid: this.#cid,
+            banner: this.#banner,
+            story_name: this.#story_name,
+            pillar_name: this.#pillar_name,
+            category_name: this.#category_name,
+            type: this.#type,
+            involved: this.#involved,
+            experience: this.#experience,
+            life_lesson: this.#life_lesson,
+            is_important: this.#is_important,
+            // bannerUrl: this.#bannerUrl,
+            // uid: this.#uid,
+            // id: this.#id,
+            // created_at: this.#created_at,
+            // updated_at: this.#updated_at,
+            // deleted_at: this.#deleted_at
+        })
+    })
 
     // methods
     init(story: Story, bannerUrl: string) {
@@ -39,13 +64,13 @@ export class StoryState {
         this.#category_name = story.category_name;
         this.#type = story.type;
         
-        if (story.involved.length === 0) 
+        if (story.involved.length === 0)
             this.#involved = [{ ...emptyGeneric() }];
         else
             this.#involved = story.involved;
 
         this.#experience = story.experience;
-        this.#life_sesson = story.life_sesson;
+        this.#life_lesson = story.life_lesson;
         this.#is_important = story.is_important;
         this.#created_at = story.created_at;
         this.#updated_at = story.updated_at ?? null;
@@ -101,8 +126,40 @@ export class StoryState {
         return this.#experience;
     }
 
-    get life_sesson(): TypeEditable {
-        return this.#life_sesson;
+    get autosave(): boolean {
+        return this.#autosave;
+    }
+
+    get experienceText(): string {
+        return this.#experience.text ?? '';
+    }
+
+    get experienceAudioName(): string {
+        return this.#experience.audio?.file_name ?? 'Subir audio';
+    }
+
+    get experienceAudio(): Documents {
+        return this.#experience.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
+    }
+
+    get experienceDocuments(): Documents[] {
+        return this.#experience.documents
+    }
+
+    get life_lesson(): TypeEditable {
+        return this.#life_lesson;
+    }
+
+    get life_lessonText(): string {
+        return this.#life_lesson.text ?? '';
+    }
+
+    get life_lessonAudio(): Documents {
+        return this.#life_lesson.audio ?? { id: '', content: '', type: '', created_at: '', file_name: 'Subir audio', path: '' };
+    }
+
+    get life_lessonDocuments(): Documents[] {
+        return this.#life_lesson.documents;
     }
 
     get is_important(): boolean {
@@ -113,6 +170,10 @@ export class StoryState {
         return this.#created_at;
     }
 
+    get storyChange(): string {
+        return this.#storyChange;
+    }
+
     getJson(): Story {
         return {
             id: this.#id,
@@ -120,13 +181,14 @@ export class StoryState {
             pfid: this.#pfid,
             cid: this.#cid,
             banner: this.#banner,
+            banner_url: this.#bannerUrl,
             story_name: this.#story_name,
             pillar_name: this.#pillar_name,
             category_name: this.#category_name,
             type: this.#type,
             involved: this.#involved,
             experience: this.#experience,
-            life_sesson: this.#life_sesson,
+            life_lesson: this.#life_lesson,
             is_important: this.#is_important,
             created_at: this.#created_at
         }
@@ -153,6 +215,14 @@ export class StoryState {
         this.#banner = value;
     }
 
+    set autosave(value: boolean) {
+        this.#autosave = value;
+    }
+
+    set bannerUrl(value: string) {
+        this.#bannerUrl = value;
+    }
+
     set story_name(value: string) {
         this.#story_name = value;
     }
@@ -173,8 +243,25 @@ export class StoryState {
         this.#experience = value;
     }
 
-    set life_sesson(value: TypeEditable) {
-        this.#life_sesson = value;
+    set experienceText(value: string) {
+        this.#experience.text = value;
+    }
+
+    set experienceAudio(value: Documents) {
+        this.#experience.audio = value;
+
+    }
+
+    set life_lesson(value: TypeEditable) {
+        this.#life_lesson = value;
+    }
+
+    set life_lessonText(value: string) {
+        this.#life_lesson.text = value;
+    }
+
+    set life_lessonAudio(value: Documents) {
+        this.#life_lesson.audio = value;
     }
 
     set is_important(value: boolean) {
@@ -213,6 +300,33 @@ export class StoryState {
         else
             this.#involved[index].description = '';
     }
+
+    appendExperienceDocuments(docs: Documents[]) {
+
+        if (this.#experience.documents)
+
+            this.#experience.documents = [...this.#experience.documents, ...docs];
+        else
+            this.#experience.documents = docs;
+    }
+
+    deleteExperienceDocument(id: string) {
+        this.#experience.documents = this.#experience.documents.filter(doc => doc.id !== id);
+    }
+
+    appendLifeSessonDocuments(docs: Documents[]) {
+
+        if (this.#life_lesson.documents)
+
+            this.#life_lesson.documents = [...this.#life_lesson.documents, ...docs];
+        else
+            this.#life_lesson.documents = docs;
+    }
+
+    deleteLifeLessonDocument(id: string) {
+        this.#life_lesson.documents = this.#life_lesson.documents.filter(doc => doc.id !== id);
+    }
+
 }
 
 export const storyState = new StoryState();

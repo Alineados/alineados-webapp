@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import Banner from '$lib/modules/personal/Banner.svelte';
+	import Banner from '$lib/modules/personal/stories/Banner.svelte';
 	import PersonalHeader from '$lib/modules/personal/PersonalHeader.svelte';
 	import StoryHeader from '$lib/modules/personal/stories/StoryHeader.svelte';
 	import PersonalSelect from '$lib/modules/personal/PersonalSelect.svelte';
@@ -11,6 +11,13 @@
 	import Item from '$lib/components/Item.svelte';
 	import Tooltip from '$lib/components/Tooltip.svelte';
 	import InformationIcon from '$lib/icons/InformationIcon.svelte';
+	import Toggle from '$lib/components/Toggle.svelte';
+	import { set } from 'zod';
+	import { onMount } from 'svelte';
+	import { SocketService } from '$lib/services/socket';
+	import { browser } from '$app/environment';
+	import { beforeNavigate } from '$app/navigation';
+	import AlertDialog from '$lib/components/AlertDialog.svelte';
 
 	let { data }: PageProps = $props();
 
@@ -19,8 +26,35 @@
 	// // init story state
 	storyState.init(story, banner_url);
 
-	// variables
-	let isSave = $state(false);
+	let socket: SocketService;
+	// onmout
+	onMount(() => {
+		if (browser) {
+			socket = new SocketService(storyState.id);
+		}
+
+		return () => {
+			socket.disconnect();
+		};
+	});
+
+	let timeout: ReturnType<typeof setTimeout>;
+	let autosave: boolean = $state(false);
+
+	// autosave
+	$effect(() => {
+		if (storyState.storyChange) {
+			clearTimeout(timeout);
+			autosave = true;
+			storyState.autosave = true;
+			timeout = setTimeout(() => {
+				socket.push('autosave_story', storyState.storyChange as string);
+
+				autosave = false;
+				storyState.autosave = false;
+			}, 2000);
+		}
+	});
 
 	// Functions
 	function handleCategories(value: string) {
@@ -37,11 +71,58 @@
 	function handleStoryType(value: string) {
 		storyState.setType(value);
 	}
+
+    // Add new state variables
+    let showAlert = $state(false);
+    let pendingNavigation = $state<any>(null);
+
+    // Add navigation guard
+    beforeNavigate(async (navigation) => {
+        // Skip warning if it's a page refresh
+        if (navigation.type === 'leave') return;
+
+        // Check required fields
+        if (!storyState.story_name?.trim() || 
+            !storyState.type || 
+            !storyState.category_name || 
+            !storyState.involved.some(inv => inv.description?.trim())) {
+            showAlert = true;
+            pendingNavigation = navigation;
+            navigation.cancel();
+            return;
+        }
+    });
+
+    // Update onMount
+    onMount(() => {
+        if (browser) {
+            socket = new SocketService(storyState.id);
+        }
+
+        // Add beforeunload handler
+        window.addEventListener('beforeunload', (event) => {
+            if (!storyState.story_name?.trim() || 
+                !storyState.type || 
+                !storyState.category_name || 
+                !storyState.involved.some(inv => inv.description?.trim())) {
+                event.preventDefault();
+                event.returnValue = 'Debe completar los campos requeridos para poder salir';
+                return event.returnValue;
+            }
+        });
+
+        return () => {
+            socket.disconnect();
+            window.removeEventListener('beforeunload', () => {});
+        };
+    });
+
+    const hasAnyContent = $derived(storyState.involved.some(inv => inv.description?.trim()));
 </script>
 
 <PersonalHeader simple={true}>
 	{#snippet header()}
-		<StoryHeader status="edit" bind:title={storyState.story_name} bind:isSave />
+		<StoryHeader status="edit" bind:title={storyState.story_name} />
 	{/snippet}
 
 	{#snippet statistics()}{/snippet}
@@ -52,11 +133,7 @@
 <!-- Content scrollable in Y -->
 <div class="flex flex-col px-4 md:px-8 lg:px-16">
 	<!-- Image upload -->
-	<Banner
-		imageURL={banner_url}
-		alt={storyState.banner.file_name}
-		edit={true}
-	/>
+	<Banner imageURL={banner_url} alt={storyState.banner.file_name} edit={true} />
 
 	<!-- Form -->
 	<div class="mb-10 flex w-full flex-col gap-8 pt-8">
@@ -67,6 +144,11 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleStoryType(value)}
 					subCategory={false}
+					alreadyValue={storyState.type === 1
+						? 'Testimonio'
+						: storyState.type === 2
+							? 'Conversación'
+							: ''}
 					list={[
 						{
 							id: '1',
@@ -81,6 +163,7 @@
 							categories: []
 						}
 					]}
+					animate={true}
 				/>
 			</div>
 			<div class="flex flex-row items-center justify-between">
@@ -88,16 +171,25 @@
 				<PersonalSelect
 					handleSelect={(value: string) => handleCategories(value)}
 					subCategory={true}
+					alreadyValue={storyState.category_name}
 					list={[
 						{ ...pillarState.health },
 						{ ...pillarState.relational },
 						{ ...pillarState.vocational },
 						{ ...pillarState.spiritual }
 					]}
+					animate={true}
 				/>
 			</div>
 		</div>
 
+		<!-- Toggle -->
+		<Toggle
+			description="Destacar"
+			bind:checked={storyState.is_important}
+			titleStyle="text-base font-bold text-alineados-gray-900"
+		/>
+		
 		<!-- Involved -->
 		<div class="flex flex-col">
 			<div class="flex items-center gap-2">
@@ -113,41 +205,64 @@
 				</Tooltip>
 			</div>
 			<div class="-ml-10 mt-5 flex flex-col gap-2">
-				{#each storyState.involved as involded}
-					<!-- <Item
-					w_size="w-1/2"
-						deleteItem={() => {
-							if (
-								storyState.involved[storyState.involved.length - 1].id !== involded.id &&
-								involded.description !== ''
-							)
-								storyState.removeOrClean(involded.id);
-						}}
-						addItem={() => {
-							storyState.addInvolved(involded.id);
-						}}
-						onInput={() => {
-							if (storyState.involved[storyState.involved.length - 1].description !== '')
-								storyState.addInvolved(involded.id);
-							if (involded.description === '') storyState.removeOrClean(involded.id);
-						}}
-						isOnlyText={true}
-						showOnlyDelete={true}
-						bind:value={involded.description}
-					/> -->
+				{#each storyState.involved as involded, index}
+				<Item
+				w_size="w-1/2"
+				deleteItem={() => {
+				if (
+				storyState.involved[storyState.involved.length - 1].id !== involded.id &&
+				involded.description !== ''
+				)
+				storyState.removeOrClean(involded.id);
+				}}
+				addItem={() => {
+				storyState.addInvolved(involded.id);
+				}}
+				onInput={() => {
+				if (storyState.involved[storyState.involved.length - 1].description !== '')
+				storyState.addInvolved(involded.id);
+				if (involded.description === '') storyState.removeOrClean(involded.id);
+				}}
+				isOnlyText={true}
+				showOnlyDelete={true}
+				bind:value={involded.description}
+				animate={!hasAnyContent && index === storyState.involved.length - 1}
+				/>
 				{/each}
 			</div>
 		</div>
 
+
 		<!-- Experience -->
 		<div class="flex flex-col gap-6 pb-9">
 			<p class="text-base font-bold text-alineados-gray-900">Experiencia</p>
-			<MultiEditable />
+			<MultiEditable
+				type="story"
+				storyType="experience"
+				bind:files={storyState.experienceDocuments}
+				bind:richValue={storyState.experienceText}
+				bind:titleAudio={storyState.experienceAudio.file_name}
+				bind:contentAudio={storyState.experienceAudio.content!}
+				activeTab={storyState.experienceAudio.content ? 'audio' : 
+						  storyState.experienceDocuments.length > 0 ? 'documents' : 
+						  'text'}
+			/>
 		</div>
+		
 		<!-- Life lection -->
 		<div class="flex flex-col gap-6">
 			<p class="text-base font-bold text-alineados-gray-900">Lección de vida</p>
-			<MultiEditable />
+			<MultiEditable
+				type="story"
+				storyType="life_lesson"
+				bind:files={storyState.life_lessonDocuments}
+				bind:richValue={storyState.life_lessonText}
+				bind:titleAudio={storyState.life_lessonAudio.file_name}
+				bind:contentAudio={storyState.life_lessonAudio.content!}
+				activeTab={storyState.life_lessonAudio.content ? 'audio' : 
+						  storyState.life_lessonDocuments.length > 0 ? 'documents' : 
+						  'text'}
+			/>
 		</div>
 	</div>
 </div>
@@ -161,3 +276,14 @@
 		{ ...Pillars.spiritual }
 	]}
 /> -->
+
+<!-- Add AlertDialog at the end of the template -->
+<AlertDialog
+    bind:open={showAlert}
+    title="Atención"
+    description="Debe completar los campos Título, Relato, Categoría e Involucrados antes de salir."
+    cancel="Aceptar"
+    action=""
+    handleAction={() => {}}
+    handleCancel={() => showAlert = false}
+/>

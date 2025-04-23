@@ -1,11 +1,16 @@
 <script lang="ts">
-	let { items = Array<{ id: number; icon?: string; label: string; color?: string }> } = $props();
+	import type { ComponentType } from 'svelte';
+	import { thoughtsState } from '$lib/stores';
 
-	let selectedId = $state<number | undefined>(undefined);
+	let { items = Array<{ id: string; icon?: ComponentType | string; label: string }>, type = '' } =
+		$props();
+
+	let selectedId = $state<string | undefined>(undefined);
 	let containerRef = $state<HTMLDivElement>();
 
-	function selectItem(id: number) {
-		selectedId = id;
+	function selectItem(id: string) {
+		// Toggle selection: if clicking the same item, deselect it
+		selectedId = selectedId === id ? undefined : id;
 	}
 
 	$effect(() => {
@@ -26,6 +31,20 @@
 			}
 		}
 	});
+
+	$effect(() => {
+		thoughtsState.filter(type, selectedId);
+	});
+
+	let hoveredId = $state<string | undefined>(undefined);
+
+	function handleMouseEnter(id: string) {
+		hoveredId = id;
+	}
+
+	function handleMouseLeave() {
+		hoveredId = undefined;
+	}
 </script>
 
 <div class="mx-auto flex w-full justify-center px-4 py-4">
@@ -48,19 +67,27 @@
 					aria-controls="tab-panel-{item.id}"
 					onclick={() => selectItem(item.id)}
 				>
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
 					<div
 						class="flex transform-gpu items-center justify-center rounded-full text-2xl transition-all duration-300 ease-in-out {selectedId ===
 						item.id
 							? 'h-20 w-20 scale-110 bg-green-100 text-3xl'
 							: 'h-16 w-16 bg-alineados-gray-50 group-hover:h-20 group-hover:w-20 group-hover:scale-110 group-hover:bg-green-100 group-hover:text-3xl'}"
+						onmouseenter={() => handleMouseEnter(item.id)}
+						onmouseleave={handleMouseLeave}
 					>
-						{item.icon}
+						<item.icon
+							width={24}
+							height={24}
+							stroke={selectedId === item.id || hoveredId === item.id ? '#166534' : '#515151'}
+							class="transition-colors duration-300"
+						/>
 					</div>
 					<span
 						class="absolute text-sm font-medium transition-all duration-300 ease-in-out {selectedId ===
 						item.id
-							? '-bottom-6 text-green-500 opacity-100'
-							: '-bottom-1 opacity-0 group-hover:text-green-500 group-hover:opacity-100'}"
+							? '-bottom-6 text-alineados-green-900 opacity-100'
+							: '-bottom-1 opacity-0 group-hover:text-alineados-green-900 group-hover:opacity-100'}"
 					>
 						{item.label}
 					</span>

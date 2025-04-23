@@ -11,7 +11,8 @@ export interface StoryUpdate {
     type: number; // 1 = testimony, 2 = conversatio
     involved: Generic[];
     experience: TypeEditable;
-    life_sesson: TypeEditable;
+    life_lesson: TypeEditable;
+    is_important: boolean;
 }
 
 export interface StoriesGrouped {
@@ -41,13 +42,14 @@ export interface Story {
 
     // properties
     banner: Documents;
+    banner_url: string;
     story_name: string;
     pillar_name: string;
     category_name: string;
     type: number;   // 1. testimony | 2. conversation
     involved: Generic[];
     experience: TypeEditable;
-    life_sesson: TypeEditable;
+    life_lesson: TypeEditable;
 
     // secondary properties
     is_important: boolean;

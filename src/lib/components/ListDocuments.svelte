@@ -25,6 +25,7 @@
 				<h2 class="text-base font-semibold text-alineados-gray-800">Archivos adjuntos</h2>
 			</div>
 			<Upload
+				type="problems"
 				bind:disabledBtn={disabled}
 				styles=""
 				changeIcon={false}

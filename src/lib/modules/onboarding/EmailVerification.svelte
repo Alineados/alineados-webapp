@@ -39,7 +39,7 @@
 				use:enhance={({}) => {
 					return async ({ result }) => {
 						if (result.type === 'success' && result.data && result.data.type === 'error') {
-							console.log(result.data);
+				
 						}
 					};
 				}}

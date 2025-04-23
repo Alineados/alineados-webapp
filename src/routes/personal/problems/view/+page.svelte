@@ -77,7 +77,7 @@
 	</div>
 
 	<div bind:this={cardContainerRef} class="sticky z-10 flex w-full gap-12 bg-white pb-5">
-		<ViewStatistics {...data.problems} />
+		<!-- <ViewStatistics {...data.problems} /> -->
 	</div>
 
 	<div

@@ -98,9 +98,14 @@
 			loading = false;
 		}
 	}
+
+	function handleSubmit(e: Event) {
+		e.preventDefault();
+		post();
+	}
 </script>
 
-<div class="grid gap-6">
+<form onsubmit={handleSubmit} class="grid gap-6">
 	<div class="grid gap-2">
 		<div class="grid gap-8 pb-4">
 			<div class="relative flex flex-col gap-2">
@@ -108,7 +113,7 @@
 					>Correo electrónico / Teléfono / Usuario</Label
 				>
 				<Input
-					class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
+					class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-700"
 					id="text"
 					placeholder="Ingrese su correo electrónico, teléfono o usuario"
 					type="text"
@@ -123,7 +128,7 @@
 
 					<div class="relative w-full">
 						<Input
-							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-200"
+							class="rounded-lg border-alineados-gray-100  bg-alineados-gray-50 placeholder:text-alineados-gray-700"
 							id="password"
 							placeholder="Ingrese su contraseña"
 							type={isPasswordVisible ? 'text' : 'password'}
@@ -172,25 +177,25 @@
 		</div>
 
 		<Button
-			class="rounded-lg bg-[#00B85C] text-sm  font-normal text-white hover:bg-green-600"
+			class="rounded-lg bg-alineados-green-900 text-sm  font-normal text-white hover:bg-alineados-green-700"
 			onclick={post}
-			type="button"
+			type="submit"
 			disabled={loading}
 		>
 			Ingresar
 		</Button>
 	</div>
 
-	<div class="relative">
+	<!-- <div class="relative">
 		<div class="absolute inset-0 flex items-center">
 			<span class="w-full border-t border-alineados-gray-200"></span>
 		</div>
 		<div class="relative flex justify-center text-sm uppercase text-alineados-gray-400">
 			<span class="bg-white px-2 text-alineados-gray-400"> O </span>
 		</div>
-	</div>
+	</div> -->
 
-	<div class="flex flex-col gap-4">
+	<!-- <div class="flex flex-col gap-4">
 		<Button
 			variant="outline"
 			type="button"
@@ -209,7 +214,7 @@
 			<Facebook class="mr-2 h-4 w-4" />
 			Ingresa con Facebook
 		</Button>
-	</div>
+	</div> -->
 
 	<Button
 		href="/onboarding/steps/1"
@@ -217,6 +222,6 @@
 		class="-mt-5 flex cursor-pointer flex-row gap-1
 	 text-xs font-normal text-black"
 		>¿No tienes una cuenta?
-		<span class="text-[#E67635] hover:underline">Regístrate</span>
+		<span class="text-alineados-orange-900 hover:underline">Regístrate</span>
 	</Button>
-</div>
+</form>

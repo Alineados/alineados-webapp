@@ -24,12 +24,12 @@
 	});
 </script>
 
-<div bind:this={headerRef} class="sticky top-0 z-20 bg-white pb-7">
+<div bind:this={headerRef} class="sticky top-0 z-20  bg-white">
 	{@render header()}
 </div>
 
 {#if !simple}
-	<div bind:this={cardContainerRef} class="sticky z-20 flex w-full flex-col gap-9 bg-white pb-5">
+	<div bind:this={cardContainerRef} class="flex w-full flex-col gap-9 bg-white pb-5">
 		<div class="mx-auto flex w-6/12 flex-row gap-8">
 			{@render statistics()}
 		</div>

@@ -1,0 +1,15 @@
+<script lang="ts">
+	let { styleTw = 'size-6' } = $props();
+</script>
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	fill="none"
+	viewBox="0 0 24 24"
+	stroke-width="2"
+	stroke="currentColor"
+	aria-hidden="true"
+	class={`${styleTw} current-color`}
+>
+	<path stroke-linecap="round" stroke-linejoin="round" d="m15.75 4.5-7.5 7.5 7.5 7.5" />
+</svg>

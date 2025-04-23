@@ -11,6 +11,21 @@
 	} from '$lib/stores';
 	import { toast } from 'svelte-sonner';
 
+
+
+	// Check if a final decision is selected
+    const hasFinalDecision = $derived(!!$problemInfo.final_decision);
+
+	let { disabled = false } = $props();
+
+	// Combine the disabled state with the final decision check
+    const isDisabled = $derived(disabled || !hasFinalDecision);
+
+    function handleClick() {
+        if (!hasFinalDecision) return;
+        changeReportProblem($reportProblem === 2 ? 1 : 2);
+    }
+
 	function onChangeReportPage(value: number) {
 		if ($problemInfo.action_plan.length === 1 && $problemInfo.action_plan[0].description === '') {
 			toast.warning('Por favor, agrega al menos un plan de acción antes de continuar.', {
@@ -33,7 +48,7 @@
 	}
 </script>
 
-<a
+<!-- <a
 	href="https://forms.office.com/r/huDFV67VZB"
 	target="_blank"
 	class="flex flex-row items-center gap-2 rounded-lg border bg-alineados-orange-800 px-4 py-3 text-sm text-white transition duration-300 ease-in-out hover:shadow-lg"
@@ -54,9 +69,9 @@
 	</svg>
 
 	Reportar incidentes
-</a>
+</a> -->
 
-<button
+<!-- <button
 	onclick={() => onChangeReportPage(2)}
 	disabled={!$problemCard.active}
 	class:bg-alineados-blue-500={!$problemCard.active}
@@ -73,6 +88,33 @@
 			Rendir Cuentas
 		{/if}
 	</p>
+</button> -->
+
+<button
+    onclick={handleClick}
+    disabled={isDisabled}
+    class:bg-alineados-blue-500={isDisabled}
+    class:bg-alineados-blue-900={!isDisabled}
+    class:hover:bg-alineados-blue-900={!isDisabled}
+    class="focus group relative flex items-center gap-[6px] rounded-lg px-4 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg disabled:cursor-not-allowed"
+    aria-label="Rendir Cuentas"
+>
+    <CircleCheck styleTw="size-4" />
+    <p class="text-sm font-medium">
+        {#if $reportProblem === 2}
+            Regresar
+        {:else}
+            Rendir Cuentas
+        {/if}
+    </p>
+
+    {#if !hasFinalDecision}
+        <div class="invisible absolute top-full left-1/2 -translate-x-1/2 mt-2 group-hover:visible z-[9999]">
+            <div class="whitespace-nowrap rounded-lg bg-gray-600 px-6 py-4 text-sm text-white text-center">
+                Debe seleccionar una decisión final antes de rendir cuentas
+            </div>
+        </div>
+    {/if}
 </button>
 
 <!-- {#if $reportProblem === 2}

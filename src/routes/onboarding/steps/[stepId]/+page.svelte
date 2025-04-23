@@ -14,7 +14,7 @@
 	// Initial state
 	let onboardingData = $state<OnboardingData>();
 	let validation = $state<OnboardingValidation>();
-	let isChecked = $state(false); // fot whatsapp checkbox
+	let isChecked = $state(false);
 
 	onMount(() => {
 		validation = {
@@ -71,6 +71,16 @@
 		};
 	});
 
+	// Effect to handle contactNotRequired changes
+	$effect(() => {
+		if (onboardingData?.register?.contactNotRequired) {
+			// Reset validation for optional fields when contact is not required
+			validation.register.firstName = ValidationType.ALL_GOOD;
+			validation.register.lastName = ValidationType.ALL_GOOD;
+			validation.register.birthday = ValidationType.ALL_GOOD;
+		}
+	});
+
 	// Derived stores for the current step
 	const stepId = $derived($page.params.stepId);
 
@@ -86,7 +96,11 @@
 <div class="h-4/5">
 	{#if onboardingData && validation}
 		{#if stepId === '1'}
-			<RegisterForm bind:validation bind:register={onboardingData.register} bind:isChecked />
+			<RegisterForm 
+				bind:validation 
+				bind:register={onboardingData.register} 
+				bind:isChecked 
+			/>
 		{:else if stepId === '2'}
 			<EmailVerification
 				bind:validation

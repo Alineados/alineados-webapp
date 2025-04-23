@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as AlertDialog from '$lib/shared/ui/alert-dialog/index.js';
 	import DatePicker from './DatePicker.svelte';
+	import { problemCard } from '$lib/stores';
 
 	let { open = $bindable(), date = $bindable(), confirm } = $props();
 
@@ -19,6 +20,7 @@
 		}
 
 		confirm();
+		open = false;
 	}
 </script>
 

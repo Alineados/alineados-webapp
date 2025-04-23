@@ -23,6 +23,7 @@
 		isUnique = false,
 		isNew = false,
 		isDisabled = false,
+		animate = false,  // Add this new prop
 		onFocus,
 		onInput,
 		addItem,
@@ -53,6 +54,8 @@
 		doneItem?: () => void;
 		repeatItem?: () => void;
 	} = $props();
+
+	const hasContent = $derived(value && value.trim() !== '');
 
 	function autoResize(event: Event) {
 		const textarea = event.target as HTMLTextAreaElement;
@@ -118,7 +121,7 @@
 	<div
 		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 {!isDone && !isRepeated
 			? 'focus-within:bg-alineados-gray-100 hover:bg-alineados-gray-50'
-			: ''}"
+			: ''} {animate && !hasContent ? 'animate-border-cursor-blink border-transparent' : 'border-alineados-gray-100'}"
 		class:bg-alineados-green-50={isDone}
 		class:hover:bg-alineados-green-100={isDone}
 		class:bg-blue-200={isRepeated}
@@ -219,20 +222,26 @@
 						<Sun styleTw="size-4" />
 					</button>
 				</Tooltip> -->
-				<Tooltip open={false} message="Borrar">
-					<button
-						onclick={() => {
-							if (deleteItem) deleteItem();
-						}}
-						class="text-alineados-gray-400"
-						class:hover:text-red-500={!isDisabled}
-						aria-label="Delete"
-						disabled={isDisabled}
-					>
-						<TrashCan styleTw="size-4" />
-					</button>
-				</Tooltip>
+				<button
+					onclick={() => {
+						if (deleteItem) deleteItem();
+					}}
+					class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''}`}
+					aria-label="Delete"
+					disabled={isDisabled}
+				>
+					<TrashCan styleTw="size-4" />
+				</button>
+				<!-- <Tooltip open={false} message="Borrar">
+				</Tooltip> -->
 			{/if}
 		</div>
 	{/if}
 </div>
+
+<style>
+	.item-container :global(.animate-border-cursor-blink) {
+		border: 2px solid;
+		border-radius: 0.5rem;
+	}
+</style>

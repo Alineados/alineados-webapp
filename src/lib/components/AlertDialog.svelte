@@ -18,12 +18,17 @@
 		cancel: string;
 		action: string;
 		// content: Snippet;
-		handleAction: (e:any) => void;
+		handleAction: (e: any) => void;
 		handleCancel: () => void;
 	} = $props();
 </script>
 
-<AlertDialog.Root {open} onOpenChange={() => (open = false)}>
+<AlertDialog.Root
+	{open}
+	onOpenChange={() => {
+		(open = false), handleCancel();
+	}}
+>
 	<AlertDialog.Content class="w-3/12 rounded  border border-x-alineados-gray-100 bg-white">
 		<AlertDialog.Header>
 			<AlertDialog.Title class="pb-2 text-center text-2xl font-semibold">{title}</AlertDialog.Title>
@@ -32,16 +37,24 @@
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer class="flex flex-row justify-center gap-2 pt-2">
-			<AlertDialog.Cancel
-				onclick={handleCancel}
-				class="w-full rounded-xl bg-red-500 text-sm font-normal text-white hover:border-none hover:bg-red-500 hover:text-white "
-				>{cancel}</AlertDialog.Cancel
-			>
-			<AlertDialog.Action
-				onclick={handleAction}
-				class="w-full rounded-xl bg-alineados-blue-900 text-sm font-normal text-white hover:bg-alineados-blue-900"
-				>{action}</AlertDialog.Action
-			>
+			{#if action}
+				<AlertDialog.Cancel
+					onclick={handleCancel}
+					class="w-full rounded-xl text-sm font-normal hover:bg-alineados-blue-900 hover:text-white "
+					>{cancel}</AlertDialog.Cancel
+				>
+				<AlertDialog.Action
+					onclick={handleAction}
+					class="w-full rounded-xl border border-red-500 text-sm font-normal hover:bg-red-500 hover:text-white "
+					>{action}</AlertDialog.Action
+				>
+			{:else}
+				<AlertDialog.Action
+					onclick={handleCancel}
+					class="w-full rounded-xl bg-alineados-blue-600 text-sm font-normal text-white hover:bg-alineados-blue-900"
+					>{cancel}</AlertDialog.Action
+				>
+			{/if}
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

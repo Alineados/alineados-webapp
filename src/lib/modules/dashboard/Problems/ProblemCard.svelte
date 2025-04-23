@@ -20,7 +20,6 @@
 		problems = $bindable([])
 	}: {
 		title: string;
-
 		problems: ProblemCard[];
 	} = $props();
 
@@ -97,7 +96,7 @@
 </script>
 
 <div class="flex flex-col items-start gap-3">
-	<p class="pl-2 text-xl font-bold text-alineados-gray-600 md:pl-1">{title}</p>
+	<p class="pl-2 text-3xl font-bold text-alineados-orange-900 md:pl-1">{title}</p>
 	<form
 		bind:this={formHtml}
 		method="POST"
@@ -120,7 +119,7 @@
 				deleting = false;
 			};
 		}}
-		class="flex w-full flex-row flex-wrap justify-center gap-3 md:justify-start"
+		class="flex w-full flex-row flex-wrap justify-center gap-6 md:justify-start"
 	>
 		{#if problems.length === 0}
 			<MessageLength />
@@ -150,8 +149,8 @@
 
 							{#if problem.security}
 								<Padlock class="size-4" />
-							{:else}
-								<UnPadlock class="size-4" />
+								<!-- <UnPadlock class="size-4" /> -->
+							<!-- {:else} -->
 							{/if}
 						</div>
 						<!-- onclick={(e) => deleteCard(problem, e)} -->
@@ -166,7 +165,7 @@
 				{/snippet}
 				{#snippet content()}
 					<div class="flex flex-col gap-4 pb-3 pt-4">
-						<p class="h-14 text-xl font-semibold text-black">
+						<p class="h-14 text-xl font-semibold text-black line-clamp-2 break-words">
 							{problem.problem_name.length > 25
 								? `${problem.problem_name.slice(0, 25)}...`
 								: problem.problem_name}
