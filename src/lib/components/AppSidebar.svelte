@@ -123,7 +123,7 @@
 							</Sidebar.MenuSubItem>
 						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
-					<!-- <Sidebar.MenuItem>
+					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'#'} {...props}>
@@ -132,7 +132,7 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem> -->
+					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}

@@ -23,6 +23,8 @@
     import ChevronLeft from '$lib/icons/ChevronLeft.svelte';
     import ChevronRight from '$lib/icons/ChevronRight.svelte';
 
+    import Toggle from '$lib/components/Toggle.svelte';
+
     let selectedType = $state('pillar');
     let { data }: PageProps = $props();
     const { thoughts, purposes } = data;
@@ -159,11 +161,17 @@ function scroll(direction: 'left' | 'right') {
     const scrollAmount = direction === 'left' ? -200 : 200;
     scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
 }
+
+// Add effect to watch for changes in onlyImportant
+$effect(() => {
+    thoughtsState.filter(selectedType, selectedItemId);
+});
 </script>
 
 <PersonalHeader>
 	{#snippet header()}
 		<ThoughtHeader status="new" />
+        
 	{/snippet}
 
 	{#snippet statistics()}
@@ -175,87 +183,95 @@ function scroll(direction: 'left' | 'right') {
 	{/snippet}
 
 	{#snippet filter()}
-		<ThoughtFilter bind:selectedType />
+		<!-- <ThoughtFilter bind:selectedType /> -->
+        <!-- Filter section -->
+        <div class="bg-white">
+            <div class="px-4 md:px-8 lg:px-16">
+                <div class="flex flex-row items-center justify-between mb-2">
+                    <div class="flex flex-row gap-2">
+                        <CardFilter
+                            type="complex"
+                            text="Pilar"
+                            bind:selected={cardFilter.pillar}
+                            triggerFunction={() => changeFilter('pillar')}
+                        />
+                        <CardFilter
+                            type="complex"
+                            text="Fin"
+                            bind:selected={cardFilter.purpose}
+                            triggerFunction={() => changeFilter('purpose')}
+                        />
+                    </div>
+                    
+                    <Toggle 
+                        description="Destacado" 
+                        bind:checked={thoughtsState.onlyImportant} 
+                    />
+                </div>
+        
+                <div class="relative flex w-full items-center gap-2">
+                    {#if showLeftChevron}
+                        <button
+                            onclick={() => scroll('left')}
+                            class="flex h-8 items-center justify-center hover:text-alineados-gray-600"
+                        >
+                            <ChevronLeft styleTw="h-6 w-6 text-alineados-gray-400" />
+                        </button>
+                    {/if}
+        
+                    <div class="relative w-full">
+                        <div
+                            bind:this={scrollContainer}
+                            onscroll={checkScrollability}
+                            class="flex overflow-x-auto scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none]"
+                        >
+                            <div class="flex flex-nowrap gap-2">
+                                {#if selectedType === 'pillar'}
+                                    {#each pillarItems as item}
+                                        <SelectablePill
+                                            isLink={false}
+                                            pid={item.id}
+                                            name={item.label}
+                                            text={item.label}
+                                            selected={selectedItemId === item.id}
+                                            onInput={() => handlePillSelect(item.id)}
+                                        />
+                                    {/each}
+                                {:else}
+                                    {#each purposeItems as item}
+                                        <SelectablePill
+                                            isLink={false}
+                                            pid={item.id}
+                                            name={item.label}
+                                            text={item.label}
+                                            selected={selectedItemId === item.id}
+                                            onInput={() => handlePillSelect(item.id)}
+                                        />
+                                    {/each}
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+        
+                    {#if showRightChevron}
+                        <button
+                            onclick={() => scroll('right')}
+                            class="flex h-8 items-center justify-center hover:text-alineados-gray-600"
+                        >
+                            <ChevronRight styleTw="h-6 w-6 text-alineados-gray-400" />
+                        </button>
+                    {/if}
+                </div>
+            </div>
+        </div>
 	{/snippet}
 </PersonalHeader>
 
-<!-- Filter section -->
-<div class=" bg-white">
-    <div class="px-4 md:px-8 lg:px-16">
-        <div class="flex flex-row gap-2 mb-2">
-            <CardFilter
-                type="complex"
-                text="Pilar"
-                bind:selected={cardFilter.pillar}
-                triggerFunction={() => changeFilter('pillar')}
-            />
-            <CardFilter
-                type="complex"
-                text="Fin"
-                bind:selected={cardFilter.purpose}
-                triggerFunction={() => changeFilter('purpose')}
-            />
-        </div>
 
-        <div class="relative flex w-full items-center gap-2">
-            {#if showLeftChevron}
-                <button
-                    onclick={() => scroll('left')}
-                    class="flex h-8 items-center justify-center hover:text-alineados-gray-600"
-                >
-                    <ChevronLeft styleTw="h-6 w-6 text-alineados-gray-400" />
-                </button>
-            {/if}
-
-            <div class="relative w-full">
-                <div
-                    bind:this={scrollContainer}
-                    onscroll={checkScrollability}
-                    class="flex overflow-x-auto scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none]"
-                >
-                    <div class="flex flex-nowrap gap-2">
-                        {#if selectedType === 'pillar'}
-							{#each pillarItems as item}
-								<SelectablePill
-									isLink={false}
-									pid={item.id}
-									name={item.label}
-									text={item.label}
-									selected={selectedItemId === item.id}
-									onInput={() => handlePillSelect(item.id)}
-								/>
-							{/each}
-						{:else}
-							{#each purposeItems as item}
-								<SelectablePill
-									isLink={false}
-									pid={item.id}
-									name={item.label}
-									text={item.label}
-									selected={selectedItemId === item.id}
-									onInput={() => handlePillSelect(item.id)}
-								/>
-							{/each}
-						{/if}
-                    </div>
-                </div>
-            </div>
-
-            {#if showRightChevron}
-                <button
-                    onclick={() => scroll('right')}
-                    class="flex h-8 items-center justify-center hover:text-alineados-gray-600"
-                >
-                    <ChevronRight styleTw="h-6 w-6 text-alineados-gray-400" />
-                </button>
-            {/if}
-        </div>
-    </div>
-</div>
 
 <!-- Remove the duplicate carousel and filter sections -->
 <!-- Spacing for fixed header -->
-<div class="h-6" />
+<div class="h-6"></div>
 
 <!-- <div class="top-[300px] w-full bg-white pb-4">
 	<ThoughtCarousel
@@ -326,6 +342,3 @@ function scroll(direction: 'left' | 'right') {
 	handleCancel={() => (openModalDelete = false)}
 	handleAction={submitForm}
 />
-
-
-<!-- Rest of the form and content remains the same -->
