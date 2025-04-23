@@ -115,15 +115,6 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<a href={'/personal'} {...props}>
-											<span>Personal</span>
-										</a>
-									{/snippet}
-								</Sidebar.MenuSubButton>
-							</Sidebar.MenuSubItem>
-							<Sidebar.MenuSubItem>
-								<Sidebar.MenuSubButton>
-									{#snippet child({ props })}
 										<a href={'/personal/problems'} {...props}>
 											<span>Situaciones por Mejorar</span>
 										</a>

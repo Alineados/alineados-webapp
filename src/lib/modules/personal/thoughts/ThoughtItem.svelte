@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 	import type { Thought } from '$lib/interfaces';
 	import DocumentCard from '../DocumentCard.svelte';
+    import Loader from '$lib/shared/ui/loader/loader.svelte';
 
 	let {
 		thought = $bindable(),
@@ -155,3 +156,36 @@
         {@html thought.content}
     </div>
 </div>
+
+{#if thought?.quality_time.documents}
+    <div class="space-y-3">
+        {#each thought?.quality_time.documents as file}
+            <div class="flex items-center gap-2">
+                {#if file.type.startsWith('image')}
+                    <div class="relative w-full aspect-video">
+                        {#if imageLoading}
+                            <div class="absolute inset-0 flex items-center justify-center bg-alineados-gray-50">
+                                <Loader size="h-6 w-6" color="text-alineados-gray-400" />
+                            </div>
+                        {/if}
+                        <img 
+                            src={file.url} 
+                            alt={file.file_name || 'Thought image'}
+                            class="w-full h-full object-cover rounded-lg transition-opacity duration-300"
+                            class:opacity-0={imageLoading}
+                            loading="lazy"
+                            decoding="async"
+                            onload={() => imageLoading = false}
+                            onerror={() => {
+                                imageLoading = false;
+                                imageError = true;
+                            }}
+                        />
+                    </div>
+                {:else}
+                    <DocumentCard {file} showDelete={false} />
+                {/if}
+            </div>
+        {/each}
+    </div>
+{/if}
