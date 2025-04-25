@@ -114,7 +114,8 @@
         <div class="flex min-w-0">
             <div class="flex w-3/4 flex-col overflow-x-auto">
                 {#if $reportProblem !== 2}
-                    <div bind:this={problemsFilterRef} class="sticky z-40 w-full bg-white">
+                    <!-- <div bind:this={problemsFilterRef} class="sticky z-40 w-full bg-white"> -->
+					<div bind:this={problemsFilterRef} class="sticky w-full bg-white">
                         <ProblemsFilter pid={$pid} pillar_name={data.pillar_name} />
                     </div>
                 {/if}

@@ -155,3 +155,25 @@
         {@html thought.content}
     </div>
 </div>
+
+<!-- {#if thought?.quality_time.documents}
+    <div class="space-y-3">
+        {#each thought?.quality_time.documents as file}
+            <div class="flex items-center gap-2">
+                {#if file.type.startsWith('image')}
+                    <div class="relative w-full aspect-video">
+                        <img 
+                            src={file.url} 
+                            alt={file.file_name || 'Thought image'}
+                            class="w-full h-full object-cover rounded-lg"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </div>
+                {:else}
+                    <DocumentCard {file} showDelete={false} />
+                {/if}
+            </div>
+        {/each}
+    </div>
+{/if} -->
