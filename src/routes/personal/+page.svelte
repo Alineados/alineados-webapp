@@ -18,7 +18,7 @@
             title: 'Acciones',
             icon: 'checklist',
             description: 'Gestiona tus pilares de vida',
-            href: '/personal/actions'
+            href: '/personal/pillars'
         },
         {
             title: 'Pensamientos',
