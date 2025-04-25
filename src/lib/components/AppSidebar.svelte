@@ -78,7 +78,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/personal'} {...props}>
 									<User />
 									<span>Personal</span>
 								</a>
@@ -88,9 +88,9 @@
 							<Sidebar.MenuSubItem>
 								<Sidebar.MenuSubButton>
 									{#snippet child({ props })}
-										<p {...props} class="pl-1.5 opacity-50">
-											<span>Acciones (proximanete)</span>
-										</p>
+										<a href={'/personal/pillars'} {...props}>
+											<span>Acciones</span>
+										</a>
 									{/snippet}
 								</Sidebar.MenuSubButton>
 							</Sidebar.MenuSubItem>
@@ -123,7 +123,7 @@
 							</Sidebar.MenuSubItem>
 						</Sidebar.MenuSub>
 					</Sidebar.MenuItem>
-					<!-- <Sidebar.MenuItem>
+					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'#'} {...props}>
@@ -132,7 +132,7 @@
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem> -->
+					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
