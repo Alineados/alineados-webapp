@@ -17,6 +17,7 @@
 
 	import { userState } from '$lib/stores';
 	import { applyAction, enhance } from '$app/forms';
+	import ApoyoUsuarios from '$lib/icons/ApoyoUsuarios.svelte';
 
 	const sidebar = useSidebar();
 
@@ -30,6 +31,7 @@
 <Sidebar.Root bind:ref {collapsible} {...restProps} class="z-[50]">
 	<Sidebar.Header>
 		<Sidebar.Menu>
+			
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton
 					size="lg"
@@ -65,16 +67,16 @@
 		<Sidebar.Group>
 			<Sidebar.GroupContent>
 				<Sidebar.Menu>
-					<!-- <Sidebar.MenuItem>
+					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/home'} {...props}>
 									<House />
 									<span>Inicio</span>
 								</a>
 							{/snippet}
 						</Sidebar.MenuButton>
-					</Sidebar.MenuItem> -->
+					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
@@ -126,7 +128,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/relations'} {...props}>
 									<Users />
 									<span>Relaciones</span>
 								</a>
@@ -147,7 +149,7 @@
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
 								<a href={'/personal'} {...props}>
-									<User />
+									<ApoyoUsuarios />
 									<span>Apoyo a usuarios</span>
 								</a>
 							{/snippet}
