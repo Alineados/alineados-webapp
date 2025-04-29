@@ -143,6 +143,36 @@
 							{/snippet}
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
+					<Sidebar.MenuItem>
+						<Sidebar.MenuButton>
+							{#snippet child({ props })}
+								<a href={'/personal'} {...props}>
+									<User />
+									<span>Apoyo a usuarios</span>
+								</a>
+							{/snippet}
+						</Sidebar.MenuButton>
+						<Sidebar.MenuSub>
+							<Sidebar.MenuSubItem>
+								<Sidebar.MenuSubButton>
+									{#snippet child({ props })}
+										<a href={'/customers/inspiration'} {...props}>
+											<span>Inspiración</span>
+										</a>
+									{/snippet}
+								</Sidebar.MenuSubButton>
+							</Sidebar.MenuSubItem>
+							<Sidebar.MenuSubItem>
+								<Sidebar.MenuSubButton>
+									{#snippet child({ props })}
+										<a href={'/customers/examples'} {...props}>
+											<span>Ejemplos</span>
+										</a>
+									{/snippet}
+								</Sidebar.MenuSubButton>
+							</Sidebar.MenuSubItem>
+						</Sidebar.MenuSub>
+					</Sidebar.MenuItem>
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
 		</Sidebar.Group>
