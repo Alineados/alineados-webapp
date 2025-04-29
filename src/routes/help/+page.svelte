@@ -2,6 +2,7 @@
     import DonationSelect from '$lib/components/DonationSelect.svelte';
 
     let selectedOption = $state('gt-bank');
+    let activeView = $state('money'); // Add this state for view switching
     
     const donationOptions = [
         { value: 'gt-bank', label: 'Trasferencia Bancaria en Guatemala' },
@@ -36,47 +37,86 @@
     function handleSelect(value: string) {
         selectedOption = value;
     }
+
+    function switchView(view: 'money' | 'time') {
+        activeView = view;
+    }
 </script>
 
 <div class="container mx-auto px-4 py-8">
     <p class="mb-2 flex flex-row text-sm font-medium text-alineados-gray-600">
-        <span>Relaciones</span>
+        <span>Ayuda A Alineados</span>
     </p>
 
     <div class="mb-8 flex flex-col gap-5 border-b border-alineados-gray-200 pb-6">
         <h1 class="text-5xl font-bold text-alineados-gray-900">Ayuda A Alineados</h1>
     </div>
 
+
+
+
     <div class="flex gap-16">
+        <!-- COLUMNA IZQUIERDA -->
         <div class="w-1/2">
-            <div class="flex gap-2">
-                <button class="rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-800">
-                    Apoyando Economicamente
+            <div class="flex gap-2 mb-4">
+                <button 
+                    class="rounded-full px-4 py-2 text-sm font-medium {activeView === 'money' ? 'bg-green-100 text-green-800' : 'text-gray-600 hover:bg-gray-100'}"
+                    onclick={() => switchView('money')}
+                >
+                    Apoyando Económicamente
                 </button>
-                <button class="rounded-full px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+                <button 
+                    class="rounded-full px-4 py-2 text-sm font-medium {activeView === 'time' ? 'bg-green-100 text-green-800' : 'text-gray-600 hover:bg-gray-100'}"
+                    onclick={() => switchView('time')}
+                >
                     Dando de tu Tiempo
                 </button>
             </div>
-
-            <div class="mt-6 flex aspect-square items-center justify-center rounded-xl bg-alineados-blue-900">
-                <img 
-                    src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO-SLOGAN.png" 
-                    alt="Alineados Logo" 
-                    class="w-3/4 object-contain"
-                />
-            </div>
-        </div>
-
-        <div class="w-1/2 pt-[52px]">
-            <h2 class="mb-4 text-lg font-medium">Escoge una opción de donación</h2>
-            
-            <DonationSelect 
-                value={selectedOption}
-                options={donationOptions}
-                on:change={(e) => selectedOption = e.detail}
-            />
     
-            {#if selectedOption === 'gt-bank'}
+            {#if activeView === 'money'}
+                <!-- Logo solo si está en 'money' -->
+                <div class="mt-6 flex aspect-square items-center justify-center rounded-xl bg-alineados-blue-900">
+                    <img 
+                        src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO-SLOGAN.png" 
+                        alt="Alineados Logo" 
+                        class="w-3/4 object-contain"
+                    />
+                </div>
+            {:else}
+                <!-- Voluntariado solo en 'time' -->
+                <a href="https://form.jotform.com/250948776885076" target="_blank" class="block mt-6">
+                    <div class="rounded-2xl bg-alineados-blue-900 p-12">
+                        <div class="mb-6">
+                            <img src="/images/logo/INSTITUCIONAL BLANCO TRANSPARENTE LOGO-SLOGAN.png" alt="Alineados Logo" class="h-12" />
+                        </div>
+                        <h2 class="mb-4 text-5xl font-bold text-white">Voluntariado</h2>
+                        <div class="rounded-xl bg-white/10 p-6">
+                            <p class="text-white/90">Comparte tu tiempo apoyando a nuestras actividades y causas. Cada ayuda suma.</p>
+                            <div class="mt-6">
+                                <span class="inline-block rounded-lg bg-[#8BC83F] px-6 py-2 text-sm font-medium text-black">
+                                    Aplica aquí
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {/if}
+        </div>
+    
+        <!-- COLUMNA DERECHA -->
+        <div class="w-1/2 pt-[52px]">
+            {#if activeView === 'money'}
+                <h2 class="mb-4 text-lg font-medium">Escoge una opción de donación</h2>
+        
+                <DonationSelect 
+                    value={selectedOption}
+                    options={donationOptions}
+                    on:change={(e) => selectedOption = e.detail}
+                />
+        
+                <!-- Aquí va todo lo que ya tenías de donaciones (gt-bank, int-bank, digital, gift) -->
+                <!-- No toques esa parte, mantenla como está -->
+                {#if selectedOption === 'gt-bank'}
                 <div class="mt-6">
                     <p class="text-sm font-medium text-green-600">Datos Bancarios:</p>
                     
@@ -235,38 +275,63 @@
                         </a>
                     </div>
                 </div>
-                <!-- {/if} -->
-                {:else if selectedOption === 'gift'}
-                    <div class="mt-6">
-                        <p class="text-sm font-medium text-gray-600">Tipo</p>
+            {:else if selectedOption === 'gift'}
+                <div class="mt-6">
+                    <p class="text-sm font-medium text-gray-600">Tipo</p>
+                    
+                    <div class="mt-4 space-y-4">
+                        <a href="https://form.jotform.com/250948776885076" target="_blank" class="group flex flex-col rounded-2xl border p-4 hover:border-green-500">
+                            <div class="aspect-[4/1] w-full rounded-xl bg-[#2C5732] flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <path d="M52.5 28.125V48.75C52.5 49.7446 52.1049 50.6984 51.4016 51.4017C50.6984 52.1049 49.7446 52.5 48.75 52.5H13.125C12.1304 52.5 11.1766 52.1049 10.4733 51.4017C9.77009 50.6984 9.375 49.7446 9.375 48.75V28.125M30 12.1875C30 10.8896 29.6151 9.62077 28.894 8.54157C28.1729 7.46238 27.148 6.62124 25.9489 6.12454C24.7497 5.62784 23.4302 5.49788 22.1572 5.7511C20.8842 6.00432 19.7149 6.62933 18.7971 7.54711C17.8793 8.4649 17.2543 9.63422 17.0011 10.9072C16.7479 12.1802 16.8778 13.4997 17.3745 14.6989C17.8712 15.898 18.7124 16.9229 19.7916 17.644C20.8708 18.3651 22.1396 18.75 23.4375 18.75H30M30 12.1875V18.75M30 12.1875C30 10.8896 30.3849 9.62077 31.106 8.54157C31.8271 7.46238 32.852 6.62124 34.0511 6.12454C35.2503 5.62784 36.5698 5.49788 37.8428 5.7511C39.1158 6.00432 40.2851 6.62933 41.2029 7.54711C42.1207 8.4649 42.7457 9.63422 42.9989 10.9072C43.2521 12.1802 43.1222 13.4997 42.6255 14.6989C42.1288 15.898 41.2876 16.9229 40.2084 17.644C39.1292 18.3651 37.8604 18.75 36.5625 18.75H30M30 18.75V52.5M8.4375 28.125H53.4375C54.99 28.125 56.25 26.865 56.25 25.3125V21.5625C56.25 20.01 54.99 18.75 53.4375 18.75H8.4375C6.885 18.75 5.625 20.01 5.625 21.5625V25.3125C5.625 26.865 6.885 28.125 8.4375 28.125Z" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="mt-4 px-2">
+                                <h3 class="text-lg font-medium">Material</h3>
+                                <p class="text-sm text-gray-500">Haz un regalo sencillo para dar a los usuarios de alineados</p>
+                            </div>
+                        </a>
+
+
+                        <a href="https://form.jotform.com/250948776885076" target="_blank" class="group flex flex-col rounded-2xl border p-4 hover:border-green-500">
+                            <div class="aspect-[4/1] w-full rounded-xl bg-[#49515C] flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <path d="M48.75 29.9998C48.75 26.9198 48.635 23.8674 48.405 20.8449C48.2281 18.4502 47.1968 16.1988 45.4989 14.501C43.801 12.8031 41.5496 11.7717 39.155 11.5948C33.0603 11.1351 26.9397 11.1351 20.845 11.5948C18.4504 11.7717 16.199 12.8031 14.5011 14.501C12.8032 16.1988 11.7719 18.4502 11.595 20.8449C11.5525 21.3949 11.515 21.9473 11.48 22.4998M48.75 29.9998L56.25 22.4998M48.75 29.9998L41.25 22.4998M11.25 29.9998C11.25 33.0798 11.365 36.1323 11.595 39.1548C11.7719 41.5495 12.8032 43.8009 14.5011 45.4987C16.199 47.1966 18.4504 48.228 20.845 48.4048C26.9397 48.8649 33.0603 48.8649 39.155 48.4048C41.5496 48.228 43.801 47.1966 45.4989 45.4987C47.1968 43.8009 48.2281 41.5495 48.405 39.1548C48.4475 38.6048 48.485 38.0523 48.52 37.4998M11.25 29.9998L18.75 37.4998M11.25 29.9998L3.75 37.4998" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="mt-4 px-2">
+                                <h3 class="text-lg font-medium">Servicio</h3>
+                                <p class="text-sm text-gray-500">Participa de manera activa con nosotros para nuestros usuarios</p>
+                            </div>
+                        </a>
+            
                         
-                        <div class="mt-4 space-y-4">
-                            <a href="https://form.jotform.com/250948776885076" target="_blank" class="group flex flex-col rounded-2xl border p-4 hover:border-green-500">
-                                <div class="aspect-[4/1] w-full rounded-xl bg-[#2C5732] flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
-                                        <path d="M52.5 28.125V48.75C52.5 49.7446 52.1049 50.6984 51.4016 51.4017C50.6984 52.1049 49.7446 52.5 48.75 52.5H13.125C12.1304 52.5 11.1766 52.1049 10.4733 51.4017C9.77009 50.6984 9.375 49.7446 9.375 48.75V28.125M30 12.1875C30 10.8896 29.6151 9.62077 28.894 8.54157C28.1729 7.46238 27.148 6.62124 25.9489 6.12454C24.7497 5.62784 23.4302 5.49788 22.1572 5.7511C20.8842 6.00432 19.7149 6.62933 18.7971 7.54711C17.8793 8.4649 17.2543 9.63422 17.0011 10.9072C16.7479 12.1802 16.8778 13.4997 17.3745 14.6989C17.8712 15.898 18.7124 16.9229 19.7916 17.644C20.8708 18.3651 22.1396 18.75 23.4375 18.75H30M30 12.1875V18.75M30 12.1875C30 10.8896 30.3849 9.62077 31.106 8.54157C31.8271 7.46238 32.852 6.62124 34.0511 6.12454C35.2503 5.62784 36.5698 5.49788 37.8428 5.7511C39.1158 6.00432 40.2851 6.62933 41.2029 7.54711C42.1207 8.4649 42.7457 9.63422 42.9989 10.9072C43.2521 12.1802 43.1222 13.4997 42.6255 14.6989C42.1288 15.898 41.2876 16.9229 40.2084 17.644C39.1292 18.3651 37.8604 18.75 36.5625 18.75H30M30 18.75V52.5M8.4375 28.125H53.4375C54.99 28.125 56.25 26.865 56.25 25.3125V21.5625C56.25 20.01 54.99 18.75 53.4375 18.75H8.4375C6.885 18.75 5.625 20.01 5.625 21.5625V25.3125C5.625 26.865 6.885 28.125 8.4375 28.125Z" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="mt-4 px-2">
-                                    <h3 class="text-lg font-medium">Material</h3>
-                                    <p class="text-sm text-gray-500">Haz un regalo sencillo para dar a los usuarios de alineados</p>
-                                </div>
-                            </a>
-                
-                            <a href="https://form.jotform.com/250948776885076" target="_blank" class="group flex flex-col rounded-2xl border p-4 hover:border-green-500">
-                                <div class="aspect-[4/1] w-full rounded-xl bg-[#49515C] flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
-                                        <path d="M48.75 29.9998C48.75 26.9198 48.635 23.8674 48.405 20.8449C48.2281 18.4502 47.1968 16.1988 45.4989 14.501C43.801 12.8031 41.5496 11.7717 39.155 11.5948C33.0603 11.1351 26.9397 11.1351 20.845 11.5948C18.4504 11.7717 16.199 12.8031 14.5011 14.501C12.8032 16.1988 11.7719 18.4502 11.595 20.8449C11.5525 21.3949 11.515 21.9473 11.48 22.4998M48.75 29.9998L56.25 22.4998M48.75 29.9998L41.25 22.4998M11.25 29.9998C11.25 33.0798 11.365 36.1323 11.595 39.1548C11.7719 41.5495 12.8032 43.8009 14.5011 45.4987C16.199 47.1966 18.4504 48.228 20.845 48.4048C26.9397 48.8649 33.0603 48.8649 39.155 48.4048C41.5496 48.228 43.801 47.1966 45.4989 45.4987C47.1968 43.8009 48.2281 41.5495 48.405 39.1548C48.4475 38.6048 48.485 38.0523 48.52 37.4998M11.25 29.9998L18.75 37.4998M11.25 29.9998L3.75 37.4998" stroke="#F7F7F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="mt-4 px-2">
-                                    <h3 class="text-lg font-medium">Servicio</h3>
-                                    <p class="text-sm text-gray-500">Participa de manera activa con nosotros para nuestros usuarios</p>
-                                </div>
-                            </a>
+                        
+                    </div>
+                </div>
+            {/if}
+            {:else}
+                <!-- Equipo permanente solo en 'time' -->
+                <a href="https://form.jotform.com/250948776885076" target="_blank" class="block">
+                    <div class="rounded-2xl bg-[#F3F4F6] p-12">
+                        <div class="mb-6 flex justify-center">
+                            <img src="/images/logo/INSTITUCIONAL LOGO - SLOGAN.webp" alt="Alineados Logo" class="h-20" />
+                        </div>
+                        <h2 class="mb-4 text-5xl font-bold text-black text-center">Equipo Permanente</h2>
+                        <div class="rounded-xl bg-white p-6">
+                            <p class="text-gray-600">Si quieres comprometerte a largo plazo con nuestra misión, ¡únete a nuestro equipo base!</p>
+                            <div class="mt-6">
+                                <span class="inline-block rounded-lg bg-[#8BC83F] px-6 py-2 text-sm font-medium text-black">
+                                    Aplica aquí
+                                </span>
+                            </div>
                         </div>
                     </div>
-                {/if}
-            </div>
+                </a>
+            {/if}
+        </div>
     </div>
+
+
+
 </div>
