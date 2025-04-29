@@ -136,7 +136,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/help'} {...props}>
 									<CircleHelp />
 									<span>Ayuda a Alineados</span>
 								</a>
