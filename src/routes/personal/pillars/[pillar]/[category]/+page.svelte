@@ -6,37 +6,55 @@
     import FutureActionsSection from '$lib/modules/personal/pillars/FutureActionsSection.svelte';
     import MediumTermActionsSection from '$lib/modules/personal/pillars/MediumTermActionsSection.svelte';
     import LongTermActionsSection from '$lib/modules/personal/pillars/LongTermActionsSection.svelte';
+    import PillarSidebar from '$lib/modules/personal/pillars/PillarSidebar.svelte';
+    import PillarHeader from '$lib/modules/personal/pillars/PillarHeader.svelte';
     import { page } from '$app/stores';
+    import { onMount } from 'svelte';
 
-    // Get pillar and category from URL parameters
-    $: pillar = $page.params.pillar;
-    $: category = $page.params.category;
+    let pillar = $derived($page.params.pillar);
+    let category = $derived($page.params.category);
+    let isLoaded = $state(false);
+
+    onMount(() => {
+        setTimeout(() => {
+            isLoaded = true;
+        }, 100);
+    });
 </script>
 
-<div class="flex flex-col gap-8 px-4 md:px-8 lg:px-16">
-    <div class="flex flex-col gap-6 pt-6">
-        <p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-            <a href="/personal" class="hover:underline">Personal</a>
-            <span class="mx-1">/</span>
-            <a href="/personal/pillars" class="hover:underline">Mis Pilares de Vida</a>
-            <span class="mx-1">/</span>
-            <span class="capitalize">{category}</span>
-        </p>
-        <h1 class="text-4xl font-bold text-alineados-blue-900 capitalize">{category}</h1>
-    </div>
+{#if isLoaded}
+    <div class="flex min-h-screen flex-col">
+        <PillarHeader {category} pillarInfo={{}} />
 
-    <div class="space-y-12">
-        <ElementsSection />
-        <ObjectivesSection />
-        <div class="space-y-8">
-            <PastActionsSection type="positive" />
-            <PastActionsSection type="improve" />
-        </div>
-        <HabitsSection />
-        <div class="space-y-8">
-            <FutureActionsSection />
-            <MediumTermActionsSection />
-            <LongTermActionsSection />
+        <div class="flex flex-1">
+            <div class="flex-1 space-y-12 p-8">
+                <p class="flex flex-row text-sm font-medium text-alineados-gray-600">
+                    <a href="/personal" class="hover:underline">Personal</a>
+                    <span class="mx-1">/</span>
+                    <a href="/personal/pillars" class="hover:underline">Mis Pilares de Vida</a>
+                    <span class="mx-1">/</span>
+                    <span class="capitalize">{category}</span>
+                </p>
+
+                <div class="space-y-12">
+                    <ElementsSection />
+                    <ObjectivesSection />
+                    <div class="space-y-8">
+                        <PastActionsSection type="positive" />
+                        <PastActionsSection type="improve" />
+                    </div>
+                    <HabitsSection />
+                    <div class="space-y-8">
+                        <FutureActionsSection />
+                        <MediumTermActionsSection />
+                        <LongTermActionsSection />
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[400px] border-l bg-white p-6">
+                <PillarSidebar />
+            </div>
         </div>
     </div>
-</div>
+{/if}
