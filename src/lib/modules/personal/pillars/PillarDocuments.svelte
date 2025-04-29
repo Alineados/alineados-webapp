@@ -1,0 +1,59 @@
+<script lang="ts">
+    import File from '$lib/icons/File.svelte';
+    import Image from '$lib/icons/Image.svelte';
+    import TrashCan from '$lib/icons/TrashCan.svelte';
+    import Upload from '$lib/icons/Upload.svelte';
+
+    let documents = $state([
+        { id: '1', file_name: 'documento1.pdf', type: 'application/pdf' },
+        { id: '2', file_name: 'imagen1.jpg', type: 'image/jpeg' },
+    ]);
+    let isDisabled = $state(false);
+
+    function getFileIcon(type: string) {
+        return type.startsWith('image') ? 'image' : 'document';
+    }
+
+    function handleDelete(id: string) {
+        documents = documents.filter(doc => doc.id !== id);
+    }
+</script>
+
+<div class="mx-auto w-full max-w-2xl pt-5">
+    <div class="">
+        <div class="flex items-center justify-between border-b py-1">
+            <div class="flex items-center gap-2">
+                <File class="size-5" />
+                <h2 class="text-base font-semibold text-alineados-gray-800">Archivos adjuntos</h2>
+            </div>
+            <Upload
+                type="problems"
+                bind:disabledBtn={isDisabled}
+                styles=""
+                changeIcon={false}
+                styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900"
+            />
+        </div>
+
+        <div class="divide-y">
+            {#each documents as file}
+                <div class="flex items-center justify-between py-2 hover:bg-alineados-gray-50">
+                    <div class="flex items-center gap-3">
+                        {#if getFileIcon(file.type) === 'document'}
+                            <File class="size-5 text-alineados-orange-900" />
+                        {:else}
+                            <Image styleTw="size-5 text-alineados-orange-900" />
+                        {/if}
+                        <span class="text-xs font-medium text-alineados-orange-900">{file.file_name}</span>
+                    </div>
+                    <button
+                        class="rounded-full p-1 hover:bg-alineados-gray-100"
+                        onclick={() => handleDelete(file.id)}
+                    >
+                        <TrashCan styleTw="size-4 text-alineados-gray-600" />
+                    </button>
+                </div>
+            {/each}
+        </div>
+    </div>
+</div>
