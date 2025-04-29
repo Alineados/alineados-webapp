@@ -126,7 +126,7 @@
 					<Sidebar.MenuItem>
 						<Sidebar.MenuButton>
 							{#snippet child({ props })}
-								<a href={'#'} {...props}>
+								<a href={'/relations'} {...props}>
 									<Users />
 									<span>Relaciones</span>
 								</a>
