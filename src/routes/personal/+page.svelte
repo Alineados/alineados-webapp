@@ -50,10 +50,10 @@
         {#each cards as card}
             <button 
                 onclick={() => handleNavigation(card.href)}
-                class="group relative flex h-64 flex-col items-center justify-center rounded-xl bg-alineados-green-200 p-8 transition-all hover:shadow-lg"
+                class="group relative flex h-64 flex-col items-center justify-center rounded-xl bg-alineados-green-300 p-8 transition-all hover:shadow-lg"
             >
                 {#if isLoading && loadingCardHref === card.href}
-                    <div class="absolute inset-0 flex items-center justify-center rounded-xl bg-alineados-green-200/90 backdrop-blur-sm">
+                    <div class="absolute inset-0 flex items-center justify-center rounded-xl bg-alineados-green-300/90 backdrop-blur-sm">
                         <Loader />
                     </div>
                 {/if}

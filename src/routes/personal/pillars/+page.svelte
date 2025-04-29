@@ -77,6 +77,7 @@
         priorityLevel={cat.priority || 0}
         stateLevel={cat.state || 0}
         isProtected={cat.security || false}
+        pillarType="health"
       />
     {/each}
   </div>
@@ -92,6 +93,7 @@
         priorityLevel={cat.priority || 0}
         stateLevel={cat.state || 0}
         isProtected={cat.security || false}
+        pillarType="relational"
       />
     {/each}
   </div>
@@ -107,6 +109,7 @@
         priorityLevel={cat.priority || 0}
         stateLevel={cat.state || 0}
         isProtected={cat.security || false}
+        pillarType="vocational"
       />
     {/each}
   </div>
@@ -122,6 +125,7 @@
         priorityLevel={cat.priority || 0}
         stateLevel={cat.state || 0}
         isProtected={cat.security || false}
+        pillarType="spiritual"
       />
     {/each}
   </div>
