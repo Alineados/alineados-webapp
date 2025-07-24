@@ -28,9 +28,6 @@
 	const canEditReferenceValue = $derived(isReferenceValueEnabled || isReferenceValueComplete || currentActiveRow === -1);
 	const canEditRanking = $derived(isRankingEnabled || isRankingComplete || currentActiveRow === -1);
 
-	function handleReferenceValueFocus() {
-		// No necesitamos limpiar nada ahora que reference_value inicia vacío
-	}
 
 	function handleRankingFocus() {
 		// Limpiar '0' si es el valor inicial
