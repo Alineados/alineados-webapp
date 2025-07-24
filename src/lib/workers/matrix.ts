@@ -83,7 +83,7 @@ const api = {
 						row.cells.push({
 							oid: alternative.id,
 							value: '0',
-							reference_value: '##'
+							reference_value: ''
 						});
 					}
 				});
@@ -163,7 +163,7 @@ const api = {
 			cells.push({
 				oid: cols[i].id,
 				value: '0',
-				reference_value: '##'
+				reference_value: ''
 			});
 		}
 

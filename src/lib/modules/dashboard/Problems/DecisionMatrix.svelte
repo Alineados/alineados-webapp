@@ -30,6 +30,42 @@
 
 
 	$: gridColumns = `250px 50px ${$matrix.cols.map(() => '100px').join(' ')}`;
+	$: allPrioritiesSet = $matrix.rows.every(row => row.key && row.key !== '');
+	$: allUnitsSet = $matrix.rows.every(row => row.units && row.units !== '');
+
+	// Calcular fila activa y paso actual
+	$: currentActiveRow = (() => {
+		if (!allUnitsSet) return -1; // Ninguna fila activa si no están todas las unidades llenas
+		
+		for (let i = 0; i < $matrix.rows.length; i++) {
+			const row = $matrix.rows[i];
+			// Verificar si la fila tiene todas las reference_value llenas
+			const allReferenceValuesFilled = row.cells.every(cell => cell.reference_value && cell.reference_value !== '');
+			// Verificar si la fila tiene todos los rankings llenos y válidos
+			const allRankingsValid = (() => {
+				const values = row.cells.map(cell => cell.value).filter(v => v && v !== '');
+				if (values.length !== row.cells.length) return false;
+				const nums = values.map(v => parseInt(v));
+				if (nums.some(n => isNaN(n) || n < 1 || n > 3)) return false;
+				return new Set(nums).size === nums.length;
+			})();
+			
+			// Si no tiene reference_value llenos, esta es la fila activa en paso "unidad de medida"
+			if (!allReferenceValuesFilled) return i;
+			// Si tiene reference_value pero no rankings válidos, esta es la fila activa en paso "ranqueo"
+			if (!allRankingsValid) return i;
+			// Si tiene todo, pasar a la siguiente fila
+		}
+		return -1; // Todas las filas completas - pero permitir edición
+	})();
+
+	// Calcular paso actual (0 = unidad de medida, 1 = ranqueo)
+	$: currentStep = (() => {
+		if (currentActiveRow === -1) return -1;
+		const row = $matrix.rows[currentActiveRow];
+		const allReferenceValuesFilled = row.cells.every(cell => cell.reference_value && cell.reference_value !== '');
+		return allReferenceValuesFilled ? 1 : 0; // 0 = unidad de medida, 1 = ranqueo
+	})();
 </script>
 
 <div class="grid gap-4 p-4 " style="grid-template-columns: {gridColumns}">
@@ -68,6 +104,7 @@
 			bind:key={$matrix.rows[i].key}
 			bind:percentage={$matrix.rows[i].percentage}
 			color={setColor(i)}
+			allPrioritiesSet={allPrioritiesSet}
 		/>
 
 		{#if i === 0}
@@ -93,6 +130,9 @@
 				bind:cells={$matrix.rows[i].cells}
 				bind:reference_value={$matrix.rows[i].cells[j].reference_value}
 				bind:value={$matrix.rows[i].cells[j].value}
+				rowIndex={i}
+				currentActiveRow={currentActiveRow}
+				currentStep={currentStep}
 			/>
 		{/each}
 	{/each}
