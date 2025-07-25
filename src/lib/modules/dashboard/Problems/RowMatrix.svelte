@@ -39,17 +39,41 @@
 	});
 
 	const unitOptions = [
-		'kg', 'lb', 'días', 'GTQ', 'USD', 'horas', 'minutos', 'puntos', 'veces', '%', 'metros', 'cm', 'mm', 'litros', 'unidades', 'otros...'
+		'kg', 'libras', 'días', 'GTQ', 'USD', 'horas', 'minutos', 'puntos', 'veces', '%', 'metros', 'cm', 'mm', 'litros', 'unidades'
 	];
 	let customUnit = '';
 	let showUnitDropdown = $state(false);
 	let inputValue = $state('');
+	let tooltipText = '';
+	let tooltipVisible = $state(false);
+	let tooltipPosition = $state({ x: 0, y: 0 });
+
+	function showTooltip(event: MouseEvent, text: string) {
+		tooltipText = text;
+		tooltipPosition = { x: event.clientX, y: event.clientY };
+		tooltipVisible = true;
+	}
+
+	function hideTooltip() {
+		tooltipVisible = false;
+	}
+
+	function truncateObjectiveName(text: string): string {
+		if (text.length <= 28) {
+			return text;
+		}
+		return text.substring(0, 28) + '...';
+	}
 </script>
 
 <div class="flex items-center justify-start">
 	<div class="flex w-2/3 flex-col justify-start gap-2">
-		<span class="text-base">
-			{name}
+		<span 
+			class="text-base cursor-help whitespace-nowrap"
+			on:mouseenter={(e) => showTooltip(e, name)}
+			on:mouseleave={hideTooltip}
+		>
+			{truncateObjectiveName(name)}
 		</span>
 		<Select.Root
 			onValueChange={(e) => {
@@ -82,9 +106,9 @@
 	</div>
 
 	<div class="flex w-1/3 flex-col items-center gap-1">
-		<div class="relative">
+		<div class="relative mt-8">
 			<input
-				class="text-center text-xs outline-none w-32 rounded-md border-2 px-1 py-1 {color} {allPrioritiesSet && units === '' ? 'border-orange-500 animate-border-cursor-blink' : 'border-alineados-gray-200'} bg-alineados-gray-50"
+				class="text-left text-xs outline-none w-32 rounded-md border px-1 py-1 {color} {allPrioritiesSet && units === '' ? 'border-orange-500 animate-border-cursor-blink' : 'border-alineados-gray-200'} bg-alineados-gray-50"
 				bind:value={units}
 				placeholder="Unidad de medida"
 				disabled={!allPrioritiesSet}
@@ -109,6 +133,18 @@
 		</div>
 	</div>
 </div>
+
+<!-- Tooltip personalizado para objetivos -->
+{#if tooltipVisible}
+	<div 
+		class="fixed z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg pointer-events-none transform -translate-x-1/2 -translate-y-full -mt-2"
+		style="left: {tooltipPosition.x}px; top: {tooltipPosition.y}px;"
+	>
+		{tooltipText}
+		<!-- Flecha del tooltip -->
+		<div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+	</div>
+{/if}
 
 <style>
 .animate-border-cursor-blink {

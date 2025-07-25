@@ -82,7 +82,7 @@ const api = {
 						if (alternative.description === '') return;
 						row.cells.push({
 							oid: alternative.id,
-							value: '0',
+							value: '',
 							reference_value: ''
 						});
 					}
@@ -162,7 +162,7 @@ const api = {
 			if (cols[i].description === '') continue;
 			cells.push({
 				oid: cols[i].id,
-				value: '0',
+				value: '',
 				reference_value: ''
 			});
 		}
