@@ -77,7 +77,7 @@
 						onCompleteProblem();
 					}}
 					selected={completed.alternative === 1}
-					isDisabled={true}
+					isDisabled={false}
 				/>
 				<DecisionPill
 					text="Alternativa 2 - No resolví el problema. Ir a editar planes de acción."
@@ -91,7 +91,7 @@
 						}, 500);
 					}}
 					selected={completed.alternative === 2}
-					isDisabled={true}
+					isDisabled={false}
 				/>
 			</div>
 		{/if}

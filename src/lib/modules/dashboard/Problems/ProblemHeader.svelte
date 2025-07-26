@@ -2,6 +2,7 @@
 	import AccountabilityButton from '$lib/components/AccountabilityButton.svelte';
 	import MoreButton from '$lib/components/MoreButton.svelte';
 	import StatusPill from '$lib/components/StatusPill.svelte';
+	import DaysPill from '$lib/components/DaysPill.svelte';
 
 	import Padlock from '$lib/icons/Padlock.svelte';
 	import {
@@ -55,6 +56,7 @@
     });
 
     function handleInput(e: Event) {
+        if ($problemCard.completed_at !== null) return;
         const input = e.target as HTMLInputElement;
         title = input.value;
     }
@@ -93,9 +95,10 @@
 				maxlength={MAX_LENGTH}
 				bind:value={title}
 				on:input={handleInput}
-				on:focus={() => isFocused = true}
-				on:blur={() => isFocused = false}
-				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:alineados-orange-900]"
+				on:focus={() => { if ($problemCard.completed_at === null) isFocused = true; }}
+				on:blur={() => { if ($problemCard.completed_at === null) isFocused = false; }}
+				disabled={$problemCard.completed_at !== null}
+				class="relative bg-transparent text-5xl font-bold text-alineados-gray-900 focus:outline-none rounded-md px-2 {!title ? 'border-2 animate-border-cursor-blink' : 'border-none'} focus:border-alineados-orange-500 [caret-width:3px] [caret-color:alineados-orange-900] disabled:opacity-50 disabled:cursor-not-allowed"
 			/>
 		</div>
 		
@@ -108,6 +111,7 @@
 					<UnPadlock class="size-5" /> -->
 				{/if}
 				<StatusPill status={$problemCard.active} bind:completed={$problemCard.completed_at} />
+				<DaysPill completedAt={$problemCard.completed_at} createdAt={$problemCard.created_at} />
 				{#if $autosavingProblemCard || $autosavingProblemInfo || $autosavingProblemMatrix}
 					<div class="h-6 w-6 animate-spin text-white">
 						<Loading />
@@ -116,7 +120,9 @@
 					<Cloud styleTw="size-6 text-alineados-gray-400" />
 				{/if}
 			</div>
-			<AccountabilityButton />
+			{#if $problemCard.completed_at === null}
+				<AccountabilityButton />
+			{/if}
 			{#if $reportProblem !== 2}
 				<a
 					href="/personal/problems"

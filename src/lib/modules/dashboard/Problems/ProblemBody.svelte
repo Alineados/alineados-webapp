@@ -19,7 +19,8 @@
 		changeFinalDecisionAndRecommended,
 		markDailytItem,
 		problemCard,
-		matrix
+		matrix,
+		reportProblem
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Lines from '$lib/icons/Lines.svelte';
@@ -34,6 +35,9 @@
 	import MatrixInformation from './MatrixInformation.svelte';
 	import { debounce } from '$lib/utils/debounce';
 	import QuestionItem from '$lib/components/QuestionItem.svelte';
+
+	// Calcular si los elementos deben estar deshabilitados
+	$: isDisabled = !$problemCard.active || $problemCard.completed_at !== null;
 
 	// Calcular si la matriz está completa
 	$: matrixComplete = (() => {
@@ -192,6 +196,7 @@
 				}}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
+				isDisabled={isDisabled}
 				bind:isStarred={$problemInfo.decision_taken!.prominent}
 				bind:isDaily={$problemInfo.decision_taken!.daily}
 				bind:value={$problemInfo.decision_taken!.description!}
@@ -243,6 +248,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={involded.daily}
 					bind:isStarred={involded.prominent}
 					bind:value={involded.description}
@@ -295,6 +301,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={context.daily}
 					bind:isStarred={context.prominent}
 					bind:value={context.description}
@@ -331,6 +338,7 @@
 				}}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
+				isDisabled={isDisabled}
 				bind:isDaily={$problemInfo.problem!.daily}
 				bind:isStarred={$problemInfo.problem!.prominent}
 				bind:value={$problemInfo.problem!.description!}
@@ -406,6 +414,7 @@
 						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={objective.daily}
 					bind:isStarred={objective.prominent}
 					bind:value={objective.description}
@@ -486,6 +495,7 @@
 						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={$problemInfo.alternatives[i].daily}
 					bind:isStarred={$problemInfo.alternatives[i].prominent}
 					bind:value={$problemInfo.alternatives[i].description}
@@ -519,7 +529,9 @@
 					<DecisionMatrix />
 				</div>
 			{:else}
-				<DecisionMatrix />
+				<div class={isDisabled ? 'pointer-events-none opacity-50' : ''}>
+					<DecisionMatrix />
+				</div>
 			{/if}
 		{:else}
 			<p class="pl-2 pt-4 text-alineados-gray-400">
@@ -560,7 +572,7 @@
 				<DecisionPill
 					index={$matrix.results.winner + 1}
 					selected={true}
-					isDisabled={true}
+					isDisabled={isDisabled}
 					bind:text={$problemInfo.alternatives[$matrix.results.winner].description}
 				/>
 			{:else}
@@ -614,7 +626,7 @@
 							}}
 							index={i + 1}
 							selected={alternative.id === $problemInfo.final_decision}
-							bind:isDisabled={$problemCard.active}
+							isDisabled={isDisabled}
 							bind:text={alternative.description}
 						/>
 					{/if}
@@ -685,6 +697,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={$problemInfo.action_plan[i].daily}
 					bind:isStarred={$problemInfo.action_plan[i].prominent}
 					bind:value={$problemInfo.action_plan[i].description}
