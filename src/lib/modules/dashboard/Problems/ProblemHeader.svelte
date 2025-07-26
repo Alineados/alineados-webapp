@@ -117,13 +117,15 @@
 				{/if}
 			</div>
 			<AccountabilityButton />
-			<a
-				href="/personal/problems"
-				class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-5 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
-			>
-				<BackArrow class="size-4 font-bold text-alineados-blue-900" />
-				<p class="text-xs font-medium">Regresar</p>
-			</a>
+			{#if $reportProblem !== 2}
+				<a
+					href="/personal/problems"
+					class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-5 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+				>
+					<BackArrow class="size-4 font-bold text-alineados-blue-900" />
+					<p class="text-xs font-medium">Regresar</p>
+				</a>
+			{/if}
 			{#if $reportProblem === 1}
 				<MoreButton />
 			{/if}
