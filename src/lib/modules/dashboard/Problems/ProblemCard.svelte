@@ -87,6 +87,39 @@
 		return pillar_name;
 	}
 
+	function calculateDaysCompleted(problem: ProblemCard): number {
+		if (!problem.completed_at || !problem.created_at) return 0;
+		
+		try {
+			const completedDate = new Date(problem.completed_at);
+			
+			// Manejar el formato específico de created_at que viene del backend
+			let createdDate;
+			if (problem.created_at.includes('+0000 UTC')) {
+				// Formato: "2025-01-28 01:56:33.939477562 +0000 UTC"
+				// Convertir a formato ISO estándar
+				const cleanDate = problem.created_at.replace(' +0000 UTC', 'Z');
+				createdDate = new Date(cleanDate);
+			} else {
+				createdDate = new Date(problem.created_at);
+			}
+			
+			// Verificar que las fechas sean válidas
+			if (!isNaN(completedDate.getTime()) && !isNaN(createdDate.getTime())) {
+				// Calcular diferencia en milisegundos
+				const timeDiff = completedDate.getTime() - createdDate.getTime();
+				// Convertir a días
+				const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+				return Math.max(0, daysDiff);
+			} else {
+				return 0;
+			}
+		} catch (error) {
+			console.error('Error calculando días completados:', error);
+			return 0;
+		}
+	}
+
 	function handleClickCard(e: any, pid: string, pillar_label: string) {
 		e.preventDefault();
 
@@ -179,7 +212,9 @@
 				{#snippet footer()}
 					<p class="text-xs font-semibold text-alineados-gray-400">{problem.category_name}</p>
 					{#if problem.completed_at}
-						<p></p>
+						<p class="text-xs font-medium text-alineados-green-900">
+							Resuelto en {calculateDaysCompleted(problem)} {calculateDaysCompleted(problem) === 1 ? 'día' : 'días'}
+						</p>
 					{:else}
 						<DaysLeft
 							targetDate={problem.milestone_date}
