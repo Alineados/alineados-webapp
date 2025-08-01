@@ -189,7 +189,7 @@
 	{#if $matrix.results}
 		{#each $matrix.results.results as result, i}
 			<div class="mt-1 flex items-center justify-center gap-[2px]">
-				<div class="flex items-center justify-center text-xl font-medium text-alineados-gray-700">
+				<div class="flex items-center justify-center text-3xl font-bold text-alineados-gray-900">
 					{result}
 				</div>
 				{#if $matrix.results.winner === i}
