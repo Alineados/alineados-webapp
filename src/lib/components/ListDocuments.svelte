@@ -9,7 +9,7 @@
 	let { disabled = $bindable() }: { disabled: boolean } = $props();
 
 	function getFileIcon(type: string) {
-		// Solo mostrar icono de documento, no imágenes
+		// Solo documentos, siempre icono de archivo
 		return 'document';
 	}
 
@@ -19,8 +19,8 @@
 
 	// Filtrar solo documentos (no imágenes)
 	const documentsOnly = $derived($problemInfo.memories.filter(memory => 
-		!memory.type.startsWith('image') && 
-		!memory.type.startsWith('carousel_image')
+		// Mostrar solo documentos, excluir imágenes visualmente
+		!memory.type.startsWith('image')
 	));
 </script>
 
@@ -36,7 +36,7 @@
 				bind:disabledBtn={disabled}
 				styles=""
 				changeIcon={false}
-				acceptable=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf"
+				acceptable=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.csv,.zip,.rar"
 				styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900"
 			/>
 		</div>

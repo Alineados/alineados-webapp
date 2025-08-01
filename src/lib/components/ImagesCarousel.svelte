@@ -68,7 +68,7 @@
 
 		// Limpiar imágenes existentes antes de subir la nueva
 		$problemsImages.forEach((image) => {
-			removeMemory(image.id, 'carousel_image');
+			removeMemory(image.id, 'image');
 		});
 
 		return async ({ result, update }) => {
@@ -83,11 +83,8 @@
 				const { document, url } = data;
 
 				if (result.data) {
-					// Agregar directamente al store de imágenes sin pasar por memories
-					problemsImages.update((images) => {
-						images.push({ id: document.id, url: url });
-						return images;
-					});
+					// Agregar a memories (mismo lugar que documentos) pero con tipo especial
+					addMemory(document, url);
 					showToast('¡Imagen subida correctamente!', 'success');
 				}
 
