@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Item from '$lib/components/Item.svelte';
 	import DecisionPill from '$lib/components/DecisionPill.svelte';
-	import { Confetti } from 'svelte-confetti';
+	import AlineadosConfetti from '$lib/components/AlineadosConfetti.svelte';
 	import {
 		problemInfo,
 		markOnlyDoneOrRepeatedItems,
@@ -25,9 +25,6 @@
 	function onCompleteProblem() {
 		showConfetti = true;
 		isCompleteProblem(true);
-		setTimeout(() => {
-			showConfetti = false;
-		}, 4000);
 	}
 
 </script>
@@ -98,26 +95,6 @@
 	</div>
 </div>
 
-<div
-	style="
- position: fixed;
- top: -50px;
- left: 0;
- height: 100vh;
- width: 100vw;
- display: flex;
- justify-content: center;
- overflow: hidden;
- pointer-events: none;"
->
-	{#if showConfetti}
-		<Confetti
-			x={[-5, 5]}
-			y={[0, 0.1]}
-			delay={[500, 2000]}
-			infinite
-			amount={1000}
-			fallDistance="100vh"
-		/>
-	{/if}
-</div>
+{#if showConfetti}
+	<AlineadosConfetti bind:show={showConfetti} redirectAfter={true} />
+{/if}

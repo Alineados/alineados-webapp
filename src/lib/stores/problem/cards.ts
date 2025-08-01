@@ -89,9 +89,19 @@ export const syncProblemCardToStores = () => {
 		healthProblems.update((problems) => {
 			if (problems) {
 				const problem = problems.find(p => p.id === currentProblemCard.id);
-				if (problem && problem.problem_name !== currentProblemCard.problem_name) {
-					console.log('Updating health problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
-					problem.problem_name = currentProblemCard.problem_name;
+				if (problem) {
+					if (problem.problem_name !== currentProblemCard.problem_name) {
+						console.log('Updating health problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
+						problem.problem_name = currentProblemCard.problem_name;
+					}
+					if (problem.completed_at !== currentProblemCard.completed_at) {
+						console.log('Updating health problem completed_at:', problem.completed_at, '->', currentProblemCard.completed_at);
+						problem.completed_at = currentProblemCard.completed_at;
+					}
+					if (problem.progress !== currentProblemCard.progress) {
+						console.log('Updating health problem progress:', problem.progress, '->', currentProblemCard.progress);
+						problem.progress = currentProblemCard.progress;
+					}
 				}
 			}
 			return problems;
@@ -101,9 +111,19 @@ export const syncProblemCardToStores = () => {
 		relationalProblems.update((problems) => {
 			if (problems) {
 				const problem = problems.find(p => p.id === currentProblemCard.id);
-				if (problem && problem.problem_name !== currentProblemCard.problem_name) {
-					console.log('Updating relational problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
-					problem.problem_name = currentProblemCard.problem_name;
+				if (problem) {
+					if (problem.problem_name !== currentProblemCard.problem_name) {
+						console.log('Updating relational problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
+						problem.problem_name = currentProblemCard.problem_name;
+					}
+					if (problem.completed_at !== currentProblemCard.completed_at) {
+						console.log('Updating relational problem completed_at:', problem.completed_at, '->', currentProblemCard.completed_at);
+						problem.completed_at = currentProblemCard.completed_at;
+					}
+					if (problem.progress !== currentProblemCard.progress) {
+						console.log('Updating relational problem progress:', problem.progress, '->', currentProblemCard.progress);
+						problem.progress = currentProblemCard.progress;
+					}
 				}
 			}
 			return problems;
@@ -113,9 +133,19 @@ export const syncProblemCardToStores = () => {
 		vocationalProblems.update((problems) => {
 			if (problems) {
 				const problem = problems.find(p => p.id === currentProblemCard.id);
-				if (problem && problem.problem_name !== currentProblemCard.problem_name) {
-					console.log('Updating vocational problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
-					problem.problem_name = currentProblemCard.problem_name;
+				if (problem) {
+					if (problem.problem_name !== currentProblemCard.problem_name) {
+						console.log('Updating vocational problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
+						problem.problem_name = currentProblemCard.problem_name;
+					}
+					if (problem.completed_at !== currentProblemCard.completed_at) {
+						console.log('Updating vocational problem completed_at:', problem.completed_at, '->', currentProblemCard.completed_at);
+						problem.completed_at = currentProblemCard.completed_at;
+					}
+					if (problem.progress !== currentProblemCard.progress) {
+						console.log('Updating vocational problem progress:', problem.progress, '->', currentProblemCard.progress);
+						problem.progress = currentProblemCard.progress;
+					}
 				}
 			}
 			return problems;
@@ -125,9 +155,19 @@ export const syncProblemCardToStores = () => {
 		spiritualProblems.update((problems) => {
 			if (problems) {
 				const problem = problems.find(p => p.id === currentProblemCard.id);
-				if (problem && problem.problem_name !== currentProblemCard.problem_name) {
-					console.log('Updating spiritual problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
-					problem.problem_name = currentProblemCard.problem_name;
+				if (problem) {
+					if (problem.problem_name !== currentProblemCard.problem_name) {
+						console.log('Updating spiritual problem name:', problem.problem_name, '->', currentProblemCard.problem_name);
+						problem.problem_name = currentProblemCard.problem_name;
+					}
+					if (problem.completed_at !== currentProblemCard.completed_at) {
+						console.log('Updating spiritual problem completed_at:', problem.completed_at, '->', currentProblemCard.completed_at);
+						problem.completed_at = currentProblemCard.completed_at;
+					}
+					if (problem.progress !== currentProblemCard.progress) {
+						console.log('Updating spiritual problem progress:', problem.progress, '->', currentProblemCard.progress);
+						problem.progress = currentProblemCard.progress;
+					}
 				}
 			}
 			return problems;
@@ -298,8 +338,13 @@ export const problemProgress = derived([problemInfo], ([$problemInfo]) => {
 // Function to complete a problem and card
 export const isCompleteProblem = (complete: boolean) => {
 	problemCard.update((card) => {
-		if (complete) card.completed_at = new Date().toISOString();
-		else card.completed_at = null;
+		if (complete) {
+			card.completed_at = new Date().toISOString();
+			card.progress = 100; // Set progress to 100% when completed
+		} else {
+			card.completed_at = null;
+			// Don't reset progress when uncompleting, let it be calculated normally
+		}
 		return card;
 	});
 
@@ -309,4 +354,56 @@ export const isCompleteProblem = (complete: boolean) => {
 
 		return info;
 	});
+
+	// Sync the completed status to the card stores
+	const currentProblemCard = get(problemCard);
+	if (currentProblemCard?.id) {
+		// Update in health problems
+		healthProblems.update((problems) => {
+			if (problems) {
+				const problem = problems.find(p => p.id === currentProblemCard.id);
+				if (problem) {
+					problem.completed_at = currentProblemCard.completed_at;
+					problem.progress = currentProblemCard.progress;
+				}
+			}
+			return problems;
+		});
+
+		// Update in relational problems
+		relationalProblems.update((problems) => {
+			if (problems) {
+				const problem = problems.find(p => p.id === currentProblemCard.id);
+				if (problem) {
+					problem.completed_at = currentProblemCard.completed_at;
+					problem.progress = currentProblemCard.progress;
+				}
+			}
+			return problems;
+		});
+
+		// Update in vocational problems
+		vocationalProblems.update((problems) => {
+			if (problems) {
+				const problem = problems.find(p => p.id === currentProblemCard.id);
+				if (problem) {
+					problem.completed_at = currentProblemCard.completed_at;
+					problem.progress = currentProblemCard.progress;
+				}
+			}
+			return problems;
+		});
+
+		// Update in spiritual problems
+		spiritualProblems.update((problems) => {
+			if (problems) {
+				const problem = problems.find(p => p.id === currentProblemCard.id);
+				if (problem) {
+					problem.completed_at = currentProblemCard.completed_at;
+					problem.progress = currentProblemCard.progress;
+				}
+			}
+			return problems;
+		});
+	}
 };
