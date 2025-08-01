@@ -35,6 +35,21 @@ export const load: PageServerLoad = async ({ params, request, url, locals }) => 
 };
 
 export const actions = {
+	delete: async ({ cookies, request, locals }) => {
+		const formData = await request.formData();
+		const data = Object.fromEntries(formData);
+
+		const { pid } = data;
+
+		let problemService: ProblemService = ProblemService.getInstance(locals.token);
+		const result = await problemService.deleteProblemInfo(pid as string);
+
+		if (result.status !== 200 && result.status !== 201) {
+			return fail(result.data);
+		}
+
+		return result;
+	},
 	upload: async ({ cookies, request, locals }) => {
 		const formData = Object.fromEntries(await request.formData());
 

@@ -19,7 +19,8 @@
 		changeFinalDecisionAndRecommended,
 		markDailytItem,
 		problemCard,
-		matrix
+		matrix,
+		reportProblem
 	} from '$lib/stores';
 	import { ProblemType } from '$lib/interfaces';
 	import Lines from '$lib/icons/Lines.svelte';
@@ -34,6 +35,99 @@
 	import MatrixInformation from './MatrixInformation.svelte';
 	import { debounce } from '$lib/utils/debounce';
 	import QuestionItem from '$lib/components/QuestionItem.svelte';
+
+	// Calcular si los elementos deben estar deshabilitados
+	$: isDisabled = !$problemCard.active || $problemCard.completed_at !== null;
+
+	// Calcular si la matriz está completa
+	$: matrixComplete = (() => {
+		if ($matrix.rows.length === 0 || $matrix.cols.length === 0) return false;
+		
+		// Verificar que todas las importancias estén llenas
+		const allPrioritiesSet = $matrix.rows.every(row => row.key && row.key !== '');
+		if (!allPrioritiesSet) return false;
+		
+		// Verificar que todas las unidades de medida estén llenas
+		const allUnitsSet = $matrix.rows.every(row => row.units && row.units !== '');
+		if (!allUnitsSet) return false;
+		
+		// Verificar que todas las celdas tengan valores válidos
+		for (const row of $matrix.rows) {
+			// Verificar reference_value
+			const allReferenceValuesFilled = row.cells.every(cell => cell.reference_value && cell.reference_value !== '');
+			if (!allReferenceValuesFilled) return false;
+			
+			// Verificar rankings válidos
+			const values = row.cells.map(cell => cell.value).filter(v => v && v !== '');
+			if (values.length !== row.cells.length) return false;
+			const nums = values.map(v => parseInt(v));
+			if (nums.some(n => isNaN(n) || n < 1 || n > 3)) return false;
+			if (new Set(nums).size !== nums.length) return false;
+		}
+		
+		return true;
+	})();
+
+	// Calcular progreso de la matriz
+	$: matrixProgress = (() => {
+		if ($matrix.rows.length === 0 || $matrix.cols.length === 0) return 0;
+		
+		const totalRows = $matrix.rows.length;
+		const totalCols = $matrix.cols.length;
+		const totalCells = totalRows * totalCols;
+		
+		// Paso 1: Importancias (33.33%)
+		const prioritiesWeight = 33.33;
+		const completedPriorities = $matrix.rows.filter(row => row.key && row.key !== '').length;
+		const prioritiesProgress = (completedPriorities / totalRows) * prioritiesWeight;
+		
+		// Paso 2: Unidades de medida (33.33%)
+		const unitsWeight = 33.33;
+		const completedUnits = $matrix.rows.filter(row => row.units && row.units !== '').length;
+		const unitsProgress = (completedUnits / totalRows) * unitsWeight;
+		
+		// Paso 3: Elementos de matriz (33.33%)
+		const matrixWeight = 33.33;
+		let completedFields = 0;
+		const totalFields = totalCells * 2; // Cada celda tiene 2 campos: reference_value y value
+		
+		for (const row of $matrix.rows) {
+			for (const cell of row.cells) {
+				// Verificar que reference_value esté lleno
+				const hasReferenceValue = cell.reference_value && cell.reference_value !== '';
+				
+				// Verificar que value esté lleno y sea válido
+				const hasValidValue = (() => {
+					if (!cell.value || cell.value === '') return false;
+					const num = parseInt(cell.value);
+					return !isNaN(num) && num >= 1 && num <= 3;
+				})();
+				
+				// Contar cada campo independientemente
+				if (hasReferenceValue) {
+					completedFields++;
+				}
+				
+				if (hasValidValue) {
+					// Para los rankings, verificar que no haya duplicados en la fila
+					const valuesInRow = row.cells.map(c => c.value).filter(v => v && v !== '');
+					const numsInRow = valuesInRow.map(v => parseInt(v));
+					const noDuplicates = new Set(numsInRow).size === numsInRow.length;
+					
+					if (noDuplicates) {
+						completedFields++;
+					}
+				}
+			}
+		}
+		
+		const matrixProgress = (completedFields / totalFields) * matrixWeight;
+		
+		// Calcular progreso total
+		const totalProgress = prioritiesProgress + unitsProgress + matrixProgress;
+		
+		return Math.round(totalProgress);
+	})();
 
 	let errorHandling = writable({
 		alternative_max: false,
@@ -102,6 +196,7 @@
 				}}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
+				isDisabled={isDisabled}
 				bind:isStarred={$problemInfo.decision_taken!.prominent}
 				bind:isDaily={$problemInfo.decision_taken!.daily}
 				bind:value={$problemInfo.decision_taken!.description!}
@@ -153,6 +248,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={involded.daily}
 					bind:isStarred={involded.prominent}
 					bind:value={involded.description}
@@ -205,6 +301,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={context.daily}
 					bind:isStarred={context.prominent}
 					bind:value={context.description}
@@ -241,6 +338,7 @@
 				}}
 				isUnique
 				bind:isOnlyText={$problemCard.active}
+				isDisabled={isDisabled}
 				bind:isDaily={$problemInfo.problem!.daily}
 				bind:isStarred={$problemInfo.problem!.prominent}
 				bind:value={$problemInfo.problem!.description!}
@@ -316,6 +414,7 @@
 						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={objective.daily}
 					bind:isStarred={objective.prominent}
 					bind:value={objective.description}
@@ -396,6 +495,7 @@
 						$matrix = $matrix;
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={$problemInfo.alternatives[i].daily}
 					bind:isStarred={$problemInfo.alternatives[i].prominent}
 					bind:value={$problemInfo.alternatives[i].description}
@@ -413,12 +513,25 @@
 			</InformationButton>
 		</div>
 		{#if $matrix.rows.length > 0 && $matrix.cols.length > 0}
+			<div class="mt-2 flex items-center gap-2">
+				<div class="w-[calc(250px+50px+300px)] bg-gray-200 rounded-full h-2">
+					<div 
+						class="bg-alineados-orange-900 h-2 rounded-full transition-all duration-500 ease-out"
+						style="width: {matrixProgress}%"
+					></div>
+				</div>
+				<span class="text-sm text-gray-600 font-medium">{matrixProgress}% completado</span>
+			</div>
+		{/if}
+		{#if $matrix.rows.length > 0 && $matrix.cols.length > 0}
 			{#if !$problemCard.active}
 				<div class="pointer-events-none opacity-50">
 					<DecisionMatrix />
 				</div>
 			{:else}
-				<DecisionMatrix />
+				<div class={isDisabled ? 'pointer-events-none opacity-50' : ''}>
+					<DecisionMatrix />
+				</div>
 			{/if}
 		{:else}
 			<p class="pl-2 pt-4 text-alineados-gray-400">
@@ -440,12 +553,26 @@
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
+		{#if !matrixComplete}
+			<div class="mt-5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+				<div class="flex items-center gap-3">
+					<div class="flex-shrink-0">
+						<svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+						</svg>
+					</div>
+					<div class="text-sm text-gray-600">
+						<strong>Completa la matriz de decisión</strong> para ver tu decisión recomendada automática.
+					</div>
+				</div>
+			</div>
+		{:else}
 		<div class=" mt-5 flex flex-col gap-2">
 			{#if $matrix.results && $matrix.results.winner !== -1}
 				<DecisionPill
 					index={$matrix.results.winner + 1}
 					selected={true}
-					isDisabled={true}
+					isDisabled={isDisabled}
 					bind:text={$problemInfo.alternatives[$matrix.results.winner].description}
 				/>
 			{:else}
@@ -454,6 +581,7 @@
 				</p>
 			{/if}
 		</div>
+		{/if}
 	</div>
 
 	<div class="flex flex-col">
@@ -470,6 +598,20 @@
 				<InformationIcon styleTw="size-4" />
 			</Tooltip>
 		</div>
+		{#if !matrixComplete}
+			<div class="mt-5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+				<div class="flex items-center gap-3">
+					<div class="flex-shrink-0">
+						<svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+						</svg>
+					</div>
+					<div class="text-sm text-gray-600">
+						<strong>Completa la matriz de decisión</strong> para tomar tu decisión final basada en los resultados.
+					</div>
+				</div>
+			</div>
+		{:else}
 		<div class="mt-5 flex flex-col gap-2">
 			{#if $problemInfo.alternatives.length === 1 && $problemInfo.alternatives[0].description === ''}
 				<p class="pl-2 text-alineados-gray-400">
@@ -484,13 +626,14 @@
 							}}
 							index={i + 1}
 							selected={alternative.id === $problemInfo.final_decision}
-							bind:isDisabled={$problemCard.active}
+							isDisabled={isDisabled}
 							bind:text={alternative.description}
 						/>
 					{/if}
 				{/each}
 			{/if}
 		</div>
+		{/if}
 	</div>
 
 	<div class="flex flex-col" bind:this={$actionPlanDivRef} id="actionPlanDiv">
@@ -510,6 +653,20 @@
 				</Tooltip>
 			</div>
 		</div>
+		{#if !matrixComplete}
+			<div class="mt-5 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+				<div class="flex items-center gap-3">
+					<div class="flex-shrink-0">
+						<svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+						</svg>
+					</div>
+					<div class="text-sm text-gray-600">
+						<strong>Completa la matriz de decisión</strong> para crear tu plan de acción basado en tu decisión final.
+					</div>
+				</div>
+			</div>
+		{:else}
 		<div class="-ml-10 mt-5 flex flex-col gap-2">
 			{#each $problemInfo.action_plan as action, i}
 				<Item
@@ -540,6 +697,7 @@
 						}
 					}}
 					bind:isOnlyText={$problemCard.active}
+					isDisabled={isDisabled}
 					bind:isDaily={$problemInfo.action_plan[i].daily}
 					bind:isStarred={$problemInfo.action_plan[i].prominent}
 					bind:value={$problemInfo.action_plan[i].description}
@@ -548,5 +706,6 @@
 				/>
 			{/each}
 		</div>
+		{/if}
 	</div>
 </div>

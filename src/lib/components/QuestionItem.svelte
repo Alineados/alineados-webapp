@@ -8,6 +8,7 @@
     // Remove unused exports
     export let isStarred: boolean = false;
     export let isUnique: boolean = false;
+    export let isDisabled: boolean = false;
     export let deleteItem: () => void;
     export let prominentItem: () => void;
     
@@ -45,34 +46,40 @@
         <button
             aria-label="Copy"
             on:click={copyClipboard}
-            class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600"
+            disabled={isDisabled}
+            class="text-alineados-gray-300 hover:text-alineados-gray-600 focus:text-alineados-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
             <Copy styleTw="size-5" />
         </button>
 
         <textarea
-            class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-alineados-gray-600 focus:outline-none group-hover:underline"
+            class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium text-alineados-gray-600 focus:outline-none group-hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
             bind:value
             placeholder="Agregar problema"
             on:input={handleInput}
             rows="1"
             spellcheck="false"
+            disabled={isDisabled}
         ></textarea>
     </div>
 
     <div class="invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible">
         <button
             on:click={prominentItem}
+            disabled={isDisabled}
             class:text-alineados-gray-400={!isStarred}
             class:text-yellow-500={isStarred}
             class:hover:text-yellow-500={true}
+            class:disabled:opacity-50={isDisabled}
+            class:disabled:cursor-not-allowed={isDisabled}
             aria-label="Star"
         >
             <Star styleTw="size-4" />
         </button>
         <button
             on:click={deleteItem}
-            class="text-alineados-gray-400 hover:text-red-500"
+            disabled={isDisabled}
+            class="text-alineados-gray-400 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Delete"
         >
             <TrashCan styleTw="size-4" />

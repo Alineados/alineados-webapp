@@ -15,7 +15,35 @@
 
 	onMount(() => {
 		if ($problemCard.completed_at) {
-			daysCompleted = calculateDaysBetween($problemCard.created_at, $problemCard.completed_at);
+			// Usar la misma lógica que DaysPill para evitar NaN
+			try {
+				const completedDate = new Date($problemCard.completed_at);
+				
+				// Manejar el formato específico de created_at que viene del backend
+				let createdDate;
+				if ($problemCard.created_at.includes('+0000 UTC')) {
+					// Formato: "2025-01-28 01:56:33.939477562 +0000 UTC"
+					// Convertir a formato ISO estándar
+					const cleanDate = $problemCard.created_at.replace(' +0000 UTC', 'Z');
+					createdDate = new Date(cleanDate);
+				} else {
+					createdDate = new Date($problemCard.created_at);
+				}
+				
+				// Verificar que las fechas sean válidas
+				if (!isNaN(completedDate.getTime()) && !isNaN(createdDate.getTime())) {
+					// Calcular diferencia en milisegundos
+					const timeDiff = completedDate.getTime() - createdDate.getTime();
+					// Convertir a días
+					daysCompleted = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+					daysCompleted = Math.max(0, daysCompleted);
+				} else {
+					daysCompleted = 0;
+				}
+			} catch (error) {
+				console.error('Error calculando días completados:', error);
+				daysCompleted = 0;
+			}
 		}
 	});
 </script>

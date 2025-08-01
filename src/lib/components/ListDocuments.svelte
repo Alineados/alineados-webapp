@@ -9,12 +9,19 @@
 	let { disabled = $bindable() }: { disabled: boolean } = $props();
 
 	function getFileIcon(type: string) {
-		return type.startsWith('image') ? 'image' : 'document';
+		// Solo documentos, siempre icono de archivo
+		return 'document';
 	}
 
 	function handleDelete(id: string, type: string) {
 		removeMemory(id, type);
 	}
+
+	// Filtrar solo documentos (no imágenes)
+	const documentsOnly = $derived($problemInfo.memories.filter(memory => 
+		// Mostrar solo documentos, excluir imágenes visualmente
+		!memory.type.startsWith('image')
+	));
 </script>
 
 <div class="mx-auto w-full max-w-2xl pt-5">
@@ -29,19 +36,16 @@
 				bind:disabledBtn={disabled}
 				styles=""
 				changeIcon={false}
+				acceptable=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.csv,.zip,.rar"
 				styleTw="size-5 text-alineados-gray-600 hover:text-alineados-gray-900"
 			/>
 		</div>
 
 		<div class="divide-y">
-			{#each $problemInfo.memories as file, index}
+			{#each documentsOnly as file, index}
 				<div class="flex items-center justify-between py-2 hover:bg-alineados-gray-50">
 					<div class="flex items-center gap-3">
-						{#if getFileIcon(file.type) === 'document'}
-							<File class="size-5 text-alineados-orange-900" />
-						{:else}
-							<Image styleTw="size-5 text-alineados-orange-900" />
-						{/if}
+						<File class="size-5 text-alineados-orange-900" />
 
 						<span class="text-xs font-medium text-alineados-orange-900">{file.file_name}</span>
 					</div>
