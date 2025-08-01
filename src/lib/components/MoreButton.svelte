@@ -12,6 +12,55 @@
     import { problemInfo } from '$lib/stores';
     import { ProblemService } from '$lib/services/personal/problems';
     import { page } from '$app/stores';
+	import { enhance } from '$app/forms';
+	import TrashCan from '$lib/icons/TrashCan.svelte';
+	import AlertDialog from '$lib/components/AlertDialog.svelte';
+	import { removeProblem } from '$lib/stores';
+
+	let openModalDelete = $state(false);
+	let deleting = $state(false);
+	let formHtml: HTMLFormElement | undefined;
+
+	function openModal(e: any) {
+		e.preventDefault();
+		e.stopPropagation();
+		openModalDelete = true;
+	}
+
+	function deleteProblem(e: any) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (formHtml) formHtml.requestSubmit();
+
+		setTimeout(() => {
+			openModalDelete = false;
+		}, 500);
+
+		return;
+	}
+
+	function getPillarName(pillar_label: string): string {
+		let pillar_name: string = '';
+		switch (pillar_label) {
+			case 'Salud':
+				pillar_name = 'health';
+				break;
+			case 'Relaciones':
+			case 'Relación':
+				pillar_name = 'relational';
+				break;
+			case 'Vocaciones':
+			case 'Vocación':
+				pillar_name = 'vocational';
+				break;
+			case 'Espiritual':
+				pillar_name = 'spiritual';
+				break;
+		}
+
+		return pillar_name;
+	}
 
 	// Function to update
 	// 1. active / inactive .....  2. security / non-security
@@ -103,11 +152,11 @@
                     active: true,
                     security: false,
                     decision_taken: $page.data.problemInfo.decision_taken.description,
-                    involved: $page.data.problemInfo.involved.map(i => i.description).filter(Boolean),
-                    contexts: $page.data.problemInfo.contexts.map(c => c.description).filter(Boolean),
-                    objectives: $page.data.problemInfo.objectives.map(o => o.description).filter(Boolean),
-                    alternatives: $page.data.problemInfo.alternatives.map(a => a.description).filter(Boolean),
-                    action_plan: $page.data.problemInfo.action_plan.map(a => a.description).filter(Boolean)
+                    involved: $page.data.problemInfo.involved.map((i: any) => i.description).filter(Boolean),
+                    contexts: $page.data.problemInfo.contexts.map((c: any) => c.description).filter(Boolean),
+                    objectives: $page.data.problemInfo.objectives.map((o: any) => o.description).filter(Boolean),
+                    alternatives: $page.data.problemInfo.alternatives.map((a: any) => a.description).filter(Boolean),
+                    action_plan: $page.data.problemInfo.action_plan.map((a: any) => a.description).filter(Boolean)
                 }
             };
 
@@ -145,10 +194,10 @@
 			onclick={() => {
 				if (!$problemCard.completed_at) handleClick(1);
 			}}
+			disabled={$problemCard.completed_at !== null}
 			class={$problemCard.completed_at !== null
 				? 'opacity-100'
-				: 'bg-white hover:cursor-pointer hover:bg-alineados-gray-100 '}
-			disabled={$problemCard.completed_at !== null}
+				: 'bg-white hover:cursor-pointer hover:bg-alineados-gray-100'}
 		>
 			<Blocked class="mt-0.5" />
 			<span class="font-normal">
@@ -186,6 +235,13 @@
             <File class="mt-0.5" />
             <span class="font-normal">Exportar</span>
         </DropdownMenu.Item>
+		<DropdownMenu.Item
+			onclick={openModal}
+			class="bg-white hover:cursor-pointer hover:bg-alineados-gray-100"
+		>
+			<TrashCan class="mt-0.5" />
+			<span class="font-normal">Eliminar</span>
+		</DropdownMenu.Item>
 		<!--Content group -->
 		<!-- <DropdownMenu.Group>
 			<DropdownMenu.Sub>
@@ -207,3 +263,43 @@
 		</DropdownMenu.Group> -->
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
+
+<!-- Hidden form for delete action -->
+<form
+	bind:this={formHtml}
+	method="POST"
+	action="?/delete"
+	use:enhance={({ formElement, formData, action, cancel, submitter }) => {
+		deleting = true;
+		// set data
+		if ($problemCard?.id) formData.set('pid', $problemCard.id);
+		else console.error('Problem ID is undefined');
+
+		return async ({ result, update }) => {
+			// `result` is an `ActionResult` object
+
+			if (result.status === 200) {
+				if ($problemCard)
+					removeProblem($problemCard, getPillarName($problemCard.pillar_name));
+				// Redirect to problems list after successful deletion
+				goto('/personal/problems');
+			}
+
+			// `update` is a function which triggers the default logic that would be triggered if this callback wasn't set
+
+			deleting = false;
+		};
+	}}
+	style="display: none;"
+>
+</form>
+
+<AlertDialog
+	bind:open={openModalDelete}
+	title="Eliminar problema"
+	description="¿Estás seguro de que deseas eliminar este problema?"
+	cancel="Cancelar"
+	action="Eliminar"
+	handleCancel={() => (openModalDelete = false)}
+	handleAction={(e) => deleteProblem(e)}
+/>
