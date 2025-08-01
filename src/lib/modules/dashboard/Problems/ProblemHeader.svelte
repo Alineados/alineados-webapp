@@ -14,7 +14,9 @@
 		problemCard,
 		reportProblem,
 		matrixJSON,
-		autosavingProblemMatrix
+		autosavingProblemMatrix,
+		updateProblemName,
+		syncProblemCardToStores
 	} from '$lib/stores';
 
 	import Cloud from '$lib/icons/Cloud.svelte';
@@ -59,6 +61,21 @@
         if ($problemCard.completed_at !== null) return;
         const input = e.target as HTMLInputElement;
         title = input.value;
+        
+        // Update problemCard - the derived store will handle syncing to card stores
+        if (title && $problemCard?.id) {
+            console.log('handleInput called:', { title, problemCardId: $problemCard.id });
+            problemCard.update(card => {
+                card.problem_name = title;
+                return card;
+            });
+            
+            // Sync to card stores
+            // Small delay to ensure the store is updated
+            setTimeout(() => {
+                syncProblemCardToStores();
+            }, 0);
+        }
     }
 
     onMount(() => {

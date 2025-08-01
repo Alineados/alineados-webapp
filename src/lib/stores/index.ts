@@ -1,10 +1,11 @@
 // problems
 export {
 	initProblems,
+	initProblemCard,
 	addProblem,
 	removeProblem,
-	initProblemCard,
 	updateSecurityAndActive,
+	updateProblemName,
 	isCompleteProblem,
 	problemProgress,
 	filterBy,
@@ -19,7 +20,8 @@ export {
 	healthProblemsFiltered,
 	relationalProblemsFiltered,
 	spiritualProblemsFiltered,
-	vocationalProblemsFiltered
+	vocationalProblemsFiltered,
+	syncProblemCardToStores
 } from './problem/cards';
 
 export {

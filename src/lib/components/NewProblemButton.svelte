@@ -71,6 +71,7 @@
 						}: {
 							data: ProblemCard;
 						} = result.data as unknown as Response;
+						console.log('New problem created:', { data, active: data.active, is_new: data.is_new });
 						// navigate to new problem
 						navigateToProblem(data.id, dataToSend.pillar_name);
 						// update stores

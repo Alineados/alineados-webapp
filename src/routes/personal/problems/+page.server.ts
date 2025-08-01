@@ -17,7 +17,8 @@ export const actions = {
 			cid,
 			pillar_name: pillar_label,
 			category_name: category_label,
-			problem_name: '' // Inicialmente creamos con título vacío
+			problem_name: '', // Inicialmente creamos con título vacío
+			active: true // Los problemas nuevos se crean como activos
 		});
 
 		if (result.status !== 200 && result.status !== 201) {

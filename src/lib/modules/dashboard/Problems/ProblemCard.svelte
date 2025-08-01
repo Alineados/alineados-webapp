@@ -158,17 +158,16 @@
 			<MessageLength />
 		{/if}
 		{#each problems as problem, i}
+			{@const isActive = problem.is_new ? true : problem.active}
 			<CustomCard
 				padding="p-4"
 				onClickCard={(e) => handleClickCard(e, problem.id, title)}
-				isNew={problem.is_new || !problem.active}
+				isNew={problem.is_new && !problem.active}
 				state={calculateDaysLeft(problem.milestone_date) <= 10 && !problem.completed_at
 					? 'danger'
-					: problem.active && problem.completed_at
+					: problem.completed_at
 						? 'completed'
-						: problem.active
-							? 'default'
-							: 'default'}
+						: 'default'}
 				headerClass="justify-between"
 			>
 				{#snippet header()}
@@ -176,8 +175,8 @@
 						<div class="flex flex-row items-center gap-1">
 							<StatusPill
 								classTw="px-2 py-1"
-								bind:status={problems[i].active}
-								bind:completed={problems[i].completed_at}
+								status={isActive}
+								bind:completed={problem.completed_at}
 							/>
 
 							{#if problem.security}
