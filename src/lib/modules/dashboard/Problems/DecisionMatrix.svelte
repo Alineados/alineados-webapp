@@ -14,11 +14,15 @@
 		'text-red-500',
 		'text-yellow-500'
 	];
-	let worker: Worker;
+	let worker: any;
 	let api: any;
+	// Estado para el tooltip personalizado
 	let tooltipText = '';
 	let tooltipVisible = false;
 	let tooltipPosition = { x: 0, y: 0 };
+
+	// Estado para el cuadro informativo
+	let showRankingInfo = true;
 
 	function setColor(i: number): string {
 		return colors[i];
@@ -32,6 +36,10 @@
 
 	function hideTooltip() {
 		tooltipVisible = false;
+	}
+
+	function closeRankingInfo() {
+		showRankingInfo = false;
 	}
 
 	onMount(() => {
@@ -94,8 +102,8 @@
 	{#each $matrix.cols as column, index}
 		<div 
 			class="text-center text-xs font-medium w-[100px] break-words cursor-help" 
-			on:mouseenter={(e) => showTooltip(e, column.name)}
-			on:mouseleave={hideTooltip}
+			onmouseenter={(e) => showTooltip(e, column.name)}
+			onmouseleave={hideTooltip}
 		>
 			{(() => {
 				const words = column.name.split(' ');
@@ -201,20 +209,31 @@
 </div>
 
 <!-- Mensaje informativo para ranking a la derecha -->
-{#if currentStep === 1}
-	<div class="absolute right-4 top-1/2 transform -translate-y-1/2 w-72 bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-lg">
-		<div class="flex items-start gap-3">
-			<div class="flex-shrink-0 mt-0.5">
-				<svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-					<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+{#if currentStep === 1 && showRankingInfo}
+	<div class="absolute right-4 top-1/2 transform -translate-y-1/2 z-50 w-80 bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-lg max-w-sm">
+		<div class="flex items-start justify-between gap-3">
+			<div class="flex items-start gap-3 flex-1">
+				<div class="flex-shrink-0 mt-0.5">
+					<svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+						<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+					</svg>
+				</div>
+				<div class="text-sm text-blue-800">
+					<strong class="block mb-2">¿Cómo llenar el ranking?</strong>
+					<p class="text-blue-700 leading-relaxed">
+						Asigna <strong>3</strong> a la alternativa que <strong>más satisface</strong> el objetivo, <strong>2</strong> a la intermedia y <strong>1</strong> a la que <strong>menos satisface</strong>.
+					</p>
+				</div>
+			</div>
+			<button
+				onclick={closeRankingInfo}
+				class="flex-shrink-0 p-1 text-blue-400 hover:text-blue-600 transition-colors"
+				aria-label="Cerrar información"
+			>
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 				</svg>
-			</div>
-			<div class="text-sm text-blue-800">
-				<strong class="block mb-2">¿Cómo llenar el ranking?</strong>
-				<p class="text-blue-700 leading-relaxed">
-					Asigna <strong>3</strong> a la alternativa que <strong>más satisface</strong> el objetivo, <strong>2</strong> a la intermedia y <strong>1</strong> a la que <strong>menos satisface</strong>.
-				</p>
-			</div>
+			</button>
 		</div>
 	</div>
 {/if}
