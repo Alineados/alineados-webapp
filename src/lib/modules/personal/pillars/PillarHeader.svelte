@@ -5,7 +5,10 @@
     import Blocked from '$lib/icons/Blocked.svelte';
     import File from '$lib/icons/File.svelte';
     import CircleCheck from '$lib/icons/CircleCheck.svelte';
+    import Cloud from '$lib/icons/Cloud.svelte';
+    import Loading from '$lib/icons/Loading.svelte';
     import type { DataPillar } from '$lib/interfaces';
+    import { isPillarSaving } from '$lib/stores/pillar/category';
 
     let { 
         pillarInfo,
@@ -36,6 +39,23 @@
         
         <div class="flex flex-row justify-start gap-4">
             <div class="flex items-center gap-2">
+                <!-- Indicador de nube/loading -->
+                <div class="flex items-center gap-2">
+                    {#if $isPillarSaving}
+                        <div class="flex items-center gap-2">
+                            <div class="h-6 w-6 animate-spin text-alineados-blue-900">
+                                <Loading />
+                            </div>
+                            <span class="text-sm text-gray-600">Guardando...</span>
+                        </div>
+                    {:else}
+                        <div class="flex items-center gap-2">
+                            <Cloud styleTw="size-6 text-alineados-gray-400" />
+                            <span class="text-sm text-gray-400">Guardado</span>
+                        </div>
+                    {/if}
+                </div>
+                
                 <Lock class="size-4 text-alineados-gray-600" />
                 <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {isActive ? 'Activo' : 'Inactivo'}
@@ -44,6 +64,7 @@
                     <CircleCheck styleTw="size-4" />
                     <span class="text-sm font-medium">Rendir Cuentas</span>
                 </button>
+                
                 
                 <div class="relative">
                     <button 

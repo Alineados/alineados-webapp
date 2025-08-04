@@ -21,7 +21,6 @@ export async function uploadFile(
 		const options: Options = {
 			method: method,
 			headers: {
-				'Access-Control-Allow-Origin': '*',
 				'Authorization': `Bearer ${apiKey}`
 			},
 			body: form
@@ -54,7 +53,6 @@ export async function request(
 				method: method,
 				headers: {
 					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
 					'Authorization': `Bearer ${apiKey}`
 				}
 			};

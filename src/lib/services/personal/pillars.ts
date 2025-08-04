@@ -3,6 +3,17 @@ import type { Documents } from '$lib/interfaces';
 import { getEndpointByVenv } from '../endpoints';
 import { request, uploadFile, type Response } from '../http';
 
+// Interface para CategoryDTO
+export interface CategoryDTO {
+	id: string;
+	label: string;
+	name: string;
+	active: boolean;
+	state: number;
+	priority: number;
+	security: boolean;
+}
+
 export class PillarService {
 	private static instance: PillarService;
 	private _host: string = getEndpointByVenv().pillars;
@@ -29,6 +40,17 @@ export class PillarService {
 	async getAllPillars(uid: string): Promise<Response> {
 		const url = `${this._url}/get-all?uid=${uid}`;
 		const response: Response = await request(url, 'GET', null, this._token);
+		return response;
+	}
+
+	// Método para actualizar una categoría completa
+	async updateCategory(
+		categoryData: CategoryDTO,
+		pillarType: string,
+		uid: string
+	): Promise<Response> {
+		const url = `${this._url}/update-category?pillar_type=${pillarType}&uid=${uid}`;
+		const response: Response = await request(url, 'POST', categoryData, this._token);
 		return response;
 	}
 }

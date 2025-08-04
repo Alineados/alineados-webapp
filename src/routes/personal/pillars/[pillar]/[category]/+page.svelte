@@ -10,6 +10,9 @@
     import PillarHeader from '$lib/modules/personal/pillars/PillarHeader.svelte';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
+    import type { PageData } from './$types';
+
+    let { data } = $props<{ data: PageData }>();
 
     let pillar = $derived($page.params.pillar);
     let category = $derived($page.params.category);
@@ -51,7 +54,10 @@
             </div>
 
             <div class="w-[400px] bg-white p-6">
-                <PillarSidebar />
+                <PillarSidebar 
+                    categoryData={data.categoryData}
+                    pillarType={data.pillarType}
+                />
             </div>
         </div>
     </div>

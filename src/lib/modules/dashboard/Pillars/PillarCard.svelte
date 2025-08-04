@@ -61,7 +61,7 @@
 		{isActive ? 'Activo' : 'Inactivo'}
 	  </span>
 	  {#if isProtected}
-	    <Lock size={32} class="text-gray-500" />
+	    <Lock class="h-8 w-8 text-gray-500" />
 	  <!-- {:else}
 	    <Unlock size={16} class="text-gray-500" /> -->
 	  {/if}
