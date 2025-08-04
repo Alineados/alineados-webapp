@@ -5,10 +5,16 @@
 	import { pillarState, userState } from '$lib/stores';
 	import type { LayoutProps } from './$types';
 	import Loader from '$lib/shared/ui/loader/loader.svelte';
+	import { setContext } from 'svelte';
 
 	let { data, children }: LayoutProps = $props();
 	let isNavigating = $state(false);
 	let isPreventedNavigation = $state(false);
+
+	// Establecer el token en el contexto
+	if (data.token) {
+		setContext('token', data.token);
+	}
 
 	if (data.user && data.pillars) {
 		userState.init(data.user);

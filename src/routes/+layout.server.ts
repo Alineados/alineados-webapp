@@ -5,6 +5,7 @@ export const load: LayoutServerLoad = async (event) => {
 
     return {
         user: event.locals.user,
-        pillars: event.locals.pillars
+        pillars: event.locals.pillars,
+        token: event.locals.token
     }
 }

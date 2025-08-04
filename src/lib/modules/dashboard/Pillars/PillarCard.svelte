@@ -61,7 +61,7 @@
 		{isActive ? 'Activo' : 'Inactivo'}
 	  </span>
 	  {#if isProtected}
-	    <Lock size={32} class="text-gray-500" />
+	    <Lock class="h-8 w-8 text-gray-500" />
 	  <!-- {:else}
 	    <Unlock size={16} class="text-gray-500" /> -->
 	  {/if}
@@ -87,10 +87,10 @@
 		        <svelte:component this={stateIcon} class={`${stateIconColor} text-2xl`} />
 		      </div>
 		    {:else}
-		      <span class="text-gray-500 text-xs">N/A</span>
+		      <span class="text-gray-500 text-xs">-</span>
 		    {/if}
 		  {:else}
-		    <span class="text-gray-500 text-xs">N/A</span>
+		    <span class="text-gray-500 text-xs">-</span>
 		  {/if}
 		</div>
 	  </div>
@@ -102,7 +102,7 @@
 		  {#if isActive && priorityIcon}
 		    <svelte:component this={priorityIcon} class="text-yellow-500 text-2xl" />
 		  {:else}
-		    <span class="text-gray-500 text-xs">N/A</span>
+		    <span class="text-gray-500 text-xs">-</span>
 		  {/if}
 		</div>
 	  </div>
