@@ -26,6 +26,7 @@
 		animate = false,  // Add this new prop
 		onFocus,
 		onInput,
+		onBlur,
 		addItem,
 		deleteItem,
 		prominentItem,
@@ -45,8 +46,10 @@
 		isRepeated?: boolean;
 		showOnlyDelete?: boolean;
 		w_size?: string;
+		animate?: boolean;
 		onFocus?: () => void;
 		onInput?: () => void;
+		onBlur?: () => void;
 		addItem?: () => void;
 		deleteItem?: () => void;
 		prominentItem?: () => void;
@@ -89,6 +92,10 @@
 
 	function handleOnFocus(event: FocusEvent) {
 		if (onFocus) onFocus();
+	}
+
+	function handleOnBlur(event: FocusEvent) {
+		if (onBlur) onBlur();
 	}
 </script>
 
@@ -151,6 +158,7 @@
 			onfocus={handleOnFocus}
 			onclick={handleTextareaClick}
 			onkeydown={handleKeyPress}
+			onblur={handleOnBlur}
 			rows="1"
 			spellcheck="false"
 			readonly={!isOnlyText || isDisabled}

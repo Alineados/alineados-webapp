@@ -1,4 +1,7 @@
 <script lang="ts">
+    import type { PageData } from './$types';
+    import PillarHeader from '$lib/modules/personal/pillars/PillarHeader.svelte';
+    import PillarSidebar from '$lib/modules/personal/pillars/PillarSidebar.svelte';
     import ElementsSection from '$lib/modules/personal/pillars/ElementsSection.svelte';
     import ObjectivesSection from '$lib/modules/personal/pillars/ObjectivesSection.svelte';
     import PastActionsSection from '$lib/modules/personal/pillars/PastActionsSection.svelte';
@@ -6,11 +9,8 @@
     import FutureActionsSection from '$lib/modules/personal/pillars/FutureActionsSection.svelte';
     import MediumTermActionsSection from '$lib/modules/personal/pillars/MediumTermActionsSection.svelte';
     import LongTermActionsSection from '$lib/modules/personal/pillars/LongTermActionsSection.svelte';
-    import PillarSidebar from '$lib/modules/personal/pillars/PillarSidebar.svelte';
-    import PillarHeader from '$lib/modules/personal/pillars/PillarHeader.svelte';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
-    import type { PageData } from './$types';
 
     let { data } = $props<{ data: PageData }>();
 
@@ -33,7 +33,7 @@
             label: pillar,
             categories: []
         }} />
-
+        
         <div class="flex flex-1 px-4 md:px-8 lg:px-16">
             <div class="flex-1 space-y-12 mt-8">
 
