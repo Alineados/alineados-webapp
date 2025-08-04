@@ -28,13 +28,6 @@
 
         <div class="flex flex-1">
             <div class="flex-1 space-y-12 p-8">
-                <p class="flex flex-row text-sm font-medium text-alineados-gray-600">
-                    <a href="/personal" class="hover:underline">Personal</a>
-                    <span class="mx-1">/</span>
-                    <a href="/personal/pillars" class="hover:underline">Mis Pilares de Vida</a>
-                    <span class="mx-1">/</span>
-                    <span class="capitalize">{category}</span>
-                </p>
 
                 <div class="space-y-12">
                     <ElementsSection />
