@@ -6,7 +6,7 @@
     import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -40,16 +40,24 @@
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
+                
+                // Filtrar objetivos vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {
-                    objectives = categoryInfo.objectives.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyObjectives = categoryInfo.objectives
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente un objetivo vacío al final
+                    objectives = [...nonEmptyObjectives, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear un solo objetivo vacío
+                    objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar un objetivo vacío al final
-                objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -65,7 +73,7 @@
     async function saveObjectivesSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        if (items.length === 0) return;
+        // Guardar siempre, incluso si no hay objetivos (para limpiar el backend)
         $isPillarSaving = true;
         hasUnsavedChanges = true;
         try {
@@ -91,6 +99,9 @@
                 $currentCategoryInfo = categoryInfo;
                 hasUnsavedChanges = false;
                 lastSavedTime = new Date();
+                
+                // Actualizar automáticamente el estado de la categoría
+                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving objectives (silent):', error);
@@ -117,13 +128,12 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        if (items.length > 0) {
-            hasUnsavedChanges = true;
-            const timeout = setTimeout(() => {
-                saveObjectivesSilent();
-            }, 1500); // Reducir a 1.5 segundos
-            return () => clearTimeout(timeout);
-        }
+        // Guardar siempre que haya cambios, incluso si no hay objetivos (para eliminar del backend)
+        hasUnsavedChanges = true;
+        const timeout = setTimeout(() => {
+            saveObjectivesSilent();
+        }, 1500); // Reducir a 1.5 segundos
+        return () => clearTimeout(timeout);
     });
 
     // Guardar al perder foco
@@ -211,26 +221,29 @@
 
     // Lógica de UI
     function addObjective(id: string) {
-        const index = objectives.findIndex(e => e.id === id);
+        // Agregar un nuevo objetivo al final
         const newObjective = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            objectives = [
-                ...objectives.slice(0, index + 1),
-                newObjective,
-                ...objectives.slice(index + 1)
-            ];
-        } else {
-            objectives = [...objectives, newObjective];
-        }
+        objectives = [...objectives, newObjective];
     }
+    
     function removeObjective(id: string) {
-        if (objectives.length === 1 && objectives[0].description === '') return;
-        if (objectives.find(e => e.id === id)?.description !== '' || objectives.length > 1) {
-            objectives = objectives.filter(e => e.id !== id);
-            if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
-                objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es el último objetivo y está vacío
+        if (objectives.length === 1 && objectives[0].description === '') {
+            return;
         }
+        
+        // Eliminar el objetivo
+        objectives = objectives.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un objetivo vacío al final
+        if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
+            objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            saveObjectivesSilent();
+        }, 100);
     }
     function toggleProminent(id: string) {
         objectives = objectives.map(e => e.id === id ? { ...e, prominent: !e.prominent } : e);
@@ -271,9 +284,11 @@
                     prominentItem={() => toggleProminent(objective.id)}
                     dailyItem={() => toggleDaily(objective.id)}
                     onInput={() => {
-                        if (objectives[objectives.length - 1].description !== '' && objective.id === objectives[objectives.length - 1].id) {
+                        // Si el usuario comienza a escribir en el último objetivo, agregar uno nuevo
+                        if (objective.description !== '' && objective.id === objectives[objectives.length - 1].id) {
                             addObjective(objective.id);
                         }
+                        // Solo manejar la eliminación de objetivos vacíos que no sean el último
                         if (objective.description === '' && objective.id !== objectives[objectives.length - 1].id) {
                             removeObjective(objective.id);
                         }

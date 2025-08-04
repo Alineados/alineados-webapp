@@ -5,7 +5,7 @@
     import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -39,16 +39,24 @@
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
+                
+                // Filtrar acciones vacías del backend
                 if (categoryInfo.middle_actions && categoryInfo.middle_actions.length > 0) {
-                    futureActions = categoryInfo.middle_actions.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyActions = categoryInfo.middle_actions
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente una acción vacía al final
+                    futureActions = [...nonEmptyActions, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear una sola acción vacía
+                    futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar una acción vacía al final
-                futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -64,7 +72,7 @@
     async function saveMediumTermActionsSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        if (items.length === 0) return;
+        // Guardar siempre, incluso si no hay acciones (para limpiar el backend)
         $isPillarSaving = true;
         hasUnsavedChanges = true;
         try {
@@ -90,6 +98,9 @@
                 $currentCategoryInfo = categoryInfo;
                 hasUnsavedChanges = false;
                 lastSavedTime = new Date();
+                
+                // Actualizar automáticamente el estado de la categoría
+                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving medium term actions (silent):', error);
@@ -116,13 +127,12 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        if (items.length > 0) {
-            hasUnsavedChanges = true;
-            const timeout = setTimeout(() => {
-                saveMediumTermActionsSilent();
-            }, 1500); // Reducir a 1.5 segundos
-            return () => clearTimeout(timeout);
-        }
+        // Guardar siempre que haya cambios, incluso si no hay acciones (para eliminar del backend)
+        hasUnsavedChanges = true;
+        const timeout = setTimeout(() => {
+            saveMediumTermActionsSilent();
+        }, 1500); // Reducir a 1.5 segundos
+        return () => clearTimeout(timeout);
     });
 
     // Guardar al perder foco
@@ -210,27 +220,29 @@
 
     // Lógica de UI
     function addAction(id: string) {
-        const index = futureActions.findIndex(e => e.id === id);
+        // Agregar una nueva acción al final
         const newAction = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            futureActions = [
-                ...futureActions.slice(0, index + 1),
-                newAction,
-                ...futureActions.slice(index + 1)
-            ];
-        } else {
-            futureActions = [...futureActions, newAction];
-        }
+        futureActions = [...futureActions, newAction];
     }
 
     function removeAction(id: string) {
-        if (futureActions.length === 1 && futureActions[0].description === '') return;
-        if (futureActions.find(e => e.id === id)?.description !== '' || futureActions.length > 1) {
-            futureActions = futureActions.filter(e => e.id !== id);
-            if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
-                futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es la última acción y está vacía
+        if (futureActions.length === 1 && futureActions[0].description === '') {
+            return;
         }
+        
+        // Eliminar la acción
+        futureActions = futureActions.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos una acción vacía al final
+        if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
+            futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            saveMediumTermActionsSilent();
+        }, 100);
     }
 
     function toggleProminent(id: string) {
@@ -272,9 +284,11 @@
                     prominentItem={() => toggleProminent(action.id)}
                     dailyItem={() => toggleDaily(action.id)}
                     onInput={() => {
-                        if (futureActions[futureActions.length - 1].description !== '' && action.id === futureActions[futureActions.length - 1].id) {
+                        // Si el usuario comienza a escribir en la última acción, agregar una nueva
+                        if (action.description !== '' && action.id === futureActions[futureActions.length - 1].id) {
                             addAction(action.id);
                         }
+                        // Solo manejar la eliminación de acciones vacías que no sean la última
                         if (action.description === '' && action.id !== futureActions[futureActions.length - 1].id) {
                             removeAction(action.id);
                         }
