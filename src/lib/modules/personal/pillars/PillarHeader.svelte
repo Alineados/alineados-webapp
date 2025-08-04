@@ -7,12 +7,14 @@
     import CircleCheck from '$lib/icons/CircleCheck.svelte';
     import Cloud from '$lib/icons/Cloud.svelte';
     import Loading from '$lib/icons/Loading.svelte';
+    import BackArrow from '$lib/icons/BackArrow.svelte';
     import type { DataPillar } from '$lib/interfaces';
     import { isPillarSaving, currentCategoryInfo, currentCategoryActive } from '$lib/stores/pillar/category';
     import { getContext } from 'svelte';
     import { getEndpointByVenv } from '$lib/services/endpoints';
     import { userState } from '$lib/stores';
     import { page } from '$app/stores';
+    import { exportPillarToPDF } from '$lib/utils/exportPillar';
 
     let { 
         pillarInfo,
@@ -89,6 +91,99 @@
             isUpdatingState = false;
         }
     }
+
+    // Función para exportar a PDF
+    function handleExport() {
+        const categoryData = $page.data?.categoryData;
+        const globalCategoryInfo = $currentCategoryInfo;
+        
+        if (!categoryData) {
+            console.error('No category data available for export');
+            return;
+        }
+        
+        // Usar la información global si está disponible, sino usar datos básicos
+        const categoryInfo = globalCategoryInfo || {
+            cid: categoryId,
+            uid: userState.id,
+            is_current: true,
+            elements: [],
+            objectives: [],
+            positive_actions: [],
+            improve_actions: [],
+            habits: [],
+            short_actions: [],
+            middle_actions: [],
+            long_actions: []
+        };
+        
+        // Convertir los datos al formato correcto para exportación
+        const exportCategoryInfo = {
+            cid: categoryInfo.cid,
+            uid: categoryInfo.uid || userState.id || '',
+            is_current: categoryInfo.is_current,
+            elements: categoryInfo.elements?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            objectives: categoryInfo.objectives?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            positive_actions: categoryInfo.positive_actions?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            improve_actions: categoryInfo.improve_actions?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            habits: categoryInfo.habits?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            short_actions: categoryInfo.short_actions?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            middle_actions: categoryInfo.middle_actions?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || [],
+            long_actions: categoryInfo.long_actions?.map(item => ({
+                description: item.description,
+                prominent: item.favorite,
+                daily: item.repeated
+            })) || []
+        };
+        
+        const exportData = {
+            categoryName: category,
+            categoryInfo: exportCategoryInfo,
+            pillarType: pillar,
+            categoryData: {
+                priority: categoryData.priority,
+                state: categoryData.state,
+                active: categoryData.active
+            }
+        };
+        
+        try {
+            exportPillarToPDF(exportData);
+            console.log('PDF exported successfully');
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+        }
+        
+        showMenu = false;
+    }
 </script>
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16 w-full">
@@ -133,6 +228,13 @@
                     <span class="text-sm font-medium">Rendir Cuentas</span>
                 </button>
                 
+                <a
+                    href="/personal/pillars"
+                    class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-4 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+                >
+                    <BackArrow class="size-4 font-bold text-alineados-blue-900" />
+                    <p class="text-sm font-medium">Regresar</p>
+                </a>
                 
                 <div class="relative">
                     <button 
@@ -168,7 +270,7 @@
                             
                             <button
                                 class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => showMenu = false}
+                                on:click={() => handleExport()}
                             >
                                 <File class="mr-2 size-4" />
                                 Exportar
