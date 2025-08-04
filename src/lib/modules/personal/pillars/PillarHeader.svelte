@@ -29,7 +29,7 @@
         <span class="text-alineados-orange-900 capitalize">{category}</span>
     </p>
     
-    <div class="flex flex-col items-start gap-5 border-b border-alineados-gray-100 pb-3 lg:flex-row lg:justify-between">
+    <div class="flex flex-col items-start gap-5 border-b border-alineados-gray-100 pb-4 lg:flex-row lg:justify-between">
         <div class="flex items-start gap-2">
             <h1 class="text-5xl font-bold capitalize">{category}</h1>
         </div>

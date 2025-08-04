@@ -24,10 +24,15 @@
 
 {#if isLoaded}
     <div class="flex min-h-screen flex-col">
-        <PillarHeader {category} pillarInfo={{}} />
+        <PillarHeader {category} pillarInfo={{
+            id: '',
+            name: pillar,
+            label: pillar,
+            categories: []
+        }} />
 
-        <div class="flex flex-1">
-            <div class="flex-1 space-y-12 p-8">
+        <div class="flex flex-1 px-4 md:px-8 lg:px-16">
+            <div class="flex-1 space-y-12 mt-8">
 
                 <div class="space-y-12">
                     <ElementsSection />
@@ -45,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="w-[400px] border-l bg-white p-6">
+            <div class="w-[400px] bg-white p-6">
                 <PillarSidebar />
             </div>
         </div>
