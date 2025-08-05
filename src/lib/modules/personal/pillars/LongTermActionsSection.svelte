@@ -2,7 +2,6 @@
     import Item from '$lib/components/Item.svelte';
     import Tooltip from '$lib/components/Tooltip.svelte';
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
-    import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
     import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
@@ -27,8 +26,6 @@
     ]);
     let isOnlyText = $state(true);
     let isLoading = $state(false);
-    let hasUnsavedChanges = $state(false);
-    let lastSavedTime = $state<Date | null>(null);
 
     // Cargar acciones de largo plazo existentes
     async function loadLongTermActions() {
@@ -72,9 +69,7 @@
     async function saveLongTermActionsSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        if (items.length === 0) return;
         $isPillarSaving = true;
-        hasUnsavedChanges = true;
         try {
             let categoryInfo = $currentCategoryInfo;
             if (!categoryInfo) {
@@ -96,12 +91,9 @@
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
             if (response.status === 200) {
                 $currentCategoryInfo = categoryInfo;
-                hasUnsavedChanges = false;
-                lastSavedTime = new Date();
             }
         } catch (error) {
             console.error('Error saving long term actions (silent):', error);
-            // Mantener hasUnsavedChanges = true en caso de error
         } finally {
             $isPillarSaving = false;
         }
@@ -124,13 +116,11 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        if (items.length > 0) {
-            hasUnsavedChanges = true;
-            const timeout = setTimeout(() => {
-                saveLongTermActionsSilent();
-            }, 1500); // Reducir a 1.5 segundos
-            return () => clearTimeout(timeout);
-        }
+        // Siempre guardar, incluso si no hay elementos
+        const timeout = setTimeout(() => {
+            saveLongTermActionsSilent();
+        }, 1500); // Reducir a 1.5 segundos
+        return () => clearTimeout(timeout);
     });
 
     // Guardar al perder foco
@@ -149,7 +139,7 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
+            if (futureActions.some(e => e.description.trim() !== '')) {
                 // Mostrar confirmación al usuario
                 event.preventDefault();
                 event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
@@ -261,7 +251,7 @@
         </Tooltip>
         
         <!-- Indicador de estado de guardado -->
-        <SaveIndicator {hasUnsavedChanges} {lastSavedTime} />
+        
     </div>
     {#if isLoading}
         <div class="flex items-center justify-center py-8">
