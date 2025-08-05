@@ -40,16 +40,24 @@
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
+                
+                // Filtrar objetivos no vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {
-                    objectives = categoryInfo.objectives.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyObjectives = categoryInfo.objectives
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente un objetivo vacío al final
+                    objectives = [...nonEmptyObjectives, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear un solo objetivo vacío
+                    objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar un objetivo vacío al final
-                objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -211,25 +219,23 @@
 
     // Lógica de UI
     function addObjective(id: string) {
-        const index = objectives.findIndex(e => e.id === id);
+        // Agregar un nuevo objetivo al final
         const newObjective = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            objectives = [
-                ...objectives.slice(0, index + 1),
-                newObjective,
-                ...objectives.slice(index + 1)
-            ];
-        } else {
-            objectives = [...objectives, newObjective];
-        }
+        objectives = [...objectives, newObjective];
     }
+    
     function removeObjective(id: string) {
-        if (objectives.length === 1 && objectives[0].description === '') return;
-        if (objectives.find(e => e.id === id)?.description !== '' || objectives.length > 1) {
-            objectives = objectives.filter(e => e.id !== id);
-            if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
-                objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es el último objetivo y está vacío
+        if (objectives.length === 1 && objectives[0].description === '') {
+            return;
+        }
+        
+        // Eliminar el objetivo
+        objectives = objectives.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un objetivo vacío al final
+        if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
+            objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
     }
     function toggleProminent(id: string) {

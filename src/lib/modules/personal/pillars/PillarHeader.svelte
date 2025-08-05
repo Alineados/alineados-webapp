@@ -7,8 +7,13 @@
     import CircleCheck from '$lib/icons/CircleCheck.svelte';
     import Cloud from '$lib/icons/Cloud.svelte';
     import Loading from '$lib/icons/Loading.svelte';
+    import BackArrow from '$lib/icons/BackArrow.svelte';
     import type { DataPillar } from '$lib/interfaces';
-    import { isPillarSaving } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { exportPillarToPDF } from '$lib/utils/exportPillar';
+    import { page } from '$app/stores';
+    import { userState } from '$lib/stores';
+    import { getContext } from 'svelte';
 
     let { 
         pillarInfo,
@@ -21,6 +26,93 @@
     let isActive = $state(true);
     let isProtected = $state(false);
     let showMenu = $state(false);
+    let isExporting = $state(false);
+
+    // Obtener el token del contexto
+    const token = getContext<string>('token');
+    
+    // Obtener parámetros de la URL
+    let pillar = $derived($page.params.pillar);
+    let categoryId = $derived($page.data?.categoryData?.id || '');
+
+    // Función para exportar a PDF
+    function handleExport() {
+        const categoryData = $page.data?.categoryData;
+        const globalCategoryInfo = $currentCategoryInfo;
+        
+        if (!categoryData) {
+            console.error('No category data available');
+            return;
+        }
+
+        isExporting = true;
+        
+        try {
+            // Convertir los datos al formato correcto para exportación
+            const exportCategoryInfo = {
+                cid: globalCategoryInfo?.cid || categoryId,
+                uid: globalCategoryInfo?.uid || userState.id || '',
+                is_current: globalCategoryInfo?.is_current || true,
+                elements: globalCategoryInfo?.elements?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                objectives: globalCategoryInfo?.objectives?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                positive_actions: globalCategoryInfo?.positive_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                improve_actions: globalCategoryInfo?.improve_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                habits: globalCategoryInfo?.habits?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                short_actions: globalCategoryInfo?.short_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                middle_actions: globalCategoryInfo?.middle_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                long_actions: globalCategoryInfo?.long_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || []
+            };
+
+            exportPillarToPDF({
+                categoryName: category,
+                categoryInfo: exportCategoryInfo,
+                pillarType: pillar,
+                categoryData: {
+                    priority: categoryData.priority,
+                    state: categoryData.state,
+                    active: categoryData.active
+                }
+            });
+            
+            console.log('Category exported successfully');
+        } catch (error) {
+            console.error('Error exporting category:', error);
+        } finally {
+            isExporting = false;
+        }
+    }
 </script>
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16 w-full">
@@ -38,6 +130,8 @@
         </div>
         
         <div class="flex flex-row justify-start gap-4">
+            
+            
             <div class="flex items-center gap-2">
                 <!-- Indicador de nube/loading -->
                 <div class="flex items-center gap-2">
@@ -64,6 +158,15 @@
                     <CircleCheck styleTw="size-4" />
                     <span class="text-sm font-medium">Rendir Cuentas</span>
                 </button>
+
+                <!-- Botón Regresar -->
+                <a 
+                    href="/personal/pillars" 
+                    class="group flex items-center gap-[6px] rounded-lg bg-alineados-gray-100 px-4 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+                >
+                    <BackArrow class="size-4" />
+                    <span class="text-sm font-medium">Regresar</span>
+                </a>
                 
                 
                 <div class="relative">
@@ -91,10 +194,18 @@
                             
                             <button
                                 class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => showMenu = false}
+                                on:click={() => { handleExport(); showMenu = false; }}
+                                disabled={isExporting}
                             >
-                                <File class="mr-2 size-4" />
-                                Exportar
+                                {#if isExporting}
+                                    <div class="mr-2 h-4 w-4 animate-spin">
+                                        <Loading />
+                                    </div>
+                                    Generando PDF...
+                                {:else}
+                                    <File class="mr-2 size-4" />
+                                    Exportar
+                                {/if}
                             </button>
                             
                             <button

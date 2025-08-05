@@ -51,15 +51,22 @@
                 // Cargar las acciones según el tipo
                 const actions = categoryInfo[fieldName] || [];
                 if (actions.length > 0) {
-                    pastActions = actions.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    // Filtrar acciones no vacías del backend
+                    const nonEmptyActions = actions
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente una acción vacía al final
+                    pastActions = [...nonEmptyActions, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear una sola acción vacía
+                    pastActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar una acción vacía al final
-                pastActions = [...pastActions, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 pastActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -223,26 +230,23 @@
 
     // Lógica de UI
     function addAction(id: string) {
-        const index = pastActions.findIndex(e => e.id === id);
+        // Agregar una nueva acción al final
         const newAction = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            pastActions = [
-                ...pastActions.slice(0, index + 1),
-                newAction,
-                ...pastActions.slice(index + 1)
-            ];
-        } else {
-            pastActions = [...pastActions, newAction];
-        }
+        pastActions = [...pastActions, newAction];
     }
 
     function removeAction(id: string) {
-        if (pastActions.length === 1 && pastActions[0].description === '') return;
-        if (pastActions.find(e => e.id === id)?.description !== '' || pastActions.length > 1) {
-            pastActions = pastActions.filter(e => e.id !== id);
-            if (pastActions.length === 0 || pastActions[pastActions.length - 1].description !== '') {
-                pastActions = [...pastActions, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es la última acción y está vacía
+        if (pastActions.length === 1 && pastActions[0].description === '') {
+            return;
+        }
+        
+        // Eliminar la acción
+        pastActions = pastActions.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos una acción vacía al final
+        if (pastActions.length === 0 || pastActions[pastActions.length - 1].description !== '') {
+            pastActions = [...pastActions, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
     }
 

@@ -40,16 +40,24 @@
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
+                
+                // Filtrar hábitos no vacíos del backend
                 if (categoryInfo.habits && categoryInfo.habits.length > 0) {
-                    habits = categoryInfo.habits.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyHabits = categoryInfo.habits
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente un hábito vacío al final
+                    habits = [...nonEmptyHabits, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear un solo hábito vacío
+                    habits = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar un hábito vacío al final
-                habits = [...habits, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 habits = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -211,26 +219,23 @@
 
     // Lógica de UI
     function addHabit(id: string) {
-        const index = habits.findIndex(e => e.id === id);
+        // Agregar un nuevo hábito al final
         const newHabit = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            habits = [
-                ...habits.slice(0, index + 1),
-                newHabit,
-                ...habits.slice(index + 1)
-            ];
-        } else {
-            habits = [...habits, newHabit];
-        }
+        habits = [...habits, newHabit];
     }
 
     function removeHabit(id: string) {
-        if (habits.length === 1 && habits[0].description === '') return;
-        if (habits.find(e => e.id === id)?.description !== '' || habits.length > 1) {
-            habits = habits.filter(e => e.id !== id);
-            if (habits.length === 0 || habits[habits.length - 1].description !== '') {
-                habits = [...habits, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es el último hábito y está vacío
+        if (habits.length === 1 && habits[0].description === '') {
+            return;
+        }
+        
+        // Eliminar el hábito
+        habits = habits.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un hábito vacío al final
+        if (habits.length === 0 || habits[habits.length - 1].description !== '') {
+            habits = [...habits, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
     }
 

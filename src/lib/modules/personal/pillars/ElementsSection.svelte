@@ -6,7 +6,7 @@
     import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -52,17 +52,23 @@
                 $currentCategoryInfo = categoryInfo;
 
                 // Convertir los elementos del backend al formato del frontend
+                // Filtrar elementos vacíos del backend
                 if (categoryInfo.elements && categoryInfo.elements.length > 0) {
-                    elements = categoryInfo.elements.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyElements = categoryInfo.elements
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente un elemento vacío al final
+                    elements = [...nonEmptyElements, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear un solo elemento vacío
+                    elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                
-                // Siempre agregar un elemento vacío al final
-                elements = [...elements, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 // Si no hay datos, crear un elemento vacío
                 elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
@@ -230,20 +236,9 @@
     }
 
     function addElement(id: string) {
-        // Agregar un nuevo elemento después del elemento actual
-        const index = elements.findIndex(e => e.id === id);
+        // Agregar un nuevo elemento al final
         const newElement = { id: nanoid(), description: '', prominent: false, daily: false };
-        
-        if (index !== -1) {
-            elements = [
-                ...elements.slice(0, index + 1),
-                newElement,
-                ...elements.slice(index + 1)
-            ];
-        } else {
-            // Si no se encuentra el elemento, agregar al final
-            elements = [...elements, newElement];
-        }
+        elements = [...elements, newElement];
     }
 
     function removeElement(id: string) {
@@ -252,14 +247,12 @@
             return;
         }
         
-        // Eliminar el elemento si no es el último vacío
-        if (elements.find(e => e.id === id)?.description !== '' || elements.length > 1) {
-            elements = elements.filter(e => e.id !== id);
-            
-            // Asegurar que siempre haya al menos un elemento vacío al final
-            if (elements.length === 0 || elements[elements.length - 1].description !== '') {
-                elements = [...elements, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // Eliminar el elemento
+        elements = elements.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un elemento vacío al final
+        if (elements.length === 0 || elements[elements.length - 1].description !== '') {
+            elements = [...elements, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
     }
 
@@ -333,6 +326,9 @@
                 $currentCategoryInfo = categoryInfo;
                 hasUnsavedChanges = false;
                 lastSavedTime = new Date();
+                
+                // Actualizar automáticamente el estado de la categoría
+                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving elements (silent):', error);
@@ -375,11 +371,11 @@
                     prominentItem={() => toggleProminent(element.id)}
                     dailyItem={() => toggleDaily(element.id)}
                     onInput={() => {
-                        // Si el último elemento tiene contenido, agregar uno nuevo
-                        if (elements[elements.length - 1].description !== '' && element.id === elements[elements.length - 1].id) {
+                        // Si el usuario comienza a escribir en el último elemento, agregar uno nuevo
+                        if (element.description !== '' && element.id === elements[elements.length - 1].id) {
                             addElement(element.id);
                         }
-                        // Si un elemento se queda vacío y no es el último, eliminarlo
+                        // Solo manejar la eliminación de elementos vacíos que no sean el último
                         if (element.description === '' && element.id !== elements[elements.length - 1].id) {
                             removeElement(element.id);
                         }

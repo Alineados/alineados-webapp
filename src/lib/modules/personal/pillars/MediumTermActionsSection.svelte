@@ -39,16 +39,24 @@
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
+                
+                // Filtrar acciones de mediano plazo no vacías del backend
                 if (categoryInfo.middle_actions && categoryInfo.middle_actions.length > 0) {
-                    futureActions = categoryInfo.middle_actions.map((item: GenericItemDTO) => ({
-                        id: item.id || nanoid(),
-                        description: item.description,
-                        prominent: item.favorite,
-                        daily: item.repeated
-                    }));
+                    const nonEmptyActions = categoryInfo.middle_actions
+                        .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                        .map((item: GenericItemDTO) => ({
+                            id: item.id || nanoid(),
+                            description: item.description,
+                            prominent: item.favorite,
+                            daily: item.repeated
+                        }));
+                    
+                    // Asegurar que siempre haya exactamente una acción vacía al final
+                    futureActions = [...nonEmptyActions, { id: nanoid(), description: '', prominent: false, daily: false }];
+                } else {
+                    // Si no hay datos o todos están vacíos, crear una sola acción vacía
+                    futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
                 }
-                // Siempre agregar una acción vacía al final
-                futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
             } else {
                 futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
@@ -210,26 +218,23 @@
 
     // Lógica de UI
     function addAction(id: string) {
-        const index = futureActions.findIndex(e => e.id === id);
+        // Agregar una nueva acción al final
         const newAction = { id: nanoid(), description: '', prominent: false, daily: false };
-        if (index !== -1) {
-            futureActions = [
-                ...futureActions.slice(0, index + 1),
-                newAction,
-                ...futureActions.slice(index + 1)
-            ];
-        } else {
-            futureActions = [...futureActions, newAction];
-        }
+        futureActions = [...futureActions, newAction];
     }
 
     function removeAction(id: string) {
-        if (futureActions.length === 1 && futureActions[0].description === '') return;
-        if (futureActions.find(e => e.id === id)?.description !== '' || futureActions.length > 1) {
-            futureActions = futureActions.filter(e => e.id !== id);
-            if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
-                futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
-            }
+        // No eliminar si es la última acción y está vacía
+        if (futureActions.length === 1 && futureActions[0].description === '') {
+            return;
+        }
+        
+        // Eliminar la acción
+        futureActions = futureActions.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos una acción vacía al final
+        if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
+            futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
     }
 
