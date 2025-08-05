@@ -280,6 +280,7 @@
                     bind:isDaily={action.daily}
                     bind:isStarred={action.prominent}
                     bind:value={action.description}
+                    animate={futureActions.length === 1 && futureActions[0].description === ''}
                 />
             {/each}
         </div>

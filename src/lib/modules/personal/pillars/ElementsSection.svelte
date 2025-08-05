@@ -370,6 +370,7 @@
                     bind:isDaily={element.daily}
                     bind:isStarred={element.prominent}
                     bind:value={element.description}
+                    animate={elements.length === 1 && elements[0].description === ''}
                 />
             {/each}
         </div>
