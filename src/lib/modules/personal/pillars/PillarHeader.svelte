@@ -27,7 +27,19 @@
     let isProtected = $state(false);
     let showMenu = $state(false);
     let isExporting = $state(false);
+    let saveError = $state(false);
 
+    // Función para determinar el estado de guardado
+    let saveStatus = $derived($isPillarSaving ? 'saving' : saveError ? 'error' : 'saved');
+
+    // Efecto para manejar el estado de error
+    $effect(() => {
+        if ($isPillarSaving) {
+            // Cuando empieza a guardar, resetear el error
+            saveError = false;
+        }
+    });
+    
     // Obtener el token del contexto
     const token = getContext<string>('token');
     
@@ -133,24 +145,44 @@
             
             
             <div class="flex items-center gap-2">
-                <!-- Indicador de nube/loading -->
-                <div class="flex items-center gap-2">
-                    {#if $isPillarSaving}
+                <!-- Indicador de nube/loading con contenedor reactivo -->
+                <div class={`flex items-center gap-2 rounded-lg px-3 py-1 transition-all duration-300 ${
+                    saveStatus === 'saving'
+                        ? 'bg-yellow-100' 
+                        : saveStatus === 'error'
+                        ? 'bg-red-100'
+                        : 'bg-blue-100'
+                }`}>
+                    {#if saveStatus === 'saving'}
                         <div class="flex items-center gap-2">
-                            <div class="h-6 w-6 animate-spin text-alineados-blue-900">
+                            <div class="h-4 w-4 animate-spin text-yellow-600">
                                 <Loading />
                             </div>
-                            <span class="text-sm text-gray-600">Guardando...</span>
+                            <span class="text-xs font-semibold text-yellow-700">Guardando...</span>
+                        </div>
+                    {:else if saveStatus === 'error'}
+                        <div class="flex items-center gap-2">
+                            <div class="h-4 w-4 text-red-600">
+                                <Blocked />
+                            </div>
+                            <span class="text-xs font-semibold text-red-700">Error al guardar</span>
                         </div>
                     {:else}
                         <div class="flex items-center gap-2">
-                            <Cloud styleTw="size-6 text-alineados-gray-400" />
-                            <span class="text-sm text-gray-400">Guardado</span>
+                            <Cloud styleTw="size-4 text-blue-600" />
+                            <span class="text-xs font-semibold text-blue-700">Guardado</span>
                         </div>
                     {/if}
                 </div>
                 
-                <Lock class="size-4 text-alineados-gray-600" />
+                <!-- Indicador de protegido con contenedor reactivo -->
+                {#if isProtected}
+                    <div class="flex items-center gap-2 rounded-lg bg-purple-100 px-3 py-1 transition-all duration-300">
+                        <Lock class="size-4 text-purple-600" />
+                        <span class="text-xs font-semibold text-purple-700">Protegido</span>
+                    </div>
+                {/if}
+                
                 <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {isActive ? 'Activo' : 'Inactivo'}
                 </span>
