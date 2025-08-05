@@ -47,6 +47,46 @@
     let pillar = $derived($page.params.pillar);
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
+    // Verificar si todas las secciones están completas
+    let isAllSectionsComplete = $state(false);
+
+    // Efecto para verificar si todas las secciones están completas
+    $effect(() => {
+        const categoryInfo = $currentCategoryInfo;
+        if (!categoryInfo) {
+            isAllSectionsComplete = false;
+            return;
+        }
+
+        // Verificar que cada sección tenga al menos un elemento con contenido
+        const hasElements = categoryInfo.elements && categoryInfo.elements.length > 0 && 
+            categoryInfo.elements.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasObjectives = categoryInfo.objectives && categoryInfo.objectives.length > 0 && 
+            categoryInfo.objectives.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasPositiveActions = categoryInfo.positive_actions && categoryInfo.positive_actions.length > 0 && 
+            categoryInfo.positive_actions.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasImproveActions = categoryInfo.improve_actions && categoryInfo.improve_actions.length > 0 && 
+            categoryInfo.improve_actions.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasHabits = categoryInfo.habits && categoryInfo.habits.length > 0 && 
+            categoryInfo.habits.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasShortActions = categoryInfo.short_actions && categoryInfo.short_actions.length > 0 && 
+            categoryInfo.short_actions.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasMiddleActions = categoryInfo.middle_actions && categoryInfo.middle_actions.length > 0 && 
+            categoryInfo.middle_actions.some((item: any) => item.description && item.description.trim() !== '');
+        
+        const hasLongActions = categoryInfo.long_actions && categoryInfo.long_actions.length > 0 && 
+            categoryInfo.long_actions.some((item: any) => item.description && item.description.trim() !== '');
+
+        isAllSectionsComplete = hasElements && hasObjectives && hasPositiveActions && hasImproveActions && 
+                               hasHabits && hasShortActions && hasMiddleActions && hasLongActions;
+    });
+
     // Función para exportar a PDF
     function handleExport() {
         const categoryData = $page.data?.categoryData;
@@ -186,10 +226,25 @@
                 <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {isActive ? 'Activo' : 'Inactivo'}
                 </span>
-                <button class="focus group flex items-center gap-[6px] rounded-lg px-4 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg disabled:cursor-not-allowed {isActive ? 'bg-alineados-blue-900 hover:bg-alineados-blue-700' : 'bg-alineados-blue-500'}" disabled={!isActive}>
-                    <CircleCheck styleTw="size-4" />
-                    <span class="text-sm font-medium">Rendir Cuentas</span>
-                </button>
+                <div 
+                    class="relative"
+                >
+                    <button 
+                        class="focus group flex items-center gap-[6px] rounded-lg px-4 py-3 text-white transition duration-300 ease-in-out hover:shadow-lg disabled:cursor-not-allowed {isAllSectionsComplete && isActive ? 'bg-alineados-blue-900 hover:bg-alineados-blue-700' : 'bg-alineados-blue-500'}" 
+                        disabled={!isAllSectionsComplete || !isActive}
+                    >
+                        <CircleCheck styleTw="size-4" />
+                        <span class="text-sm font-medium">Rendir Cuentas</span>
+
+                        {#if !isAllSectionsComplete}
+                            <div class="invisible absolute top-full left-1/2 -translate-x-1/2 mt-2 group-hover:visible z-[9999]">
+                                <div class="whitespace-nowrap rounded-lg bg-gray-600 px-6 py-4 text-sm text-white text-center">
+                                    Debe completar todas las secciones para poder rendir cuentas
+                                </div>
+                            </div>
+                        {/if}
+                    </button>
+                </div>
 
                 <!-- Botón Regresar -->
                 <a 

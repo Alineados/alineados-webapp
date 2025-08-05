@@ -61,8 +61,8 @@
         
         <p class="text-5xl font-bold text-alineados-blue-900">Situaciones por Mejorar</p>
         <div class="flex flex-row gap-4 self-start">
-            <NewProblemButton />
             <ViewButton />
+            <NewProblemButton />
             <MoreButtonProblems />
         </div>
     </div>

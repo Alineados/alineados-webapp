@@ -35,12 +35,12 @@
     $: stateBgColor =
         stateLevel === 1 ? 'bg-red-100' :
         stateLevel === 2 ? 'bg-yellow-100' :
-        stateLevel === 3 ? 'bg-green-100' : 'bg-gray-100';
+        stateLevel === 3 ? 'bg-alineados-green-100' : 'bg-gray-100';
         
     $: stateIconColor =
         stateLevel === 1 ? 'text-red-500' :
         stateLevel === 2 ? 'text-yellow-500' :
-        stateLevel === 3 ? 'text-green-500' : 'text-gray-500';
+        stateLevel === 3 ? 'text-alineados-green-500' : 'text-gray-500';
 
     function handleClick() {
         // Normalize category name to lowercase and remove accents
@@ -57,7 +57,7 @@
 >
 	<!-- Header: Estado y Seguridad -->
 	<div class="flex flex-row items-center gap-2">
-	  <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+	  <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-alineados-green-100 text-alineados-green-700' : 'bg-gray-100 text-gray-500'}`}>
 		{isActive ? 'Activo' : 'Inactivo'}
 	  </span>
 	  {#if isProtected}

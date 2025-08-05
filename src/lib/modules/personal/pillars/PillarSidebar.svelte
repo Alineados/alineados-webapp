@@ -9,7 +9,6 @@
     import { PillarService } from '$lib/services/personal/pillars';
     import { isPillarSaving } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
-    import { toast } from 'svelte-sonner';
     
     // Íconos de estado (como en PillarCard.svelte)
     import SadFace from '$lib/icons/SadFace.svelte';
@@ -32,7 +31,7 @@
 
     // Estado local basado en los datos recibidos
     let priority = $state(categoryData?.priority || 0);
-    let stateLevel = $state(categoryData?.state || 3); // 1=SadFace, 2=MedFace, 3=HappyFace
+    let stateLevel = $state(categoryData?.state || 0); // 0=ninguna, 1=SadFace, 2=MedFace, 3=HappyFace
     
     let associatedProblems = $state([
         { id: nanoid(), name: 'Problema 1 - Pharetra tincidunt lacus' },
@@ -44,7 +43,7 @@
     $effect(() => {
         if (categoryData) {
             priority = categoryData.priority || 0;
-            stateLevel = categoryData.state || 3;
+            stateLevel = categoryData.state || 0;
         }
     });
 
@@ -63,7 +62,6 @@
         
         // Validar que tenemos un usuario válido
         if (!userState.id) {
-            toast.error('Usuario no autenticado');
             return;
         }
 
@@ -83,16 +81,11 @@
             const response = await pillarService.updateCategory(updatedCategoryData, pillar, userState.id);
 
             if (response.status === 200) {
-                toast.success('Categoría actualizada correctamente');
-                
                 // Actualizar los datos locales
                 categoryData = updatedCategoryData;
-            } else {
-                toast.error(response.message || 'Error al actualizar la categoría');
             }
         } catch (error) {
             console.error('Error updating category:', error);
-            toast.error('Error de conexión');
         } finally {
             $isPillarSaving = false;
         }
@@ -128,6 +121,16 @@
     .state-icon :global(svg path) {
         stroke: currentColor !important;
     }
+
+    /* Animación de parpadeo naranja */
+    .animate-border-cursor-blink {
+        animation: border-cursor-blink 1.3s steps(1) infinite;
+    }
+    
+    @keyframes border-cursor-blink {
+        0%, 100% { border-color: rgb(249 115 22); }
+        50% { border-color: transparent; }
+    }
 </style>
 
 <div class="w-80 space-y-8 ml-12">
@@ -138,14 +141,14 @@
 
     <!-- Contenedor Prioridad y Estado -->
     <div class="rounded-xl border border-gray-200 bg-white py-4 px-6">
-        <div class="flex gap-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:gap-8">
             <!-- Prioridad -->
-            <div class="flex-1">
+            <div class="flex-1 min-w-0">
                 <h3 class="mb-1 text-lg font-medium">Prioridad</h3>
-                <div class="flex gap-1">
+                <div class={`inline-flex gap-1 px-1 py-1 rounded-lg border-2 ${priority === 0 ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
                     {#each Array(3) as _, i}
                         <button 
-                            class="transition-colors {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
+                            class="transition-colors flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
                             onclick={() => setPriority(i + 1)}
                             disabled={$isPillarSaving}
                         >
@@ -158,34 +161,46 @@
             </div>
 
             <!-- Estado -->
-            <div class="flex-1">
+            <div class="flex-1 min-w-0">
                 <h3 class="mb-1 text-lg font-medium">Estado</h3>
-                <div class="flex gap-4">
+                <div class={`inline-flex gap-2 px-1 py-1 rounded-lg border-2 ${stateLevel === 0 ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
                     <button 
-                        class="transition-colors {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
+                        class="transition-all duration-200 flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
                         onclick={() => setStateLevel(3)}
                         disabled={$isPillarSaving}
                     >
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center {stateLevel === 3 ? 'bg-green-500/20' : ''}">
-                            <svelte:component this={HappyFace} class="h-8 w-8" />
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center transition-all duration-200 {
+                            stateLevel === 3 
+                                ? 'bg-green-500/20 ring-2 ring-green-500/50 scale-110' 
+                                : 'bg-gray-100 hover:bg-gray-200'
+                        }">
+                            <svelte:component this={HappyFace} class="h-8 w-8 {stateLevel === 3 ? 'text-green-600' : 'text-gray-400'}" />
                         </div>
                     </button>
                     <button 
-                        class="transition-colors {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
+                        class="transition-all duration-200 flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
                         onclick={() => setStateLevel(2)}
                         disabled={$isPillarSaving}
                     >
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center {stateLevel === 2 ? 'bg-yellow-500/20' : ''}">
-                            <svelte:component this={MedFace} class="h-8 w-8" />
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center transition-all duration-200 {
+                            stateLevel === 2 
+                                ? 'bg-yellow-500/20 ring-2 ring-yellow-500/50 scale-110' 
+                                : 'bg-gray-100 hover:bg-gray-200'
+                        }">
+                            <svelte:component this={MedFace} class="h-8 w-8 {stateLevel === 2 ? 'text-yellow-600' : 'text-gray-400'}" />
                         </div>
                     </button>
                     <button 
-                        class="transition-colors {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
+                        class="transition-all duration-200 flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
                         onclick={() => setStateLevel(1)}
                         disabled={$isPillarSaving}
                     >
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center {stateLevel === 1 ? 'bg-red-500/20' : ''}">
-                            <svelte:component this={SadFace} class="h-8 w-8" />
+                        <div class="h-8 w-8 rounded-lg flex items-center justify-center transition-all duration-200 {
+                            stateLevel === 1 
+                                ? 'bg-red-500/20 ring-2 ring-red-500/50 scale-110' 
+                                : 'bg-gray-100 hover:bg-gray-200'
+                        }">
+                            <svelte:component this={SadFace} class="h-8 w-8 {stateLevel === 1 ? 'text-red-600' : 'text-gray-400'}" />
                         </div>
                     </button>
                 </div>

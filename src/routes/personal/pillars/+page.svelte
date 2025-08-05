@@ -68,7 +68,7 @@
 
 <div class="flex flex-col gap-8 px-4 md:px-8 lg:px-16">
   <!-- SALUD -->
-  <h2 class="text-xl font-semibold">Salud</h2>
+  <h2 class="text-3xl font-semibold">Salud</h2>
   <div class="flex gap-12">
     {#each $healthCategoriesFiltered as cat}
       <PillarCard
@@ -97,7 +97,7 @@
   {/if}
 
   <!-- RELACIONES -->
-  <h2 class="text-xl font-semibold">Relaciones</h2>
+  <h2 class="text-3xl font-semibold">Relaciones</h2>
   <div class="flex flex-wrap gap-12">
     {#each $relationalCategoriesFiltered as cat}
       <PillarCard
@@ -126,7 +126,7 @@
   {/if}
 
   <!-- VOCACIÓN -->
-  <h2 class="text-xl font-semibold">Vocación</h2>
+  <h2 class="text-3xl font-semibold">Vocación</h2>
   <div class="flex flex-wrap gap-12">
     {#each $vocationalCategoriesFiltered as cat}
       <PillarCard
@@ -155,7 +155,7 @@
   {/if}
 
   <!-- ESPIRITUAL -->
-  <h2 class="text-xl font-semibold">Espiritual</h2>
+  <h2 class="text-3xl font-semibold">Espiritual</h2>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
     {#each $spiritualCategoriesFiltered as cat}
       <PillarCard
