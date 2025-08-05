@@ -167,7 +167,7 @@
 
 	{#if !isNew && isOnlyText}
 		<div
-			class={`invisible ml-2 flex w-auto items-center justify-center gap-1 group-focus-within:visible group-hover:visible`}
+			class={`ml-2 flex w-auto items-center justify-center gap-1 ${isStarred ? 'visible' : 'invisible group-focus-within:visible group-hover:visible'}`}
 		>
 			{#if isAccountability}
 				<Tooltip open={false} message="Completado">
@@ -234,7 +234,7 @@
 					onclick={() => {
 						if (deleteItem) deleteItem();
 					}}
-					class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''}`}
+					class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''} ${isStarred ? 'invisible group-hover:visible' : ''}`}
 					aria-label="Delete"
 					disabled={isDisabled}
 				>
