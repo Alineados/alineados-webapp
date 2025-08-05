@@ -261,7 +261,9 @@
                 type === 'positive' 
                     ? 'Acciones pasadas que han tenido un impacto positivo'
                     : 'Acciones pasadas que necesitan mejorarse',
-                'Registra las acciones y sus resultados'
+                type === 'positive' 
+                    ? 'Acciones únicas (no pensamientos) que ha realizado BIEN en el PASADO según su persona (no la opinión de un tercero)'
+                    : 'Acciones únicas (no pensamientos) que ha realizado MAL en el PASADO según su persona (no la opinión de un tercero) '
             ]}
         >
             <InformationIcon styleTw="size-4" />

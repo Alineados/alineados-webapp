@@ -247,7 +247,7 @@
             open={false}
             messages={[
                 'Acciones planificadas para el corto plazo',
-                'Define acciones concretas y medibles'
+                'Acciones únicas (no pensamientos) que va realizar en el FUTURO en un plazo de horas, días o semanas '
             ]}
         >
             <InformationIcon styleTw="size-4" />
