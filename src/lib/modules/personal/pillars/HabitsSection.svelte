@@ -282,6 +282,7 @@
                     bind:isDaily={habit.daily}
                     bind:isStarred={habit.prominent}
                     bind:value={habit.description}
+                    animate={habits.length === 1 && habits[0].description === ''}
                 />
             {/each}
         </div>

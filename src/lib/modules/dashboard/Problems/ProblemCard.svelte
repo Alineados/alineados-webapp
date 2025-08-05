@@ -129,7 +129,7 @@
 </script>
 
 <div class="flex flex-col items-start gap-3">
-	<p class="pl-2 text-3xl font-bold text-alineados-orange-900 md:pl-1">{title}</p>
+	<p class="pl-2 text-3xl font-bold md:pl-1">{title}</p>
 	<form
 		bind:this={formHtml}
 		method="POST"

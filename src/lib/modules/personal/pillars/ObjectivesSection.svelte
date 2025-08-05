@@ -279,6 +279,7 @@
                     bind:isDaily={objective.daily}
                     bind:isStarred={objective.prominent}
                     bind:value={objective.description}
+                    animate={objectives.length === 1 && objectives[0].description === ''}
                 />
             {/each}
         </div>
