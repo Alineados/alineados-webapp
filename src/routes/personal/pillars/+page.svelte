@@ -11,7 +11,8 @@
     healthCategoriesFiltered,
     relationalCategoriesFiltered,
     vocationalCategoriesFiltered,
-    spiritualCategoriesFiltered
+    spiritualCategoriesFiltered,
+    filterBy
   } from '$lib/stores/pillar/card';
 
   // Iconos para categorías
@@ -81,6 +82,19 @@
       />
     {/each}
   </div>
+  {#if $healthCategoriesFiltered.length === 0}
+    <div class="flex items-center justify-center py-8">
+      <p class="text-gray-500 text-center">
+        {#if $filterBy === 'active'}
+          No hay categorías activas en Salud
+        {:else if $filterBy === 'inactive'}
+          No hay categorías inactivas en Salud
+        {:else}
+          No hay categorías en Salud
+        {/if}
+      </p>
+    </div>
+  {/if}
 
   <!-- RELACIONES -->
   <h2 class="text-xl font-semibold">Relaciones</h2>
@@ -97,6 +111,19 @@
       />
     {/each}
   </div>
+  {#if $relationalCategoriesFiltered.length === 0}
+    <div class="flex items-center justify-center py-8">
+      <p class="text-gray-500 text-center">
+        {#if $filterBy === 'active'}
+          No hay categorías activas en Relaciones
+        {:else if $filterBy === 'inactive'}
+          No hay categorías inactivas en Relaciones
+        {:else}
+          No hay categorías en Relaciones
+        {/if}
+      </p>
+    </div>
+  {/if}
 
   <!-- VOCACIÓN -->
   <h2 class="text-xl font-semibold">Vocación</h2>
@@ -113,6 +140,19 @@
       />
     {/each}
   </div>
+  {#if $vocationalCategoriesFiltered.length === 0}
+    <div class="flex items-center justify-center py-8">
+      <p class="text-gray-500 text-center">
+        {#if $filterBy === 'active'}
+          No hay categorías activas en Vocación
+        {:else if $filterBy === 'inactive'}
+          No hay categorías inactivas en Vocación
+        {:else}
+          No hay categorías en Vocación
+        {/if}
+      </p>
+    </div>
+  {/if}
 
   <!-- ESPIRITUAL -->
   <h2 class="text-xl font-semibold">Espiritual</h2>
@@ -129,4 +169,17 @@
       />
     {/each}
   </div>
+  {#if $spiritualCategoriesFiltered.length === 0}
+    <div class="flex items-center justify-center py-8">
+      <p class="text-gray-500 text-center">
+        {#if $filterBy === 'active'}
+          No hay categorías activas en Espiritual
+        {:else if $filterBy === 'inactive'}
+          No hay categorías inactivas en Espiritual
+        {:else}
+          No hay categorías en Espiritual
+        {/if}
+      </p>
+    </div>
+  {/if}
 </div>

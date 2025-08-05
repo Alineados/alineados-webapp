@@ -10,11 +10,11 @@
     import { getContext } from 'svelte';
     
     // Estado local para los filtros
-    let cardFilter = {
+    let cardFilter = $state({
         all: true,
         active: false,
         inactive: false
-    };
+    });
 
     // Estado de loading para exportar
     let isExporting = $state(false);
