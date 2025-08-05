@@ -247,7 +247,7 @@
             open={false}
             messages={[
                 'Lista de hábitos para fortalecer este pilar',
-                'Enfócate en hábitos específicos y medibles'
+                'Acciones rutinarias (no pensamientos) que frecuenta hacer periódicamente'
             ]}
         >
             <InformationIcon styleTw="size-4" />

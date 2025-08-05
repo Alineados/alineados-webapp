@@ -245,7 +245,7 @@
             open={false}
             messages={[
                 'Acciones planificadas para el mediano plazo (6-12 meses)',
-                'Define acciones concretas y medibles'
+                'Acciones únicas (no pensamientos) que va realizar en el FUTURO en un plazo de meses '
             ]}
         >
             <InformationIcon styleTw="size-4" />

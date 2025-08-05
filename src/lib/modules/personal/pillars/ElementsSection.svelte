@@ -330,10 +330,90 @@
         <h2 class="text-2xl font-medium text-alineados-gray-900">Elementos</h2>
         <Tooltip
             open={false}
-            messages={[
-                'Lista de elementos importantes para este pilar',
-                'Cada elemento debe ser conciso y específico'
-            ]}
+            html={`
+                <div class="text-xs text-alineados-blue-900 space-y-3 p-2">
+                    <div>
+                        <p class="font-semibold mb-2">Cada categoría se puede componer de varias partes; estos son algunos ejemplos por cada una:</p>
+                    </div>
+                    
+                    <div>
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Pilar</th>
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Categoría</th>
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Elementos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold bg-blue-50" rowspan="2">Salud</td>
+                                    <td class="border border-gray-300 px-2 py-1">Física</td>
+                                    <td class="border border-gray-300 px-2 py-1">Doctores, Deportes, Comer Bien / Saludable, Cuidados Personales, Masajes</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Mental</td>
+                                    <td class="border border-gray-300 px-2 py-1">Meditación, Vacaciones, Asesor Profesional, Lecturas & Audios de reflexión</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold bg-green-50" rowspan="6">Relaciones</td>
+                                    <td class="border border-gray-300 px-2 py-1">Yo</td>
+                                    <td class="border border-gray-300 px-2 py-1">Autocontrol, Valores, Límites, Adicciones (Sexo, Alcohol, Cigarro, Drogas, etc.), Habilidades, Capacidades</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Familia</td>
+                                    <td class="border border-gray-300 px-2 py-1">Hijos, Papas, Abuelos, Hermanos, Primos, Tíos, Padrinos & Madrinas<br><em class="text-gray-600">* Cualquier grado de consanguinidad</em></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Amor</td>
+                                    <td class="border border-gray-300 px-2 py-1">Noviazgo, Comprometidos, Casados, Divorciados, Separados, Viudos</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Amigos</td>
+                                    <td class="border border-gray-300 px-2 py-1">Colegio, Vecindario, Fiestas, Trabajo, Universidad, Hobbies, Iglesia</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Conocidos</td>
+                                    <td class="border border-gray-300 px-2 py-1">Compañeros de trabajo, Chofer, Señora de limpieza, Jardinero, Policía de la garita<br><em class="text-gray-600">* Los que veo, dirijo la palabra, saludo y/o me atienden</em></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Desconocidos</td>
+                                    <td class="border border-gray-300 px-2 py-1">Persona que va caminando en la calle, Policía de Transito, Bomberos<br><em class="text-gray-600">* Los que veo pero no dirijo la palabra</em></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold bg-yellow-50" rowspan="5">Vocación</td>
+                                    <td class="border border-gray-300 px-2 py-1">Estudios</td>
+                                    <td class="border border-gray-300 px-2 py-1">Preparación Académica (Colegio, U, Maestría, etc.), Catedrático, Cursos</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Hobbies</td>
+                                    <td class="border border-gray-300 px-2 py-1">Servicio Social, Cocinar, Moto, Volcán, Turismo, Entretenimiento, Evento Social, Coser, Pintar, Música, Bailar, Escribir, Cantar, Fotografía</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Trabajo - Personal</td>
+                                    <td class="border border-gray-300 px-2 py-1">Empresas Familiares, Nuevos Negocios, Negocios Actuales<br><em class="text-gray-600">* Empresas donde laboro y soy dueño</em></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Trabajo - Tercero</td>
+                                    <td class="border border-gray-300 px-2 py-1">Empresas Familiares, Empresas Terceras<br><em class="text-gray-600">* Empresas donde laboro y no soy dueño</em></td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1">Material & Servicio</td>
+                                    <td class="border border-gray-300 px-2 py-1">Económico, Regalos propios, Regalos terceros</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold bg-purple-50">Espiritual</td>
+                                    <td class="border border-gray-300 px-2 py-1">Espiritual</td>
+                                    <td class="border border-gray-300 px-2 py-1">Católica, Evangélica, Ateo, Musulmán<br><em class="text-gray-600">* Puede ser o no practicante</em></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `}
         >
             <InformationIcon styleTw="size-4" />
         </Tooltip>

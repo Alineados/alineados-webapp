@@ -244,7 +244,7 @@
             open={false}
             messages={[
                 'Acciones planificadas para el largo plazo (más de 1 año)',
-                'Define acciones concretas y medibles'
+                'Acciones únicas (no pensamientos) que va realizar en el FUTURO en un plazo de años '
             ]}
         >
             <InformationIcon styleTw="size-4" />
