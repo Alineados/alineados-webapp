@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -38,7 +38,6 @@
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
                 
-                // Filtrar acciones futuras no vacías del backend
                 if (categoryInfo.short_actions && categoryInfo.short_actions.length > 0) {
                     const nonEmptyActions = categoryInfo.short_actions
                         .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
@@ -70,6 +69,7 @@
     async function saveFutureActionsSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
+
         $isPillarSaving = true;
         try {
             let categoryInfo = $currentCategoryInfo;
@@ -117,7 +117,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
         const timeout = setTimeout(() => {
             saveFutureActionsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -228,6 +227,19 @@
         if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
             futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
+        
+        // Eliminar la acción
+        futureActions = futureActions.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos una acción vacía al final
+        if (futureActions.length === 0 || futureActions[futureActions.length - 1].description !== '') {
+            futureActions = [...futureActions, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            saveFutureActionsSilent();
+        }, 100);
     }
 
     function toggleProminent(id: string) {
@@ -270,9 +282,11 @@
                     prominentItem={() => toggleProminent(action.id)}
                     dailyItem={() => toggleDaily(action.id)}
                     onInput={() => {
-                        if (futureActions[futureActions.length - 1].description !== '' && action.id === futureActions[futureActions.length - 1].id) {
+                        // Si el usuario comienza a escribir en la última acción, agregar una nueva
+                        if (action.description !== '' && action.id === futureActions[futureActions.length - 1].id) {
                             addAction(action.id);
                         }
+                        // Solo manejar la eliminación de acciones vacías que no sean la última
                         if (action.description === '' && action.id !== futureActions[futureActions.length - 1].id) {
                             removeAction(action.id);
                         }

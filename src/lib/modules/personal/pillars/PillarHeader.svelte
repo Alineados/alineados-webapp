@@ -15,6 +15,7 @@
     import { userState } from '$lib/stores';
     import { getContext } from 'svelte';
 
+  
     let { 
         pillarInfo,
         category 
@@ -23,7 +24,8 @@
         category: string;
     } = $props();
     
-    let isActive = $state(true);
+    // Inicializar con el estado real de la categoría
+    let isActive = $state(false); // Inicializar como false por defecto
     let isProtected = $state(false);
     let showMenu = $state(false);
     let isExporting = $state(false);
@@ -46,6 +48,7 @@
     // Obtener parámetros de la URL
     let pillar = $derived($page.params.pillar);
     let categoryId = $derived($page.data?.categoryData?.id || '');
+
 
     // Función para exportar a PDF
     function handleExport() {
@@ -200,6 +203,13 @@
                     <span class="text-sm font-medium">Regresar</span>
                 </a>
                 
+                <a
+                    href="/personal/pillars"
+                    class="focus group flex items-center gap-1 rounded-lg bg-alineados-gray-100 px-4 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+                >
+                    <BackArrow class="size-4 font-bold text-alineados-blue-900" />
+                    <p class="text-sm font-medium">Regresar</p>
+                </a>
                 
                 <div class="relative">
                     <button 
@@ -212,10 +222,19 @@
                     {#if showMenu}
                         <div class="absolute right-0 top-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 shadow-md mt-1">
                             <button
-                                class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => { isActive = !isActive; showMenu = false; }}
+                                class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100 disabled:opacity-50"
+                                on:click={() => { 
+                                    updateCategoryState(!isActive); 
+                                    showMenu = false; 
+                                }}
+                                disabled={isUpdatingState}
                             >
-                                {#if isActive}
+                                {#if isUpdatingState}
+                                    <div class="mr-2 h-4 w-4 animate-spin">
+                                        <Loading />
+                                    </div>
+                                    {isActive ? 'Desactivando...' : 'Activando...'}
+                                {:else if isActive}
                                     <Blocked class="mr-2 size-4" />
                                     Desactivar
                                 {:else}

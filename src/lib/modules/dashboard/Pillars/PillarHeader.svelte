@@ -396,6 +396,7 @@
         <div class="flex flex-row gap-4 self-start">
             <ExportButton onClick={handleExportAll} isLoading={isExporting} />
             <ViewButtonActions />
+            <ExportButton onClick={handleExportAll} isLoading={isExporting} />
         </div>
     </div>
 </div>

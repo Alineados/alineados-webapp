@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -38,7 +38,6 @@
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
                 
-                // Filtrar objetivos no vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {
                     const nonEmptyObjectives = categoryInfo.objectives
                         .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
@@ -70,6 +69,7 @@
     async function saveObjectivesSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
+
         $isPillarSaving = true;
         try {
             let categoryInfo = $currentCategoryInfo;
@@ -117,7 +117,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
         const timeout = setTimeout(() => {
             saveObjectivesSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -227,6 +226,19 @@
         if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
             objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
+        
+        // Eliminar el objetivo
+        objectives = objectives.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un objetivo vacío al final
+        if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
+            objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            saveObjectivesSilent();
+        }, 100);
     }
     function toggleProminent(id: string) {
         objectives = objectives.map(e => e.id === id ? { ...e, prominent: !e.prominent } : e);
@@ -267,9 +279,11 @@
                     prominentItem={() => toggleProminent(objective.id)}
                     dailyItem={() => toggleDaily(objective.id)}
                     onInput={() => {
-                        if (objectives[objectives.length - 1].description !== '' && objective.id === objectives[objectives.length - 1].id) {
+                        // Si el usuario comienza a escribir en el último objetivo, agregar uno nuevo
+                        if (objective.description !== '' && objective.id === objectives[objectives.length - 1].id) {
                             addObjective(objective.id);
                         }
+                        // Solo manejar la eliminación de objetivos vacíos que no sean el último
                         if (objective.description === '' && objective.id !== objectives[objectives.length - 1].id) {
                             removeObjective(objective.id);
                         }

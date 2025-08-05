@@ -249,6 +249,11 @@
         if (elements.length === 0 || elements[elements.length - 1].description !== '') {
             elements = [...elements, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            saveElementsSilent();
+        }, 100);
     }
 
     function toggleProminent(id: string) {
@@ -266,7 +271,6 @@
     // Auto-guardar cuando hay cambios
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
         const timeout = setTimeout(() => {
             saveElementsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -304,7 +308,6 @@
                 };
             }
 
-            // Actualizar solo los elementos (incluso si está vacío)
             categoryInfo.elements = items;
 
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);

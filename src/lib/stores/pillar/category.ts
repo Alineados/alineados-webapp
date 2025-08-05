@@ -12,7 +12,7 @@ export const categoryUpdateMessage = writable<{
 }>({ type: null, message: '' });
 
 // Store para la categoría actual que se está editando
-export const currentEditingCategory = writable<CategoryDTO | null>(null);
+export const currentEditingCategory = writable<CategoryInfoDTO | null>(null);
 
 // Store global para el estado de guardado de pillars
 export const isPillarSaving = writable(false);

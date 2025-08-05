@@ -7,7 +7,7 @@
     // import ThumbsDown from '$lib/icons/ThumbsDown.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -47,8 +47,9 @@
                 
                 // Cargar las acciones según el tipo
                 const actions = categoryInfo[fieldName] || [];
+                
+                // Filtrar acciones vacías del backend
                 if (actions.length > 0) {
-                    // Filtrar acciones no vacías del backend
                     const nonEmptyActions = actions
                         .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
                         .map((item: GenericItemDTO) => ({
@@ -127,7 +128,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
         const timeout = setTimeout(() => {
             savePastActionsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -239,6 +239,11 @@
         if (pastActions.length === 0 || pastActions[pastActions.length - 1].description !== '') {
             pastActions = [...pastActions, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
+        
+        // Forzar auto-save después de eliminar
+        setTimeout(() => {
+            savePastActionsSilent();
+        }, 100);
     }
 
     function toggleProminent(id: string) {
@@ -284,9 +289,11 @@
                     prominentItem={() => toggleProminent(action.id)}
                     dailyItem={() => toggleDaily(action.id)}
                     onInput={() => {
-                        if (pastActions[pastActions.length - 1].description !== '' && action.id === pastActions[pastActions.length - 1].id) {
+                        // Si el usuario comienza a escribir en la última acción, agregar una nueva
+                        if (action.description !== '' && action.id === pastActions[pastActions.length - 1].id) {
                             addAction(action.id);
                         }
+                        // Solo manejar la eliminación de acciones vacías que no sean la última
                         if (action.description === '' && action.id !== pastActions[pastActions.length - 1].id) {
                             removeAction(action.id);
                         }
