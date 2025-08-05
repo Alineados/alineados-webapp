@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store';
-import type { CategoryInfoDTO, GenericItemDTO } from '$lib/services/personal/pillars';
+import type { CategoryDTO, CategoryInfoDTO, GenericItemDTO } from '$lib/services/personal/pillars';
 import { getEndpointByVenv } from '$lib/services/endpoints';
 
 // Store para el estado de carga de actualización
@@ -54,7 +54,7 @@ export async function updateCategoryStateBasedOnContent(
     console.log(`Updating category state - Pillar: ${pillar}, CategoryId: ${categoryId}, HasContent: ${hasContent}`);
     try {
         const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-state?pillar=${pillar}`, {
-            method: 'POST', // Changed from PUT to POST
+            method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ cid: categoryId, uid: userId, active: hasContent })
         });

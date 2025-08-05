@@ -3,7 +3,6 @@
     // import Target from '$lib/icons/Target.svelte';
     import Tooltip from '$lib/components/Tooltip.svelte';
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
-    import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
     import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
@@ -28,8 +27,6 @@
     ]);
     let isOnlyText = $state(true);
     let isLoading = $state(false);
-    let hasUnsavedChanges = $state(false);
-    let lastSavedTime = $state<Date | null>(null);
 
     // Cargar objetivos existentes
     async function loadObjectives() {
@@ -41,7 +38,6 @@
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
                 
-                // Filtrar objetivos vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {
                     const nonEmptyObjectives = categoryInfo.objectives
                         .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
@@ -73,9 +69,8 @@
     async function saveObjectivesSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        // Guardar siempre, incluso si no hay objetivos (para limpiar el backend)
+
         $isPillarSaving = true;
-        hasUnsavedChanges = true;
         try {
             let categoryInfo = $currentCategoryInfo;
             if (!categoryInfo) {
@@ -97,15 +92,9 @@
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
             if (response.status === 200) {
                 $currentCategoryInfo = categoryInfo;
-                hasUnsavedChanges = false;
-                lastSavedTime = new Date();
-                
-                // Actualizar automáticamente el estado de la categoría
-                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving objectives (silent):', error);
-            // Mantener hasUnsavedChanges = true en caso de error
         } finally {
             $isPillarSaving = false;
         }
@@ -128,8 +117,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Guardar siempre que haya cambios, incluso si no hay objetivos (para eliminar del backend)
-        hasUnsavedChanges = true;
         const timeout = setTimeout(() => {
             saveObjectivesSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -152,7 +139,7 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
+            if (objectives.some(e => e.description.trim() !== '')) {
                 // Mostrar confirmación al usuario
                 event.preventDefault();
                 event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
@@ -240,6 +227,14 @@
             objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
         
+        // Eliminar el objetivo
+        objectives = objectives.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un objetivo vacío al final
+        if (objectives.length === 0 || objectives[objectives.length - 1].description !== '') {
+            objectives = [...objectives, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
         // Forzar auto-save después de eliminar
         setTimeout(() => {
             saveObjectivesSilent();
@@ -268,7 +263,7 @@
         </Tooltip>
         
         <!-- Indicador de estado de guardado -->
-        <SaveIndicator {hasUnsavedChanges} {lastSavedTime} />
+        
     </div>
     {#if isLoading}
         <div class="flex items-center justify-center py-8">

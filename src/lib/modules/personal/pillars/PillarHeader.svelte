@@ -9,13 +9,13 @@
     import Loading from '$lib/icons/Loading.svelte';
     import BackArrow from '$lib/icons/BackArrow.svelte';
     import type { DataPillar } from '$lib/interfaces';
-    import { isPillarSaving, currentCategoryInfo, currentCategoryActive } from '$lib/stores/pillar/category';
-    import { getContext } from 'svelte';
-    import { getEndpointByVenv } from '$lib/services/endpoints';
-    import { userState } from '$lib/stores';
-    import { page } from '$app/stores';
+    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
     import { exportPillarToPDF } from '$lib/utils/exportPillar';
+    import { page } from '$app/stores';
+    import { userState } from '$lib/stores';
+    import { getContext } from 'svelte';
 
+  
     let { 
         pillarInfo,
         category 
@@ -28,8 +28,20 @@
     let isActive = $state(false); // Inicializar como false por defecto
     let isProtected = $state(false);
     let showMenu = $state(false);
-    let isUpdatingState = $state(false);
+    let isExporting = $state(false);
+    let saveError = $state(false);
 
+    // Función para determinar el estado de guardado
+    let saveStatus = $derived($isPillarSaving ? 'saving' : saveError ? 'error' : 'saved');
+
+    // Efecto para manejar el estado de error
+    $effect(() => {
+        if ($isPillarSaving) {
+            // Cuando empieza a guardar, resetear el error
+            saveError = false;
+        }
+    });
+    
     // Obtener el token del contexto
     const token = getContext<string>('token');
     
@@ -37,60 +49,6 @@
     let pillar = $derived($page.params.pillar);
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
-    // Actualizar el estado activo desde los datos de la página y el store global
-    $effect(() => {
-        const categoryData = $page.data?.categoryData;
-        const globalActive = $currentCategoryActive;
-        
-        if (categoryData) {
-            // Inicializar el store global con el estado de la página si no está definido
-            if (globalActive === undefined) {
-                currentCategoryActive.set(categoryData.active ?? false);
-            }
-            
-            // Usar el estado global si está disponible, sino usar el de la página
-            isActive = globalActive !== undefined ? globalActive : (categoryData.active ?? false);
-        } else {
-            // Usar el estado global si está disponible
-            isActive = globalActive !== undefined ? globalActive : false;
-        }
-    });
-
-    // Función para actualizar el estado de la categoría
-    async function updateCategoryState(active: boolean) {
-        if (!userState.id || !categoryId) return;
-        
-        isUpdatingState = true;
-        try {
-            const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-state?pillar=${pillar}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    cid: categoryId,
-                    uid: userState.id,
-                    active: active
-                })
-            });
-            
-            if (response.ok) {
-                // Actualizar el estado local y el store global solo si la respuesta fue exitosa
-                isActive = active;
-                currentCategoryActive.set(active);
-                console.log(`Categoría ${active ? 'activada' : 'desactivada'} manualmente`);
-            } else {
-                console.error('Error updating category state:', response.status, response.statusText);
-                // No actualizar el estado local si hubo error
-            }
-        } catch (error) {
-            console.error('Error updating category state:', error);
-            // No actualizar el estado local si hubo error
-        } finally {
-            isUpdatingState = false;
-        }
-    }
 
     // Función para exportar a PDF
     function handleExport() {
@@ -98,91 +56,77 @@
         const globalCategoryInfo = $currentCategoryInfo;
         
         if (!categoryData) {
-            console.error('No category data available for export');
+            console.error('No category data available');
             return;
         }
-        
-        // Usar la información global si está disponible, sino usar datos básicos
-        const categoryInfo = globalCategoryInfo || {
-            cid: categoryId,
-            uid: userState.id,
-            is_current: true,
-            elements: [],
-            objectives: [],
-            positive_actions: [],
-            improve_actions: [],
-            habits: [],
-            short_actions: [],
-            middle_actions: [],
-            long_actions: []
-        };
-        
-        // Convertir los datos al formato correcto para exportación
-        const exportCategoryInfo = {
-            cid: categoryInfo.cid,
-            uid: categoryInfo.uid || userState.id || '',
-            is_current: categoryInfo.is_current,
-            elements: categoryInfo.elements?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            objectives: categoryInfo.objectives?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            positive_actions: categoryInfo.positive_actions?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            improve_actions: categoryInfo.improve_actions?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            habits: categoryInfo.habits?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            short_actions: categoryInfo.short_actions?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            middle_actions: categoryInfo.middle_actions?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || [],
-            long_actions: categoryInfo.long_actions?.map(item => ({
-                description: item.description,
-                prominent: item.favorite,
-                daily: item.repeated
-            })) || []
-        };
-        
-        const exportData = {
-            categoryName: category,
-            categoryInfo: exportCategoryInfo,
-            pillarType: pillar,
-            categoryData: {
-                priority: categoryData.priority,
-                state: categoryData.state,
-                active: categoryData.active
-            }
-        };
+
+        isExporting = true;
         
         try {
-            exportPillarToPDF(exportData);
-            console.log('PDF exported successfully');
+            // Convertir los datos al formato correcto para exportación
+            const exportCategoryInfo = {
+                cid: globalCategoryInfo?.cid || categoryId,
+                uid: globalCategoryInfo?.uid || userState.id || '',
+                is_current: globalCategoryInfo?.is_current || true,
+                elements: globalCategoryInfo?.elements?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                objectives: globalCategoryInfo?.objectives?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                positive_actions: globalCategoryInfo?.positive_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                improve_actions: globalCategoryInfo?.improve_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                habits: globalCategoryInfo?.habits?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                short_actions: globalCategoryInfo?.short_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                middle_actions: globalCategoryInfo?.middle_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || [],
+                long_actions: globalCategoryInfo?.long_actions?.map((item: any) => ({
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })) || []
+            };
+
+            exportPillarToPDF({
+                categoryName: category,
+                categoryInfo: exportCategoryInfo,
+                pillarType: pillar,
+                categoryData: {
+                    priority: categoryData.priority,
+                    state: categoryData.state,
+                    active: categoryData.active
+                }
+            });
+            
+            console.log('Category exported successfully');
         } catch (error) {
-            console.error('Error exporting PDF:', error);
+            console.error('Error exporting category:', error);
+        } finally {
+            isExporting = false;
         }
-        
-        showMenu = false;
     }
 </script>
 
@@ -201,25 +145,47 @@
         </div>
         
         <div class="flex flex-row justify-start gap-4">
+            
+            
             <div class="flex items-center gap-2">
-                <!-- Indicador de nube/loading -->
-                <div class="flex items-center gap-2">
-                    {#if $isPillarSaving}
+                <!-- Indicador de nube/loading con contenedor reactivo -->
+                <div class={`flex items-center gap-2 rounded-lg px-3 py-1 transition-all duration-300 ${
+                    saveStatus === 'saving'
+                        ? 'bg-yellow-100' 
+                        : saveStatus === 'error'
+                        ? 'bg-red-100'
+                        : 'bg-blue-100'
+                }`}>
+                    {#if saveStatus === 'saving'}
                         <div class="flex items-center gap-2">
-                            <div class="h-6 w-6 animate-spin text-alineados-blue-900">
+                            <div class="h-4 w-4 animate-spin text-yellow-600">
                                 <Loading />
                             </div>
-                            <span class="text-sm text-gray-600">Guardando...</span>
+                            <span class="text-xs font-semibold text-yellow-700">Guardando...</span>
+                        </div>
+                    {:else if saveStatus === 'error'}
+                        <div class="flex items-center gap-2">
+                            <div class="h-4 w-4 text-red-600">
+                                <Blocked />
+                            </div>
+                            <span class="text-xs font-semibold text-red-700">Error al guardar</span>
                         </div>
                     {:else}
                         <div class="flex items-center gap-2">
-                            <Cloud styleTw="size-6 text-alineados-gray-400" />
-                            <span class="text-sm text-gray-400">Guardado</span>
+                            <Cloud styleTw="size-4 text-blue-600" />
+                            <span class="text-xs font-semibold text-blue-700">Guardado</span>
                         </div>
                     {/if}
                 </div>
                 
-                <Lock class="size-4 text-alineados-gray-600" />
+                <!-- Indicador de protegido con contenedor reactivo -->
+                {#if isProtected}
+                    <div class="flex items-center gap-2 rounded-lg bg-purple-100 px-3 py-1 transition-all duration-300">
+                        <Lock class="size-4 text-purple-600" />
+                        <span class="text-xs font-semibold text-purple-700">Protegido</span>
+                    </div>
+                {/if}
+                
                 <span class={`rounded-lg px-3 py-1 text-xs font-semibold ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {isActive ? 'Activo' : 'Inactivo'}
                 </span>
@@ -227,6 +193,15 @@
                     <CircleCheck styleTw="size-4" />
                     <span class="text-sm font-medium">Rendir Cuentas</span>
                 </button>
+
+                <!-- Botón Regresar -->
+                <a 
+                    href="/personal/pillars" 
+                    class="group flex items-center gap-[6px] rounded-lg bg-alineados-gray-100 px-4 py-3 text-alineados-blue-900 transition duration-300 ease-in-out hover:shadow-lg"
+                >
+                    <BackArrow class="size-4" />
+                    <span class="text-sm font-medium">Regresar</span>
+                </a>
                 
                 <a
                     href="/personal/pillars"
@@ -270,10 +245,18 @@
                             
                             <button
                                 class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => handleExport()}
+                                on:click={() => { handleExport(); showMenu = false; }}
+                                disabled={isExporting}
                             >
-                                <File class="mr-2 size-4" />
-                                Exportar
+                                {#if isExporting}
+                                    <div class="mr-2 h-4 w-4 animate-spin">
+                                        <Loading />
+                                    </div>
+                                    Generando PDF...
+                                {:else}
+                                    <File class="mr-2 size-4" />
+                                    Exportar
+                                {/if}
                             </button>
                             
                             <button

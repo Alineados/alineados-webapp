@@ -3,7 +3,6 @@
     import Repeat from '$lib/icons/Repeat.svelte';
     import Tooltip from '$lib/components/Tooltip.svelte';
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
-    import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
     import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
@@ -28,8 +27,6 @@
     ]);
     let isOnlyText = $state(true);
     let isLoading = $state(false);
-    let hasUnsavedChanges = $state(false);
-    let lastSavedTime = $state<Date | null>(null);
 
     // Cargar hábitos existentes
     async function loadHabits() {
@@ -41,7 +38,6 @@
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
                 
-                // Filtrar hábitos vacíos del backend
                 if (categoryInfo.habits && categoryInfo.habits.length > 0) {
                     const nonEmptyHabits = categoryInfo.habits
                         .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
@@ -73,9 +69,8 @@
     async function saveHabitsSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        // Guardar siempre, incluso si no hay hábitos (para limpiar el backend)
+
         $isPillarSaving = true;
-        hasUnsavedChanges = true;
         try {
             let categoryInfo = $currentCategoryInfo;
             if (!categoryInfo) {
@@ -97,15 +92,9 @@
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
             if (response.status === 200) {
                 $currentCategoryInfo = categoryInfo;
-                hasUnsavedChanges = false;
-                lastSavedTime = new Date();
-                
-                // Actualizar automáticamente el estado de la categoría
-                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving habits (silent):', error);
-            // Mantener hasUnsavedChanges = true en caso de error
         } finally {
             $isPillarSaving = false;
         }
@@ -128,8 +117,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Guardar siempre que haya cambios, incluso si no hay hábitos (para eliminar del backend)
-        hasUnsavedChanges = true;
         const timeout = setTimeout(() => {
             saveHabitsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -152,7 +139,8 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
+            const items = convertToGenericItems();
+            if (items.length > 0) {
                 // Mostrar confirmación al usuario
                 event.preventDefault();
                 event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
@@ -240,6 +228,14 @@
             habits = [...habits, { id: nanoid(), description: '', prominent: false, daily: false }];
         }
         
+        // Eliminar el hábito
+        habits = habits.filter(e => e.id !== id);
+        
+        // Asegurar que siempre haya al menos un hábito vacío al final
+        if (habits.length === 0 || habits[habits.length - 1].description !== '') {
+            habits = [...habits, { id: nanoid(), description: '', prominent: false, daily: false }];
+        }
+        
         // Forzar auto-save después de eliminar
         setTimeout(() => {
             saveHabitsSilent();
@@ -270,7 +266,7 @@
         </Tooltip>
         
         <!-- Indicador de estado de guardado -->
-        <SaveIndicator {hasUnsavedChanges} {lastSavedTime} />
+        
     </div>
     {#if isLoading}
         <div class="flex items-center justify-center py-8">

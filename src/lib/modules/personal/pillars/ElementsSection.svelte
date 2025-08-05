@@ -3,7 +3,6 @@
     import Cube from '$lib/icons/Cube.svelte';
     import Tooltip from '$lib/components/Tooltip.svelte';
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
-    import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
     import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
@@ -31,8 +30,6 @@
     ]);
     let isOnlyText = $state(true);
     let isLoading = $state(false);
-    let hasUnsavedChanges = $state(false);
-    let lastSavedTime = $state<Date | null>(null);
 
     // Función para cargar datos existentes
     async function loadElements() {
@@ -99,12 +96,10 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
-                // Mostrar confirmación al usuario
-                event.preventDefault();
-                event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
-                return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
-            }
+            // Mostrar confirmación al usuario
+            event.preventDefault();
+            event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+            return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
         };
         
         // Función para guardar síncronamente (para refresh)
@@ -276,9 +271,6 @@
     // Auto-guardar cuando hay cambios
     $effect(() => {
         const items = convertToGenericItems();
-        // Guardar siempre que haya cambios, incluso si no hay elementos (para eliminar del backend)
-        hasUnsavedChanges = true;
-        // Debounce más agresivo para mejor UX
         const timeout = setTimeout(() => {
             saveElementsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -292,10 +284,8 @@
         }
 
         const items = convertToGenericItems();
-        // Guardar siempre, incluso si no hay elementos (para limpiar el backend)
 
         $isPillarSaving = true;
-        hasUnsavedChanges = true;
 
         try {
             // Obtener la información actual de la categoría
@@ -318,7 +308,6 @@
                 };
             }
 
-            // Actualizar solo los elementos (puede ser array vacío)
             categoryInfo.elements = items;
 
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
@@ -326,15 +315,12 @@
             if (response.status === 200) {
                 // Actualizar el store con la nueva información
                 $currentCategoryInfo = categoryInfo;
-                hasUnsavedChanges = false;
-                lastSavedTime = new Date();
                 
                 // Actualizar automáticamente el estado de la categoría
                 await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving elements (silent):', error);
-            // Mantener hasUnsavedChanges = true en caso de error
         } finally {
             $isPillarSaving = false;
         }
@@ -356,7 +342,7 @@
         </Tooltip>
         
         <!-- Indicador de estado de guardado -->
-        <SaveIndicator {hasUnsavedChanges} {lastSavedTime} />
+        
     </div>
     
     {#if isLoading}

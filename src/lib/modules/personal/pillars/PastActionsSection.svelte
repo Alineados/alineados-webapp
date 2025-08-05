@@ -3,7 +3,6 @@
     // import History from '$lib/icons/History.svelte';
     import Tooltip from '$lib/components/Tooltip.svelte';
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
-    import SaveIndicator from '$lib/components/SaveIndicator.svelte';
     // import ThumbsUp from '$lib/icons/ThumbsUp.svelte';
     // import ThumbsDown from '$lib/icons/ThumbsDown.svelte';
     import { nanoid } from 'nanoid';
@@ -32,8 +31,6 @@
     ]);
     let isOnlyText = $state(true);
     let isLoading = $state(false);
-    let hasUnsavedChanges = $state(false);
-    let lastSavedTime = $state<Date | null>(null);
 
     // Determinar el campo correcto según el tipo
     const fieldName = type === 'positive' ? 'positive_actions' : 'improve_actions';
@@ -83,9 +80,7 @@
     async function savePastActionsSilent() {
         if (!userState.id || !categoryId) return;
         const items = convertToGenericItems();
-        // Guardar siempre, incluso si no hay acciones (para limpiar el backend)
         $isPillarSaving = true;
-        hasUnsavedChanges = true;
         try {
             let categoryInfo = $currentCategoryInfo;
             if (!categoryInfo) {
@@ -108,15 +103,9 @@
             const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
             if (response.status === 200) {
                 $currentCategoryInfo = categoryInfo;
-                hasUnsavedChanges = false;
-                lastSavedTime = new Date();
-                
-                // Actualizar automáticamente el estado de la categoría
-                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
             }
         } catch (error) {
             console.error('Error saving past actions (silent):', error);
-            // Mantener hasUnsavedChanges = true en caso de error
         } finally {
             $isPillarSaving = false;
         }
@@ -139,8 +128,6 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Guardar siempre que haya cambios, incluso si no hay acciones (para eliminar del backend)
-        hasUnsavedChanges = true;
         const timeout = setTimeout(() => {
             savePastActionsSilent();
         }, 1500); // Reducir a 1.5 segundos
@@ -163,7 +150,8 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            if (hasUnsavedChanges) {
+            const items = convertToGenericItems();
+            if (items.length > 0) {
                 // Mostrar confirmación al usuario
                 event.preventDefault();
                 event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
@@ -285,7 +273,7 @@
         </Tooltip>
         
         <!-- Indicador de estado de guardado -->
-        <SaveIndicator {hasUnsavedChanges} {lastSavedTime} />
+        
     </div>
     {#if isLoading}
         <div class="flex items-center justify-center py-8">

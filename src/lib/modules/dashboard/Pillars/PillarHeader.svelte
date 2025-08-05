@@ -389,11 +389,12 @@
             Personal
         </button>
         <span class="mx-1">/</span>
-        <span class="text-alineados-orange-900">Mis Pilares de Vida</span>
+        <span class="text-alineados-orange-900">Acciones</span>
     </p>
     <div class="flex flex-col gap-5 border-b border-alineados-gray-200 pb-6 lg:flex-row lg:justify-between">
-        <p class="text-5xl font-bold text-alineados-blue-900">Mis Pilares de Vida</p>
+        <p class="text-5xl font-bold text-alineados-blue-900">Acciones</p>
         <div class="flex flex-row gap-4 self-start">
+            <ExportButton onClick={handleExportAll} isLoading={isExporting} />
             <ViewButtonActions />
             <ExportButton onClick={handleExportAll} isLoading={isExporting} />
         </div>
