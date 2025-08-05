@@ -242,10 +242,59 @@
         <h2 class="text-2xl font-medium text-alineados-gray-900">Objetivos</h2>
         <Tooltip
             open={false}
-            messages={[
-                'Lista de objetivos para este pilar',
-                'Cada objetivo debe ser específico y medible'
-            ]}
+            html={`
+                <div class="text-xs text-alineados-blue-900 space-y-3 p-2">
+                    <div>
+                        <p class="font-semibold mb-2">Debe ser 1 objetivo que cubre la categoría; no hace un objetivo por cada elemento</p>
+                        <p class="mb-2">Se recomienda iniciar con un verbo infinitivo (terminación ar-er-ir)</p>
+                        <p class="mb-3">Se recomienda escribirlos de manera:</p>
+                        <ul class="list-disc list-inside mb-3">
+                            <li>Normal</li>
+                            <li>SMART</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <p class="font-semibold mb-2">Tabla SMART:</p>
+                        <table class="w-full text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Letras</th>
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Palabra</th>
+                                    <th class="border border-gray-300 px-2 py-1 text-left">Definición</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold">S</td>
+                                    <td class="border border-gray-300 px-2 py-1">Específico</td>
+                                    <td class="border border-gray-300 px-2 py-1">Define claramente qué se quiere lograr. Evita generalidades.</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold">M</td>
+                                    <td class="border border-gray-300 px-2 py-1">Medible</td>
+                                    <td class="border border-gray-300 px-2 py-1">Asegúrate de que el objetivo pueda cuantificarse para evaluar el progreso.</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold">A</td>
+                                    <td class="border border-gray-300 px-2 py-1">Alcanzable</td>
+                                    <td class="border border-gray-300 px-2 py-1">El objetivo debe ser realista y posible con los recursos disponibles.</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold">R</td>
+                                    <td class="border border-gray-300 px-2 py-1">Relevante</td>
+                                    <td class="border border-gray-300 px-2 py-1">Conecta el objetivo con las metas generales de tu negocio o proyecto.</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 px-2 py-1 font-semibold">T</td>
+                                    <td class="border border-gray-300 px-2 py-1">Tiempo<br>Definido</td>
+                                    <td class="border border-gray-300 px-2 py-1">Establece un plazo concreto para cumplirlo.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `}
         >
             <InformationIcon styleTw="size-4" />
         </Tooltip>
