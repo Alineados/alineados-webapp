@@ -1,0 +1,8 @@
+name = "alineados-webapp"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm run build"
+
+[site]
+bucket = ".svelte-kit/output/client" 
