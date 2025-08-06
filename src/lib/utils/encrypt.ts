@@ -1,4 +1,4 @@
-import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
+import { randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
 
 type Hash = {
     iv: string;
