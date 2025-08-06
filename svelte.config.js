@@ -12,7 +12,7 @@ const config = {
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
-		adapter: process.env.CF_PAGES ? adapterCloudflare() : adapterVercel(),
+		adapter: process.env.CF_PAGES || process.env.CF_BUILD_ID ? adapterCloudflare() : adapterVercel(),
 		alias: {
 			'@/*': './path/to/lib/*',
 			$routes: './src/routes'
