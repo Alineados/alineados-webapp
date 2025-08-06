@@ -8,10 +8,4 @@ command = "npm run build"
 
 [assets]
 directory = ".svelte-kit/output/client"
-binding = "ASSETS"
-
-[env.production]
-compatibility_flags = ["nodejs_compat"]
-
-[env.development]
-compatibility_flags = ["nodejs_compat"] 
+binding = "ASSETS" 
