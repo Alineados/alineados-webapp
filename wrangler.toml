@@ -1,6 +1,7 @@
 name = "alineados-webapp"
 compatibility_date = "2025-08-06"
 compatibility_flags = ["nodejs_compat"]
+main = ".svelte-kit/output/server/index.js"
 
 [build]
 command = "npm run build"
