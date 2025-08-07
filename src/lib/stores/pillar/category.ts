@@ -253,3 +253,36 @@ export async function updateCategoryStateBasedOnContent(
         console.error('Error updating category state:', error);
     }
 } 
+
+// Función segura para actualizar el store sin sobrescribir datos existentes
+export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
+	const currentInfo = get(currentCategoryInfo);
+	
+	// Si no hay datos actuales, usar los nuevos datos
+	if (!currentInfo) {
+		currentCategoryInfo.set(newCategoryInfo);
+		return;
+	}
+	
+	// Combinar datos existentes con nuevos datos, preservando datos no vacíos
+	const mergedInfo: CategoryInfoDTO = { ...currentInfo };
+	
+	// Solo actualizar campos que tienen datos reales en newCategoryInfo
+	Object.keys(newCategoryInfo).forEach(key => {
+		const fieldKey = key as keyof CategoryInfoDTO;
+		const newValue = newCategoryInfo[fieldKey];
+		const currentValue = currentInfo[fieldKey];
+		
+		// Solo actualizar si el nuevo valor tiene datos reales
+		if (Array.isArray(newValue) && newValue.length > 0) {
+			const hasRealData = newValue.some(item => 
+				item && item.description && item.description.trim() !== ''
+			);
+			if (hasRealData) {
+				(mergedInfo as any)[fieldKey] = newValue;
+			}
+		}
+	});
+	
+	currentCategoryInfo.set(mergedInfo);
+} 

@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -44,7 +44,7 @@
             
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo);
                 
                 // Filtrar objetivos no vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {

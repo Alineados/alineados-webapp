@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -62,7 +62,7 @@
                 const categoryInfo = response.data;
                 
                 // Actualizar el store global
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo);
 
                 // Convertir los elementos del backend al formato del frontend
                 // Filtrar elementos vacíos del backend
