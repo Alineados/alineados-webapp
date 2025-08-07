@@ -98,6 +98,19 @@ async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean>
 
 // Función debounced para autosave
 const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
+	// Verificar si hay contenido real para guardar
+	const hasRealContent = Object.values(categoryInfo).some(value => {
+		if (Array.isArray(value)) {
+			return value.some(item => item && item.description && item.description.trim() !== '');
+		}
+		return false;
+	});
+	
+	if (!hasRealContent) {
+		console.log('No real content to save, skipping');
+		return;
+	}
+	
 	console.log('debouncedSave called with categoryInfo:', categoryInfo);
 	autosaveStatus.set('saving');
 	const success = await saveCategoryInfo(categoryInfo);
@@ -115,6 +128,18 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	
 	if (!currentInfo) {
 		console.warn('No current category info available');
+		return;
+	}
+	
+	// Verificar si los datos realmente cambiaron
+	const hasChanges = Object.keys(updates).some(key => {
+		const currentValue = currentInfo[key as keyof CategoryInfoDTO];
+		const newValue = updates[key as keyof CategoryInfoDTO];
+		return JSON.stringify(currentValue) !== JSON.stringify(newValue);
+	});
+	
+	if (!hasChanges) {
+		console.log('No changes detected, skipping update');
 		return;
 	}
 	
