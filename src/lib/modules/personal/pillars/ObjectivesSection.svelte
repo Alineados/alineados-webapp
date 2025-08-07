@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -38,6 +38,27 @@
         }
         
         isLoading = true;
+        
+        // Intentar cargar desde el store primero
+        const storeItems = loadFromStoreFirst('objectives', (items) => 
+            items
+                .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                .map((item: GenericItemDTO) => ({
+                    id: item.id || nanoid(),
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                }))
+        );
+        
+        if (storeItems.length > 0) {
+            console.log('Loaded objectives from store:', storeItems.length, 'items');
+            objectives = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
+            isLoading = false;
+            return;
+        }
+        
+        // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
             console.log('loadObjectives response:', response);

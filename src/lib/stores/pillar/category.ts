@@ -290,3 +290,22 @@ export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
 	
 	currentCategoryInfo.set(mergedInfo);
 } 
+
+// Función para cargar datos desde el store primero, luego desde el backend si es necesario
+export function loadFromStoreFirst<T>(
+	sectionKey: keyof CategoryInfoDTO,
+	convertFunction: (items: GenericItemDTO[]) => T[]
+): T[] {
+	const currentInfo = get(currentCategoryInfo);
+	
+	if (currentInfo && currentInfo[sectionKey] && Array.isArray(currentInfo[sectionKey])) {
+		const items = currentInfo[sectionKey] as GenericItemDTO[];
+		if (items.length > 0) {
+			console.log(`Loading ${sectionKey} from store:`, items.length, 'items');
+			return convertFunction(items);
+		}
+	}
+	
+	console.log(`No data in store for ${sectionKey}, will load from backend`);
+	return [];
+} 
