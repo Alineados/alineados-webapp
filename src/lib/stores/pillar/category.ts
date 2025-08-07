@@ -19,6 +19,11 @@ export const isPillarSaving = writable(false);
 
 // Store para la información de categoría actual
 export const currentCategoryInfo = writable<CategoryInfoDTO | null>(null);
+
+// Log cuando se actualiza el store
+currentCategoryInfo.subscribe((value) => {
+	console.log('currentCategoryInfo store updated:', value ? 'has data' : 'null');
+});
 export const currentCategoryActive = writable<boolean>(false);
 
 // Store para el estado de guardado de secciones específicas
@@ -126,8 +131,11 @@ const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
 export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	const currentInfo = get(currentCategoryInfo);
 	
+	console.log('updateCategoryInfoAndSave - currentInfo:', currentInfo);
+	console.log('updateCategoryInfoAndSave - updates:', updates);
+	
 	if (!currentInfo) {
-		console.warn('No current category info available');
+		console.warn('No current category info available - this might be the first time issue');
 		return;
 	}
 	
