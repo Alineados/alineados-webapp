@@ -71,7 +71,9 @@ export const autosavingPillars = derived([currentCategoryInfo], (_, set) => {
 });
 
 export const pillarsCategoryInfoJSON = derived([currentCategoryInfo], ([$currentCategoryInfo], set) => {
-	set(JSON.stringify($currentCategoryInfo));
+	// TEMPORARILY DISABLED - No hacer nada
+	// set(JSON.stringify($currentCategoryInfo));
+	set('');
 });
 
 // Función centralizada para guardar silenciosamente

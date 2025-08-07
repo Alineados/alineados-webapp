@@ -110,9 +110,12 @@
     }
 
     // Efecto para actualizar el store global cuando cambian los elementos
+    // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
+    /*
     $effect(() => {
         updateGlobalStore();
     });
+    */
 
     // Guardar al salir de la página
     onMount(() => {
