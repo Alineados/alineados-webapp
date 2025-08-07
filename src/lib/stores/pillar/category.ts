@@ -34,7 +34,6 @@ currentCategoryInfo.subscribe((value) => {
 			middle_actions: value.middle_actions?.length || 0,
 			long_actions: value.long_actions?.length || 0
 		});
-		console.log('Stack trace:', new Error().stack);
 	}
 });
 export const currentCategoryActive = writable<boolean>(false);
