@@ -65,40 +65,6 @@
         }
     }
 
-    // Guardar acciones de largo plazo silenciosamente
-    async function saveLongTermActionsSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.long_actions = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving long term actions (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir acciones al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return futureActions

@@ -66,40 +66,6 @@
         }
     }
 
-    // Guardar hábitos silenciosamente
-    async function saveHabitsSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.habits = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving habits (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir hábitos al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return habits
@@ -112,14 +78,6 @@
                 repeated: e.daily,
                 deleted: false
             }));
-    }
-
-    // Función para guardar cuando el usuario pierde el foco
-    function handleBlur() {
-        const items = convertToGenericItems();
-        if (items.length > 0) {
-            updateCategoryInfoAndSave({ habits: items });
-        }
     }
 
     // Auto-guardado debounce
@@ -273,7 +231,12 @@
                             removeHabit(habit.id);
                         }
                     }}
-                    onBlur={handleBlur}
+                    onBlur={() => {
+                        const items = convertToGenericItems();
+                        if (items.length > 0) {
+                            updateCategoryInfoAndSave({ habits: items });
+                        }
+                    }}
                     bind:isOnlyText
                     bind:isDaily={habit.daily}
                     bind:isStarred={habit.prominent}

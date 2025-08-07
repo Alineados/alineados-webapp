@@ -66,40 +66,6 @@
         }
     }
 
-    // Guardar objetivos silenciosamente
-    async function saveObjectivesSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.objectives = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving objectives (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir objetivos al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return objectives

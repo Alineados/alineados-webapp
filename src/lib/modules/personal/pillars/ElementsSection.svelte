@@ -66,8 +66,7 @@
                 const categoryInfo = response.data;
                 
                 // Actualizar el store global
-                // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
-                // $currentCategoryInfo = categoryInfo;
+                $currentCategoryInfo = categoryInfo;
 
                 // Convertir los elementos del backend al formato del frontend
                 // Filtrar elementos vacíos del backend
@@ -108,12 +107,6 @@
         }
     }
 
-    // Función para actualizar el store global cuando cambian los elementos
-    function updateGlobalStore() {
-        const items = convertToGenericItems();
-        updateCategoryInfoAndSave({ elements: items });
-    }
-
     // Efecto para actualizar el store global cuando cambian los elementos
     $effect(() => {
         const items = convertToGenericItems();
@@ -134,52 +127,6 @@
                 event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
                 return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
             }
-        };
-        
-        // Función para guardar síncronamente (para refresh)
-        const saveElementsSilentSync = () => {
-            if (!userState.id || !categoryId) return;
-            
-            // Capturar TODOS los elementos actuales, incluyendo cambios pendientes
-            const currentElements = elements.filter(e => e.description.trim() !== '');
-            if (currentElements.length === 0) return;
-            
-            // Convertir al formato backend
-            const items = currentElements.map(e => ({
-                id: e.id,
-                description: e.description,
-                done: false,
-                favorite: e.prominent,
-                repeated: e.daily,
-                deleted: false
-            }));
-            
-            // Crear una nueva categoría si no existe
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.elements = items;
-            
-            // Usar fetch síncrono para refresh
-            const xhr = new XMLHttpRequest();
-            const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`;
-            xhr.open('POST', url, false); // false = síncrono
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.send(JSON.stringify(categoryInfo));
         };
         
         // Agregar listeners para diferentes eventos

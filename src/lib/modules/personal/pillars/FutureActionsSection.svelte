@@ -66,40 +66,6 @@
         }
     }
 
-    // Guardar acciones futuras silenciosamente
-    async function saveFutureActionsSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.short_actions = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving future actions (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir acciones al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return futureActions
@@ -112,14 +78,6 @@
                 repeated: e.daily,
                 deleted: false
             }));
-    }
-
-    // Función para guardar cuando el usuario pierde el foco
-    function handleBlur() {
-        const items = convertToGenericItems();
-        if (items.length > 0) {
-            updateCategoryInfoAndSave({ short_actions: items });
-        }
     }
 
     // Auto-guardado debounce
@@ -273,7 +231,12 @@
                             removeAction(action.id);
                         }
                     }}
-                    onBlur={handleBlur}
+                    onBlur={() => {
+                        const items = convertToGenericItems();
+                        if (items.length > 0) {
+                            updateCategoryInfoAndSave({ short_actions: items });
+                        }
+                    }}
                     bind:isOnlyText
                     bind:isDaily={action.daily}
                     bind:isStarred={action.prominent}
