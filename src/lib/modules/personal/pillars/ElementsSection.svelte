@@ -66,7 +66,8 @@
                 const categoryInfo = response.data;
                 
                 // Actualizar el store global
-                $currentCategoryInfo = categoryInfo;
+                // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
+                // $currentCategoryInfo = categoryInfo;
 
                 // Convertir los elementos del backend al formato del frontend
                 // Filtrar elementos vacíos del backend
