@@ -63,7 +63,7 @@
                     description: item.description,
                     prominent: item.favorite,
                     daily: item.repeated
-                }))
+                })), categoryId
         );
         
         if (storeItems.length > 0) {
@@ -82,7 +82,7 @@
                 const categoryInfo = response.data;
                 
                 // Actualizar el store global
-                safeUpdateCategoryInfo(categoryInfo);
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
 
                 // Convertir los elementos del backend al formato del frontend
                 // Filtrar elementos vacíos del backend

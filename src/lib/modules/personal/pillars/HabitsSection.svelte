@@ -48,7 +48,7 @@
                     description: item.description,
                     prominent: item.favorite,
                     daily: item.repeated
-                }))
+                })), categoryId
         );
         
         if (storeItems.length > 0) {
@@ -65,7 +65,7 @@
             
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                safeUpdateCategoryInfo(categoryInfo);
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
                 
                 // Filtrar hábitos no vacíos del backend
                 if (categoryInfo.habits && categoryInfo.habits.length > 0) {

@@ -17,8 +17,11 @@ export const currentEditingCategory = writable<CategoryDTO | null>(null);
 // Store global para el estado de guardado de pillars
 export const isPillarSaving = writable(false);
 
-// Store para la información de categoría actual
+// Store para la información de categoría actual (específica por categoría)
 export const currentCategoryInfo = writable<CategoryInfoDTO | null>(null);
+
+// Store para el ID de la categoría actual
+export const currentCategoryId = writable<string>('');
 
 // Log cuando se actualiza el store
 currentCategoryInfo.subscribe((value) => {
@@ -142,9 +145,11 @@ const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
 // Función para actualizar el store global y trigger autosave
 export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	const currentInfo = get(currentCategoryInfo);
+	const categoryId = get(currentCategoryId);
 	
 	console.log('updateCategoryInfoAndSave - currentInfo:', currentInfo);
 	console.log('updateCategoryInfoAndSave - updates:', updates);
+	console.log('updateCategoryInfoAndSave - categoryId:', categoryId);
 	
 	if (!currentInfo) {
 		console.warn('No current category info available - this might be the first time issue');
@@ -169,7 +174,7 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	const updatedInfo = { ...currentInfo, ...updates };
 	currentCategoryInfo.set(updatedInfo);
 	
-	// Trigger autosave
+	// Trigger autosave AL BACKEND (como Notion)
 	debouncedSave(updatedInfo);
 }
 
@@ -254,12 +259,22 @@ export async function updateCategoryStateBasedOnContent(
 } 
 
 // Función segura para actualizar el store sin sobrescribir datos existentes
-export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
+export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO, categoryId: string) {
 	const currentInfo = get(currentCategoryInfo);
+	const currentCategoryIdValue = get(currentCategoryId);
+	
+	// Si es una categoría diferente, limpiar el store y establecer la nueva categoría
+	if (currentCategoryIdValue !== categoryId) {
+		console.log(`Category changed from ${currentCategoryIdValue} to ${categoryId}, clearing store`);
+		currentCategoryInfo.set(newCategoryInfo);
+		currentCategoryId.set(categoryId);
+		return;
+	}
 	
 	// Si no hay datos actuales, usar los nuevos datos (incluso si están vacíos)
 	if (!currentInfo) {
 		currentCategoryInfo.set(newCategoryInfo);
+		currentCategoryId.set(categoryId);
 		return;
 	}
 	
@@ -294,9 +309,17 @@ export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
 // Función para cargar datos desde el store primero, luego desde el backend si es necesario
 export function loadFromStoreFirst<T>(
 	sectionKey: keyof CategoryInfoDTO,
-	convertFunction: (items: GenericItemDTO[]) => T[]
+	convertFunction: (items: GenericItemDTO[]) => T[],
+	categoryId: string
 ): T[] {
 	const currentInfo = get(currentCategoryInfo);
+	const currentCategoryIdValue = get(currentCategoryId);
+	
+	// Solo cargar desde el store si es la misma categoría
+	if (currentCategoryIdValue !== categoryId) {
+		console.log(`Category mismatch: store has ${currentCategoryIdValue}, requested ${categoryId}`);
+		return [];
+	}
 	
 	if (currentInfo && currentInfo[sectionKey] && Array.isArray(currentInfo[sectionKey])) {
 		const items = currentInfo[sectionKey] as GenericItemDTO[];

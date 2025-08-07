@@ -47,7 +47,7 @@
                     description: item.description,
                     prominent: item.favorite,
                     daily: item.repeated
-                }))
+                })), categoryId
         );
         
         if (storeItems.length > 0) {
@@ -64,7 +64,7 @@
             
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                safeUpdateCategoryInfo(categoryInfo);
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
                 
                 // Filtrar acciones de largo plazo no vacías del backend
                 if (categoryInfo.long_actions && categoryInfo.long_actions.length > 0) {
