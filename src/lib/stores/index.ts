@@ -70,8 +70,6 @@ export { infoState } from "./settings/info.svelte"
 
 // Professional pillars autosave functionality
 export {
-	autosavingPillars,
-	pillarsCategoryInfoJSON,
 	currentCategoryInfo,
 	isPillarSaving,
 	currentCategoryActive,
@@ -81,6 +79,6 @@ export {
 	lastSavedAt,
 	saveImmediately,
 	saveSynchronously,
-	setDataLoaded
+	updateCategoryInfoAndSave
 } from './pillar';
 
