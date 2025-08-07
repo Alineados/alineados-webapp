@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -102,29 +102,22 @@
 
     // Función para guardar cuando el usuario pierde el foco
     function handleBlur() {
-        // TEMPORARILY DISABLED - No autosave for now
-        console.log('Blur event - autosave disabled');
+        const items = convertToGenericItems();
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ elements: items });
+        }
     }
 
     // Función para actualizar el store global cuando cambian los elementos
     function updateGlobalStore() {
-        // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
-        /*
         const items = convertToGenericItems();
-        if ($currentCategoryInfo) {
-            $currentCategoryInfo.elements = items;
-        }
-        */
-        console.log('updateGlobalStore called - disabled');
+        updateCategoryInfoAndSave({ elements: items });
     }
 
     // Efecto para actualizar el store global cuando cambian los elementos
-    // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
-    /*
     $effect(() => {
         updateGlobalStore();
     });
-    */
 
     // Guardar al salir de la página
     onMount(() => {

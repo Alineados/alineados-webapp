@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -114,21 +114,21 @@
             }));
     }
 
+    // Función para guardar cuando el usuario pierde el foco
+    function handleBlur() {
+        const items = convertToGenericItems();
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ habits: items });
+        }
+    }
+
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            saveHabitsSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ habits: items });
+        }
     });
-
-    // Función para guardar cuando el usuario pierde el foco
-    function handleBlur() {
-        // TEMPORARILY DISABLED - No autosave for now
-        console.log('HabitsSection Blur event - autosave disabled');
-    }
 
     // Guardar al salir de la página
     onMount(() => {

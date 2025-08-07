@@ -7,7 +7,7 @@
     // import ThumbsDown from '$lib/icons/ThumbsDown.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -127,17 +127,17 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            savePastActionsSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ [fieldName]: items });
+        }
     });
 
     // Función para guardar cuando el usuario pierde el foco
     function handleBlur() {
-        // TEMPORARILY DISABLED - No autosave for now
-        console.log('PastActionsSection Blur event - autosave disabled');
+        const items = convertToGenericItems();
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ [fieldName]: items });
+        }
     }
 
     // Guardar al salir de la página

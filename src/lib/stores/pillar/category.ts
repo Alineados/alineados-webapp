@@ -28,74 +28,49 @@ export const isSectionSaving = writable<{
 }>({ section: '', saving: false });
 
 // PROFESSIONAL AUTOSAVE SYSTEM
-let debounceTimeout: ReturnType<typeof setTimeout>;
-let retryCount = 0;
-const MAX_RETRIES = 3;
-let isAutosaving = false; // Flag para evitar bucle infinito
-let isDataLoaded = false; // Flag para indicar si los datos están cargados
-
-// Estado del autosave
 export const autosaveStatus = writable<'idle' | 'saving' | 'saved' | 'error'>('idle');
 export const lastSavedAt = writable<Date | null>(null);
 
-// Función para marcar que los datos están cargados
-export function setDataLoaded(loaded: boolean) {
-	isDataLoaded = loaded;
+// Simple debounce implementation
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function debounce<T extends (...args: any[]) => any>(
+	func: T,
+	delay: number
+): (...args: Parameters<T>) => void {
+	return (...args: Parameters<T>) => {
+		if (debounceTimeout) {
+			clearTimeout(debounceTimeout);
+		}
+		debounceTimeout = setTimeout(() => func(...args), delay);
+	};
 }
 
-// TEMPORARILY DISABLED - Debounce inteligente - similar a Notion
-export const autosavingPillars = derived([currentCategoryInfo], (_, set) => {
-	// TEMPORARILY DISABLED - Comentado para evitar bucle infinito
-	/*
-	// Evitar bucle infinito
-	if (isAutosaving) return;
+// Función para obtener los parámetros necesarios
+function getRequiredParams() {
+	const pageParams = JSON.parse(localStorage.getItem('pageParams') || '{}');
+	const userStateData = JSON.parse(localStorage.getItem('userState') || '{}');
+	const token = localStorage.getItem('token') || '';
 	
-	// Solo ejecutar si hay datos reales y están cargados
-	const categoryInfo = get(currentCategoryInfo);
-	if (!categoryInfo || !categoryInfo.cid || !isDataLoaded) return;
-	
-	clearTimeout(debounceTimeout);
-	
-	// Cambiar estado a 'saving' inmediatamente
-	set(true);
-	autosaveStatus.set('saving');
-	
-	// Debounce de 1.5 segundos
-	debounceTimeout = setTimeout(() => {
-		saveCategoryInfoSilent();
-	}, 1500);
-	*/
-	
-	// TEMPORARILY DISABLED - No hacer nada
-	set(false);
-});
+	return {
+		pillar: pageParams.pillar,
+		category: pageParams.category,
+		userId: userStateData.id,
+		token
+	};
+}
 
-export const pillarsCategoryInfoJSON = derived([currentCategoryInfo], ([$currentCategoryInfo], set) => {
-	// TEMPORARILY DISABLED - No hacer nada
-	// set(JSON.stringify($currentCategoryInfo));
-	set('');
-});
-
-// Función centralizada para guardar silenciosamente
-async function saveCategoryInfoSilent() {
-	const categoryInfo = get(currentCategoryInfo);
-	if (!categoryInfo) return;
-
-	isAutosaving = true; // Marcar que estamos autosaveando
+// Función centralizada para guardar
+async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean> {
+	const { pillar, userId, token } = getRequiredParams();
+	
+	if (!userId || !pillar) {
+		console.log('Missing required data for autosave');
+		return false;
+	}
 
 	try {
-		// Obtener parámetros necesarios
-		const pageParams = JSON.parse(localStorage.getItem('pageParams') || '{}');
-		const userStateData = JSON.parse(localStorage.getItem('userState') || '{}');
-		const token = localStorage.getItem('token') || '';
-		
-		if (!userStateData.id || !pageParams.pillar || !pageParams.category) {
-			console.log('Missing required data for autosave');
-			isAutosaving = false;
-			return;
-		}
-
-		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pageParams.pillar}`, {
+		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`, {
 			method: 'POST',
 			headers: { 
 				'Content-Type': 'application/json', 
@@ -108,39 +83,46 @@ async function saveCategoryInfoSilent() {
 			console.log('Autosave successful');
 			autosaveStatus.set('saved');
 			lastSavedAt.set(new Date());
-			retryCount = 0; // Reset retry count on success
-			
-			// Actualizar automáticamente el estado de la categoría
-			await updateCategoryStateBasedOnContent(
-				pageParams.pillar, 
-				categoryInfo.cid, 
-				userStateData.id, 
-				token
-			);
+			return true;
 		} else {
 			console.error('Autosave failed:', response.status);
 			autosaveStatus.set('error');
-			
-			// Reintentar automáticamente
-			if (retryCount < MAX_RETRIES) {
-				retryCount++;
-				console.log(`Retrying autosave (${retryCount}/${MAX_RETRIES})...`);
-				setTimeout(() => saveCategoryInfoSilent(), 2000 * retryCount); // Backoff exponencial
-			}
+			return false;
 		}
 	} catch (error) {
 		console.error('Error in autosave:', error);
 		autosaveStatus.set('error');
-		
-		// Reintentar automáticamente
-		if (retryCount < MAX_RETRIES) {
-			retryCount++;
-			console.log(`Retrying autosave (${retryCount}/${MAX_RETRIES})...`);
-			setTimeout(() => saveCategoryInfoSilent(), 2000 * retryCount);
-		}
-	} finally {
-		isAutosaving = false; // Resetear el flag
+		return false;
 	}
+}
+
+// Función debounced para autosave
+const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
+	autosaveStatus.set('saving');
+	const success = await saveCategoryInfo(categoryInfo);
+	if (!success) {
+		// En caso de error, intentar una vez más después de 2 segundos
+		setTimeout(async () => {
+			await saveCategoryInfo(categoryInfo);
+		}, 2000);
+	}
+}, 1500); // 1.5 segundos de debounce
+
+// Función para actualizar el store global y trigger autosave
+export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
+	const currentInfo = get(currentCategoryInfo);
+	
+	if (!currentInfo) {
+		console.warn('No current category info available');
+		return;
+	}
+	
+	// Actualizar el store
+	const updatedInfo = { ...currentInfo, ...updates };
+	currentCategoryInfo.set(updatedInfo);
+	
+	// Trigger autosave
+	debouncedSave(updatedInfo);
 }
 
 // Función para guardar inmediatamente (al perder foco)
@@ -149,33 +131,9 @@ export async function saveImmediately() {
 	if (!categoryInfo) return;
 
 	autosaveStatus.set('saving');
+	const success = await saveCategoryInfo(categoryInfo);
 	
-	try {
-		const pageParams = JSON.parse(localStorage.getItem('pageParams') || '{}');
-		const userStateData = JSON.parse(localStorage.getItem('userState') || '{}');
-		const token = localStorage.getItem('token') || '';
-		
-		if (!userStateData.id || !pageParams.pillar || !pageParams.category) return;
-
-		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pageParams.pillar}`, {
-			method: 'POST',
-			headers: { 
-				'Content-Type': 'application/json', 
-				'Authorization': `Bearer ${token}` 
-			},
-			body: JSON.stringify(categoryInfo)
-		});
-
-		if (response.ok) {
-			autosaveStatus.set('saved');
-			lastSavedAt.set(new Date());
-			console.log('Immediate save successful');
-		} else {
-			autosaveStatus.set('error');
-			console.error('Immediate save failed:', response.status);
-		}
-	} catch (error) {
-		console.error('Error in immediate save:', error);
+	if (!success) {
 		autosaveStatus.set('error');
 	}
 }
@@ -186,15 +144,13 @@ export function saveSynchronously() {
 	if (!categoryInfo) return;
 
 	try {
-		const pageParams = JSON.parse(localStorage.getItem('pageParams') || '{}');
-		const userStateData = JSON.parse(localStorage.getItem('userState') || '{}');
-		const token = localStorage.getItem('token') || '';
+		const { pillar, token } = getRequiredParams();
 		
-		if (!userStateData.id || !pageParams.pillar || !pageParams.category) return;
+		if (!pillar) return;
 
 		// Usar XMLHttpRequest síncrono para asegurar que se complete antes de salir
 		const xhr = new XMLHttpRequest();
-		const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pageParams.pillar}`;
+		const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`;
 		xhr.open('POST', url, false); // false = síncrono
 		xhr.setRequestHeader('Content-Type', 'application/json');
 		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
