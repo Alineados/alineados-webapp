@@ -11,23 +11,64 @@
     import LongTermActionsSection from '$lib/modules/personal/pillars/LongTermActionsSection.svelte';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
+    import { userState, saveSynchronously } from '$lib/stores';
+    import { browser } from '$app/environment';
+    import { getContext } from 'svelte';
 
     let { data } = $props<{ data: PageData }>();
 
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
     let isLoaded = $state(false);
+
+    // Obtener el token del contexto
+    const token = getContext<string>('token');
 
     onMount(() => {
         setTimeout(() => {
             isLoaded = true;
         }, 100);
+
+        // Store page parameters for autosave function
+        if (browser) {
+            localStorage.setItem('pageParams', JSON.stringify({
+                pillar: pillar,
+                category: category
+            }));
+            localStorage.setItem('userState', JSON.stringify({
+                id: userState.id
+            }));
+            localStorage.setItem('token', token || '');
+        }
+
+        // Handle beforeunload to save synchronously
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+            
+            // Save synchronously before leaving
+            saveSynchronously();
+            
+            return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+        };
+
+        // Add event listeners
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('pagehide', handleBeforeUnload);
+        window.addEventListener('unload', handleBeforeUnload);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('pagehide', handleBeforeUnload);
+            window.removeEventListener('unload', handleBeforeUnload);
+        };
     });
 </script>
 
 {#if isLoaded}
     <div class="flex min-h-screen flex-col">
-        <PillarHeader {category} pillarInfo={{
+        <PillarHeader category={category} pillarInfo={{
             id: '',
             name: pillar,
             label: pillar,

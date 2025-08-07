@@ -68,3 +68,18 @@ export { emptyGeneric, listSelector } from './generic';
 
 export { infoState } from "./settings/info.svelte"
 
+// Professional pillars autosave functionality
+export {
+	autosavingPillars,
+	pillarsCategoryInfoJSON,
+	currentCategoryInfo,
+	isPillarSaving,
+	currentCategoryActive,
+	hasCategoryContent,
+	updateCategoryStateBasedOnContent,
+	autosaveStatus,
+	lastSavedAt,
+	saveImmediately,
+	saveSynchronously
+} from './pillar';
+

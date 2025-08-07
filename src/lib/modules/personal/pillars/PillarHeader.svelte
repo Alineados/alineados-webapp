@@ -9,11 +9,12 @@
     import Loading from '$lib/icons/Loading.svelte';
     import BackArrow from '$lib/icons/BackArrow.svelte';
     import type { DataPillar } from '$lib/interfaces';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, autosaveStatus, lastSavedAt } from '$lib/stores/pillar/category';
     import { exportPillarToPDF } from '$lib/utils/exportPillar';
     import { page } from '$app/stores';
     import { userState } from '$lib/stores';
     import { getContext } from 'svelte';
+    import AutosaveIndicator from '$lib/components/AutosaveIndicator.svelte';
 
     let { 
         pillarInfo,
@@ -44,7 +45,7 @@
     const token = getContext<string>('token');
     
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
+    let pillar = $derived($page.params.pillar || '');
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
     // Verificar si todas las secciones están completas
@@ -183,6 +184,8 @@
         
         <div class="flex flex-row justify-start gap-4">
             
+            <!-- Professional Autosave Indicator -->
+            <AutosaveIndicator showTimestamp={true} />
             
             <div class="flex items-center gap-2">
                 <!-- Indicador de nube/loading con contenedor reactivo -->
@@ -292,19 +295,6 @@
                                 {:else}
                                     <File class="mr-2 size-4" />
                                     Exportar
-                                {/if}
-                            </button>
-                            
-                            <button
-                                class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => { isProtected = !isProtected; showMenu = false; }}
-                            >
-                                {#if isProtected}
-                                    <Lock class="mr-2 size-4" />
-                                    Desbloquear
-                                {:else}
-                                    <Lock class="mr-2 size-4" />
-                                    Proteger
                                 {/if}
                             </button>
                         </div>
