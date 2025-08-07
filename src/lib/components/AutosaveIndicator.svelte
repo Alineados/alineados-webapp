@@ -2,8 +2,8 @@
     import { autosaveStatus, lastSavedAt } from '$lib/stores';
     import Cloud from '$lib/icons/Cloud.svelte';
     import Loading from '$lib/icons/Loading.svelte';
-    import CheckCircle from '$lib/icons/CheckCircle.svelte';
-    import AlertCircle from '$lib/icons/AlertCircle.svelte';
+    import CircleCheck from '$lib/icons/CircleCheck.svelte';
+    import CircleCross from '$lib/icons/CircleCross.svelte';
 
     // Props
     let { showTimestamp = true } = $props<{ showTimestamp?: boolean }>();
@@ -34,7 +34,7 @@
         </div>
     {:else if $autosaveStatus === 'saved'}
         <div class="flex items-center gap-1 text-green-600">
-            <CheckCircle class="h-3 w-3" />
+            <CircleCheck styleTw="h-3 w-3" />
             <span>Guardado</span>
             {#if showTimestamp && $lastSavedAt}
                 <span class="text-gray-400">• {formatTimestamp($lastSavedAt)}</span>
@@ -42,12 +42,12 @@
         </div>
     {:else if $autosaveStatus === 'error'}
         <div class="flex items-center gap-1 text-red-600">
-            <AlertCircle class="h-3 w-3" />
+            <CircleCross styleTw="h-3 w-3" />
             <span>Error al guardar</span>
         </div>
     {:else}
         <div class="flex items-center gap-1">
-            <Cloud class="h-3 w-3 text-gray-400" />
+            <Cloud styleTw="h-3 w-3 text-gray-400" />
             <span>Sin cambios</span>
         </div>
     {/if}
