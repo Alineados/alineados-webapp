@@ -74,5 +74,6 @@ export {
     autosaveStatus,
     lastSavedAt,
     saveImmediately,
-    saveSynchronously
+    saveSynchronously,
+    setDataLoaded
 } from './category';

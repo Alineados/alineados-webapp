@@ -32,15 +32,27 @@ let debounceTimeout: ReturnType<typeof setTimeout>;
 let retryCount = 0;
 const MAX_RETRIES = 3;
 let isAutosaving = false; // Flag para evitar bucle infinito
+let isDataLoaded = false; // Flag para indicar si los datos están cargados
 
 // Estado del autosave
 export const autosaveStatus = writable<'idle' | 'saving' | 'saved' | 'error'>('idle');
 export const lastSavedAt = writable<Date | null>(null);
 
-// Debounce inteligente - similar a Notion
+// Función para marcar que los datos están cargados
+export function setDataLoaded(loaded: boolean) {
+	isDataLoaded = loaded;
+}
+
+// TEMPORARILY DISABLED - Debounce inteligente - similar a Notion
 export const autosavingPillars = derived([currentCategoryInfo], (_, set) => {
+	// TEMPORARILY DISABLED - Comentado para evitar bucle infinito
+	/*
 	// Evitar bucle infinito
 	if (isAutosaving) return;
+	
+	// Solo ejecutar si hay datos reales y están cargados
+	const categoryInfo = get(currentCategoryInfo);
+	if (!categoryInfo || !categoryInfo.cid || !isDataLoaded) return;
 	
 	clearTimeout(debounceTimeout);
 	
@@ -52,6 +64,10 @@ export const autosavingPillars = derived([currentCategoryInfo], (_, set) => {
 	debounceTimeout = setTimeout(() => {
 		saveCategoryInfoSilent();
 	}, 1500);
+	*/
+	
+	// TEMPORARILY DISABLED - No hacer nada
+	set(false);
 });
 
 export const pillarsCategoryInfoJSON = derived([currentCategoryInfo], ([$currentCategoryInfo], set) => {

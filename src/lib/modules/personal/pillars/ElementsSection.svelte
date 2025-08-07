@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { currentCategoryInfo, saveImmediately } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -24,6 +24,17 @@
     // Obtener el ID de la categoría desde el contexto de la página
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
+    // Debug: verificar que tenemos los datos necesarios
+    $effect(() => {
+        console.log('ElementsSection Debug:', {
+            pillar,
+            category,
+            categoryId,
+            userStateId: userState.id,
+            categoryData: $page.data?.categoryData
+        });
+    });
+
     // Estado local
     let elements = $state([
         { id: nanoid(), description: '', prominent: false, daily: false }
@@ -33,7 +44,11 @@
 
     // Función para cargar datos existentes
     async function loadElements() {
+        console.log('loadElements called with:', { pillar, categoryId, userStateId: userState.id });
+        
         if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadElements:', { userStateId: userState.id, categoryId });
+            isLoading = false;
             return;
         }
 
@@ -41,6 +56,7 @@
 
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadElements response:', response);
 
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
@@ -81,11 +97,8 @@
 
     // Función para guardar cuando el usuario pierde el foco
     function handleBlur() {
-        const items = convertToGenericItems();
-        if (items.length > 0) {
-            // Guardar inmediatamente al perder foco
-            saveImmediately();
-        }
+        // TEMPORARILY DISABLED - No autosave for now
+        console.log('Blur event - autosave disabled');
     }
 
     // Función para actualizar el store global cuando cambian los elementos
