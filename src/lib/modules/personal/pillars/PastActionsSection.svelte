@@ -37,10 +37,18 @@
 
     // Cargar acciones pasadas existentes
     async function loadPastActions() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadPastActions called with:', { pillar, categoryId, userStateId: userState.id, type });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadPastActions:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadPastActions response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;

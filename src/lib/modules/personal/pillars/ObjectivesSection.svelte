@@ -30,10 +30,18 @@
 
     // Cargar objetivos existentes
     async function loadObjectives() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadObjectives called with:', { pillar, categoryId, userStateId: userState.id });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadObjectives:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadObjectives response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
