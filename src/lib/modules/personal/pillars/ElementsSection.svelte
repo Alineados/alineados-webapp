@@ -18,11 +18,12 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar || '');
-    let category = $derived($page.params.category || '');
+    // TEMPORARILY DISABLED - Usar valores estáticos para aislar el problema
+    let pillar = 'health'; // $derived($page.params.pillar || '');
+    let category = 'fisica'; // $derived($page.params.category || '');
 
     // Obtener el ID de la categoría desde el contexto de la página
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    let categoryId = '507f1f77bcf86cd799439011'; // $derived($page.data?.categoryData?.id || '');
 
     // Debug: verificar que tenemos los datos necesarios
     // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
