@@ -108,10 +108,14 @@
 
     // Función para actualizar el store global cuando cambian los elementos
     function updateGlobalStore() {
+        // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
+        /*
         const items = convertToGenericItems();
         if ($currentCategoryInfo) {
             $currentCategoryInfo.elements = items;
         }
+        */
+        console.log('updateGlobalStore called - disabled');
     }
 
     // Efecto para actualizar el store global cuando cambian los elementos
