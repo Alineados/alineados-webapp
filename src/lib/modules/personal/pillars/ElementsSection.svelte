@@ -25,6 +25,8 @@
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
     // Debug: verificar que tenemos los datos necesarios
+    // TEMPORARILY DISABLED - Comentado para evitar bucle infinito
+    /*
     $effect(() => {
         console.log('ElementsSection Debug:', {
             pillar,
@@ -34,6 +36,7 @@
             categoryData: $page.data?.categoryData
         });
     });
+    */
 
     // Estado local
     let elements = $state([
