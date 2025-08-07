@@ -116,12 +116,83 @@
 
     // Efecto para actualizar el store global cuando cambian los elementos
     $effect(() => {
-        updateGlobalStore();
+        const items = convertToGenericItems();
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ elements: items });
+        }
     });
 
     // Guardar al salir de la página
     onMount(() => {
         loadElements();
+        
+        // Función para guardar antes de salir/refresh
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (elements.some(e => e.description.trim() !== '')) {
+                // Mostrar confirmación al usuario
+                event.preventDefault();
+                event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+                return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+            }
+        };
+        
+        // Función para guardar síncronamente (para refresh)
+        const saveElementsSilentSync = () => {
+            if (!userState.id || !categoryId) return;
+            
+            // Capturar TODOS los elementos actuales, incluyendo cambios pendientes
+            const currentElements = elements.filter(e => e.description.trim() !== '');
+            if (currentElements.length === 0) return;
+            
+            // Convertir al formato backend
+            const items = currentElements.map(e => ({
+                id: e.id,
+                description: e.description,
+                done: false,
+                favorite: e.prominent,
+                repeated: e.daily,
+                deleted: false
+            }));
+            
+            // Crear una nueva categoría si no existe
+            let categoryInfo = $currentCategoryInfo;
+            if (!categoryInfo) {
+                categoryInfo = {
+                    cid: categoryId,
+                    uid: userState.id,
+                    is_current: true,
+                    elements: [],
+                    objectives: [],
+                    positive_actions: [],
+                    improve_actions: [],
+                    habits: [],
+                    short_actions: [],
+                    middle_actions: [],
+                    long_actions: []
+                };
+            }
+            categoryInfo.elements = items;
+            
+            // Usar fetch síncrono para refresh
+            const xhr = new XMLHttpRequest();
+            const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`;
+            xhr.open('POST', url, false); // false = síncrono
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.send(JSON.stringify(categoryInfo));
+        };
+        
+        // Agregar listeners para diferentes eventos
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('pagehide', handleBeforeUnload);
+        window.addEventListener('unload', handleBeforeUnload);
+        
+        // Cleanup al desmontar
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('pagehide', handleBeforeUnload);
+            window.removeEventListener('unload', handleBeforeUnload);
+        };
     });
 
     function toggleProminent(id: string) {
