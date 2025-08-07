@@ -92,6 +92,7 @@ async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean>
 	// Asegurar que siempre tengamos el id del documento existente
 	if (!categoryInfo.id) {
 		console.error('Missing document id - cannot save without existing document id');
+		autosaveStatus.set('error');
 		return false;
 	}
 
@@ -142,10 +143,16 @@ const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
 	console.log('debouncedSave called with categoryInfo:', categoryInfo);
 	autosaveStatus.set('saving');
 	const success = await saveCategoryInfo(categoryInfo);
-	if (!success) {
+	if (success) {
+		// El status ya se estableció en saveCategoryInfo
+		autosaveStatus.set('saved');
+	} else {
 		// En caso de error, intentar una vez más después de 2 segundos
 		setTimeout(async () => {
-			await saveCategoryInfo(categoryInfo);
+			const retrySuccess = await saveCategoryInfo(categoryInfo);
+			if (!retrySuccess) {
+				autosaveStatus.set('error');
+			}
 		}, 2000);
 	}
 }, 1500); // 1.5 segundos de debounce
