@@ -23,6 +23,18 @@ export const currentCategoryInfo = writable<CategoryInfoDTO | null>(null);
 // Log cuando se actualiza el store
 currentCategoryInfo.subscribe((value) => {
 	console.log('currentCategoryInfo store updated:', value ? 'has data' : 'null');
+	if (value) {
+		console.log('Store content summary:', {
+			elements: value.elements?.length || 0,
+			objectives: value.objectives?.length || 0,
+			positive_actions: value.positive_actions?.length || 0,
+			improve_actions: value.improve_actions?.length || 0,
+			habits: value.habits?.length || 0,
+			short_actions: value.short_actions?.length || 0,
+			middle_actions: value.middle_actions?.length || 0,
+			long_actions: value.long_actions?.length || 0
+		});
+	}
 });
 export const currentCategoryActive = writable<boolean>(false);
 
