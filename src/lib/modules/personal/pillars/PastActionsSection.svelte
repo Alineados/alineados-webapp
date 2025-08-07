@@ -21,8 +21,8 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
     // Estado local
@@ -134,14 +134,10 @@
         return () => clearTimeout(timeout);
     });
 
-    // Guardar al perder foco
+    // Función para guardar cuando el usuario pierde el foco
     function handleBlur() {
-        const items = convertToGenericItems();
-        if (items.length > 0) {
-            setTimeout(() => {
-                savePastActionsSilent();
-            }, 100);
-        }
+        // TEMPORARILY DISABLED - No autosave for now
+        console.log('PastActionsSection Blur event - autosave disabled');
     }
 
     // Guardar al salir de la página
