@@ -89,6 +89,14 @@ async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean>
 		return false;
 	}
 
+	// Asegurar que siempre tengamos el id del documento existente
+	if (!categoryInfo.id) {
+		console.error('Missing document id - cannot save without existing document id');
+		return false;
+	}
+
+	console.log('Saving categoryInfo with id:', categoryInfo.id);
+
 	try {
 		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`, {
 			method: 'POST',
@@ -174,8 +182,15 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	const updatedInfo = { ...currentInfo, ...updates };
 	currentCategoryInfo.set(updatedInfo);
 	
+	// Asegurar que el documento completo se envíe al backend (con id)
+	const documentToSave = {
+		...updatedInfo,
+		// Asegurar que siempre tengamos el id del documento existente
+		id: currentInfo.id || updatedInfo.id
+	};
+	
 	// Trigger autosave AL BACKEND (como Notion)
-	debouncedSave(updatedInfo);
+	debouncedSave(documentToSave);
 }
 
 // Función para guardar inmediatamente (al perder foco)
