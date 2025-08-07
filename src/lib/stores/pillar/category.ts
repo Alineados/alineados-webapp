@@ -98,6 +98,7 @@ async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean>
 
 // Función debounced para autosave
 const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
+	console.log('debouncedSave called with categoryInfo:', categoryInfo);
 	autosaveStatus.set('saving');
 	const success = await saveCategoryInfo(categoryInfo);
 	if (!success) {
@@ -116,6 +117,8 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 		console.warn('No current category info available');
 		return;
 	}
+	
+	console.log('updateCategoryInfoAndSave called with:', updates);
 	
 	// Actualizar el store
 	const updatedInfo = { ...currentInfo, ...updates };
