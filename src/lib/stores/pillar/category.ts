@@ -31,6 +31,7 @@ export const isSectionSaving = writable<{
 let debounceTimeout: ReturnType<typeof setTimeout>;
 let retryCount = 0;
 const MAX_RETRIES = 3;
+let isAutosaving = false; // Flag para evitar bucle infinito
 
 // Estado del autosave
 export const autosaveStatus = writable<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -38,6 +39,9 @@ export const lastSavedAt = writable<Date | null>(null);
 
 // Debounce inteligente - similar a Notion
 export const autosavingPillars = derived([currentCategoryInfo], (_, set) => {
+	// Evitar bucle infinito
+	if (isAutosaving) return;
+	
 	clearTimeout(debounceTimeout);
 	
 	// Cambiar estado a 'saving' inmediatamente
@@ -59,6 +63,8 @@ async function saveCategoryInfoSilent() {
 	const categoryInfo = get(currentCategoryInfo);
 	if (!categoryInfo) return;
 
+	isAutosaving = true; // Marcar que estamos autosaveando
+
 	try {
 		// Obtener parámetros necesarios
 		const pageParams = JSON.parse(localStorage.getItem('pageParams') || '{}');
@@ -67,6 +73,7 @@ async function saveCategoryInfoSilent() {
 		
 		if (!userStateData.id || !pageParams.pillar || !pageParams.category) {
 			console.log('Missing required data for autosave');
+			isAutosaving = false;
 			return;
 		}
 
@@ -113,6 +120,8 @@ async function saveCategoryInfoSilent() {
 			console.log(`Retrying autosave (${retryCount}/${MAX_RETRIES})...`);
 			setTimeout(() => saveCategoryInfoSilent(), 2000 * retryCount);
 		}
+	} finally {
+		isAutosaving = false; // Resetear el flag
 	}
 }
 
