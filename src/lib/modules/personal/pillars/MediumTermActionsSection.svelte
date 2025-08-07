@@ -29,10 +29,18 @@
 
     // Cargar acciones de mediano plazo existentes
     async function loadMediumTermActions() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadMediumTermActions called with:', { pillar, categoryId, userStateId: userState.id });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadMediumTermActions:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadMediumTermActions response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;

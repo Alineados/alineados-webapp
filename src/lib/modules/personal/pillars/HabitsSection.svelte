@@ -30,10 +30,18 @@
 
     // Cargar hábitos existentes
     async function loadHabits() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadHabits called with:', { pillar, categoryId, userStateId: userState.id });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadHabits:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadHabits response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
                 $currentCategoryInfo = categoryInfo;
