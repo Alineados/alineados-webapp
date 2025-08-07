@@ -257,7 +257,7 @@ export async function updateCategoryStateBasedOnContent(
 export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
 	const currentInfo = get(currentCategoryInfo);
 	
-	// Si no hay datos actuales, usar los nuevos datos
+	// Si no hay datos actuales, usar los nuevos datos (incluso si están vacíos)
 	if (!currentInfo) {
 		currentCategoryInfo.set(newCategoryInfo);
 		return;
@@ -266,19 +266,24 @@ export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO) {
 	// Combinar datos existentes con nuevos datos, preservando datos no vacíos
 	const mergedInfo: CategoryInfoDTO = { ...currentInfo };
 	
-	// Solo actualizar campos que tienen datos reales en newCategoryInfo
+	// Actualizar todos los campos del newCategoryInfo, pero preservar datos existentes que no estén vacíos
 	Object.keys(newCategoryInfo).forEach(key => {
 		const fieldKey = key as keyof CategoryInfoDTO;
 		const newValue = newCategoryInfo[fieldKey];
 		const currentValue = currentInfo[fieldKey];
 		
-		// Solo actualizar si el nuevo valor tiene datos reales
-		if (Array.isArray(newValue) && newValue.length > 0) {
-			const hasRealData = newValue.some(item => 
-				item && item.description && item.description.trim() !== ''
-			);
-			if (hasRealData) {
-				(mergedInfo as any)[fieldKey] = newValue;
+		// Si el campo actual está vacío o no existe, usar el nuevo valor
+		if (!currentValue || (Array.isArray(currentValue) && currentValue.length === 0)) {
+			(mergedInfo as any)[fieldKey] = newValue;
+		} else {
+			// Si el campo actual tiene datos, solo actualizar si el nuevo valor tiene datos reales
+			if (Array.isArray(newValue) && newValue.length > 0) {
+				const hasRealData = newValue.some(item => 
+					item && item.description && item.description.trim() !== ''
+				);
+				if (hasRealData) {
+					(mergedInfo as any)[fieldKey] = newValue;
+				}
 			}
 		}
 	});
