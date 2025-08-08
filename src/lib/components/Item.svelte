@@ -59,6 +59,7 @@
 	} = $props();
 
 	const hasContent = $derived(value && value.trim() !== '');
+	const buttonContainerVisible = $derived(isStarred ? 'visible' : 'invisible group-focus-within:visible group-hover:visible');
 
 	function autoResize(event: Event) {
 		const textarea = event.target as HTMLTextAreaElement;
@@ -88,6 +89,12 @@
 		toast.success('Copiado al portapapeles', {
 			duration: 1000
 		});
+	}
+
+	function handleDeleteClick() {
+		if (deleteItem) {
+			deleteItem();
+		}
 	}
 
 	function handleOnFocus(event: FocusEvent) {
@@ -231,9 +238,7 @@
 					</button>
 				</Tooltip> -->
 				<button
-					onclick={() => {
-						if (deleteItem) deleteItem();
-					}}
+					onclick={handleDeleteClick}
 					class={`text-alineados-gray-400 ${!isDisabled ? 'hover:text-red-500' : ''} ${isStarred ? 'invisible group-hover:visible' : ''}`}
 					aria-label="Delete"
 					disabled={isDisabled}

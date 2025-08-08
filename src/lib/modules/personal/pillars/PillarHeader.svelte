@@ -9,11 +9,13 @@
     import Loading from '$lib/icons/Loading.svelte';
     import BackArrow from '$lib/icons/BackArrow.svelte';
     import type { DataPillar } from '$lib/interfaces';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryInfo, autosaveStatus, lastSavedAt, currentCategoryActive, autoUpdateCategoryState } from '$lib/stores/pillar/category';
     import { exportPillarToPDF } from '$lib/utils/exportPillar';
     import { page } from '$app/stores';
     import { userState } from '$lib/stores';
     import { getContext } from 'svelte';
+    import AutosaveIndicator from '$lib/components/AutosaveIndicator.svelte';
+    import { getEndpointByVenv } from '$lib/services/endpoints';
 
     let { 
         pillarInfo,
@@ -23,12 +25,20 @@
         category: string;
     } = $props();
     
-    let isActive = $state(true);
+    // Usar el store reactivo para el estado activo
+    let isActive = $derived($currentCategoryActive !== null ? $currentCategoryActive : true);
     let isProtected = $state(false);
     let showMenu = $state(false);
     let isExporting = $state(false);
     let saveError = $state(false);
 
+    // Inicializar isProtected basado en los datos de la categoría
+    $effect(() => {
+        if ($page.data?.categoryData?.security !== undefined) {
+            isProtected = $page.data.categoryData.security;
+        }
+    });
+    
     // Función para determinar el estado de guardado
     let saveStatus = $derived($isPillarSaving ? 'saving' : saveError ? 'error' : 'saved');
 
@@ -44,7 +54,7 @@
     const token = getContext<string>('token');
     
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
+    let pillar = $derived($page.params.pillar || '');
     let categoryId = $derived($page.data?.categoryData?.id || '');
 
     // Verificar si todas las secciones están completas
@@ -165,6 +175,87 @@
             isExporting = false;
         }
     }
+
+    // Función para proteger/desproteger categoría
+    async function handleProtect() {
+        try {
+            // Usar SIEMPRE el ID de la categoría (categories collection), no el de cat_info
+            const realCategoryId = $page.data?.categoryData?.id;
+            if (!realCategoryId) {
+                console.error('No valid category ID found for security update');
+                return;
+            }
+
+            const requestBody = { 
+                id: realCategoryId,
+                label: category.charAt(0).toUpperCase() + category.slice(1),
+                name: category,
+                active: $page.data?.categoryData?.active || false,
+                state: $page.data?.categoryData?.state || 1,
+                priority: $page.data?.categoryData?.priority || 0,
+                security: !isProtected
+            };
+
+            const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category?pillar_type=${pillar}&uid=${userState.id}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (response.ok) {
+                isProtected = !isProtected;
+            } else {
+                console.error('Error updating category security:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating category security:', error);
+        }
+    }
+
+    // Persistir cambio de Activo/Inactivo en backend
+    async function handleToggleActive() {
+        try {
+            const realCategoryId = $page.data?.categoryData?.id;
+            if (!realCategoryId) return;
+
+            const newActive = !isActive;
+            const requestBody = { 
+                id: realCategoryId,
+                label: category.charAt(0).toUpperCase() + category.slice(1),
+                name: category,
+                active: newActive,
+                state: $page.data?.categoryData?.state || 1,
+                priority: $page.data?.categoryData?.priority || 0,
+                security: isProtected
+            };
+
+            const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category?pillar_type=${pillar}&uid=${userState.id}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (response.ok) {
+                isActive = newActive;
+                // Actualizar el store también
+                currentCategoryActive.set(newActive);
+                // Ya no llamamos autoUpdateCategoryState aquí porque es un cambio manual
+            } else {
+                console.error('Error updating category active state:', response.status, response.statusText);
+            }
+        } catch (error) {
+            console.error('Error updating category active state:', error);
+        }
+    }
 </script>
 
 <div class="flex flex-col gap-2 px-4 md:px-8 lg:px-16 w-full">
@@ -183,38 +274,12 @@
         
         <div class="flex flex-row justify-start gap-4">
             
+            <!-- Professional Autosave Indicator with background -->
+            <div class="flex items-center">
+                <AutosaveIndicator showTimestamp={true} />
+            </div>
             
             <div class="flex items-center gap-2">
-                <!-- Indicador de nube/loading con contenedor reactivo -->
-                <div class={`flex items-center gap-2 rounded-lg px-3 py-1 transition-all duration-300 ${
-                    saveStatus === 'saving'
-                        ? 'bg-yellow-100' 
-                        : saveStatus === 'error'
-                        ? 'bg-red-100'
-                        : 'bg-blue-100'
-                }`}>
-                    {#if saveStatus === 'saving'}
-                        <div class="flex items-center gap-2">
-                            <div class="h-4 w-4 animate-spin text-yellow-600">
-                                <Loading />
-                            </div>
-                            <span class="text-xs font-semibold text-yellow-700">Guardando...</span>
-                        </div>
-                    {:else if saveStatus === 'error'}
-                        <div class="flex items-center gap-2">
-                            <div class="h-4 w-4 text-red-600">
-                                <Blocked />
-                            </div>
-                            <span class="text-xs font-semibold text-red-700">Error al guardar</span>
-                        </div>
-                    {:else}
-                        <div class="flex items-center gap-2">
-                            <Cloud styleTw="size-4 text-blue-600" />
-                            <span class="text-xs font-semibold text-blue-700">Guardado</span>
-                        </div>
-                    {/if}
-                </div>
-                
                 <!-- Indicador de protegido con contenedor reactivo -->
                 {#if isProtected}
                     <div class="flex items-center gap-2 rounded-lg bg-purple-100 px-3 py-1 transition-all duration-300">
@@ -268,7 +333,7 @@
                         <div class="absolute right-0 top-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 shadow-md mt-1">
                             <button
                                 class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => { isActive = !isActive; showMenu = false; }}
+                                on:click={() => { handleToggleActive(); showMenu = false; }}
                             >
                                 {#if isActive}
                                     <Blocked class="mr-2 size-4" />
@@ -276,6 +341,19 @@
                                 {:else}
                                     <Lock class="mr-2 size-4" />
                                     Activar
+                                {/if}
+                            </button>
+                            
+                            <button
+                                class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
+                                on:click={() => { handleProtect(); showMenu = false; }}
+                            >
+                                {#if isProtected}
+                                    <Eye class="mr-2 size-4" />
+                                    Desproteger
+                                {:else}
+                                    <Lock class="mr-2 size-4" />
+                                    Proteger
                                 {/if}
                             </button>
                             
@@ -292,19 +370,6 @@
                                 {:else}
                                     <File class="mr-2 size-4" />
                                     Exportar
-                                {/if}
-                            </button>
-                            
-                            <button
-                                class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-alineados-gray-100"
-                                on:click={() => { isProtected = !isProtected; showMenu = false; }}
-                            >
-                                {#if isProtected}
-                                    <Lock class="mr-2 size-4" />
-                                    Desbloquear
-                                {:else}
-                                    <Lock class="mr-2 size-4" />
-                                    Proteger
                                 {/if}
                             </button>
                         </div>

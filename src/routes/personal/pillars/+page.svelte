@@ -49,7 +49,7 @@
   };
 
   function getIconForCategory(categoryName: string) {
-    return iconMapping[categoryName] || Brain;
+    return (iconMapping as any)[categoryName] || Brain;
   }
 
   export let data: PageData;
