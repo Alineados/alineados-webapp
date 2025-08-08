@@ -24,17 +24,6 @@
     // FORZAR: usar siempre el parámetro de la URL como categoryId
     let categoryId = $derived($page.params.category || '');
 
-    // Debug: verificar que tenemos los datos necesarios
-    $effect(() => {
-        console.log('ElementsSection Debug:', {
-            pillar,
-            category,
-            categoryId,
-            userStateId: userState.id,
-            categoryData: $page.data?.categoryData
-        });
-    });
-
     // Estado local
     let elements = $state([
         { id: nanoid(), description: '', prominent: false, daily: false }
@@ -44,10 +33,7 @@
 
     // Función para cargar datos existentes
     async function loadElements() {
-        console.log('loadElements called with:', { pillar, categoryId, userStateId: userState.id });
-        
         if (!userState.id || !categoryId) {
-            console.log('Missing required data for loadElements:', { userStateId: userState.id, categoryId });
             isLoading = false;
             return;
         }
@@ -67,7 +53,6 @@
         );
         
         if (storeItems.length > 0) {
-            console.log('Loaded elements from store:', storeItems.length, 'items');
             elements = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
             isLoading = false;
             return;
@@ -75,15 +60,10 @@
 
         // Si no hay datos en el store, cargar desde el backend
         try {
-            console.log('🔍 Making backend call with:', { pillar, categoryId, userStateId: userState.id });
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
-            console.log('🔍 Backend response status:', response.status);
-            console.log('🔍 Backend response data:', response.data);
 
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                console.log('🔍 CategoryInfo from backend:', categoryInfo);
-                console.log('🔍 CategoryInfo elements:', categoryInfo.elements);
                 
                 // Actualizar el store global
                 safeUpdateCategoryInfo(categoryInfo, categoryId);
@@ -111,7 +91,6 @@
                 elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
         } catch (error) {
-            console.error('Error loading elements:', error);
             // Si hay error, crear un elemento vacío
             elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
         } finally {
@@ -195,8 +174,23 @@
     }
 
     function removeElement(id: string) {
-        // No eliminar si es el último elemento y está vacío
-        if (elements.length === 1 && elements[0].description === '') {
+        // Solo evitar eliminar si es el último elemento Y está vacío Y es el mismo que se quiere eliminar
+        if (elements.length === 1 && elements[0].description === '' && elements[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el elemento a eliminar
+        const elementToRemove = elements.find(e => e.id === id);
+        
+        // Si es el último elemento con contenido, permitir eliminarlo
+        // pero asegurar que quede un elemento vacío Y guardar el array vacío
+        const elementsWithContent = elements.filter(e => e.description.trim() !== '');
+        const isLastElementWithContent = elementsWithContent.length === 1 && elementToRemove && elementToRemove.description.trim() !== '';
+        
+        if (isLastElementWithContent) {
+            elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ elements: [] });
             return;
         }
         

@@ -31,10 +31,8 @@
 
     // Cargar objetivos existentes
     async function loadObjectives() {
-        console.log('loadObjectives called with:', { pillar, categoryId, userStateId: userState.id });
         
         if (!userState.id || !categoryId) {
-            console.log('Missing required data for loadObjectives:', { userStateId: userState.id, categoryId });
             return;
         }
         
@@ -53,7 +51,6 @@
         );
         
         if (storeItems.length > 0) {
-            console.log('Loaded objectives from store:', storeItems.length, 'items');
             objectives = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
             isLoading = false;
             return;
@@ -62,7 +59,6 @@
         // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
-            console.log('loadObjectives response:', response);
             
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
@@ -89,7 +85,6 @@
                 objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
         } catch (error) {
-            console.error('Error loading objectives:', error);
             objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
         } finally {
             isLoading = false;
@@ -207,8 +202,23 @@
     }
     
     function removeObjective(id: string) {
-        // No eliminar si es el último objetivo y está vacío
-        if (objectives.length === 1 && objectives[0].description === '') {
+        // Solo evitar eliminar si es el último objetivo Y está vacío Y es el mismo que se quiere eliminar
+        if (objectives.length === 1 && objectives[0].description === '' && objectives[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el objetivo a eliminar
+        const objectiveToRemove = objectives.find(e => e.id === id);
+        
+        // Si es el último objetivo con contenido, permitir eliminarlo
+        // pero asegurar que quede un objetivo vacío Y guardar el array vacío
+        const objectivesWithContent = objectives.filter(e => e.description.trim() !== '');
+        const isLastObjectiveWithContent = objectivesWithContent.length === 1 && objectiveToRemove && objectiveToRemove.description.trim() !== '';
+        
+        if (isLastObjectiveWithContent) {
+            objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ objectives: [] });
             return;
         }
         
