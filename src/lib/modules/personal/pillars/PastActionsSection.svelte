@@ -23,7 +23,8 @@
     // Obtener parámetros de la URL
     let pillar = $derived($page.params.pillar || '');
     let category = $derived($page.params.category || '');
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    // Obtener el ID de la categoría desde la URL (NO desde page.data)
+    let categoryId = $derived($page.params.category || '');
 
     // Estado local
     let pastActions = $state([
@@ -47,7 +48,7 @@
         isLoading = true;
         
         // Intentar cargar desde el store primero
-        const storeItems = loadFromStoreFirst(fieldName, (items) => 
+        const storeItems = await loadFromStoreFirst(fieldName, (items) => 
             items
                 .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
                 .map((item: GenericItemDTO) => ({

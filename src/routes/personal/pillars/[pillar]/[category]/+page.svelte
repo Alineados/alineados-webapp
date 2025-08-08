@@ -11,9 +11,11 @@
     import LongTermActionsSection from '$lib/modules/personal/pillars/LongTermActionsSection.svelte';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
-    import { userState, saveSynchronously } from '$lib/stores';
+    import { userState, saveSynchronously, currentCategoryInfo } from '$lib/stores';
+    import { get } from 'svelte/store';
     import { browser } from '$app/environment';
     import { getContext } from 'svelte';
+    import { ensureCategoryInitialized } from '$lib/stores/pillar/category';
 
     let { data } = $props<{ data: PageData }>();
 
@@ -25,9 +27,27 @@
     const token = getContext<string>('token');
 
     onMount(() => {
+        // Primero hacer visible la UI
         setTimeout(() => {
             isLoaded = true;
         }, 100);
+
+        // *** INICIALIZACIÓN GLOBAL DE CATEGORÍA ***
+        // DELAY para permitir que las secciones intenten cargar datos primero
+        setTimeout(async () => {
+            console.log(`🎯 Delayed initialization check for category: ${category}`);
+            console.log(`🎯 Pillar: ${pillar}`);
+            
+            // Solo inicializar si NO hay datos en el store
+            const currentInfo = get(currentCategoryInfo);
+            if (!currentInfo || !currentInfo.id) {
+                console.log(`🎯 No data found in store, proceeding with initialization`);
+                await ensureCategoryInitialized(category);
+                console.log(`✅ Category ${category} globally initialized`);
+            } else {
+                console.log(`✅ Category ${category} already has data, skipping initialization`);
+            }
+        }, 500); // 500ms delay para que las secciones carguen primero
 
         // Store page parameters for autosave function
         if (browser) {

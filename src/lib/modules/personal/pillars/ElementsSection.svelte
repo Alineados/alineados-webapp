@@ -21,8 +21,8 @@
     let pillar = $derived($page.params.pillar || '');
     let category = $derived($page.params.category || '');
 
-    // Obtener el ID de la categoría desde el contexto de la página
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    // FORZAR: usar siempre el parámetro de la URL como categoryId
+    let categoryId = $derived($page.params.category || '');
 
     // Debug: verificar que tenemos los datos necesarios
     $effect(() => {
@@ -55,7 +55,7 @@
         isLoading = true;
         
         // Intentar cargar desde el store primero
-        const storeItems = loadFromStoreFirst('elements', (items) => 
+        const storeItems = await loadFromStoreFirst('elements', (items) => 
             items
                 .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
                 .map((item: GenericItemDTO) => ({
@@ -75,11 +75,15 @@
 
         // Si no hay datos en el store, cargar desde el backend
         try {
+            console.log('🔍 Making backend call with:', { pillar, categoryId, userStateId: userState.id });
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
-            console.log('loadElements response:', response);
+            console.log('🔍 Backend response status:', response.status);
+            console.log('🔍 Backend response data:', response.data);
 
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
+                console.log('🔍 CategoryInfo from backend:', categoryInfo);
+                console.log('🔍 CategoryInfo elements:', categoryInfo.elements);
                 
                 // Actualizar el store global
                 safeUpdateCategoryInfo(categoryInfo, categoryId);

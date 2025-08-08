@@ -23,6 +23,73 @@ export const currentCategoryInfo = writable<CategoryInfoDTO | null>(null);
 // Store para el ID de la categoría actual
 export const currentCategoryId = writable<string>('');
 
+// Sistema de inicialización global por categoría
+let initializedCategories = new Set<string>();
+let categoryInitializationPromises = new Map<string, Promise<string | null>>();
+let creatingDocument = false; // Flag global para prevenir múltiples creaciones simultáneas
+
+// Función para normalizar el categoryId - SIEMPRE usar el valor de la URL
+function normalizeCategoryId(categoryId: string): string {
+	// Simplemente retornar el categoryId tal como viene (ya debería ser consistente)
+	console.log(`🔄 Normalizing categoryId: ${categoryId} -> ${categoryId}`);
+	return categoryId;
+}
+
+// Nueva función para asegurar que una categoría esté completamente inicializada
+export async function ensureCategoryInitialized(categoryId: string): Promise<string | null> {
+	const normalizedId = normalizeCategoryId(categoryId);
+	console.log(`🎯 ensureCategoryInitialized called for categoryId: ${categoryId} (normalized: ${normalizedId})`);
+	console.log(`🎯 Stack trace:`, new Error().stack);
+	console.log(`🎯 Current initializedCategories:`, Array.from(initializedCategories));
+	console.log(`🎯 Current categoryInitializationPromises:`, Array.from(categoryInitializationPromises.keys()));
+	
+	// Si ya está inicializada Y el store tiene el ID, retornar inmediatamente
+	if (initializedCategories.has(normalizedId)) {
+		const currentInfo = get(currentCategoryInfo);
+		const currentCategoryIdValue = get(currentCategoryId);
+		console.log(`🎯 Category ${normalizedId} is marked as initialized`);
+		if (currentInfo && currentInfo.id && currentCategoryIdValue === normalizedId) {
+			console.log(`✅ Category ${normalizedId} already fully initialized with ID: ${currentInfo.id}`);
+			return currentInfo.id;
+		} else {
+			console.log(`⚠️ Category ${normalizedId} marked as initialized but store is inconsistent`);
+		}
+	}
+
+	// NUEVO: Verificar si ya hay datos en el store (cargados por getCategoryInfo)
+	const currentInfo = get(currentCategoryInfo);
+	if (currentInfo && currentInfo.id) {
+		console.log(`✅ Category ${normalizedId} already has data in store with ID: ${currentInfo.id}, skipping initialization`);
+		initializedCategories.add(normalizedId);
+		return currentInfo.id;
+	}
+
+	// Si ya hay una promesa de inicialización en curso, reutilizarla
+	if (categoryInitializationPromises.has(normalizedId)) {
+		console.log(`🔄 Category ${normalizedId} initialization already in progress, waiting...`);
+		return await categoryInitializationPromises.get(normalizedId)!;
+	}
+
+	console.log(`🚀 Starting global initialization for category ${normalizedId} - CREATING DOCUMENT`);
+	
+	// Crear promesa de inicialización para esta categoría
+	const initPromise = createInitialDocument(normalizedId);
+	categoryInitializationPromises.set(normalizedId, initPromise);
+	
+	const result = await initPromise;
+	
+	// Marcar como inicializada y limpiar la promesa
+	if (result) {
+		initializedCategories.add(normalizedId);
+		console.log(`✅ Category ${normalizedId} globally initialized with ID: ${result}`);
+	} else {
+		console.log(`❌ Failed to initialize category ${normalizedId}`);
+	}
+	categoryInitializationPromises.delete(normalizedId);
+	
+	return result;
+}
+
 // Log cuando se actualiza el store
 currentCategoryInfo.subscribe((value) => {
 	console.log('currentCategoryInfo store updated:', value ? 'has data' : 'null');
@@ -89,11 +156,9 @@ async function saveCategoryInfo(categoryInfo: CategoryInfoDTO): Promise<boolean>
 		return false;
 	}
 
-	// Asegurar que siempre tengamos el id del documento existente
+	// Para el primer guardado, permitir sin ID (el backend creará uno nuevo)
 	if (!categoryInfo.id) {
-		console.error('Missing document id - cannot save without existing document id');
-		autosaveStatus.set('error');
-		return false;
+		console.log('First save - no ID provided, backend will create new document');
 	}
 
 	console.log('Saving categoryInfo with id:', categoryInfo.id);
@@ -141,6 +206,8 @@ const debouncedSave = debounce(async (categoryInfo: CategoryInfoDTO) => {
 	}
 	
 	console.log('debouncedSave called with categoryInfo:', categoryInfo);
+	console.log('debouncedSave - categoryInfo.id:', categoryInfo.id);
+	console.log('debouncedSave - hasRealContent:', hasRealContent);
 	autosaveStatus.set('saving');
 	const success = await saveCategoryInfo(categoryInfo);
 	if (success) {
@@ -165,6 +232,7 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	console.log('updateCategoryInfoAndSave - currentInfo:', currentInfo);
 	console.log('updateCategoryInfoAndSave - updates:', updates);
 	console.log('updateCategoryInfoAndSave - categoryId:', categoryId);
+	console.log('updateCategoryInfoAndSave - currentInfo.id:', currentInfo?.id);
 	
 	if (!currentInfo) {
 		console.warn('No current category info available - this might be the first time issue');
@@ -178,7 +246,10 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 		return JSON.stringify(currentValue) !== JSON.stringify(newValue);
 	});
 	
-	if (!hasChanges) {
+	// Si no hay cambios Y no hay ID, forzar el guardado para crear el documento inicial
+	if (!hasChanges && !currentInfo.id) {
+		console.log('No changes detected but no ID present, forcing save to create initial document');
+	} else if (!hasChanges) {
 		console.log('No changes detected, skipping update');
 		return;
 	}
@@ -329,28 +400,117 @@ export function safeUpdateCategoryInfo(newCategoryInfo: CategoryInfoDTO, categor
 } 
 
 // Función para cargar datos desde el store primero, luego desde el backend si es necesario
-export function loadFromStoreFirst<T>(
+export async function loadFromStoreFirst<T>(
 	sectionKey: keyof CategoryInfoDTO,
 	convertFunction: (items: GenericItemDTO[]) => T[],
 	categoryId: string
-): T[] {
+): Promise<T[]> {
+	const normalizedId = normalizeCategoryId(categoryId);
+	console.log(`📂 loadFromStoreFirst called for section: ${sectionKey}, categoryId: ${categoryId} (normalized: ${normalizedId})`);
+	
 	const currentInfo = get(currentCategoryInfo);
 	const currentCategoryIdValue = get(currentCategoryId);
 	
-	// Solo cargar desde el store si es la misma categoría
-	if (currentCategoryIdValue !== categoryId) {
-		console.log(`Category mismatch: store has ${currentCategoryIdValue}, requested ${categoryId}`);
-		return [];
-	}
+	console.log(`📂 currentCategoryIdValue: ${currentCategoryIdValue}`);
+	console.log(`📂 currentInfo:`, currentInfo ? `has ID: ${currentInfo.id}` : 'null');
 	
-	if (currentInfo && currentInfo[sectionKey] && Array.isArray(currentInfo[sectionKey])) {
+	// Solo cargar desde el store si es la misma categoría Y tiene un ID válido Y tiene datos
+	if (currentCategoryIdValue === normalizedId && currentInfo && currentInfo.id && currentInfo[sectionKey] && Array.isArray(currentInfo[sectionKey])) {
 		const items = currentInfo[sectionKey] as GenericItemDTO[];
 		if (items.length > 0) {
-			console.log(`Loading ${sectionKey} from store:`, items.length, 'items');
+			console.log(`✅ Loading ${sectionKey} from store:`, items.length, 'items');
 			return convertFunction(items);
 		}
 	}
 	
-	console.log(`No data in store for ${sectionKey}, will load from backend`);
+	console.log(`📂 No data in store for ${sectionKey}, section should load from backend`);
 	return [];
+} 
+
+// Función para crear el documento inicial si no existe
+async function createInitialDocument(categoryId: string): Promise<string | null> {
+	console.log(`🏗️ createInitialDocument called for categoryId: ${categoryId}`);
+	console.log(`🏗️ Stack trace:`, new Error().stack);
+	
+	// Verificar si ya hay un documento en el store
+	const currentInfo = get(currentCategoryInfo);
+	if (currentInfo && currentInfo.id) {
+		console.log(`⚠️ createInitialDocument called but document already exists with ID: ${currentInfo.id}`);
+		return currentInfo.id;
+	}
+	
+	// Verificar si ya se está creando un documento
+	if (creatingDocument) {
+		console.log(`⏳ Document creation already in progress, waiting...`);
+		// Esperar un poco y verificar si ya se creó
+		await new Promise(resolve => setTimeout(resolve, 100));
+		const updatedInfo = get(currentCategoryInfo);
+		if (updatedInfo && updatedInfo.id) {
+			console.log(`✅ Document was created while waiting: ${updatedInfo.id}`);
+			return updatedInfo.id;
+		}
+	}
+	
+	creatingDocument = true;
+	console.log(`🔒 Setting creatingDocument flag to true`);
+	
+	try {
+		const { pillar, userId, token } = getRequiredParams();
+		
+		if (!userId || !pillar) {
+			console.log('❌ Missing required data for initial document creation');
+			return null;
+		}
+
+		console.log(`🏗️ Creating initial document for category: ${categoryId}, pillar: ${pillar}, userId: ${userId}`);
+
+		const initialCategoryInfo = {
+			cid: categoryId,
+			uid: userId,
+			is_current: true,
+			elements: [],
+			objectives: [],
+			positive_actions: [],
+			improve_actions: [],
+			habits: [],
+			short_actions: [],
+			middle_actions: [],
+			long_actions: [],
+			created_at: new Date().toISOString(),
+			updated_at: null
+		};
+
+		console.log(`🏗️ Sending initial document to backend:`, initialCategoryInfo);
+
+		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`, {
+			method: 'POST',
+			headers: { 
+				'Content-Type': 'application/json', 
+				'Authorization': `Bearer ${token}` 
+			},
+			body: JSON.stringify(initialCategoryInfo)
+		});
+
+		if (response.ok) {
+			const responseData = await response.json();
+			console.log(`✅ Initial document created successfully:`, responseData.data?.id);
+			
+			// Actualizar el store con el documento inicial
+			if (responseData.data) {
+				currentCategoryInfo.set(responseData.data);
+				currentCategoryId.set(categoryId);
+				console.log(`✅ Store updated with new document ID: ${responseData.data.id}`);
+				return responseData.data.id;
+			}
+		} else {
+			console.error(`❌ Failed to create initial document:`, response.status, response.statusText);
+		}
+	} catch (error) {
+		console.error('❌ Error creating initial document:', error);
+	} finally {
+		creatingDocument = false;
+		console.log(`🔓 Resetting creatingDocument flag to false`);
+	}
+	
+	return null;
 } 
