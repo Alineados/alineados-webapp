@@ -35,6 +35,90 @@
     async function handleExportAll() {
         isExporting = true;
         try {
+            // Función auxiliar para obtener información de categoría con fallback
+            async function fetchCategoryInfo(pillar: string, categoryId: string, categoryLabel: string) {
+                console.log(`🔍 Fetching category info for ${pillar} - ${categoryLabel} (ID: ${categoryId})`);
+                
+                // IMPORTANTE: Usar el nombre de categoría (label normalizado) como cid, no el ID
+                // El autosave guarda con nombres como "fisica", "mental", etc.
+                const categoryName = categoryLabel.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '');
+                
+                console.log(`🔍 Using category name "${categoryName}" as cid instead of ID "${categoryId}"`);
+                
+                // Intentar primero con is_current=false para obtener el más reciente
+                let response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=${pillar}&cid=${categoryName}&uid=${userState.id}&is_current=false`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const categoryInfo = await response.json();
+                    
+                    // Verificar si hay datos útiles
+                    const hasData = categoryInfo.data && (
+                        (categoryInfo.data.elements && categoryInfo.data.elements.length > 0) ||
+                        (categoryInfo.data.objectives && categoryInfo.data.objectives.length > 0) ||
+                        (categoryInfo.data.positive_actions && categoryInfo.data.positive_actions.length > 0) ||
+                        (categoryInfo.data.improve_actions && categoryInfo.data.improve_actions.length > 0) ||
+                        (categoryInfo.data.habits && categoryInfo.data.habits.length > 0) ||
+                        (categoryInfo.data.short_actions && categoryInfo.data.short_actions.length > 0) ||
+                        (categoryInfo.data.middle_actions && categoryInfo.data.middle_actions.length > 0) ||
+                        (categoryInfo.data.long_actions && categoryInfo.data.long_actions.length > 0)
+                    );
+
+                    console.log(`🔍 ${pillar} category ${categoryLabel} sections summary:`, {
+                        elements: categoryInfo.data?.elements?.length || 0,
+                        objectives: categoryInfo.data?.objectives?.length || 0,
+                        positive_actions: categoryInfo.data?.positive_actions?.length || 0,
+                        improve_actions: categoryInfo.data?.improve_actions?.length || 0,
+                        habits: categoryInfo.data?.habits?.length || 0,
+                        short_actions: categoryInfo.data?.short_actions?.length || 0,
+                        middle_actions: categoryInfo.data?.middle_actions?.length || 0,
+                        long_actions: categoryInfo.data?.long_actions?.length || 0,
+                        hasData
+                    });
+
+                    if (hasData) {
+                        console.log(`✅ ${pillar} category ${categoryLabel} data (is_current=false):`, {
+                            elements: categoryInfo.data.elements?.length || 0,
+                            objectives: categoryInfo.data.objectives?.length || 0,
+                            positive_actions: categoryInfo.data.positive_actions?.length || 0,
+                            improve_actions: categoryInfo.data.improve_actions?.length || 0
+                        });
+                        return categoryInfo;
+                    } else {
+                        console.log(`⚠️ ${pillar} category ${categoryLabel} has no data with is_current=false, trying is_current=true...`);
+                    }
+                }
+
+                // Fallback: intentar con is_current=true
+                response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=${pillar}&cid=${categoryName}&uid=${userState.id}&is_current=true`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const categoryInfo = await response.json();
+                    console.log(`✅ ${pillar} category ${categoryLabel} data (is_current=true fallback):`, {
+                        elements: categoryInfo.data.elements?.length || 0,
+                        objectives: categoryInfo.data.objectives?.length || 0,
+                        positive_actions: categoryInfo.data.positive_actions?.length || 0,
+                        improve_actions: categoryInfo.data.improve_actions?.length || 0
+                    });
+                    return categoryInfo;
+                }
+
+                console.error(`❌ Failed to fetch data for ${pillar} category ${categoryLabel}`);
+                return null;
+            }
+
             // Obtener todos los pilares
             const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-all?uid=${userState.id}`, {
                 method: 'GET',
@@ -57,15 +141,19 @@
             if (pillarsData.data.health && pillarsData.data.health.categories) {
                 for (const category of pillarsData.data.health.categories) {
                     try {
-                        const categoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=health&cid=${category.id}&uid=${userState.id}&is_current=true`, {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        if (categoryResponse.ok) {
-                            const categoryInfo = await categoryResponse.json();
+                        const categoryInfo = await fetchCategoryInfo('health', category.id, category.label);
+                        if (categoryInfo) {
+                            // Log detallado de la estructura de datos
+                            console.log(`🔍 Health category ${category.label} full data structure:`, {
+                                elements: categoryInfo.data.elements || [],
+                                objectives: categoryInfo.data.objectives || [],
+                                positive_actions: categoryInfo.data.positive_actions || [],
+                                improve_actions: categoryInfo.data.improve_actions || [],
+                                habits: categoryInfo.data.habits || [],
+                                short_actions: categoryInfo.data.short_actions || [],
+                                middle_actions: categoryInfo.data.middle_actions || [],
+                                long_actions: categoryInfo.data.long_actions || []
+                            });
                             
                             // Convertir los datos al formato correcto para exportación
                             const exportCategoryInfo = {
@@ -73,46 +161,48 @@
                                 uid: categoryInfo.data.uid,
                                 is_current: categoryInfo.data.is_current,
                                 elements: categoryInfo.data.elements?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 objectives: categoryInfo.data.objectives?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 positive_actions: categoryInfo.data.positive_actions?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 improve_actions: categoryInfo.data.improve_actions?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 habits: categoryInfo.data.habits?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 short_actions: categoryInfo.data.short_actions?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 middle_actions: categoryInfo.data.middle_actions?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || [],
                                 long_actions: categoryInfo.data.long_actions?.map((item: any) => ({
-                                    description: item.description,
-                                    prominent: item.favorite,
-                                    daily: item.repeated
+                                    description: item.description || '',
+                                    prominent: item.favorite || false,
+                                    daily: item.repeated || false
                                 })) || []
                             };
+
+                            console.log(`📤 Health category ${category.label} export format:`, exportCategoryInfo);
 
                             allCategoriesExportData.push({
                                 categoryName: category.label,
@@ -135,16 +225,9 @@
             if (pillarsData.data.relational && pillarsData.data.relational.categories) {
                 for (const category of pillarsData.data.relational.categories) {
                     try {
-                        const categoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=relational&cid=${category.id}&uid=${userState.id}&is_current=true`, {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        if (categoryResponse.ok) {
-                            const categoryInfo = await categoryResponse.json();
-                            
+                        const categoryInfo = await fetchCategoryInfo('relational', category.id, category.label);
+                        if (categoryInfo) {
+                            // Convertir los datos al formato correcto para exportación
                             const exportCategoryInfo = {
                                 cid: categoryInfo.data.cid,
                                 uid: categoryInfo.data.uid,
@@ -212,16 +295,9 @@
             if (pillarsData.data.vocational && pillarsData.data.vocational.categories) {
                 for (const category of pillarsData.data.vocational.categories) {
                     try {
-                        const categoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=vocational&cid=${category.id}&uid=${userState.id}&is_current=true`, {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        if (categoryResponse.ok) {
-                            const categoryInfo = await categoryResponse.json();
-                            
+                        const categoryInfo = await fetchCategoryInfo('vocational', category.id, category.label);
+                        if (categoryInfo) {
+                            // Convertir los datos al formato correcto para exportación
                             const exportCategoryInfo = {
                                 cid: categoryInfo.data.cid,
                                 uid: categoryInfo.data.uid,
@@ -289,16 +365,9 @@
             if (pillarsData.data.spiritual && pillarsData.data.spiritual.categories) {
                 for (const category of pillarsData.data.spiritual.categories) {
                     try {
-                        const categoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=spiritual&cid=${category.id}&uid=${userState.id}&is_current=true`, {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        if (categoryResponse.ok) {
-                            const categoryInfo = await categoryResponse.json();
-                            
+                        const categoryInfo = await fetchCategoryInfo('spiritual', category.id, category.label);
+                        if (categoryInfo) {
+                            // Convertir los datos al formato correcto para exportación
                             const exportCategoryInfo = {
                                 cid: categoryInfo.data.cid,
                                 uid: categoryInfo.data.uid,
@@ -364,6 +433,19 @@
 
             // Exportar todas las categorías
             if (allCategoriesExportData.length > 0) {
+                console.log('🎯 Final export data summary:', allCategoriesExportData.map(cat => ({
+                    categoryName: cat.categoryName,
+                    pillarType: cat.pillarType,
+                    hasElements: (cat.categoryInfo.elements?.length || 0) > 0,
+                    hasObjectives: (cat.categoryInfo.objectives?.length || 0) > 0,
+                    hasPositiveActions: (cat.categoryInfo.positive_actions?.length || 0) > 0,
+                    hasImproveActions: (cat.categoryInfo.improve_actions?.length || 0) > 0,
+                    hasHabits: (cat.categoryInfo.habits?.length || 0) > 0,
+                    hasShortActions: (cat.categoryInfo.short_actions?.length || 0) > 0,
+                    hasMiddleActions: (cat.categoryInfo.middle_actions?.length || 0) > 0,
+                    hasLongActions: (cat.categoryInfo.long_actions?.length || 0) > 0
+                })));
+                
                 exportAllCategoriesToPDF({
                     categories: allCategoriesExportData,
                     pillarType: 'all'
