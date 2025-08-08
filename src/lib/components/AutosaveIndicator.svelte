@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { autosaveStatus, lastSavedAt } from '$lib/stores';
+    import { autosaveStatus, lastSavedAt } from '$lib/stores/pillar/category';
     import Cloud from '$lib/icons/Cloud.svelte';
     import Loading from '$lib/icons/Loading.svelte';
     import CircleCheck from '$lib/icons/CircleCheck.svelte';
@@ -24,30 +24,28 @@
     }
 </script>
 
-<div class="flex items-center gap-2 text-xs text-gray-500">
+<div class="flex items-center gap-1 text-xs font-semibold">
     {#if $autosaveStatus === 'saving'}
-        <div class="flex items-center gap-1">
-            <div class="h-3 w-3 animate-spin">
-                <Loading />
-            </div>
+        <div class="flex items-center gap-1 text-yellow-700">
+            <Loading style="h-3 w-3 text-yellow-600" />
             <span>Guardando...</span>
         </div>
     {:else if $autosaveStatus === 'saved'}
-        <div class="flex items-center gap-1 text-green-600">
+        <div class="flex items-center gap-1 text-green-700">
             <CircleCheck styleTw="h-3 w-3" />
             <span>Guardado</span>
             {#if showTimestamp && $lastSavedAt}
-                <span class="text-gray-400">• {formatTimestamp($lastSavedAt)}</span>
+                <span class="text-gray-500">• {formatTimestamp($lastSavedAt)}</span>
             {/if}
         </div>
     {:else if $autosaveStatus === 'error'}
-        <div class="flex items-center gap-1 text-red-600">
+        <div class="flex items-center gap-1 text-red-700">
             <CircleCross styleTw="h-3 w-3" />
             <span>Error al guardar</span>
         </div>
     {:else}
-        <div class="flex items-center gap-1">
-            <Cloud styleTw="h-3 w-3 text-gray-400" />
+        <div class="flex items-center gap-1 text-gray-600">
+            <Cloud styleTw="h-3 w-3" />
             <span>Sin cambios</span>
         </div>
     {/if}

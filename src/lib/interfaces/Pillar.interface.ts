@@ -22,6 +22,9 @@ export interface Categories {
 	name: string;
 	label: string;
 	active: boolean;
+	state?: number;
+	priority?: number;
+	security?: boolean;
 }
 
 

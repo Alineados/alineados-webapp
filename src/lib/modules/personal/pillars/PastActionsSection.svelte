@@ -7,7 +7,7 @@
     // import ThumbsDown from '$lib/icons/ThumbsDown.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -218,8 +218,28 @@
     }
 
     function removeAction(id: string) {
-        // No eliminar si es la última acción y está vacía
-        if (pastActions.length === 1 && pastActions[0].description === '') {
+        // Solo evitar eliminar si es la última acción Y está vacía Y es la misma que se quiere eliminar
+        if (pastActions.length === 1 && pastActions[0].description === '' && pastActions[0].id === id) {
+            return;
+        }
+        
+        // Encontrar la acción a eliminar
+        const actionToRemove = pastActions.find(e => e.id === id);
+        
+        // Si es la última acción con contenido, permitir eliminarla
+        // pero asegurar que quede una acción vacía Y guardar el array vacío
+        const actionsWithContent = pastActions.filter(e => e.description.trim() !== '');
+        const isLastActionWithContent = actionsWithContent.length === 1 && actionToRemove && actionToRemove.description.trim() !== '';
+        
+        if (isLastActionWithContent) {
+            pastActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            const sectionKey = type === 'positive' ? 'positive_actions' : 'improve_actions';
+            updateCategoryInfoAndSave({ [sectionKey]: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -289,7 +309,7 @@
                     bind:isDaily={action.daily}
                     bind:isStarred={action.prominent}
                     bind:value={action.description}
-                    animate={pastActions.length === 1 && pastActions[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && pastActions.length === 1 && pastActions[0].description === ''}
                 />
             {/each}
         </div>

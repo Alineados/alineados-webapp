@@ -4,7 +4,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -206,8 +206,27 @@
     }
 
     function removeAction(id: string) {
-        // No eliminar si es la última acción y está vacía
-        if (futureActions.length === 1 && futureActions[0].description === '') {
+        // Solo evitar eliminar si es la última acción Y está vacía Y es la misma que se quiere eliminar
+        if (futureActions.length === 1 && futureActions[0].description === '' && futureActions[0].id === id) {
+            return;
+        }
+        
+        // Encontrar la acción a eliminar
+        const actionToRemove = futureActions.find(e => e.id === id);
+        
+        // Si es la última acción con contenido, permitir eliminarla
+        // pero asegurar que quede una acción vacía Y guardar el array vacío
+        const actionsWithContent = futureActions.filter(e => e.description.trim() !== '');
+        const isLastActionWithContent = actionsWithContent.length === 1 && actionToRemove && actionToRemove.description.trim() !== '';
+        
+        if (isLastActionWithContent) {
+            futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ long_actions: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -271,7 +290,7 @@
                     bind:isDaily={action.daily}
                     bind:isStarred={action.prominent}
                     bind:value={action.description}
-                    animate={futureActions.length === 1 && futureActions[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && futureActions.length === 1 && futureActions[0].description === ''}
                 />
             {/each}
         </div>

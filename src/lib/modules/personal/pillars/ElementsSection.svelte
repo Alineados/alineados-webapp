@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -191,6 +191,10 @@
             elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
             updateCategoryInfoAndSave({ elements: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -327,7 +331,7 @@
                     bind:isDaily={element.daily}
                     bind:isStarred={element.prominent}
                     bind:value={element.description}
-                    animate={elements.length === 1 && elements[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && elements.length === 1 && elements[0].description === ''}
                 />
             {/each}
         </div>

@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -200,8 +200,27 @@
     }
 
     function removeHabit(id: string) {
-        // No eliminar si es el último hábito y está vacío
-        if (habits.length === 1 && habits[0].description === '') {
+        // Solo evitar eliminar si es el último hábito Y está vacío Y es el mismo que se quiere eliminar
+        if (habits.length === 1 && habits[0].description === '' && habits[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el hábito a eliminar
+        const habitToRemove = habits.find(e => e.id === id);
+        
+        // Si es el último hábito con contenido, permitir eliminarlo
+        // pero asegurar que quede un hábito vacío Y guardar el array vacío
+        const habitsWithContent = habits.filter(e => e.description.trim() !== '');
+        const isLastHabitWithContent = habitsWithContent.length === 1 && habitToRemove && habitToRemove.description.trim() !== '';
+        
+        if (isLastHabitWithContent) {
+            habits = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ habits: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -271,7 +290,7 @@
                     bind:isDaily={habit.daily}
                     bind:isStarred={habit.prominent}
                     bind:value={habit.description}
-                    animate={habits.length === 1 && habits[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && habits.length === 1 && habits[0].description === ''}
                 />
             {/each}
         </div>

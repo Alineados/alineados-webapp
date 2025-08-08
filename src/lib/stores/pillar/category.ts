@@ -1,6 +1,8 @@
 import { writable, get, derived } from 'svelte/store';
 import type { CategoryDTO, CategoryInfoDTO, GenericItemDTO } from '$lib/services/personal/pillars';
 import { getEndpointByVenv } from '$lib/services/endpoints';
+import { updateCategoryState } from './card';
+import { invalidateAll } from '$app/navigation';
 
 // Store para el estado de carga de actualización
 export const isUpdatingCategory = writable(false);
@@ -92,18 +94,10 @@ export async function ensureCategoryInitialized(categoryId: string): Promise<str
 
 // Log cuando se actualiza el store
 currentCategoryInfo.subscribe((value) => {
-	console.log('currentCategoryInfo store updated:', value ? 'has data' : 'null');
 	if (value) {
-		console.log('Store content summary:', {
-			elements: value.elements?.length || 0,
-			objectives: value.objectives?.length || 0,
-			positive_actions: value.positive_actions?.length || 0,
-			improve_actions: value.improve_actions?.length || 0,
-			habits: value.habits?.length || 0,
-			short_actions: value.short_actions?.length || 0,
-			middle_actions: value.middle_actions?.length || 0,
-			long_actions: value.long_actions?.length || 0
-		});
+		// Verificar si hay contenido y actualizar el estado automáticamente
+		const hasContent = hasCategoryContent(value);
+		currentCategoryActive.set(hasContent);
 	}
 });
 export const currentCategoryActive = writable<boolean>(false);
@@ -113,6 +107,17 @@ export const isSectionSaving = writable<{
 	section: string;
 	saving: boolean;
 }>({ section: '', saving: false });
+
+// Store global para verificar si los campos obligatorios están completos
+export const globalRequiredFieldsComplete = writable<boolean>(false);
+
+// Store para mostrar mensaje cuando el usuario intenta usar campos deshabilitados
+export const showRequiredFieldsMessage = writable<boolean>(false);
+
+// Función para verificar si las secciones deberían estar deshabilitadas
+export function shouldDisableSections(): boolean {
+    return !get(globalRequiredFieldsComplete);
+}
 
 // PROFESSIONAL AUTOSAVE SYSTEM
 export const autosaveStatus = writable<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -229,11 +234,6 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	const currentInfo = get(currentCategoryInfo);
 	const categoryId = get(currentCategoryId);
 	
-	console.log('updateCategoryInfoAndSave - currentInfo:', currentInfo);
-	console.log('updateCategoryInfoAndSave - updates:', updates);
-	console.log('updateCategoryInfoAndSave - categoryId:', categoryId);
-	console.log('updateCategoryInfoAndSave - currentInfo.id:', currentInfo?.id);
-	
 	if (!currentInfo) {
 		console.warn('No current category info available - this might be the first time issue');
 		return;
@@ -254,8 +254,6 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 		return;
 	}
 	
-	console.log('updateCategoryInfoAndSave called with:', updates);
-	
 	// Actualizar el store
 	const updatedInfo = { ...currentInfo, ...updates };
 	currentCategoryInfo.set(updatedInfo);
@@ -269,6 +267,11 @@ export function updateCategoryInfoAndSave(updates: Partial<CategoryInfoDTO>) {
 	
 	// Trigger autosave AL BACKEND (como Notion)
 	debouncedSave(documentToSave);
+	
+	// Actualizar automáticamente el estado de la categoría después de guardar
+	setTimeout(() => {
+		autoUpdateCategoryState();
+	}, 2000); // Esperar 2 segundos después del autosave para actualizar el estado
 }
 
 // Función para guardar inmediatamente (al perder foco)
@@ -326,6 +329,143 @@ export function hasCategoryContent(categoryInfo: CategoryInfoDTO | null): boolea
     return sections.some(section => section && section.length > 0);
 }
 
+// Función para actualizar automáticamente el estado de la categoría
+export async function autoUpdateCategoryState() {
+    const currentInfo = get(currentCategoryInfo);
+    const categoryId = get(currentCategoryId);
+
+    if (!currentInfo || !categoryId) return;
+
+    const { pillar, userId, token } = getRequiredParams();
+    if (!userId || !pillar) return;
+
+    const hasContent = hasCategoryContent(currentInfo);
+
+    // Obtener el ID real de la categoría desde localStorage o usar el ID del documento
+    let realCategoryId: string | null = null;
+
+    // PRIORIZAR el ID de categoryData (categories collection) sobre currentInfo.id (cat_info collection)
+    try {
+        const pageData = JSON.parse(localStorage.getItem('pageData') || '{}');
+        realCategoryId = pageData.categoryData?.id || null;
+        console.log('🔍 Got categoryId from pageData:', realCategoryId);
+    } catch (error) {
+        console.error('Error getting category ID from localStorage:', error);
+    }
+
+    // Solo como fallback, usar el ID del documento actual (pero este puede ser incorrecto)
+    if (!realCategoryId) {
+        realCategoryId = currentInfo.id || null;
+        console.log('🔍 Using currentInfo.id as fallback:', realCategoryId);
+    }
+
+    if (!realCategoryId) {
+        console.error('No valid category ID found for state update');
+        return;
+    }
+
+    // NUEVA LÓGICA: Solo auto-activar si la categoría estaba inactiva Y ahora tiene contenido
+    // No auto-desactivar categorías que ya tienen contenido
+    try {
+        // Primero obtener el estado actual de la categoría desde el backend
+        const currentCategoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-categories?pillar=${pillar}&uid=${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!currentCategoryResponse.ok) {
+            console.error('Error fetching current category state');
+            return;
+        }
+
+        const categoriesData = await currentCategoryResponse.json();
+        console.log('🔍 Available categories from backend:', categoriesData.data);
+        console.log('🔍 Looking for category with ID:', realCategoryId);
+        
+        const currentCategory = categoriesData.data?.find((cat: any) => cat.id === realCategoryId);
+        
+        if (!currentCategory) {
+            console.error('Category not found in response');
+            console.error('Available category IDs:', categoriesData.data?.map((cat: any) => cat.id));
+            console.error('Looking for ID:', realCategoryId);
+            return;
+        }
+
+        const currentlyActive = currentCategory.active;
+
+        // REGLA: Solo actualizar si:
+        // 1. La categoría está inactiva Y ahora tiene contenido (auto-activar)
+        // 2. NO auto-desactivar categorías que ya están activas
+        let shouldUpdateToActive = currentlyActive; // Por defecto, mantener el estado actual
+
+        if (!currentlyActive && hasContent) {
+            // Auto-activar categoría inactiva que ahora tiene contenido
+            shouldUpdateToActive = true;
+            console.log('Auto-activating empty category that now has content');
+        } else if (currentlyActive) {
+            // Mantener activa una categoría que ya estaba activa (respeta decisión manual)
+            shouldUpdateToActive = true;
+            console.log('Keeping category active (respecting manual decision)');
+        } else {
+            // Mantener inactiva una categoría que no tiene contenido
+            shouldUpdateToActive = false;
+            console.log('Keeping category inactive (no content)');
+        }
+
+        // Solo hacer la llamada al backend si hay un cambio real
+        if (shouldUpdateToActive !== currentlyActive) {
+            // Usar el endpoint update-category que SÍ existe
+            const requestBody = {
+                id: realCategoryId,
+                label: currentCategory.label,
+                name: currentCategory.name,
+                active: shouldUpdateToActive,
+                state: currentCategory.state,
+                priority: currentCategory.priority,
+                security: currentCategory.security
+            };
+
+            console.log('🔍 Request body for update-category:', requestBody);
+            console.log('🔍 Current category data:', currentCategory);
+
+            const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category?pillar_type=${pillar}&uid=${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            console.log('🔍 Response status:', response.status);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.log('🔍 Response error text:', errorText);
+            }
+
+            if (response.ok) {
+                console.log(`Categoría ${shouldUpdateToActive ? 'activada' : 'desactivada'} automáticamente`);
+                currentCategoryActive.set(shouldUpdateToActive);
+
+                // También actualizar el store de cards para que se refleje en la lista principal
+                updateCategoryState(pillar, realCategoryId, shouldUpdateToActive);
+
+                // Invalidar los datos de la página para que se recarguen las PillarCard
+                setTimeout(() => {
+                    invalidateAll();
+                }, 500); // Pequeño delay para asegurar que el backend procese el cambio
+            } else {
+                console.error('Error updating category state:', response.status, response.statusText);
+            }
+        } else {
+            console.log('No state change needed, current state is correct');
+        }
+    } catch (error) {
+        console.error('Error updating category state:', error);
+    }
+}
+
 // Función para actualizar el estado de la categoría basado en su contenido
 export async function updateCategoryStateBasedOnContent(
     pillar: string, categoryId: string, userId: string, token: string
@@ -333,16 +473,88 @@ export async function updateCategoryStateBasedOnContent(
     const categoryInfo = get(currentCategoryInfo);
     const hasContent = hasCategoryContent(categoryInfo);
     console.log(`Updating category state - Pillar: ${pillar}, CategoryId: ${categoryId}, HasContent: ${hasContent}`);
+    
+    // Obtener el ID real de la categoría desde localStorage
+    let realCategoryId: string | null = null;
+    
+    // PRIORIZAR el ID de categoryData (categories collection) sobre currentInfo.id (cat_info collection)
     try {
-        const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-state?pillar=${pillar}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ cid: categoryId, uid: userId, active: hasContent })
+        const pageData = JSON.parse(localStorage.getItem('pageData') || '{}');
+        realCategoryId = pageData.categoryData?.id || null;
+        console.log('🔍 Got categoryId from pageData (updateCategoryStateBasedOnContent):', realCategoryId);
+    } catch (error) {
+        console.error('Error getting category ID from localStorage:', error);
+    }
+
+    // Solo como fallback, usar el ID del documento actual (pero este puede ser incorrecto)
+    if (!realCategoryId) {
+        realCategoryId = categoryInfo?.id || null;
+        console.log('🔍 Using currentInfo.id as fallback (updateCategoryStateBasedOnContent):', realCategoryId);
+    }
+    
+    if (!realCategoryId) {
+        console.error('No valid category ID found for state update');
+        return;
+    }
+    
+    try {
+        // Primero obtener los datos actuales de la categoría
+        const currentCategoryResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-categories?pillar=${pillar}&uid=${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         });
+
+        if (!currentCategoryResponse.ok) {
+            console.error('Error fetching current category data');
+            return;
+        }
+
+        const categoriesData = await currentCategoryResponse.json();
+        console.log('🔍 Available categories from backend (updateCategoryStateBasedOnContent):', categoriesData.data);
+        console.log('🔍 Looking for category with ID (updateCategoryStateBasedOnContent):', realCategoryId);
+        
+        const currentCategory = categoriesData.data?.find((cat: any) => cat.id === realCategoryId);
+        
+        if (!currentCategory) {
+            console.error('Category not found in response');
+            console.error('Available category IDs:', categoriesData.data?.map((cat: any) => cat.id));
+            console.error('Looking for ID:', realCategoryId);
+            return;
+        }
+
+        // Usar el endpoint update-category que SÍ existe
+        const requestBody = {
+            id: realCategoryId,
+            label: currentCategory.label,
+            name: currentCategory.name,
+            active: hasContent,
+            state: currentCategory.state,
+            priority: currentCategory.priority,
+            security: currentCategory.security
+        };
+
+        const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category?pillar_type=${pillar}&uid=${userId}`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify(requestBody)
+        });
+
         if (response.ok) {
             console.log(`Categoría ${hasContent ? 'activada' : 'desactivada'} automáticamente`);
             // Actualizar el store del estado activo
             currentCategoryActive.set(hasContent);
+            
+            // También actualizar el store de cards para que se refleje en la lista principal
+            updateCategoryState(pillar, realCategoryId, hasContent);
+            
+            // Invalidar los datos de la página para que se recarguen las PillarCard
+            setTimeout(() => {
+                invalidateAll();
+            }, 500); // Pequeño delay para asegurar que el backend procese el cambio
         } else {
             console.error('Error response:', response.status, response.statusText);
         }
@@ -513,4 +725,4 @@ async function createInitialDocument(categoryId: string): Promise<string | null>
 	}
 	
 	return null;
-} 
+}

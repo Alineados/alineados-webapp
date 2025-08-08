@@ -7,7 +7,7 @@
     import { getContext } from 'svelte';
     import type { CategoryDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
-    import { isPillarSaving } from '$lib/stores/pillar/category';
+    import { isPillarSaving, currentCategoryActive, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     
     // Íconos de estado (como en PillarCard.svelte)
@@ -33,6 +33,19 @@
     let priority = $state(categoryData?.priority || 0);
     let stateLevel = $state(categoryData?.state || 0); // 0=ninguna, 1=SadFace, 2=MedFace, 3=HappyFace
     
+    // Lógica de prioridad para el parpadeo
+    let requiredFieldsComplete = $derived(priority > 0 && stateLevel > 0);
+    let shouldBlinkPriority = $derived(priority === 0);
+    let shouldBlinkState = $derived(stateLevel === 0);
+    
+    // Solo otros campos pueden parpadear cuando los requeridos estén completos
+    let canBlinkOtherFields = $derived(requiredFieldsComplete);
+
+    // Efecto para actualizar el store global cuando cambien los campos requeridos
+    $effect(() => {
+        globalRequiredFieldsComplete.set(requiredFieldsComplete);
+    });
+
     let associatedProblems = $state([
         { id: nanoid(), name: 'Problema 1 - Pharetra tincidunt lacus' },
         { id: nanoid(), name: 'Problema 2 - Pharetra tincidunt lacus' },
@@ -65,27 +78,44 @@
             return;
         }
 
+        // Validar campos obligatorios antes de enviar
+        if (priority === 0 || stateLevel === 0) {
+            console.log('⚠️ Required fields not complete - Priority:', priority, 'State:', stateLevel);
+            return;
+        }
+
         $isPillarSaving = true;
 
         try {
+            // El backend requiere state entre 1 y 3. Si está en 0, enviar 1 por defecto
+            const safeState = stateLevel && stateLevel >= 1 && stateLevel <= 3 ? stateLevel : 1;
             const updatedCategoryData: CategoryDTO = {
                 id: categoryData.id,
                 label: categoryData.label,
                 name: categoryData.name,
-                active: categoryData.active,
-                state: stateLevel,
+                active: $currentCategoryActive !== null ? $currentCategoryActive : categoryData.active,
+                state: safeState,
                 priority: priority,
                 security: categoryData.security || false
             };
 
+            console.log('🔍 PillarSidebar - Updating category:', updatedCategoryData);
+            console.log('🔍 PillarSidebar - Pillar type:', pillar);
+            console.log('🔍 PillarSidebar - User ID:', userState.id);
+
             const response = await pillarService.updateCategory(updatedCategoryData, pillar, userState.id);
+
+            console.log('🔍 PillarSidebar - Response:', response);
 
             if (response.status === 200) {
                 // Actualizar los datos locales
                 categoryData = updatedCategoryData;
+                console.log('✅ PillarSidebar - Category updated successfully');
+            } else {
+                console.error('❌ PillarSidebar - Error response:', response);
             }
         } catch (error) {
-            console.error('Error updating category:', error);
+            console.error('❌ PillarSidebar - Error updating category:', error);
         } finally {
             $isPillarSaving = false;
         }
@@ -145,7 +175,7 @@
             <!-- Prioridad -->
             <div class="flex-1 min-w-0">
                 <h3 class="mb-1 text-lg font-medium">Prioridad</h3>
-                <div class={`inline-flex gap-1 px-1 py-1 rounded-lg border-2 ${priority === 0 ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
+                <div class={`inline-flex gap-1 px-1 py-1 rounded-lg border-2 ${shouldBlinkPriority ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
                     {#each Array(3) as _, i}
                         <button 
                             class="transition-colors flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
@@ -163,7 +193,7 @@
             <!-- Estado -->
             <div class="flex-1 min-w-0">
                 <h3 class="mb-1 text-lg font-medium">Estado</h3>
-                <div class={`inline-flex gap-2 px-1 py-1 rounded-lg border-2 ${stateLevel === 0 ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
+                <div class={`inline-flex gap-2 px-1 py-1 rounded-lg border-2 ${shouldBlinkState ? 'border-orange-500 animate-border-cursor-blink' : 'border-transparent'}`}>
                     <button 
                         class="transition-all duration-200 flex-shrink-0 {$isPillarSaving ? 'opacity-50 cursor-not-allowed' : ''}"
                         onclick={() => setStateLevel(3)}
