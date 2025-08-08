@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -17,9 +17,10 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
+    // Obtener el ID de la categoría desde la URL (NO desde page.data)
+    let categoryId = $derived($page.params.category || '');
 
     // Estado local
     let habits = $state([
@@ -30,13 +31,42 @@
 
     // Cargar hábitos existentes
     async function loadHabits() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadHabits called with:', { pillar, categoryId, userStateId: userState.id });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadHabits:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
+        
+        // Intentar cargar desde el store primero
+        const storeItems = await loadFromStoreFirst('habits', (items) => 
+            items
+                .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                .map((item: GenericItemDTO) => ({
+                    id: item.id || nanoid(),
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })), categoryId
+        );
+        
+        if (storeItems.length > 0) {
+            console.log('Loaded habits from store:', storeItems.length, 'items');
+            habits = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
+            isLoading = false;
+            return;
+        }
+        
+        // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadHabits response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
                 
                 // Filtrar hábitos no vacíos del backend
                 if (categoryInfo.habits && categoryInfo.habits.length > 0) {
@@ -66,40 +96,6 @@
         }
     }
 
-    // Guardar hábitos silenciosamente
-    async function saveHabitsSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.habits = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving habits (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir hábitos al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return habits
@@ -117,22 +113,10 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            saveHabitsSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
-    });
-
-    // Guardar al perder foco
-    function handleBlur() {
-        const items = convertToGenericItems();
         if (items.length > 0) {
-            setTimeout(() => {
-                saveHabitsSilent();
-            }, 100);
+            updateCategoryInfoAndSave({ habits: items });
         }
-    }
+    });
 
     // Guardar al salir de la página
     onMount(() => {
@@ -216,8 +200,27 @@
     }
 
     function removeHabit(id: string) {
-        // No eliminar si es el último hábito y está vacío
-        if (habits.length === 1 && habits[0].description === '') {
+        // Solo evitar eliminar si es el último hábito Y está vacío Y es el mismo que se quiere eliminar
+        if (habits.length === 1 && habits[0].description === '' && habits[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el hábito a eliminar
+        const habitToRemove = habits.find(e => e.id === id);
+        
+        // Si es el último hábito con contenido, permitir eliminarlo
+        // pero asegurar que quede un hábito vacío Y guardar el array vacío
+        const habitsWithContent = habits.filter(e => e.description.trim() !== '');
+        const isLastHabitWithContent = habitsWithContent.length === 1 && habitToRemove && habitToRemove.description.trim() !== '';
+        
+        if (isLastHabitWithContent) {
+            habits = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ habits: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -277,12 +280,17 @@
                             removeHabit(habit.id);
                         }
                     }}
-                    onBlur={handleBlur}
+                    onBlur={() => {
+                        const items = convertToGenericItems();
+                        if (items.length > 0) {
+                            updateCategoryInfoAndSave({ habits: items });
+                        }
+                    }}
                     bind:isOnlyText
                     bind:isDaily={habit.daily}
                     bind:isStarred={habit.prominent}
                     bind:value={habit.description}
-                    animate={habits.length === 1 && habits[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && habits.length === 1 && habits[0].description === ''}
                 />
             {/each}
         </div>

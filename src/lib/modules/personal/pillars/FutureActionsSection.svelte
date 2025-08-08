@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -17,9 +17,10 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
+    // Obtener el ID de la categoría desde la URL (NO desde page.data)
+    let categoryId = $derived($page.params.category || '');
 
     // Estado local
     let futureActions = $state([
@@ -30,13 +31,42 @@
 
     // Cargar acciones futuras existentes
     async function loadFutureActions() {
-        if (!userState.id || !categoryId) return;
+        console.log('loadFutureActions called with:', { pillar, categoryId, userStateId: userState.id });
+        
+        if (!userState.id || !categoryId) {
+            console.log('Missing required data for loadFutureActions:', { userStateId: userState.id, categoryId });
+            return;
+        }
+        
         isLoading = true;
+        
+        // Intentar cargar desde el store primero
+        const storeItems = await loadFromStoreFirst('short_actions', (items) => 
+            items
+                .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                .map((item: GenericItemDTO) => ({
+                    id: item.id || nanoid(),
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })), categoryId
+        );
+        
+        if (storeItems.length > 0) {
+            console.log('Loaded short_actions from store:', storeItems.length, 'items');
+            futureActions = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
+            isLoading = false;
+            return;
+        }
+        
+        // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            console.log('loadFutureActions response:', response);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
                 
                 // Filtrar acciones futuras no vacías del backend
                 if (categoryInfo.short_actions && categoryInfo.short_actions.length > 0) {
@@ -66,40 +96,6 @@
         }
     }
 
-    // Guardar acciones futuras silenciosamente
-    async function saveFutureActionsSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.short_actions = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving future actions (silent):', error);
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     // Convertir acciones al formato backend
     function convertToGenericItems(): GenericItemDTO[] {
         return futureActions
@@ -117,22 +113,10 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            saveFutureActionsSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
-    });
-
-    // Guardar al perder foco
-    function handleBlur() {
-        const items = convertToGenericItems();
         if (items.length > 0) {
-            setTimeout(() => {
-                saveFutureActionsSilent();
-            }, 100);
+            updateCategoryInfoAndSave({ short_actions: items });
         }
-    }
+    });
 
     // Guardar al salir de la página
     onMount(() => {
@@ -216,8 +200,27 @@
     }
 
     function removeAction(id: string) {
-        // No eliminar si es la última acción y está vacía
-        if (futureActions.length === 1 && futureActions[0].description === '') {
+        // Solo evitar eliminar si es la última acción Y está vacía Y es la misma que se quiere eliminar
+        if (futureActions.length === 1 && futureActions[0].description === '' && futureActions[0].id === id) {
+            return;
+        }
+        
+        // Encontrar la acción a eliminar
+        const actionToRemove = futureActions.find(e => e.id === id);
+        
+        // Si es la última acción con contenido, permitir eliminarla
+        // pero asegurar que quede una acción vacía Y guardar el array vacío
+        const actionsWithContent = futureActions.filter(e => e.description.trim() !== '');
+        const isLastActionWithContent = actionsWithContent.length === 1 && actionToRemove && actionToRemove.description.trim() !== '';
+        
+        if (isLastActionWithContent) {
+            futureActions = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ short_actions: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -277,12 +280,17 @@
                             removeAction(action.id);
                         }
                     }}
-                    onBlur={handleBlur}
+                    onBlur={() => {
+                        const items = convertToGenericItems();
+                        if (items.length > 0) {
+                            updateCategoryInfoAndSave({ short_actions: items });
+                        }
+                    }}
                     bind:isOnlyText
                     bind:isDaily={action.daily}
                     bind:isStarred={action.prominent}
                     bind:value={action.description}
-                    animate={futureActions.length === 1 && futureActions[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && futureActions.length === 1 && futureActions[0].description === ''}
                 />
             {/each}
         </div>

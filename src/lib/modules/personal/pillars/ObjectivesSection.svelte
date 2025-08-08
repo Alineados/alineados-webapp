@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -17,9 +17,10 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
+    // Obtener el ID de la categoría desde la URL (NO desde page.data)
+    let categoryId = $derived($page.params.category || '');
 
     // Estado local
     let objectives = $state([
@@ -30,13 +31,38 @@
 
     // Cargar objetivos existentes
     async function loadObjectives() {
-        if (!userState.id || !categoryId) return;
+        
+        if (!userState.id || !categoryId) {
+            return;
+        }
+        
         isLoading = true;
+        
+        // Intentar cargar desde el store primero
+        const storeItems = await loadFromStoreFirst('objectives', (items) => 
+            items
+                .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                .map((item: GenericItemDTO) => ({
+                    id: item.id || nanoid(),
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })), categoryId
+        );
+        
+        if (storeItems.length > 0) {
+            objectives = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
+            isLoading = false;
+            return;
+        }
+        
+        // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
+            
             if (response.status === 200 && response.data) {
                 const categoryInfo = response.data;
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
                 
                 // Filtrar objetivos no vacíos del backend
                 if (categoryInfo.objectives && categoryInfo.objectives.length > 0) {
@@ -59,44 +85,9 @@
                 objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
         } catch (error) {
-            console.error('Error loading objectives:', error);
             objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
         } finally {
             isLoading = false;
-        }
-    }
-
-    // Guardar objetivos silenciosamente
-    async function saveObjectivesSilent() {
-        if (!userState.id || !categoryId) return;
-        const items = convertToGenericItems();
-        $isPillarSaving = true;
-        try {
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-            categoryInfo.objectives = items;
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-            if (response.status === 200) {
-                $currentCategoryInfo = categoryInfo;
-            }
-        } catch (error) {
-            console.error('Error saving objectives (silent):', error);
-        } finally {
-            $isPillarSaving = false;
         }
     }
 
@@ -117,20 +108,16 @@
     // Auto-guardado debounce
     $effect(() => {
         const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            saveObjectivesSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ objectives: items });
+        }
     });
 
-    // Guardar al perder foco
+    // Función para guardar cuando el usuario pierde el foco
     function handleBlur() {
         const items = convertToGenericItems();
         if (items.length > 0) {
-            setTimeout(() => {
-                saveObjectivesSilent();
-            }, 100);
+            updateCategoryInfoAndSave({ objectives: items });
         }
     }
 
@@ -215,8 +202,27 @@
     }
     
     function removeObjective(id: string) {
-        // No eliminar si es el último objetivo y está vacío
-        if (objectives.length === 1 && objectives[0].description === '') {
+        // Solo evitar eliminar si es el último objetivo Y está vacío Y es el mismo que se quiere eliminar
+        if (objectives.length === 1 && objectives[0].description === '' && objectives[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el objetivo a eliminar
+        const objectiveToRemove = objectives.find(e => e.id === id);
+        
+        // Si es el último objetivo con contenido, permitir eliminarlo
+        // pero asegurar que quede un objetivo vacío Y guardar el array vacío
+        const objectivesWithContent = objectives.filter(e => e.description.trim() !== '');
+        const isLastObjectiveWithContent = objectivesWithContent.length === 1 && objectiveToRemove && objectiveToRemove.description.trim() !== '';
+        
+        if (isLastObjectiveWithContent) {
+            objectives = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ objectives: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -328,7 +334,7 @@
                     bind:isDaily={objective.daily}
                     bind:isStarred={objective.prominent}
                     bind:value={objective.description}
-                    animate={objectives.length === 1 && objectives[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && objectives.length === 1 && objectives[0].description === ''}
                 />
             {/each}
         </div>

@@ -62,3 +62,33 @@ export const initPillars = (pillars: PillarsAndCategories) => {
 	if (pillars.vocational) vocationalCategories.set(pillars.vocational.categories);
 	if (pillars.spiritual) spiritualCategories.set(pillars.spiritual.categories);
 };
+
+// Función para actualizar el estado de una categoría específica
+export const updateCategoryState = (pillarType: string, categoryId: string, active: boolean) => {
+	let store;
+	
+	switch (pillarType) {
+		case 'health':
+			store = healthCategories;
+			break;
+		case 'relational':
+			store = relationalCategories;
+			break;
+		case 'vocational':
+			store = vocationalCategories;
+			break;
+		case 'spiritual':
+			store = spiritualCategories;
+			break;
+		default:
+			return;
+	}
+	
+	store.update(categories => 
+		categories.map(cat => 
+			cat.id === categoryId 
+				? { ...cat, active } 
+				: cat
+		)
+	);
+};

@@ -5,7 +5,7 @@
     import InformationIcon from '$lib/icons/InformationIcon.svelte';
     import { nanoid } from 'nanoid';
     import { page } from '$app/stores';
-    import { isPillarSaving, currentCategoryInfo, updateCategoryStateBasedOnContent } from '$lib/stores/pillar/category';
+    import { currentCategoryInfo, updateCategoryInfoAndSave, saveImmediately, safeUpdateCategoryInfo, loadFromStoreFirst, autoUpdateCategoryState, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
     import type { GenericItemDTO } from '$lib/services/personal/pillars';
     import { PillarService } from '$lib/services/personal/pillars';
@@ -18,11 +18,11 @@
     const pillarService = PillarService.getInstance(token || '');
 
     // Obtener parámetros de la URL
-    let pillar = $derived($page.params.pillar);
-    let category = $derived($page.params.category);
+    let pillar = $derived($page.params.pillar || '');
+    let category = $derived($page.params.category || '');
 
-    // Obtener el ID de la categoría desde el contexto de la página
-    let categoryId = $derived($page.data?.categoryData?.id || '');
+    // FORZAR: usar siempre el parámetro de la URL como categoryId
+    let categoryId = $derived($page.params.category || '');
 
     // Estado local
     let elements = $state([
@@ -34,11 +34,31 @@
     // Función para cargar datos existentes
     async function loadElements() {
         if (!userState.id || !categoryId) {
+            isLoading = false;
             return;
         }
 
         isLoading = true;
+        
+        // Intentar cargar desde el store primero
+        const storeItems = await loadFromStoreFirst('elements', (items) => 
+            items
+                .filter((item: GenericItemDTO) => item.description && item.description.trim() !== '')
+                .map((item: GenericItemDTO) => ({
+                    id: item.id || nanoid(),
+                    description: item.description,
+                    prominent: item.favorite,
+                    daily: item.repeated
+                })), categoryId
+        );
+        
+        if (storeItems.length > 0) {
+            elements = [...storeItems, { id: nanoid(), description: '', prominent: false, daily: false }];
+            isLoading = false;
+            return;
+        }
 
+        // Si no hay datos en el store, cargar desde el backend
         try {
             const response = await pillarService.getCategoryInfo(pillar, categoryId, userState.id);
 
@@ -46,7 +66,7 @@
                 const categoryInfo = response.data;
                 
                 // Actualizar el store global
-                $currentCategoryInfo = categoryInfo;
+                safeUpdateCategoryInfo(categoryInfo, categoryId);
 
                 // Convertir los elementos del backend al formato del frontend
                 // Filtrar elementos vacíos del backend
@@ -71,7 +91,6 @@
                 elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
             }
         } catch (error) {
-            console.error('Error loading elements:', error);
             // Si hay error, crear un elemento vacío
             elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
         } finally {
@@ -83,12 +102,17 @@
     function handleBlur() {
         const items = convertToGenericItems();
         if (items.length > 0) {
-            // Pequeño delay para asegurar que el valor se haya actualizado
-            setTimeout(() => {
-                saveElementsSilent();
-            }, 100);
+            updateCategoryInfoAndSave({ elements: items });
         }
     }
+
+    // Efecto para actualizar el store global cuando cambian los elementos
+    $effect(() => {
+        const items = convertToGenericItems();
+        if (items.length > 0) {
+            updateCategoryInfoAndSave({ elements: items });
+        }
+    });
 
     // Guardar al salir de la página
     onMount(() => {
@@ -96,56 +120,12 @@
         
         // Función para guardar antes de salir/refresh
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            // Mostrar confirmación al usuario
-            event.preventDefault();
-            event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
-            return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
-        };
-        
-        // Función para guardar síncronamente (para refresh)
-        const saveElementsSilentSync = () => {
-            if (!userState.id || !categoryId) return;
-            
-            // Capturar TODOS los elementos actuales, incluyendo cambios pendientes
-            const currentElements = elements.filter(e => e.description.trim() !== '');
-            if (currentElements.length === 0) return;
-            
-            // Convertir al formato backend
-            const items = currentElements.map(e => ({
-                id: e.id,
-                description: e.description,
-                done: false,
-                favorite: e.prominent,
-                repeated: e.daily,
-                deleted: false
-            }));
-            
-            // Crear una nueva categoría si no existe
-            let categoryInfo = $currentCategoryInfo;
-            if (!categoryInfo) {
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
+            if (elements.some(e => e.description.trim() !== '')) {
+                // Mostrar confirmación al usuario
+                event.preventDefault();
+                event.returnValue = 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
+                return 'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?';
             }
-            categoryInfo.elements = items;
-            
-            // Usar fetch síncrono para refresh
-            const xhr = new XMLHttpRequest();
-            const url = `${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`;
-            xhr.open('POST', url, false); // false = síncrono
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            xhr.send(JSON.stringify(categoryInfo));
         };
         
         // Agregar listeners para diferentes eventos
@@ -161,6 +141,18 @@
         };
     });
 
+    function toggleProminent(id: string) {
+        elements = elements.map(e => 
+            e.id === id ? { ...e, prominent: !e.prominent } : e
+        );
+    }
+
+    function toggleDaily(id: string) {
+        elements = elements.map(e => 
+            e.id === id ? { ...e, daily: !e.daily } : e
+        );
+    }
+
     // Función para convertir elementos al formato del backend
     function convertToGenericItems(): GenericItemDTO[] {
         return elements
@@ -175,61 +167,6 @@
             }));
     }
 
-    // Función para guardar elementos
-    async function saveElements() {
-        if (!userState.id || !categoryId) {
-            toast.error('Usuario no autenticado o categoría no válida');
-            return;
-        }
-
-        const items = convertToGenericItems();
-        if (items.length === 0) {
-            return; // No guardar si no hay elementos
-        }
-
-        $isPillarSaving = true;
-
-        try {
-            // Obtener la información actual de la categoría
-            let categoryInfo = $currentCategoryInfo;
-            
-            if (!categoryInfo) {
-                // Si no hay información, crear una nueva
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-
-            // Actualizar solo los elementos
-            categoryInfo.elements = items;
-
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-
-            if (response.status === 200) {
-                toast.success('Elementos guardados correctamente');
-                // Actualizar el store con la nueva información
-                $currentCategoryInfo = categoryInfo;
-            } else {
-                toast.error(response.message || 'Error al guardar elementos');
-            }
-        } catch (error) {
-            console.error('Error saving elements:', error);
-            toast.error('Error de conexión');
-        } finally {
-            $isPillarSaving = false;
-        }
-    }
-
     function addElement(id: string) {
         // Agregar un nuevo elemento al final
         const newElement = { id: nanoid(), description: '', prominent: false, daily: false };
@@ -237,8 +174,27 @@
     }
 
     function removeElement(id: string) {
-        // No eliminar si es el último elemento y está vacío
-        if (elements.length === 1 && elements[0].description === '') {
+        // Solo evitar eliminar si es el último elemento Y está vacío Y es el mismo que se quiere eliminar
+        if (elements.length === 1 && elements[0].description === '' && elements[0].id === id) {
+            return;
+        }
+        
+        // Encontrar el elemento a eliminar
+        const elementToRemove = elements.find(e => e.id === id);
+        
+        // Si es el último elemento con contenido, permitir eliminarlo
+        // pero asegurar que quede un elemento vacío Y guardar el array vacío
+        const elementsWithContent = elements.filter(e => e.description.trim() !== '');
+        const isLastElementWithContent = elementsWithContent.length === 1 && elementToRemove && elementToRemove.description.trim() !== '';
+        
+        if (isLastElementWithContent) {
+            elements = [{ id: nanoid(), description: '', prominent: false, daily: false }];
+            // Forzar guardado del array vacío (SIEMPRE guarda, incluso arrays vacíos)
+            updateCategoryInfoAndSave({ elements: [] });
+            // Actualizar inmediatamente el estado de la categoría
+            setTimeout(() => {
+                autoUpdateCategoryState();
+            }, 100);
             return;
         }
         
@@ -248,78 +204,6 @@
         // Asegurar que siempre haya al menos un elemento vacío al final
         if (elements.length === 0 || elements[elements.length - 1].description !== '') {
             elements = [...elements, { id: nanoid(), description: '', prominent: false, daily: false }];
-        }
-    }
-
-    function toggleProminent(id: string) {
-        elements = elements.map(e => 
-            e.id === id ? { ...e, prominent: !e.prominent } : e
-        );
-    }
-
-    function toggleDaily(id: string) {
-        elements = elements.map(e => 
-            e.id === id ? { ...e, daily: !e.daily } : e
-        );
-    }
-
-    // Auto-guardar cuando hay cambios
-    $effect(() => {
-        const items = convertToGenericItems();
-        // Siempre guardar, incluso si no hay elementos
-        const timeout = setTimeout(() => {
-            saveElementsSilent();
-        }, 1500); // Reducir a 1.5 segundos
-        return () => clearTimeout(timeout);
-    });
-
-    // Función para guardar elementos sin mostrar toast (auto-guardado)
-    async function saveElementsSilent() {
-        if (!userState.id || !categoryId) {
-            return; // No mostrar error en auto-guardado
-        }
-
-        const items = convertToGenericItems();
-
-        $isPillarSaving = true;
-
-        try {
-            // Obtener la información actual de la categoría
-            let categoryInfo = $currentCategoryInfo;
-            
-            if (!categoryInfo) {
-                // Si no hay información, crear una nueva
-                categoryInfo = {
-                    cid: categoryId,
-                    uid: userState.id,
-                    is_current: true,
-                    elements: [],
-                    objectives: [],
-                    positive_actions: [],
-                    improve_actions: [],
-                    habits: [],
-                    short_actions: [],
-                    middle_actions: [],
-                    long_actions: []
-                };
-            }
-
-            // Actualizar solo los elementos (incluso si está vacío)
-            categoryInfo.elements = items;
-
-            const response = await pillarService.updateCategoryInfo(categoryInfo, pillar);
-
-            if (response.status === 200) {
-                // Actualizar el store con la nueva información
-                $currentCategoryInfo = categoryInfo;
-                
-                // Actualizar automáticamente el estado de la categoría
-                await updateCategoryStateBasedOnContent(pillar, categoryId, userState.id, token);
-            }
-        } catch (error) {
-            console.error('Error saving elements (silent):', error);
-        } finally {
-            $isPillarSaving = false;
         }
     }
 </script>
@@ -417,9 +301,6 @@
         >
             <InformationIcon styleTw="size-4" />
         </Tooltip>
-        
-        <!-- Indicador de estado de guardado -->
-        
     </div>
     
     {#if isLoading}
@@ -450,7 +331,7 @@
                     bind:isDaily={element.daily}
                     bind:isStarred={element.prominent}
                     bind:value={element.description}
-                    animate={elements.length === 1 && elements[0].description === ''}
+                    animate={$globalRequiredFieldsComplete && elements.length === 1 && elements[0].description === ''}
                 />
             {/each}
         </div>

@@ -61,3 +61,17 @@ const createPillarStore = () => {
 };
 
 export const pillarStore = createPillarStore();
+
+// Export professional autosave functionality from category store
+export {
+	currentCategoryInfo,
+	isPillarSaving,
+	currentCategoryActive,
+	hasCategoryContent,
+	updateCategoryStateBasedOnContent,
+	autosaveStatus,
+	lastSavedAt,
+	saveImmediately,
+	saveSynchronously,
+	updateCategoryInfoAndSave
+} from './category';
