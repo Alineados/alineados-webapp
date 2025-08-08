@@ -5,10 +5,13 @@
     import PillarDocuments from './PillarDocuments.svelte';
     import { page } from '$app/stores';
     import { getContext } from 'svelte';
-    import type { CategoryDTO } from '$lib/services/personal/pillars';
-    import { PillarService } from '$lib/services/personal/pillars';
+    import { goto } from '$app/navigation';
     import { isPillarSaving, currentCategoryActive, globalRequiredFieldsComplete } from '$lib/stores/pillar/category';
     import { userState } from '$lib/stores';
+    import { PillarService } from '$lib/services/personal/pillars';
+    import type { CategoryDTO } from '$lib/services/personal/pillars';
+    import type { ProblemCard } from '$lib/interfaces/personal/Problem.interface';
+    import type { Categories } from '$lib/interfaces/Pillar.interface';
     
     // Íconos de estado (como en PillarCard.svelte)
     import SadFace from '$lib/icons/SadFace.svelte';
@@ -16,10 +19,38 @@
     import HappyFace from '$lib/icons/HappyFace.svelte';
 
     // Props recibidas
-    let { categoryData = null, pillarType = '' } = $props<{
-        categoryData?: any | null;
+    let { categoryData = null, pillarType = '', associatedProblems = [] } = $props<{
+        categoryData?: Categories | null;
         pillarType?: string;
+        associatedProblems?: ProblemCard[];
     }>();
+
+    // Estado para paginación de problemas
+    let currentProblemPage = $state(0);
+    const problemsPerPage = 3;
+    
+    // Computed values para paginación
+    let totalProblemPages = $derived(Math.ceil(associatedProblems.length / problemsPerPage));
+    let paginatedProblems = $derived.by(() => {
+        const start = currentProblemPage * problemsPerPage;
+        const end = start + problemsPerPage;
+        return associatedProblems.slice(start, end);
+    });
+    let showPagination = $derived(associatedProblems.length > problemsPerPage);
+
+    // Función para cambiar página
+    function goToProblemPage(page: number) {
+        if (page >= 0 && page < totalProblemPages) {
+            currentProblemPage = page;
+        }
+    }
+
+    // Reset página cuando cambien los problemas
+    $effect(() => {
+        if (associatedProblems.length > 0 && currentProblemPage >= totalProblemPages) {
+            currentProblemPage = 0;
+        }
+    });
 
     // Obtener el token del contexto
     const token = getContext<string>('token');
@@ -46,12 +77,6 @@
         globalRequiredFieldsComplete.set(requiredFieldsComplete);
     });
 
-    let associatedProblems = $state([
-        { id: nanoid(), name: 'Problema 1 - Pharetra tincidunt lacus' },
-        { id: nanoid(), name: 'Problema 2 - Pharetra tincidunt lacus' },
-        { id: nanoid(), name: 'Problema 3 - Pharetra tincidunt lacus' }
-    ]);
-
     // Actualizar estado local cuando cambien los datos
     $effect(() => {
         if (categoryData) {
@@ -59,6 +84,37 @@
             stateLevel = categoryData.state || 0;
         }
     });
+
+    // Función para navegar al problema
+    function navigateToProblem(problemId: string) {
+        // Necesitamos obtener el nombre del pilar para la navegación
+        const pillarName = getPillarName(pillarType || pillar || '');
+        const url = `/personal/problems/edit?pid=${problemId}&pillar_name=${pillarName}`;
+        
+        goto(url);
+    }
+
+    // Función para convertir el label del pilar al nombre interno
+    function getPillarName(pillarLabel: string): string {
+        switch (pillarLabel.toLowerCase()) {
+            case 'health':
+            case 'salud':
+                return 'health';
+            case 'relational':
+            case 'relaciones':
+            case 'relación':
+                return 'relational';
+            case 'vocational':
+            case 'vocaciones':
+            case 'vocación':
+                return 'vocational';
+            case 'spiritual':
+            case 'espiritual':
+                return 'spiritual';
+            default:
+                return pillarLabel;
+        }
+    }
 
     async function setPriority(value: number) {
         priority = value;
@@ -239,14 +295,57 @@
     </div>
 
     <div>
-        <h3 class="mb-4 text-lg font-medium">Problemas asociados</h3>
-        <div class="space-y-2">
-            {#each associatedProblems as problem}
-                <div class="rounded-lg bg-white p-3 shadow">
-                    <p class="text-sm text-alineados-gray-900">{problem.name}</p>
+        <h3 class="mb-4 text-lg font-medium">Situaciones por mejorar asociados</h3>
+        {#if associatedProblems.length > 0}
+            <div class="space-y-2">
+                {#each paginatedProblems as problem}
+                    <div 
+                        class="rounded-lg bg-white p-3 shadow hover:shadow-md transition-shadow cursor-pointer border border-gray-100"
+                        onclick={() => navigateToProblem(problem.id)}
+                        role="button"
+                        tabindex="0"
+                        onkeydown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigateToProblem(problem.id);
+                            }
+                        }}
+                    >
+                        <p class="text-sm text-alineados-gray-900 font-medium">{problem.problem_name}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xs text-gray-500">Progreso: {problem.progress}%</span>
+                            <div class="flex items-center gap-1">
+                                <div class="h-2 w-16 bg-gray-200 rounded-full overflow-hidden">
+                                    <div 
+                                        class="h-full bg-alineados-blue-500 transition-all duration-300"
+                                        style="width: {problem.progress}%"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+            {#if showPagination}
+                <div class="flex justify-center items-center gap-2 mt-4">
+                    {#each Array(totalProblemPages) as _, index}
+                        <button
+                            class="w-2 h-2 rounded-full transition-all duration-200 {
+                                index === currentProblemPage 
+                                    ? 'bg-alineados-blue-500 scale-125' 
+                                    : 'bg-gray-300 hover:bg-gray-400'
+                            }"
+                            onclick={() => goToProblemPage(index)}
+                            aria-label="Ir a página {index + 1}"
+                        ></button>
+                    {/each}
                 </div>
-            {/each}
-        </div>
+            {/if}
+        {:else}
+            <div class="text-center py-6 text-gray-500">
+                <p class="text-sm">No hay situaciones por mejorar asociados a esta categoría</p>
+            </div>
+        {/if}
     </div>
 
     <div>

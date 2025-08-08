@@ -155,6 +155,7 @@
                 <PillarSidebar 
                     categoryData={data.categoryData}
                     pillarType={data.pillarType}
+                    associatedProblems={data.associatedProblems}
                 />
             </div>
         </div>
