@@ -40,11 +40,11 @@
                 console.log(`🔍 Fetching category info for ${pillar} - ${categoryLabel} (ID: ${categoryId})`);
                 
                 // IMPORTANTE: Usar el nombre de categoría (label normalizado) como cid, no el ID
-                // El autosave guarda con nombres como "fisica", "mental", etc.
+                // El autosave guarda con nombres como "bienes materiales", "trabajo de terceros", etc. (con espacios)
                 const categoryName = categoryLabel.toLowerCase()
                     .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/\s+/g, '');
+                    .replace(/[\u0300-\u036f]/g, '');
+                    // NO quitar espacios para que coincida con cómo se guarda en BD
                 
                 console.log(`🔍 Using category name "${categoryName}" as cid instead of ID "${categoryId}"`);
                 
