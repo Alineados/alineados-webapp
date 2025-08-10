@@ -41,15 +41,11 @@ function normalizeCategoryId(categoryId: string): string {
 export async function ensureCategoryInitialized(categoryId: string): Promise<string | null> {
 	const normalizedId = normalizeCategoryId(categoryId);
 	console.log(`🎯 ensureCategoryInitialized called for categoryId: ${categoryId} (normalized: ${normalizedId})`);
-	console.log(`🎯 Stack trace:`, new Error().stack);
-	console.log(`🎯 Current initializedCategories:`, Array.from(initializedCategories));
-	console.log(`🎯 Current categoryInitializationPromises:`, Array.from(categoryInitializationPromises.keys()));
 	
 	// Si ya está inicializada Y el store tiene el ID, retornar inmediatamente
 	if (initializedCategories.has(normalizedId)) {
 		const currentInfo = get(currentCategoryInfo);
 		const currentCategoryIdValue = get(currentCategoryId);
-		console.log(`🎯 Category ${normalizedId} is marked as initialized`);
 		if (currentInfo && currentInfo.id && currentCategoryIdValue === normalizedId) {
 			console.log(`✅ Category ${normalizedId} already fully initialized with ID: ${currentInfo.id}`);
 			return currentInfo.id;
@@ -83,9 +79,6 @@ export async function ensureCategoryInitialized(categoryId: string): Promise<str
 	// Marcar como inicializada y limpiar la promesa
 	if (result) {
 		initializedCategories.add(normalizedId);
-		console.log(`✅ Category ${normalizedId} globally initialized with ID: ${result}`);
-	} else {
-		console.log(`❌ Failed to initialize category ${normalizedId}`);
 	}
 	categoryInitializationPromises.delete(normalizedId);
 	
@@ -642,7 +635,6 @@ export async function loadFromStoreFirst<T>(
 // Función para crear el documento inicial si no existe
 async function createInitialDocument(categoryId: string): Promise<string | null> {
 	console.log(`🏗️ createInitialDocument called for categoryId: ${categoryId}`);
-	console.log(`🏗️ Stack trace:`, new Error().stack);
 	
 	// Verificar si ya hay un documento en el store
 	const currentInfo = get(currentCategoryInfo);
@@ -664,7 +656,6 @@ async function createInitialDocument(categoryId: string): Promise<string | null>
 	}
 	
 	creatingDocument = true;
-	console.log(`🔒 Setting creatingDocument flag to true`);
 	
 	try {
 		const { pillar, userId, token } = getRequiredParams();
@@ -674,7 +665,53 @@ async function createInitialDocument(categoryId: string): Promise<string | null>
 			return null;
 		}
 
-		console.log(`🏗️ Creating initial document for category: ${categoryId}, pillar: ${pillar}, userId: ${userId}`);
+		// *** NUEVA VERIFICACIÓN: Comprobar si ya existe un documento en el backend ***
+		console.log(`🔍 Checking if document already exists in backend for category: ${categoryId}`);
+		
+		try {
+			const checkResponse = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/get-category-info?pillar=${pillar}&cid=${categoryId}&uid=${userId}&is_current=false`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+
+			if (checkResponse.ok) {
+				const existingData = await checkResponse.json();
+				
+				// Verificar si hay datos útiles en la respuesta
+				const hasExistingData = existingData.data && (
+					(existingData.data.elements && existingData.data.elements.length > 0) ||
+					(existingData.data.objectives && existingData.data.objectives.length > 0) ||
+					(existingData.data.positive_actions && existingData.data.positive_actions.length > 0) ||
+					(existingData.data.improve_actions && existingData.data.improve_actions.length > 0) ||
+					(existingData.data.habits && existingData.data.habits.length > 0) ||
+					(existingData.data.short_actions && existingData.data.short_actions.length > 0) ||
+					(existingData.data.middle_actions && existingData.data.middle_actions.length > 0) ||
+					(existingData.data.long_actions && existingData.data.long_actions.length > 0) ||
+					existingData.data.id // O si simplemente tiene un ID válido
+				);
+
+				if (hasExistingData) {
+					console.log(`✅ Found existing document in backend with ID: ${existingData.data.id}`);
+					
+					// Actualizar el store con el documento existente
+					currentCategoryInfo.set(existingData.data);
+					currentCategoryId.set(categoryId);
+					console.log(`✅ Store updated with existing document ID: ${existingData.data.id}`);
+					
+					return existingData.data.id;
+				} else {
+					console.log(`ℹ️ No existing document found in backend, proceeding with creation`);
+				}
+			} else {
+				console.log(`ℹ️ Backend check returned ${checkResponse.status}, proceeding with creation`);
+			}
+		} catch (checkError) {
+			console.log(`⚠️ Error checking for existing document, proceeding with creation:`, checkError);
+		}
+
+		console.log(`🏗️ Creating new initial document for category: ${categoryId}`);
 
 		const initialCategoryInfo = {
 			cid: categoryId,
@@ -692,8 +729,6 @@ async function createInitialDocument(categoryId: string): Promise<string | null>
 			updated_at: null
 		};
 
-		console.log(`🏗️ Sending initial document to backend:`, initialCategoryInfo);
-
 		const response = await fetch(`${getEndpointByVenv().pillars}/api/v1/pillars/update-category-info?pillar=${pillar}`, {
 			method: 'POST',
 			headers: { 
@@ -705,24 +740,22 @@ async function createInitialDocument(categoryId: string): Promise<string | null>
 
 		if (response.ok) {
 			const responseData = await response.json();
-			console.log(`✅ Initial document created successfully:`, responseData.data?.id);
+			console.log(`✅ Initial document created successfully with ID: ${responseData.data?.id}`);
 			
 			// Actualizar el store con el documento inicial
 			if (responseData.data) {
 				currentCategoryInfo.set(responseData.data);
 				currentCategoryId.set(categoryId);
-				console.log(`✅ Store updated with new document ID: ${responseData.data.id}`);
 				return responseData.data.id;
 			}
 		} else {
 			console.error(`❌ Failed to create initial document:`, response.status, response.statusText);
 		}
 	} catch (error) {
-		console.error('❌ Error creating initial document:', error);
+		console.error(`❌ Error in createInitialDocument:`, error);
 	} finally {
 		creatingDocument = false;
-		console.log(`🔓 Resetting creatingDocument flag to false`);
 	}
-	
+
 	return null;
 }
