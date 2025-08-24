@@ -3,6 +3,7 @@
 	import { cn } from "$lib/utils.js";
 	import type { WithElementRef } from "bits-ui";
 	import type { HTMLAttributes } from "svelte/elements";
+	import { browser } from "$app/environment";
 	import {
 		SIDEBAR_COOKIE_MAX_AGE,
 		SIDEBAR_COOKIE_NAME,
@@ -44,7 +45,21 @@
 
 <svelte:window onkeydown={sidebar.handleShortcutKeydown} />
 
-<Tooltip.Provider delayDuration={0}>
+{#if browser}
+	<Tooltip.Provider delayDuration={100}>
+		<div
+			style="--sidebar-width: {SIDEBAR_WIDTH}; --sidebar-width-icon: {SIDEBAR_WIDTH_ICON}; {style}"
+			class={cn(
+				"group/sidebar-wrapper has-[[data-variant=inset]]:bg-sidebar flex min-h-svh w-full",
+				className
+			)}
+			bind:this={ref}
+			{...restProps}
+		>
+			{@render children?.()}
+		</div>
+	</Tooltip.Provider>
+{:else}
 	<div
 		style="--sidebar-width: {SIDEBAR_WIDTH}; --sidebar-width-icon: {SIDEBAR_WIDTH_ICON}; {style}"
 		class={cn(
@@ -56,4 +71,4 @@
 	>
 		{@render children?.()}
 	</div>
-</Tooltip.Provider>
+{/if}

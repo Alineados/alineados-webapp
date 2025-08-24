@@ -22,6 +22,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	if (event.url.pathname.startsWith('/auth') || event.url.pathname.startsWith('/onboarding'))
 		return resolve(event);
+	
+
 
 	// clean cookies
 	event.cookies.delete('_session', { path: '/' });

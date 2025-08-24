@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import { Toaster } from '$lib/shared/ui/sonner';
+	import * as Tooltip from '$lib/shared/ui/tooltip/index';
 	import { beforeNavigate, afterNavigate } from '$app/navigation';
 	import { pillarState, userState } from '$lib/stores';
 	import type { LayoutProps } from './$types';
@@ -57,5 +58,17 @@
 	</div>
 {/if}
 
-<Toaster />
-{@render children?.()}
+<Tooltip.Provider delayDuration={100}>
+	<Toaster 
+		theme="light"
+		class="toaster"
+		toastOptions={{
+			classes: {
+				toast: 'bg-white border shadow-lg',
+				title: 'text-gray-900',
+				description: 'text-gray-600'
+			}
+		}}
+	/>
+	{@render children?.()}
+</Tooltip.Provider>

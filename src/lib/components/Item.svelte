@@ -24,6 +24,7 @@
 		isNew = false,
 		isDisabled = false,
 		animate = false,  // Add this new prop
+		itemId = '',
 		onFocus,
 		onInput,
 		onBlur,
@@ -32,7 +33,8 @@
 		prominentItem,
 		dailyItem,
 		doneItem,
-		repeatItem
+		repeatItem,
+		focusOnNew = false  // New prop to focus when created
 	}: {
 		value?: string;
 		isAccountability?: boolean;
@@ -47,6 +49,7 @@
 		showOnlyDelete?: boolean;
 		w_size?: string;
 		animate?: boolean;
+		itemId?: string;
 		onFocus?: () => void;
 		onInput?: () => void;
 		onBlur?: () => void;
@@ -56,10 +59,21 @@
 		dailyItem?: () => void;
 		doneItem?: () => void;
 		repeatItem?: () => void;
+		focusOnNew?: boolean;
+
 	} = $props();
 
 	const hasContent = $derived(value && value.trim() !== '');
 	const buttonContainerVisible = $derived(isStarred ? 'visible' : 'invisible group-focus-within:visible group-hover:visible');
+	
+	let textareaElement: HTMLTextAreaElement;
+	
+	// Focus on new items
+	$effect(() => {
+		if (focusOnNew && textareaElement) {
+			textareaElement.focus();
+		}
+	});
 
 	function autoResize(event: Event) {
 		const textarea = event.target as HTMLTextAreaElement;
@@ -79,6 +93,19 @@
 		if (event.key === 'Tab') {
 			event.preventDefault();
 			if (addItem) addItem();
+		}
+		
+		if (event.key === 'Enter') {
+			if (event.shiftKey) {
+				// Shift+Enter: Allow line break within the same item
+				return;
+			} else {
+				// Enter: Create new item below, but only if current item has content
+				event.preventDefault();
+				if (addItem && hasContent) {
+					addItem();
+				}
+			}
 		}
 	}
 
@@ -109,33 +136,43 @@
 <div
 	class={`item-container group flex h-auto items-center ${w_size} justify-between`}
 	class:pl-8={isUnique || isNew || !isOnlyText}
+	role="listitem"
+
 >
 	{#if !isUnique && !isNew && isOnlyText}
 		<div class="flex items-center gap-0">
-			<button
-				onclick={isDisabled ? null : addItem}
-				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
-				aria-label="Plus"
-				disabled={isDisabled || isAccountability}
-				class:opacity-0={isAccountability}
-			>
-				<Plus styleTw="size-4" />
-			</button>
+			{#if hasContent}
+				<button
+					onclick={isDisabled ? null : addItem}
+					class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
+					aria-label="Plus"
+					disabled={isDisabled || isAccountability}
+					class:opacity-0={isAccountability}
+				>
+					<Plus styleTw="size-4" />
+				</button>
 
-			<button
-				class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'}`}
-				aria-label="Order"
-				disabled={isDisabled}
-			>
-				<Order stroke="currentColor" />
-			</button>
+				<div
+					class={`invisible text-alineados-gray-300 group-hover:visible ${isDisabled ? '' : 'hover:text-alineados-gray-600 focus:text-alineados-gray-600'} cursor-grab active:cursor-grabbing`}
+					role="button"
+					tabindex="0"
+					aria-label="Drag to reorder"
+				>
+					<Order stroke="currentColor" />
+				</div>
+			{:else}
+				<!-- Invisible spacer to maintain alignment when no content -->
+				<div class="w-4 h-4"></div>
+				<div class="w-4 h-4"></div>
+			{/if}
 		</div>
 	{/if}
 
 	<div
-		class="ml-1 flex w-full items-center gap-3 rounded-lg p-1 {!isDone && !isRepeated
+		class="flex w-full items-center gap-3 rounded-lg p-1 {!isDone && !isRepeated
 			? 'focus-within:bg-alineados-gray-100 hover:bg-alineados-gray-50'
 			: ''} {animate && !hasContent ? 'animate-border-cursor-blink border-transparent' : 'border-alineados-gray-100'}"
+		class:ml-1={!isUnique && !isNew && isOnlyText}
 		class:bg-alineados-green-50={isDone}
 		class:hover:bg-alineados-green-100={isDone}
 		class:bg-blue-200={isRepeated}
@@ -154,6 +191,7 @@
 		</button>
 
 		<textarea
+			bind:this={textareaElement}
 			class="flex-grow resize-none overflow-hidden border-none bg-transparent text-sm font-medium {isDone
 				? 'text-alineados-green-900'
 				: isRepeated
