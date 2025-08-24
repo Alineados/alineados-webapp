@@ -33,9 +33,17 @@
         'Festividad'
     ];
 
+    // Opciones de repetición
+    const repeatOptions = [
+        { value: 'none', label: 'No repetir' },
+        { value: 'annual', label: 'Anualmente' },
+        { value: 'monthly', label: 'Mensualmente' },
+        { value: 'weekly', label: 'Semanalmente' }
+    ];
+
     // Estado local para fechas importantes
     let items = $state([
-        { id: nanoid(), dateType: '', dateValue: '' }
+        { id: nanoid(), dateType: '', dateValue: '', repeat: 'none' }
     ]);
 
     const flipDurationMs = 300;
@@ -48,17 +56,30 @@
         toast.error('Primero completa el nombre de la relación para continuar');
     }
 
+    function hasContent(item: any) {
+        return item.dateType.trim() !== '' && item.dateValue.trim() !== '';
+    }
+
     // Efecto para sincronizar con la relación
     $effect(() => {
         if (relation.important_dates && relation.important_dates.length > 0) {
-            const dateItems = relation.important_dates.map(date => ({
-                id: nanoid(),
-                dateType: date.label,
-                dateValue: date.date
-            }));
-            items = [...dateItems, { id: nanoid(), dateType: '', dateValue: '' }];
+            const dateItems = relation.important_dates.map(date => {
+                // Convert RFC3339 date to YYYY-MM-DD for HTML date input
+                let displayDate = date.date;
+                if (date.date && date.date.includes('T')) {
+                    displayDate = date.date.split('T')[0];
+                }
+                
+                return {
+                    id: nanoid(),
+                    dateType: date.label,
+                    dateValue: displayDate,
+                    repeat: date.repeat || 'none'
+                };
+            });
+            items = [...dateItems, { id: nanoid(), dateType: '', dateValue: '', repeat: 'none' }];
         } else {
-            items = [{ id: nanoid(), dateType: '', dateValue: '' }];
+            items = [{ id: nanoid(), dateType: '', dateValue: '', repeat: 'none' }];
         }
     });
 
@@ -87,10 +108,21 @@
     function syncChanges() {
         const itemsWithContent = items.filter(item => item.dateType.trim() !== '' && item.dateValue.trim() !== '');
         
-        relation.important_dates = itemsWithContent.map(item => ({
-            label: item.dateType,
-            date: item.dateValue
-        }));
+        relation.important_dates = itemsWithContent.map(item => {
+            // Convert YYYY-MM-DD to RFC3339 format expected by backend
+            let formattedDate = item.dateValue;
+            if (item.dateValue && !item.dateValue.includes('T')) {
+                // If it's a date string (YYYY-MM-DD), convert to RFC3339
+                const date = new Date(item.dateValue + 'T00:00:00.000Z');
+                formattedDate = date.toISOString();
+            }
+            
+            return {
+                label: item.dateType,
+                date: formattedDate,
+                repeat: item.repeat || 'none'
+            };
+        });
         // Autosave
         debouncedSaveRelation({ important_dates: relation.important_dates });
     }
@@ -109,7 +141,7 @@
             return;
         }
         
-        const newItem = { id: nanoid(), dateType: '', dateValue: '' };
+        const newItem = { id: nanoid(), dateType: '', dateValue: '', repeat: 'none' };
         
         // Insert new item right after the clicked item
         const newItems = [...items];
@@ -126,7 +158,7 @@
         items = items.filter(item => item.id !== id);
         
         if (items.length === 0 || (items[items.length - 1].dateType !== '' || items[items.length - 1].dateValue !== '')) {
-            items = [...items, { id: nanoid(), dateType: '', dateValue: '' }];
+            items = [...items, { id: nanoid(), dateType: '', dateValue: '', repeat: 'none' }];
         }
         syncChanges();
     }
@@ -183,6 +215,13 @@
         handleInput();
     }
 
+    function handleRepeatChange(id: string, value: string) {
+        items = items.map(item => 
+            item.id === id ? { ...item, repeat: value } : item
+        );
+        handleInput();
+    }
+
     function copyToClipboard(item: any) {
         const textToCopy = `${item.dateType}: ${item.dateValue}`;
         navigator.clipboard.writeText(textToCopy);
@@ -196,8 +235,6 @@
         textarea.style.height = 'auto';
         textarea.style.height = `${textarea.scrollHeight}px`;
     }
-
-    const hasContent = (item: any) => item.dateType.trim() !== '' || item.dateValue.trim() !== '';
 
     function handleDndConsider(e: CustomEvent) {
         items = e.detail.items;
@@ -296,6 +333,32 @@
                             class="w-full bg-transparent text-sm font-medium text-alineados-gray-600 focus:outline-none border-none resize-none overflow-hidden group-hover:underline {fieldsDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
                             disabled={!isEditing || fieldsDisabled}
                         />
+                    </div>
+
+                    <!-- Repeat select -->
+                    <div class="flex-1 relative">
+                        <select
+                            value={item.repeat}
+                            onchange={(e) => handleRepeatChange(item.id, e.currentTarget.value)}
+                            onfocus={() => {
+                                if (fieldsDisabled) {
+                                    showNameRequiredToast();
+                                }
+                            }}
+                            onblur={handleBlur}
+                            class="w-full bg-transparent text-sm font-medium text-alineados-gray-600 focus:outline-none border-none resize-none overflow-hidden group-hover:underline appearance-none cursor-pointer {fieldsDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
+                            disabled={!isEditing || fieldsDisabled}
+                        >
+                            {#each repeatOptions as option}
+                                <option value={option.value}>{option.label}</option>
+                            {/each}
+                        </select>
+                        <!-- Custom dropdown arrow -->
+                        <div class="absolute right-1 top-1/2 transform -translate-y-1/2 pointer-events-none text-alineados-gray-400">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 

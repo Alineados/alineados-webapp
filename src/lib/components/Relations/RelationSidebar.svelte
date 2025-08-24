@@ -598,7 +598,7 @@
                     
                     <!-- Él me busca -->
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-gray-700">Él me busca</span>
+                        <span class="text-sm font-medium text-gray-700">Él / Ella me busca</span>
                         <div class="flex gap-2">
                             <button 
                                 class="px-3 py-1 rounded-full text-sm font-medium transition-all {

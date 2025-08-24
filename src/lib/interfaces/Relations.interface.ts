@@ -8,6 +8,7 @@ export interface SocialNetwork {
 export interface ImportantDate {
     date: string; // ISO string format
     label: string; // Cumpleaños, Aniversario, etc.
+    repeat: string; // "none", "annual", "monthly", "weekly"
 }
 
 export interface ContactInfo {
